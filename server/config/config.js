@@ -1,8 +1,8 @@
 module.exports = {
   port: process.env.PORT || 5000,
   db: {
-    database: process.env.DB_NAME || 'mol-inventory',
-    user: process.env.DB_USER || 'mol-inventory',
+    database: process.env.DB_NAME || 'mol_inventory',
+    user: process.env.DB_USER || 'root',
     password: process.env.DB_PASS || '',
     options: {
       dialect: process.env.DIALECT || 'mysql',
