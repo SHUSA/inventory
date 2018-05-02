@@ -16,6 +16,8 @@
             id="text-test"
             v-model="test.string"
           ></v-text-field>
+
+          <v-btn dark @click="create">Submit</v-btn>
         </v-card>
       </v-flex>
     </v-layout>
@@ -24,10 +26,10 @@
       <v-flex xs12>
         <v-card>
           <div>
-            {{test.number}}
+            {{tested.number}}
           </div>
           <div>
-            {{test.string}}
+            {{tested.string}}
           </div>
         </v-card>
       </v-flex>
@@ -42,13 +44,22 @@ export default {
     return {
       test: {
         number: null,
-        string: null,
-        json: null
-      }
+        string: null
+      },
+      tested: null
     }
   },
   methods: {
-
+    async create () {
+      try {
+        await Test.post(this.test)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  },
+  async mounted () {
+    this.tested = (await Test.index()).data
   }
 }
 
