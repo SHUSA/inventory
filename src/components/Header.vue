@@ -12,11 +12,7 @@
   </v-toolbar>
 </template>
 
-<script>
-export default {
-  
-}
-</script>
+<script></script>
 
 <style scoped>
 

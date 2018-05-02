@@ -6,7 +6,7 @@
         <v-container fluid>
           <router-view/>
         </v-container>
-      </main>   
+      </main>
     </v-app>
   </div>
 </template>

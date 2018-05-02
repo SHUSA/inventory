@@ -1,14 +1,56 @@
 <template>
-  <v-layout>
-    <v-flex xs12>
-      <v-card>
-        ssss
-      </v-card>
-    </v-flex>
-  </v-layout>
+  <v-container>
+    <v-layout row>
+      <v-flex xs12>
+        <v-card class="pa-3">
+          <v-text-field
+            name="num-test"
+            label="Number Test"
+            id="number-test"
+            v-model="test.number"
+          ></v-text-field>
+
+          <v-text-field
+            name="text-test"
+            label="Text Test"
+            id="text-test"
+            v-model="test.string"
+          ></v-text-field>
+        </v-card>
+      </v-flex>
+    </v-layout>
+    <br>
+    <v-layout row>
+      <v-flex xs12>
+        <v-card>
+          <div>
+            {{test.number}}
+          </div>
+          <div>
+            {{test.string}}
+          </div>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
+import Test from '@/services/Test'
+export default {
+  data () {
+    return {
+      test: {
+        number: null,
+        string: null,
+        json: null
+      }
+    }
+  },
+  methods: {
+
+  }
+}
 
 </script>
 
