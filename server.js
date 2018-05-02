@@ -13,7 +13,7 @@ const app = express()
 app.use(morgan('combined'))
 app.use(bodyParser.json())
 app.use(cors())
-// require('./routes')(app)
+require('./server/routes')(app)
 
 // create middleware to handle the serving the app
 app.use("/", serveStatic(path.join(__dirname, '/dist')))
