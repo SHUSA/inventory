@@ -1,9 +1,9 @@
 const TestController = require('./controllers/TestController')
 
 module.exports = (app) => {
-  app.post('/', TestController.post)
+  app.post('/test', TestController.post)
 
-  app.put('/', TestController.put)
+  app.put('/test', TestController.put)
 
-  app.get('/', TestController.get)
+  app.get('/test', TestController.index)
 }
