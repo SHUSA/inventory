@@ -1,7 +1,7 @@
 const {Test} = require('../models')
 
 module.exports = {
-  async index (res, req) {
+  async index (req, res) {
     try {
       let test = null
 
@@ -13,7 +13,7 @@ module.exports = {
     }
   },
 
-  async put (res, req) {
+  async put (req, res) {
     try {
       const test = await Test.update(req.body, {
         where: {
@@ -28,7 +28,7 @@ module.exports = {
     }
   },
 
-  async post (res, req) {
+  async post (req, res) {
     try {
       const test = await Test.create(req.body)
       res.send(test)
