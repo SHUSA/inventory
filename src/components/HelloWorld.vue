@@ -14,7 +14,7 @@
             name="text-test"
             label="Text Test"
             id="text-test"
-            v-model="test.string"
+            v-model="test.text"
           ></v-text-field>
 
           <v-btn dark @click="create">Submit</v-btn>
@@ -53,8 +53,8 @@ export default {
   methods: {
     async create () {
       try {
-        // await Test.post(this.test)
-        console.log(this.tested)
+        await Test.post(this.test)
+        this.tested = (await Test.index()).data
       } catch (error) {
         console.log(error)
       }
