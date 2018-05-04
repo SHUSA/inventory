@@ -1,12 +1,8 @@
 import API from './API'
 
 export default {
-  index (search) {
-    return API().get('test', {
-      params: {
-        search: search
-      }
-    })
+  index () {
+    return API().get('test')
   },
 
   post (test) {

@@ -25,12 +25,13 @@
     <v-layout row>
       <v-flex xs12>
         <v-card>
-          <div>
-            {{tested.number}}
-          </div>
-          <div>
-            {{tested.string}}
-          </div>
+          <li v-for="item in tested">
+            {{item.number}}
+          </li>
+          <br>
+          <li v-for="item in tested">
+            {{item.text}}
+          </li>
         </v-card>
       </v-flex>
     </v-layout>
@@ -44,15 +45,16 @@ export default {
     return {
       test: {
         number: null,
-        string: null
+        text: null
       },
-      tested: null
+      tested: {}
     }
   },
   methods: {
     async create () {
       try {
-        await Test.post(this.test)
+        // await Test.post(this.test)
+        console.log(this.tested)
       } catch (error) {
         console.log(error)
       }

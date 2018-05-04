@@ -6,6 +6,8 @@ module.exports = {
       let test = null
 
       test = await Test.findAll()
+      console.log(test)
+      res.send(test)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching'
