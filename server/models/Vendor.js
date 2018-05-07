@@ -1,5 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User')
+  const Vendor = sequelize.define('Vendor', {
+    longName: DataTypes.STRING,
+    shortName: DataTypes.STRING
+  })
 
-  return User
+  Vendor.associate = function (models) {
+  }
+
+  return Vendor
 }
