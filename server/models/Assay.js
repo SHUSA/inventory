@@ -1,5 +1,18 @@
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User')
+  const Assay = sequelize.define('Assay', {
+    name: {
+      type: DataTypes.STRING,
+      unique: true
+    },
+    weeklyVolume: DataTypes.TINYINT,
+    weeklyRuns: DataTypes.TINYINT,
+    controlsPerRun: DataTypes.TINYINT,
+    maxBatchSize: DataTypes.INTEGER,
+    sampleReplicates: DataTypes.INTEGER
+  })
 
-  return User
+  Assay.associate = function (models) {
+  }
+
+  return Assay
 }
