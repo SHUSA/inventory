@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User')
+  const Order = sequelize.define('Order', {})
 
-  return User
+  Order.associate = function (models) {
+  }
+
+  // possibly use to make order history retrieval easier?
+
+  return Order
 }
