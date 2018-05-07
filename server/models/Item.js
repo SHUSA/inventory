@@ -15,7 +15,11 @@ module.exports = (sequelize, DataTypes) => {
   })
 
   Item.associate = function (models) {
-    Item.belongsT
+    Item.belongsTo(models.Assay)
+    Item.belongsTo(models.Vendor)
+    // Item.belongsToMany(models.Order, {
+    //   through: OrderHistory
+    // })
   }
 
   return Item
