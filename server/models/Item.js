@@ -7,22 +7,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     itemDescription: DataTypes.TEXT,
     reactionsPerItem: DataTypes.INTEGER,
-    // create quantity history model instead
-    quantityOnHand: DataTypes.INTEGER,
     weeksOfSafetyStock: DataTypes.TINYINT,
     leadTimeDays: DataTypes.TINYINT,
     weeksOfReorder: DataTypes.TINYINT,
-    // create comment history model instead
-    comments: {
-      type: DataTypes.TEXT,
-      autoIncrement: true,
-      updatedAt: DataTypes.DATE
-    },
     updatedAt: DataTypes.DATE,
     image: DataTypes.BLOB
   })
 
-  // Item.belongsToMany
+  Item.associate = function (models) {
+    Item.belongsT
+  }
 
   return Item
 }
