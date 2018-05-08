@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar  fixed dark>
+  <v-toolbar fixed flat dark>
     <v-toolbar-title>
       {{title }}
     </v-toolbar-title>
