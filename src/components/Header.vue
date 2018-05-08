@@ -1,18 +1,34 @@
 <template>
   <v-toolbar  fixed dark>
     <v-toolbar-title>
-      Title
+      {{title }}
     </v-toolbar-title>
-
+    <v-spacer></v-spacer>
     <v-toolbar-items>
-      <v-btn>
-        Test
+      <v-btn flat>
+        {{pageTitle}}
+      </v-btn>
+      <v-btn flat>
+        {{time}}
       </v-btn>
     </v-toolbar-items>
   </v-toolbar>
 </template>
 
-<script></script>
+<script>
+const moment = require('moment')
+
+export default {
+  data() {
+    return {
+      time: moment().format('MMM DD, YYYY'),
+      title: 'Molecular Inventory',
+      pageTitle: 'Page Title'
+    }
+  }
+}
+  
+</script>
 
 <style scoped>
 
