@@ -19,7 +19,7 @@
 const moment = require('moment')
 
 export default {
-  data() {
+  data () {
     return {
       time: moment().format('MMM DD, YYYY'),
       title: 'Molecular Inventory',
@@ -27,7 +27,7 @@ export default {
     }
   }
 }
-  
+
 </script>
 
 <style scoped>
