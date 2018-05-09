@@ -1,7 +1,6 @@
 <template>
   <v-navigation-drawer
-    permanent
-    absolute
+    clipped
     app
   >
     <v-toolbar flat>
