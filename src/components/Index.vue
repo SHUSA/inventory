@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <navigation></navigation>
-    <v-flex xs12 offset-xs3>
+    <v-flex xs12 offset-xs2>
       <panel></panel>
     </v-flex>
   </v-layout>
