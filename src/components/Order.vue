@@ -3,7 +3,7 @@
     :headers="headers"
     :items="supplies"
     hide-actions
-    class="mt-5"
+    class="mt-4"
   >
     <template slot="items" slot-scope="props">
       <td>{{props.item.name}}</td>
@@ -28,10 +28,10 @@ export default {
       headers: [
         {text: 'Item', value: 'name'},
         {text: 'Vendor', value: 'vendor'},
-        {text: 'Cat#', value: 'catalogNumber'},
-        {text: 'Description', value: 'description'},
-        {text: 'Previous Stock', value: 'previousStock'},
-        {text: 'Current Stock', value: 'currentStock'},
+        {text: 'Catalog #', value: 'catalogNumber'},
+        {text: 'Desc', value: 'description'},
+        {text: 'Prev Stock', value: 'previousStock'},
+        {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'toOrder'},
         {text: 'Comment', value: 'comment'},
         {text: 'Last Update', value: 'lastUpdate'}
