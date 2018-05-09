@@ -1,19 +1,19 @@
 <template>
   <v-layout>
-    <v-flex xs2>
-      <navigation></navigation>
-    </v-flex>
-    <v-flex xs10>
-      test
+    <navigation></navigation>
+    <v-flex xs12 offset-xs3>
+      <panel></panel>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
 import Navigation from './Navigation'
+import Panel from './Panel'
 export default {
   components: {
-    Navigation
+    Navigation,
+    Panel
   }
 }
 </script>
