@@ -2,7 +2,8 @@
   <v-navigation-drawer
     clipped
     app
-    width="200"
+    permanent
+    width="150"
   >
     <v-toolbar flat>
       <v-list>
