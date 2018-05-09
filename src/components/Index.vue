@@ -11,7 +11,6 @@
 
 <script>
 import Navigation from './Navigation'
-import Panel from './Panel'
 import Order from './Order'
 
 export default {
@@ -25,7 +24,6 @@ export default {
   },
   components: {
     Navigation,
-    Panel,
     Order
   }
 }
