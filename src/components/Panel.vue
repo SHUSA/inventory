@@ -1,7 +1,17 @@
 <template>
   <v-layout>
     <v-flex xs12>
-      <v-card class="pa-3">
+      <v-card width="100%" class="pa-3"> -->
+        <v-toolbar absolute flat dark>
+          <v-toolbar-title>
+            Title
+          </v-toolbar-title>
+          <v-toolbar-items>
+            <v-btn flat>
+              Assay
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
           <slot>
             Lorem ipsum dolor sit amet, copiosae urbanitas nam ut, labores albucius has ea. Ius animal legimus utroque ea. Ad augue ubique pericula sed, bonorum democritum argumentum mel at. At labores voluptatum has, ei justo regione omnesque vix, et purto nullam duo. Mea no commodo voluptaria consequuntur, ex vim ornatus accusamus constituam.
 
