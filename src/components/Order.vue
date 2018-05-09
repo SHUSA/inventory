@@ -47,7 +47,7 @@ export default {
           currentStock: 0,
           toOrder: 1,
           comment: 'enter your comment in this field for further clarification',
-          lastUdate: moment().format('MMM-DD-YYYY HH:mm:ss')
+          lastUpdate: moment().format('MMM-DD-YYYY HH:mm:ss')
         }
       ]
     }
