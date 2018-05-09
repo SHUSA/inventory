@@ -4,11 +4,13 @@
       <v-card width="100%" class="pa-3"> -->
         <v-toolbar absolute flat dark>
           <v-toolbar-title>
-            Title
+            {{info.title}}
           </v-toolbar-title>
           <v-toolbar-items>
             <v-btn flat>
-              Assay
+              {{info.assay}}
+              {{info.vendor}}
+              {{info.item}}
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
@@ -30,7 +32,9 @@ Ipsum fabulas incorrupte in eam, per et eirmod impetus. Nec ea zril mandamus scr
 
 <script>
 export default {
-  
+  props: [
+    'info'
+  ]
 }
 </script>
 
