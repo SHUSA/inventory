@@ -2,6 +2,7 @@
   <v-navigation-drawer
     clipped
     app
+    width="200"
   >
     <v-toolbar flat>
       <v-list>
