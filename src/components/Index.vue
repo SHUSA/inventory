@@ -3,7 +3,7 @@
     <navigation></navigation>
     <v-flex xs12 offset-xs2>
       <panel :info="info">
-        <order></order>
+        <user-inventory></user-inventory>
       </panel>
     </v-flex>
   </v-layout>
@@ -11,7 +11,7 @@
 
 <script>
 import Navigation from './Navigation'
-import Order from './Order'
+import UserInventory from './UserInventory'
 
 export default {
   data () {
@@ -24,7 +24,7 @@ export default {
   },
   components: {
     Navigation,
-    Order
+    UserInventory
   }
 }
 </script>
