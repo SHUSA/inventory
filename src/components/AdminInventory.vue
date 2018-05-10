@@ -1,11 +1,10 @@
 <template>
-import { truncateSync } from 'fs';
   <div>
     <v-dialog
       v-model="dialog"
       max-width="500px"
     >
-      <v-btn slot="activator" color="primary" dark class="mb-2">New Item</v-btn>
+      <v-btn slot="activator" color="primary" dark class="mt-5  ">New Item</v-btn>
       <v-card>
         <v-card-title>
           <span class="headline">{{formTitle}}</span>
@@ -52,7 +51,7 @@ import { truncateSync } from 'fs';
       :headers="headers"
       :items="supplies"
       hide-actions
-      class="mt-4"
+      class="mt-"
     >
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
@@ -101,6 +100,8 @@ export default {
       editedIndex: -1,
       editedItem: {
         name: '',
+        assay: '',
+        vendor: '',
         catalogNumber: 12345,
         description: '',
         reactionsPerItem: 0,
@@ -111,6 +112,8 @@ export default {
       },
       defaultItem: {
         name: '',
+        assay: '',
+        vendor: '',
         catalogNumber: 12345,
         description: '',
         reactionsPerItem: 0,
@@ -144,6 +147,7 @@ export default {
           {
             value: false,
             name: 'name',
+            assay: 'assay',
             vendor: 'vendor',
             catalogNumber: '0123456789',
             description: '9999 cases',
@@ -159,6 +163,7 @@ export default {
           {
             value: false,
             name: 'name2',
+            assay: 'assay',
             vendor: 'vendor',
             catalogNumber: '0123456789',
             description: '9999 cases',
@@ -174,6 +179,7 @@ export default {
           {
             value: false,
             name: 'name3',
+            assay: 'assay',
             vendor: 'vendor',
             catalogNumber: '0123456789',
             description: '9999 cases',
@@ -197,7 +203,7 @@ export default {
 
       deleteItem (item) {
         const index = this.supplies.indexOf(item)
-        confirm('Are you want to delete ${item.name}?') && this.supplies.splice(index, 1)
+        confirm(`Are you want to delete ${item.name}?`) && this.supplies.splice(index, 1)
       },
 
       close () {
