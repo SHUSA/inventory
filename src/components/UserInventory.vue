@@ -14,7 +14,7 @@
       <td>{{props.item.currentStock}}</td>
       <td>{{props.item.toOrder}}</td>
       <td>{{props.item.comment}}</td>
-      <td>{{props.item.lastUpdate}}</td>      
+      <td>{{props.item.lastUpdate}}</td>
     </template>
   </v-data-table>
 </template>

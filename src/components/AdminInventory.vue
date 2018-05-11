@@ -60,7 +60,7 @@
         <td>{{props.item.currentStock}}</td>
         <td>{{props.item.toOrder}}</td>
         <td>{{props.item.comment}}</td>
-        <td>{{props.item.lastUpdate}}</td> 
+        <td>{{props.item.lastUpdate}}</td>
         <td class="justify-center layout px-0">
           <v-btn icon class="mx-0" @click="editItem(props.item)">
             <v-icon color="teal">Edit</v-icon>
@@ -76,7 +76,7 @@
         <v-btn color="primary" @click="initialize">Reset</v-btn>
       </template>
     </v-data-table>
-  </div>  
+  </div>
 </template>
 
 <script>
@@ -125,7 +125,7 @@ export default {
     }
   },
 
-  computed :{
+  computed: {
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     }
@@ -138,90 +138,90 @@ export default {
   },
 
   created () {
-    this.initialize ()
+    this.initialize()
   },
 
   methods: {
     initialize () {
       this.supplies = [
-          {
-            value: false,
-            name: 'name',
-            assay: 'assay',
-            vendor: 'vendor',
-            catalogNumber: '0123456789',
-            description: '9999 cases',
-            reactionsPerItem: 0,
-            currentStock: 0,
-            toOrder: 1,
-            safetyWeeks: 0,
-            leadTimeDays: 0,
-            reorderWeeks: 0,
-            comment: 'enter your comment in this field for further clarification',
-            lastUpdate: moment().format('MMM-DD-YYYY HH:mm:ss')
-          },
-          {
-            value: false,
-            name: 'name2',
-            assay: 'assay',
-            vendor: 'vendor',
-            catalogNumber: '0123456789',
-            description: '9999 cases',
-            reactionsPerItem: 0,
-            currentStock: 0,
-            toOrder: 1,
-            safetyWeeks: 0,
-            leadTimeDays: 0,
-            reorderWeeks: 0,
-            comment: 'enter your comment in this field for further clarification',
-            lastUpdate: moment().format('MMM-DD-YYYY HH:mm:ss')
-          },
-          {
-            value: false,
-            name: 'name3',
-            assay: 'assay',
-            vendor: 'vendor',
-            catalogNumber: '0123456789',
-            description: '9999 cases',
-            reactionsPerItem: 0,
-            currentStock: 0,
-            toOrder: 1,
-            safetyWeeks: 0,
-            leadTimeDays: 0,
-            reorderWeeks: 0,
-            comment: 'enter your comment in this field for further clarification',
-            lastUpdate: moment().format('MMM-DD-YYYY HH:mm:ss')
-          }
-        ]
-      },
-
-      editedItem (item) {
-        this.editedIndex = this.supplies.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
-
-      deleteItem (item) {
-        const index = this.supplies.indexOf(item)
-        confirm(`Are you want to delete ${item.name}?`) && this.supplies.splice(index, 1)
-      },
-
-      close () {
-        this.dialog = false
-        setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        }, 300);
-      },
-
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.supplies[this.editedIndex], this.editedItem)
-        } else {
-          this.supplies.push(this.editedItem)
+        {
+          value: false,
+          name: 'name',
+          assay: 'assay',
+          vendor: 'vendor',
+          catalogNumber: '0123456789',
+          description: '9999 cases',
+          reactionsPerItem: 0,
+          currentStock: 0,
+          toOrder: 1,
+          safetyWeeks: 0,
+          leadTimeDays: 0,
+          reorderWeeks: 0,
+          comment: 'enter your comment in this field for further clarification',
+          lastUpdate: moment().format('MMM-DD-YYYY HH:mm:ss')
+        },
+        {
+          value: false,
+          name: 'name2',
+          assay: 'assay',
+          vendor: 'vendor',
+          catalogNumber: '0123456789',
+          description: '9999 cases',
+          reactionsPerItem: 0,
+          currentStock: 0,
+          toOrder: 1,
+          safetyWeeks: 0,
+          leadTimeDays: 0,
+          reorderWeeks: 0,
+          comment: 'enter your comment in this field for further clarification',
+          lastUpdate: moment().format('MMM-DD-YYYY HH:mm:ss')
+        },
+        {
+          value: false,
+          name: 'name3',
+          assay: 'assay',
+          vendor: 'vendor',
+          catalogNumber: '0123456789',
+          description: '9999 cases',
+          reactionsPerItem: 0,
+          currentStock: 0,
+          toOrder: 1,
+          safetyWeeks: 0,
+          leadTimeDays: 0,
+          reorderWeeks: 0,
+          comment: 'enter your comment in this field for further clarification',
+          lastUpdate: moment().format('MMM-DD-YYYY HH:mm:ss')
         }
-        this.close()
+      ]
+    },
+
+    editItem (item) {
+      this.editedIndex = this.supplies.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialog = true
+    },
+
+    deleteItem (item) {
+      const index = this.supplies.indexOf(item)
+      confirm(`Are you want to delete ${item.name}?`) && this.supplies.splice(index, 1)
+    },
+
+    close () {
+      this.dialog = false
+      setTimeout(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      }, 300)
+    },
+
+    save () {
+      if (this.editedIndex > -1) {
+        Object.assign(this.supplies[this.editedIndex], this.editedItem)
+      } else {
+        this.supplies.push(this.editedItem)
       }
+      this.close()
+    }
   }
 }
 </script>
