@@ -51,7 +51,7 @@
       :headers="headers"
       :items="supplies"
       hide-actions
-      class="mt-"
+      class="mt-5"
     >
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
