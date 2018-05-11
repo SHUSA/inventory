@@ -57,18 +57,19 @@
         <td>{{props.item.name}}</td>
         <td>{{props.item.assay}}</td>
         <td>{{props.item.catalogNumber}}</td>
+        <td>{{props.item.description}}</td>
         <td>{{props.item.currentStock}}</td>
         <td>{{props.item.toOrder}}</td>
         <td>{{props.item.comment}}</td>
         <td>{{props.item.lastUpdate}}</td>
         <td class="justify-center layout px-0">
           <v-btn icon class="mx-0" @click="editItem(props.item)">
-            <v-icon color="teal">Edit</v-icon>
+            <v-icon color="teal">edit</v-icon>
           </v-btn>
         </td>
         <td class="justify-center layout px-0">
           <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-            <v-icon color="pink">Delete</v-icon>
+            <v-icon color="pink">delete</v-icon>
           </v-btn>
         </td>
       </template>
@@ -94,7 +95,8 @@ export default {
         {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'toOrder'},
         {text: 'Comment', value: 'comment'},
-        {text: 'Last Update', value: 'lastUpdate'}
+        {text: 'Last Update', value: 'lastUpdate'},
+        {text: 'Actions', value: 'name', sortable: false}
       ],
       supplies: [],
       editedIndex: -1,
@@ -145,7 +147,6 @@ export default {
     initialize () {
       this.supplies = [
         {
-          value: false,
           name: 'name',
           assay: 'assay',
           vendor: 'vendor',
@@ -161,7 +162,6 @@ export default {
           lastUpdate: moment().format('MMM-DD-YYYY HH:mm:ss')
         },
         {
-          value: false,
           name: 'name2',
           assay: 'assay',
           vendor: 'vendor',
@@ -177,7 +177,6 @@ export default {
           lastUpdate: moment().format('MMM-DD-YYYY HH:mm:ss')
         },
         {
-          value: false,
           name: 'name3',
           assay: 'assay',
           vendor: 'vendor',
