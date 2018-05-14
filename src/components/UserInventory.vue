@@ -3,7 +3,6 @@
     :headers="headers"
     :items="supplies"
     hide-actions
-    class="mt-4"
   >
     <template slot="items" slot-scope="props">
       <td>{{props.item.name}}</td>

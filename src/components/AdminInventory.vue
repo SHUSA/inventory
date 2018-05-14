@@ -4,7 +4,7 @@
       v-model="dialog"
       max-width="500px"
     >
-      <v-btn slot="activator" color="primary" dark class="mt-5  ">New Item</v-btn>
+      <v-btn slot="activator" color="primary" dark>New Item</v-btn>
       <v-card>
         <v-card-title>
           <span class="headline">{{formTitle}}</span>

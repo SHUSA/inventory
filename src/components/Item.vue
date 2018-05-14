@@ -1,5 +1,5 @@
 <template>
-  <v-layout mt-5>
+  <v-layout>
     <v-flex xs6>
       <v-list>
         <v-list-tile v-for="item in left" :key="item.label">

@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-flex xs12>
-      <v-card width="100%" class="pa-3"> -->
+      <v-card width="100%" class="pa-3">
         <v-toolbar absolute flat dark>
           <v-toolbar-title>
             {{info.title}}
@@ -14,6 +14,8 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
+
+        <div class="mt-5">
           <slot>
             Lorem ipsum dolor sit amet, copiosae urbanitas nam ut, labores albucius has ea. Ius animal legimus utroque ea. Ad augue ubique pericula sed, bonorum democritum argumentum mel at. At labores voluptatum has, ei justo regione omnesque vix, et purto nullam duo. Mea no commodo voluptaria consequuntur, ex vim ornatus accusamus constituam.
 
@@ -25,6 +27,7 @@ Elitr officiis maluisset cum ad. At duo utinam diceret, cu vim probo cotidieque 
 
 Ipsum fabulas incorrupte in eam, per et eirmod impetus. Nec ea zril mandamus scriptorem. An sonet legimus sit, vim et autem mnesarchum, ad quas probatus gloriatur nec. Ea quo malis mundi. Per inani aliquid disputando ne, id qui omittam repudiandae, nam ex ubique senserit hendrerit.
           </slot>
+        </div>
       </v-card>
     </v-flex>
   </v-layout>
