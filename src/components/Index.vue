@@ -17,7 +17,7 @@
       </v-toolbar>
       <v-divider></v-divider>
       <v-list dense class="pt-0">
-        <v-list-tile v-for="item in items" :key="item.title" @click="set">
+        <v-list-tile v-for="item in items" :key="item.title" @click="set(item.title, item)">
           <v-list-tile-action>
             <v-icon>{{item.icon}}</v-icon>
           </v-list-tile-action>
@@ -28,10 +28,10 @@
       </v-list>
     </v-navigation-drawer>
     <v-flex xs12 offset-xs2>
-      <panel :info="info">
-        <item v-if="tags.item"/>
-        <user-inventory v-if="tags.user"/>
-        <admin-inventory v-if="tags.admin"/>
+      <panel :info="info">        
+        <user-inventory v-if="items[0].user"/>
+        <admin-inventory v-if="items[1].admin"/>
+        <item v-if="items[2].item"/>
       </panel>
     </v-flex>
   </v-layout>
@@ -49,14 +49,10 @@ export default {
         title: 'your title here',
         assay: 'your assay here'
       },
-      tags: {
-        user: false,
-        admin: false,
-        item: false
-      },
       items: [
-        { title: 'Home', icon: 'dashboard' },
-        { title: 'About', icon: 'question_answer' }
+        { title: 'User', icon: null, user: false },
+        { title: 'Admin', icon: null, admin: false },
+        { title: 'Item', icon: null, item: false }
       ]
     }
   },
@@ -66,8 +62,11 @@ export default {
     Item
   },
   methods: {
-    set () {
-      this.tags.user = !this.tags.user
+    // find a smarter way to do this
+    set (title, item) {
+      let key = title.toLowerCase()
+
+      item[key] = !item[key]
     }
   }
 }
