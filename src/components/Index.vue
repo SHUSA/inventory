@@ -65,7 +65,6 @@ export default {
   methods: {
     // find a smarter way to do this
     set (index) {
-      console.log(this.isUserLoggedIn)
       for (let i = 0; i < this.items.length; i++) {
         if (i === index) {
           this.items[i].tag = !this.items[i].tag
