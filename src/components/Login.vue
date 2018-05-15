@@ -7,15 +7,9 @@
           <h3 class="headline">Who are you?</h3>
         </v-card-title>
         <v-card-actions>
-          <router-link to="/">
-            <v-btn flat>User</v-btn>
-          </router-link>
-          <router-link to="/">
-            <v-btn flat>Admin</v-btn>
-          </router-link>
-          <router-link to="/">
-            <v-btn flat>Demo</v-btn>
-          </router-link>
+          <v-btn flat @click="login('user')">User</v-btn>
+          <v-btn flat @click="login('admin')">Admin</v-btn>
+          <v-btn flat>Demo</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -25,7 +19,14 @@
 
 <script>
 export default {
-
+  methods: {
+    login (type) {
+      this.$store.dispatch('setUser', type)
+      this.$router.push({
+        name: 'index'
+      })
+    }
+  }
 }
 </script>
 
