@@ -28,7 +28,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-flex xs12 offset-xs2>
-      <panel :info="info">        
+      <panel :info="info">
         <user-inventory v-if="items[0].tag"/>
         <admin-inventory v-if="items[1].tag"/>
         <item v-if="items[2].tag"/>
@@ -64,16 +64,13 @@ export default {
   methods: {
     // find a smarter way to do this
     set (index) {
-
-      for(let i = 0; i < this.items.length; i++){
-        if (i == index){
+      for (let i = 0; i < this.items.length; i++) {
+        if (i === index) {
           this.items[i].tag = !this.items[i].tag
-          console.log(this.items[i])
         } else {
           this.items[i].tag = false
         }
       }
-      
     }
   }
 }
