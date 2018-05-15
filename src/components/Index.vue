@@ -17,7 +17,7 @@
       </v-toolbar>
       <v-divider></v-divider>
       <v-list dense class="pt-0">
-        <v-list-tile v-for="item in items" :key="item.title" @click="set(item.title, item)">
+        <v-list-tile v-for="(item, index) in items" :key="item.title" @click="set(index)">
           <v-list-tile-action>
             <v-icon>{{item.icon}}</v-icon>
           </v-list-tile-action>
@@ -29,9 +29,9 @@
     </v-navigation-drawer>
     <v-flex xs12 offset-xs2>
       <panel :info="info">        
-        <user-inventory v-if="items[0].user"/>
-        <admin-inventory v-if="items[1].admin"/>
-        <item v-if="items[2].item"/>
+        <user-inventory v-if="items[0].tag"/>
+        <admin-inventory v-if="items[1].tag"/>
+        <item v-if="items[2].tag"/>
       </panel>
     </v-flex>
   </v-layout>
@@ -50,9 +50,9 @@ export default {
         assay: 'your assay here'
       },
       items: [
-        { title: 'User', icon: null, user: false },
-        { title: 'Admin', icon: null, admin: false },
-        { title: 'Item', icon: null, item: false }
+        { title: 'User', icon: null, tag: false },
+        { title: 'Admin', icon: null, tag: false },
+        { title: 'Item', icon: null, tag: false }
       ]
     }
   },
@@ -63,10 +63,17 @@ export default {
   },
   methods: {
     // find a smarter way to do this
-    set (title, item) {
-      let key = title.toLowerCase()
+    set (index) {
 
-      item[key] = !item[key]
+      for(let i = 0; i < this.items.length; i++){
+        if (i == index){
+          this.items[i].tag = !this.items[i].tag
+          console.log(this.items[i])
+        } else {
+          this.items[i].tag = false
+        }
+      }
+      
     }
   }
 }
