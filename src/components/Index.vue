@@ -28,14 +28,15 @@
       </v-list>
     </v-navigation-drawer>
     <v-flex xs12 offset-xs2>
-      <user-inventory v-if="items[0].tag"/>
-      <admin-inventory v-if="items[1].tag"/>
-      <item v-if="items[2].tag"/>
+      <user-inventory v-if="items[0].tag && user"/>
+      <admin-inventory v-if="items[1].tag && admin"/>
+      <item v-if="items[2].tag && admin"/>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import UserInventory from './UserInventory'
 import AdminInventory from './AdminInventory'
 import Item from './Item'
@@ -55,9 +56,16 @@ export default {
     AdminInventory,
     Item
   },
+  computed: {
+    ...mapState([
+      'user',
+      'admin'
+    ])
+  },
   methods: {
     // find a smarter way to do this
     set (index) {
+      console.log(this.isUserLoggedIn)
       for (let i = 0; i < this.items.length; i++) {
         if (i === index) {
           this.items[i].tag = !this.items[i].tag
