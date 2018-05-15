@@ -26,7 +26,7 @@
         </v-list>
       </v-flex>
     </v-layout>
-  </panel>    
+  </panel>
 </template>
 
 <script>

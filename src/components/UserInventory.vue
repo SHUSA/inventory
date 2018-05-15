@@ -17,7 +17,7 @@
         <td>{{props.item.lastUpdate}}</td>
       </template>
     </v-data-table>
-  </panel>  
+  </panel>
 </template>
 
 <script>

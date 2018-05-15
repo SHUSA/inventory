@@ -7,13 +7,13 @@
           <h3 class="headline">Who are you?</h3>
         </v-card-title>
         <v-card-actions>
-          <router-link to="/">          
+          <router-link to="/">
             <v-btn flat>User</v-btn>
           </router-link>
-          <router-link to="/">    
+          <router-link to="/">
             <v-btn flat>Admin</v-btn>
           </router-link>
-          <router-link to="/">    
+          <router-link to="/">
             <v-btn flat>Demo</v-btn>
           </router-link>
         </v-card-actions>

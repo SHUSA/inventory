@@ -79,7 +79,7 @@
         </template>
       </v-data-table>
     </div>
-  </panel>  
+  </panel>
 </template>
 
 <script>
