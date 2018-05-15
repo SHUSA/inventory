@@ -6,9 +6,6 @@
     <v-spacer></v-spacer>
     <v-toolbar-items>
       <v-btn flat>
-        {{pageTitle}}
-      </v-btn>
-      <v-btn flat>
         {{time}}
       </v-btn>
     </v-toolbar-items>
@@ -22,8 +19,7 @@ export default {
   data () {
     return {
       time: moment().format('MMM DD, YYYY'),
-      title: 'Molecular Inventory',
-      pageTitle: 'Page Title'
+      title: 'Molecular Inventory'
     }
   }
 }
