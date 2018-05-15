@@ -5,6 +5,11 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items>
+      <router-link to="/login">
+        <v-btn flat>
+          Login
+        </v-btn>
+      </router-link>
       <v-btn flat>
         {{time}}
       </v-btn>
