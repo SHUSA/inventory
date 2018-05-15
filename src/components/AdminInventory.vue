@@ -1,83 +1,85 @@
 <template>
-  <div>
-    <v-dialog
-      v-model="dialog"
-      max-width="500px"
-    >
-      <v-btn slot="activator" color="primary" dark>New Item</v-btn>
-      <v-card>
-        <v-card-title>
-          <span class="headline">{{formTitle}}</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-text-field v-model="editedItem.name" label="Item Name"/>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field v-model="editedItem.catalogNumber" label="Catalog Number"/>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field v-model="editedItem.description" label="Item Description"/>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field v-model="editedItem.reactionsPerItem" label="Reactions per Item"/>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field v-model="editedItem.currentStock" label="Current Stock"/>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field v-model="editedItem.safetyWeeks" label="Safety Weeks"/>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field v-model="editedItem.leadTimeDays" label="Lead Time (Days)"/>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field v-model="editedItem.reorderWeeks" label="Reorder Weeks"/>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer/>
-          <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+  <panel>
+    <div>
+      <v-dialog
+        v-model="dialog"
+        max-width="500px"
+      >
+        <v-btn slot="activator" color="primary" dark>New Item</v-btn>
+        <v-card>
+          <v-card-title>
+            <span class="headline">{{formTitle}}</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.name" label="Item Name"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.catalogNumber" label="Catalog Number"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.description" label="Item Description"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.reactionsPerItem" label="Reactions per Item"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.currentStock" label="Current Stock"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.safetyWeeks" label="Safety Weeks"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.leadTimeDays" label="Lead Time (Days)"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.reorderWeeks" label="Reorder Weeks"/>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
-    <v-data-table
-      :headers="headers"
-      :items="supplies"
-      hide-actions
-      class="mt-5"
-    >
-      <template slot="items" slot-scope="props">
-        <td>{{props.item.name}}</td>
-        <td>{{props.item.assay}}</td>
-        <td>{{props.item.catalogNumber}}</td>
-        <td>{{props.item.description}}</td>
-        <td>{{props.item.currentStock}}</td>
-        <td>{{props.item.toOrder}}</td>
-        <td>{{props.item.comment}}</td>
-        <td>{{props.item.lastUpdate}}</td>
-        <td class="justify-center layout px-0">
-          <v-btn icon class="mx-0" @click="editItem(props.item)">
-            <v-icon color="teal">edit</v-icon>
-          </v-btn>
-        </td>
-        <td class="justify-center layout px-0">
-          <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-            <v-icon color="pink">delete</v-icon>
-          </v-btn>
-        </td>
-      </template>
-      <template slot="no-data">
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
-      </template>
-    </v-data-table>
-  </div>
+      <v-data-table
+        :headers="headers"
+        :items="supplies"
+        hide-actions
+        class="mt-5"
+      >
+        <template slot="items" slot-scope="props">
+          <td>{{props.item.name}}</td>
+          <td>{{props.item.assay}}</td>
+          <td>{{props.item.catalogNumber}}</td>
+          <td>{{props.item.description}}</td>
+          <td>{{props.item.currentStock}}</td>
+          <td>{{props.item.toOrder}}</td>
+          <td>{{props.item.comment}}</td>
+          <td>{{props.item.lastUpdate}}</td>
+          <td class="justify-center layout px-0">
+            <v-btn icon class="mx-0" @click="editItem(props.item)">
+              <v-icon color="teal">edit</v-icon>
+            </v-btn>
+          </td>
+          <td class="justify-center layout px-0">
+            <v-btn icon class="mx-0" @click="deleteItem(props.item)">
+              <v-icon color="pink">delete</v-icon>
+            </v-btn>
+          </td>
+        </template>
+        <template slot="no-data">
+          <v-btn color="primary" @click="initialize">Reset</v-btn>
+        </template>
+      </v-data-table>
+    </div>
+  </panel>  
 </template>
 
 <script>

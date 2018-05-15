@@ -1,21 +1,23 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="supplies"
-    hide-actions
-  >
-    <template slot="items" slot-scope="props">
-      <td>{{props.item.name}}</td>
-      <td>{{props.item.vendor}}</td>
-      <td>{{props.item.catalogNumber}}</td>
-      <td>{{props.item.description}}</td>
-      <td>{{props.item.previousStock}}</td>
-      <td>{{props.item.currentStock}}</td>
-      <td>{{props.item.toOrder}}</td>
-      <td>{{props.item.comment}}</td>
-      <td>{{props.item.lastUpdate}}</td>
-    </template>
-  </v-data-table>
+  <panel :info="info">
+    <v-data-table
+      :headers="headers"
+      :items="supplies"
+      hide-actions
+    >
+      <template slot="items" slot-scope="props">
+        <td>{{props.item.name}}</td>
+        <td>{{props.item.vendor}}</td>
+        <td>{{props.item.catalogNumber}}</td>
+        <td>{{props.item.description}}</td>
+        <td>{{props.item.previousStock}}</td>
+        <td>{{props.item.currentStock}}</td>
+        <td>{{props.item.toOrder}}</td>
+        <td>{{props.item.comment}}</td>
+        <td>{{props.item.lastUpdate}}</td>
+      </template>
+    </v-data-table>
+  </panel>  
 </template>
 
 <script>
@@ -24,6 +26,9 @@ const moment = require('moment')
 export default {
   data () {
     return {
+      info: {
+        title: 'user title'
+      },
       headers: [
         {text: 'Item', value: 'name'},
         {text: 'Vendor', value: 'vendor'},

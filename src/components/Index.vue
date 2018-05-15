@@ -28,11 +28,9 @@
       </v-list>
     </v-navigation-drawer>
     <v-flex xs12 offset-xs2>
-      <panel :info="info">
-        <user-inventory v-if="items[0].tag"/>
-        <admin-inventory v-if="items[1].tag"/>
-        <item v-if="items[2].tag"/>
-      </panel>
+      <user-inventory v-if="items[0].tag"/>
+      <admin-inventory v-if="items[1].tag"/>
+      <item v-if="items[2].tag"/>
     </v-flex>
   </v-layout>
 </template>
@@ -45,10 +43,6 @@ import Item from './Item'
 export default {
   data () {
     return {
-      info: {
-        title: 'your title here',
-        assay: 'your assay here'
-      },
       items: [
         { title: 'User', icon: null, tag: false },
         { title: 'Admin', icon: null, tag: false },
