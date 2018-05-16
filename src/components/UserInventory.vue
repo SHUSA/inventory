@@ -11,7 +11,21 @@
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.description}}</td>
         <td>{{props.item.previousStock}}</td>
-        <td>{{props.item.currentStock}}</td>
+        <td>
+          <v-edit-dialog
+            :return-value.sync="props.item.currentStock"
+            lazy
+          > {{props.item.currentStock}}
+            <v-text-field
+              slot="input"
+              v-model="props.item.currentStock"
+              label="Edit"
+              single-line
+              :rules=[rules.number]
+              v-on:keypress="keyhandler"
+            />
+          </v-edit-dialog>
+        </td>
         <td>{{props.item.toOrder}}</td>
         <td>{{props.item.comment}}</td>
         <td>{{props.item.lastUpdate}}</td>
@@ -26,6 +40,11 @@ const moment = require('moment')
 export default {
   data () {
     return {
+      rules: {
+        number: (v) => {
+          return !isNaN(parseFloat(v)) || 'Please enter a number.'
+        }
+      },
       info: {
         title: 'user title'
       },
@@ -55,10 +74,35 @@ export default {
         }
       ]
     }
+  },
+  methods: {
+    keyhandler () {
+      // clean this up
+      const validChars = /[0-9]/
+      // backspace, enter, delete
+      const validCodes = [8, 13, 46]
+
+      document.addEventListener("keydown", function(event) {
+        console.log(validCodes.includes(event.keyCode))
+        if (!event.key.match(validChars)) {
+          if(!validCodes.includes(event.keyCode)){
+            event.preventDefault()
+          }
+          
+        }
+      })
+    }
   }
 }
 </script>
 
 <style scoped>
-
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type=number] {
+    -moz-appearance:textfield;
+  }
 </style>
