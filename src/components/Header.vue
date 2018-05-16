@@ -5,11 +5,15 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items>
-      <router-link to="/login">
-        <v-btn flat>
-          Login
-        </v-btn>
-      </router-link>
+      <v-btn flat>
+        {{pageTitle}}
+      </v-btn>
+    </v-toolbar-items>
+    <v-spacer/>
+    <v-toolbar-items>
+      <v-btn flat @click="login">
+        Login
+      </v-btn>
       <v-btn flat>
         {{time}}
       </v-btn>
@@ -18,6 +22,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 const moment = require('moment')
 
 export default {
@@ -25,6 +30,18 @@ export default {
     return {
       time: moment().format('MMM DD, YYYY'),
       title: 'Molecular Inventory'
+    }
+  },
+  computed: {
+    ...mapState([
+      'pageTitle'
+    ])
+  },
+  methods: {
+    login () {
+      this.$router.push({
+        path: '/login'
+      })
     }
   }
 }

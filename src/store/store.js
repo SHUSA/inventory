@@ -10,23 +10,33 @@ export default new Vuex.Store({
     createPersistedState()
   ],
   state: {
-    user: false,
-    admin: false
+    // set to true for testing
+    user: true,
+    admin: true,
+    pageTitle: 'test'
   },
   mutations: {
     setUser (state, type) {
       for (let key in state) {
         if (key === type) {
-          state[key] = !state[key]
+          // always true for testing
+          state[key] = state[key]
         } else {
-          state[key] = false
+          // set to true for testing
+          state[key] = state[key]
         }
       }
+    },
+    setTitle (state, title) {
+      state.pageTitle = title
     }
   },
   actions: {
     setUser ({ commit }, type) {
       commit('setUser', type)
+    },
+    setTitle ({ commit }, title) {
+      commit('setTitle', title)
     }
   }
 })

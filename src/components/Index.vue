@@ -59,7 +59,8 @@ export default {
   computed: {
     ...mapState([
       'user',
-      'admin'
+      'admin',
+      'pageTitle'
     ])
   },
   methods: {
@@ -67,7 +68,8 @@ export default {
     set (index) {
       for (let i = 0; i < this.items.length; i++) {
         if (i === index) {
-          this.items[i].tag = !this.items[i].tag
+          this.$store.dispatch('setTitle', this.items[i].title)
+          this.items[i].tag = true
         } else {
           this.items[i].tag = false
         }
