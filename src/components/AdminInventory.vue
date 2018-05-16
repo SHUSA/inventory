@@ -217,6 +217,7 @@ export default {
 
     save () {
       if (this.editedIndex > -1) {
+        this.editedItem.lastUpdate = moment().format('MMM-DD-YYYY HH:mm:ss')
         Object.assign(this.supplies[this.editedIndex], this.editedItem)
       } else {
         this.supplies.push(this.editedItem)
