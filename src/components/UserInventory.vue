@@ -22,7 +22,8 @@
               label="Edit"
               single-line
               :rules=[rules.number]
-              v-on:keypress="keyhandler"
+              type="number"
+              min=0
             />
           </v-edit-dialog>
         </td>
@@ -76,33 +77,20 @@ export default {
     }
   },
   methods: {
-    keyhandler () {
-      // clean this up
-      const validChars = /[0-9]/
-      // backspace, enter, delete
-      const validCodes = [8, 13, 46]
+    // keyhandler () {
+    //   // clean this up
+    //   const validChars = /[0-9]/
 
-      document.addEventListener("keydown", function(event) {
-        console.log(validCodes.includes(event.keyCode))
-        if (!event.key.match(validChars)) {
-          if(!validCodes.includes(event.keyCode)){
-            event.preventDefault()
-          }
-          
-        }
-      })
-    }
+    //   document.addEventListener('keydown', event => {
+    //     if (!event.key.match(validChars)) {
+    //       event.preventDefault()
+    //     }
+    //   })
+    // }
   }
 }
 </script>
 
 <style scoped>
-  input[type=number]::-webkit-inner-spin-button,
-  input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  input[type=number] {
-    -moz-appearance:textfield;
-  }
+
 </style>
