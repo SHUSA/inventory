@@ -31,6 +31,7 @@
       <user-inventory v-if="items[0].tag && user"/>
       <admin-inventory v-if="items[1].tag && admin"/>
       <item v-if="items[2].tag && admin"/>
+      <assay v-if="items[3].tag"/>
     </v-flex>
   </v-layout>
 </template>
@@ -40,6 +41,7 @@ import { mapState } from 'vuex'
 import UserInventory from './UserInventory'
 import AdminInventory from './AdminInventory'
 import Item from './Item'
+import Assay from './Assay'
 
 export default {
   data () {
@@ -47,14 +49,16 @@ export default {
       items: [
         { title: 'User', icon: null, tag: false },
         { title: 'Admin', icon: null, tag: false },
-        { title: 'Item', icon: null, tag: false }
+        { title: 'Item', icon: null, tag: false },
+        { title: 'Assay', icon: null, tag: false }
       ]
     }
   },
   components: {
     UserInventory,
     AdminInventory,
-    Item
+    Item,
+    Assay
   },
   computed: {
     ...mapState([
