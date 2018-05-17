@@ -37,8 +37,10 @@ Ipsum fabulas incorrupte in eam, per et eirmod impetus. Nec ea zril mandamus scr
 export default {
   props: {
     info: {
-      default: {
-        title: 'test'
+      default () {
+        return {
+          title: 'test'
+        }
       }
     }
   }
