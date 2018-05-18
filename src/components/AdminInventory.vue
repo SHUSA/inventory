@@ -17,16 +17,22 @@
                   <v-text-field v-model="editedItem.name" label="Item Name"/>
                 </v-flex>
                 <v-flex xs6>
+                  <v-text-field v-model="editedItem.assay" label="Assay"/>
+                </v-flex>
+                <v-flex xs6>
                   <v-text-field v-model="editedItem.catalogNumber" label="Catalog Number"/>
                 </v-flex>
                 <v-flex xs6>
                   <v-text-field v-model="editedItem.description" label="Item Description"/>
                 </v-flex>
                 <v-flex xs6>
+                  <v-text-field v-model="editedItem.reactionsPerItem" label="Reactions per Item"/>
+                </v-flex>
+                <v-flex xs6>
                   <v-text-field v-model="editedItem.currentStock" label="Current Stock"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.reactionsPerItem" label="Reactions per Item"/>
+                  <v-text-field disabled label="Safety Stock" value="999"/>
                 </v-flex>
                 <v-flex xs6>
                   <v-text-field v-model="editedItem.safetyWeeks" label="Safety Weeks"/>
@@ -36,6 +42,12 @@
                 </v-flex>
                 <v-flex xs6>
                   <v-text-field v-model="editedItem.reorderWeeks" label="Reorder Weeks"/>
+                </v-flex>
+                <v-flex xs6>
+                  <v-text-field disabled label="Reorder Point" value="999"/>
+                </v-flex>
+                <v-flex xs6>
+                  <v-text-field disabled label="Reorder Quantity" value="999"/>
                 </v-flex>
               </v-layout>
             </v-container>
