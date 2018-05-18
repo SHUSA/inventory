@@ -206,8 +206,10 @@ export default {
 
     deleteItem (item) {
       const index = this.supplies.indexOf(item)
-      confirm(`Are you want to delete ${item.name}?`) && this.supplies.splice(index, 1)
-      this.dialog = false
+      if (confirm(`Are you sure you want to delete ${item.name}?`)) {
+        this.supplies.splice(index, 1)
+        this.dialog = false
+      }
     },
 
     close () {
