@@ -5,7 +5,7 @@
         v-model="dialog"
         max-width="500px"
       >
-        <v-btn slot="activator" color="primary" dark>New Item</v-btn>
+        <v-btn slot="activator" color="primary" class="mb-0" dark>New Item</v-btn>
         <v-card>
           <v-card-title>
             <span class="headline">{{formTitle}}</span>
@@ -41,7 +41,7 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="red darken-1" flat @click="deleteItem(currentItem)">Delete</v-btn>
+            <v-btn color="red darken-1" flat @click="deleteItem(currentItem)" v-if="currentItem != null">Delete</v-btn>
             <v-spacer/>
             <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
             <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
@@ -53,7 +53,6 @@
         :headers="headers"
         :items="supplies"
         hide-actions
-        class="mt-5"
       >
         <template slot="items" slot-scope="props">
           <td>{{props.item.name}}</td>
@@ -84,7 +83,7 @@ const moment = require('moment')
 export default {
   data () {
     return {
-      currentItem: '',
+      currentItem: null,
       dialog: false,
       info: {
         title: 'admin title'
@@ -210,6 +209,7 @@ export default {
         this.supplies.splice(index, 1)
         this.dialog = false
       }
+      this.currentItem = null
     },
 
     close () {
