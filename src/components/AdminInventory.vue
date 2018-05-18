@@ -1,5 +1,5 @@
 <template>
-  <panel>
+  <panel :info="info">
     <div>
       <v-dialog
         v-model="dialog"
@@ -89,6 +89,9 @@ export default {
   data () {
     return {
       dialog: false,
+      info: {
+        title: 'admin title'
+      },
       headers: [
         {text: 'Item', value: 'name'},
         {text: 'Assay', value: 'assay'},
