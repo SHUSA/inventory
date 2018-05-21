@@ -1,6 +1,45 @@
 <template>
   <panel :info="info">
-    <v-data-table
+    <div>
+      <v-dialog
+        v-model="dialog"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title>
+            <span class="headline">Update Inventory</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.currentStock"
+                    type="number"
+                    min=0
+                    :rules="[(v) => !isNaN(parseFloat(v)) || 'Please enter a number']"
+                    label="Current Stock"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="editedItem.comment"
+                    textarea
+                    no-resize
+                    counter=140
+                    :rules="[(x) => x.length < 140 || 'Max 140 characters']"
+                    label="Comment"/>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-data-table
       :headers="headers"
       :items="supplies"
       hide-actions
@@ -11,27 +50,19 @@
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.description}}</td>
         <td>{{props.item.previousStock}}</td>
-        <td>
-          <v-edit-dialog
-            :return-value.sync="props.item.currentStock"
-            lazy
-          > {{props.item.currentStock}}
-            <v-text-field
-              slot="input"
-              v-model="props.item.currentStock"
-              label="Edit"
-              single-line
-              :rules=[rules.number]
-              type="number"
-              min=0
-            />
-          </v-edit-dialog>
-        </td>
+        <td>{{props.item.currentStock}}</td>
         <td>{{props.item.toOrder}}</td>
         <td>{{props.item.comment}}</td>
         <td>{{props.item.lastUpdate}}</td>
+        <td class="justify-center layout px-0">
+            <v-btn icon class="mx-0" @click="editItem(props.item)">
+              <v-icon color="teal">edit</v-icon>
+            </v-btn>
+          </td>
       </template>
     </v-data-table>
+    </div>
+
   </panel>
 </template>
 
@@ -41,10 +72,11 @@ const moment = require('moment')
 export default {
   data () {
     return {
-      rules: {
-        number: (v) => {
-          return !isNaN(parseFloat(v)) || 'Please enter a number.'
-        }
+      dialog: false,
+      editedIndex: -1,
+      editedItem: {
+        currentStock: 0,
+        comment: 'd'
       },
       info: {
         title: 'user title'
@@ -76,17 +108,46 @@ export default {
       ]
     }
   },
-  methods: {
-    // keyhandler () {
-    //   // clean this up
-    //   const validChars = /[0-9]/
 
-    //   document.addEventListener('keydown', event => {
-    //     if (!event.key.match(validChars)) {
-    //       event.preventDefault()
-    //     }
-    //   })
-    // }
+  watch: {
+    dialog (val) {
+      val || this.close()
+    }
+  },
+
+  methods: {
+    editItem (item) {
+      this.editedIndex = this.supplies.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialog = true
+    },
+
+    deleteItem (item) {
+      const index = this.supplies.indexOf(item)
+      if (confirm(`Are you sure you want to delete ${item.name}?`)) {
+        this.supplies.splice(index, 1)
+        this.dialog = false
+      }
+    },
+
+    close () {
+      this.dialog = false
+      setTimeout(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      }, 300)
+    },
+
+    save () {
+      if (this.editedIndex > -1) {
+        this.editedItem.lastUpdate = moment().format('MMM-DD-YYYY HH:mm:ss')
+        this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
+        Object.assign(this.supplies[this.editedIndex], this.editedItem)
+      } else {
+        this.supplies.push(this.editedItem)
+      }
+      this.close()
+    }
   }
 }
 </script>
