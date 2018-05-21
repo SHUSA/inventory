@@ -16,7 +16,7 @@
                   <v-text-field v-model="editedItem.currentStock"
                     type="number"
                     min=0
-                    :rules="[(v) => !isNaN(parseFloat(v)) || 'Please enter a number']"
+                    :rules="[rules.number]"
                     label="Current Stock"/>
                 </v-flex>
                 <v-flex xs12>
@@ -25,7 +25,7 @@
                     textarea
                     no-resize
                     counter=140
-                    :rules="[(x) => x.length < 140 || 'Max 140 characters']"
+                    :rules="[rules.comment]"
                     label="Comment"/>
                 </v-flex>
               </v-layout>
@@ -72,9 +72,21 @@ const moment = require('moment')
 export default {
   data () {
     return {
+      rules: {
+        number: (v) => {
+          return !isNaN(parseFloat(v)) || 'Please enter a number'
+        },
+        text: (v) => {
+          return v < 140 || 'Max 140 characters'
+        }
+      },
       dialog: false,
       editedIndex: -1,
       editedItem: {
+        currentStock: 0,
+        comment: 'd'
+      },
+      defaultItem: {
         currentStock: 0,
         comment: 'd'
       },
@@ -120,14 +132,6 @@ export default {
       this.editedIndex = this.supplies.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
-    },
-
-    deleteItem (item) {
-      const index = this.supplies.indexOf(item)
-      if (confirm(`Are you sure you want to delete ${item.name}?`)) {
-        this.supplies.splice(index, 1)
-        this.dialog = false
-      }
     },
 
     close () {
