@@ -25,8 +25,16 @@
                     textarea
                     no-resize
                     counter=140
-                    :rules="[rules.comment]"
+                    :rules="[rules.text]"
                     label="Comment"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-alert
+                    :value="alert"
+                    type="error"
+                  >
+                    Please fix issues
+                  </v-alert>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -72,14 +80,29 @@ const moment = require('moment')
 export default {
   data () {
     return {
+      error: {
+        number: false,
+        text: false
+      },
       rules: {
         number: (v) => {
-          return !isNaN(parseFloat(v)) || 'Please enter a number'
+          const num = isNaN(parseFloat(v))
+          if (!num) {
+            this.error.number = false
+            return true
+          } else if (num < 0) {
+            this.error.number = true
+            return 'Please enter a number greater than 0'
+          } else {
+            this.error.number = true
+            return 'Please enter a number'
+          }
         },
         text: (v) => {
-          return v < 140 || 'Max 140 characters'
+          return v.length < 140 || 'Max 140 characters'
         }
       },
+      alert: false,
       dialog: false,
       editedIndex: -1,
       editedItem: {
@@ -143,14 +166,26 @@ export default {
     },
 
     save () {
-      if (this.editedIndex > -1) {
-        this.editedItem.lastUpdate = moment().format('MMM-DD-YYYY HH:mm:ss')
-        this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
-        Object.assign(this.supplies[this.editedIndex], this.editedItem)
-      } else {
-        this.supplies.push(this.editedItem)
+      let error = 0
+      for (let key in this.error) {
+        if (this.error[key]) {
+          error++
+        }
       }
-      this.close()
+
+      if (error > 0) {
+        this.alert = true
+      } else {
+        this.alert = false
+        if (this.editedIndex > -1) {
+          this.editedItem.lastUpdate = moment().format('MMM-DD-YYYY HH:mm:ss')
+          this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
+          Object.assign(this.supplies[this.editedIndex], this.editedItem)
+        } else {
+          this.supplies.push(this.editedItem)
+        }
+        this.close()
+      }
     }
   }
 }
