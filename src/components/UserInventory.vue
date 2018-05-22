@@ -16,6 +16,7 @@
                   <v-text-field v-model="editedItem.currentStock"
                     type="number"
                     min=0
+                    validate-on-blur
                     :rules="[rules.number]"
                     label="Current Stock"/>
                 </v-flex>
@@ -25,6 +26,7 @@
                     textarea
                     no-resize
                     counter=140
+                    validate-on-blur
                     :rules="[rules.text]"
                     label="Comment"/>
                 </v-flex>
@@ -76,27 +78,31 @@
 
 <script>
 const moment = require('moment')
+document.getElementsByTagName('input').onwheel = () => false
 
 export default {
   data () {
     return {
-      error: {},
+      error: [],
       rules: {
         number: (v) => {
           const num = parseFloat(v)
           if (!isNaN(num) && num >= 0) {
-            this.error.number = false
+            this.error.pop()
             return true
-          } else if (num < 0) {
-            this.error.number = true
-            return 'Please enter a number greater than 0'
           } else {
-            this.error.number = true
-            return 'Please enter a number'
+            this.error.push('num')
+            return 'Please enter a valid number'
           }
         },
         text: (v) => {
-          return v.length < 140 || 'Max 140 characters'
+          if (v.length < 140) {
+            this.error.pop()
+            return true
+          } else {
+            this.error.push('text')
+            return 'Max 140 characters'
+          }
         }
       },
       alert: false,
@@ -163,14 +169,7 @@ export default {
     },
 
     save () {
-      let error = 0
-      for (let key in this.error) {
-        if (this.error[key]) {
-          error++
-        }
-      }
-
-      if (error > 0) {
+      if (this.error.length > 0) {
         this.alert = true
       } else {
         this.alert = false
