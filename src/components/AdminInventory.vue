@@ -99,6 +99,7 @@
 
 <script>
 const moment = require('moment')
+document.getElementsByTagName('input').onwheel = () => false
 
 export default {
   data () {
