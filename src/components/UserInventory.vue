@@ -80,14 +80,11 @@ const moment = require('moment')
 export default {
   data () {
     return {
-      error: {
-        number: false,
-        text: false
-      },
+      error: {},
       rules: {
         number: (v) => {
-          const num = isNaN(parseFloat(v))
-          if (!num) {
+          const num = parseFloat(v)
+          if (!isNaN(num) && num >= 0) {
             this.error.number = false
             return true
           } else if (num < 0) {
