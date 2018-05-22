@@ -26,22 +26,22 @@
                   <v-text-field v-model="editedItem.description" label="Item Description"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.reactionsPerItem" label="Reactions per Item"/>
+                  <v-text-field v-model="editedItem.reactionsPerItem" validate-on-blur :rules="[rules.number]" ref="reactions" type="number" min=0 label="Reactions per Item"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.currentStock" label="Current Stock"/>
+                  <v-text-field v-model="editedItem.currentStock" validate-on-blur :rules="[rules.number]" ref="stock" type="number" min=0 label="Current Stock"/>
                 </v-flex>
                 <v-flex xs6>
                   <v-text-field disabled label="Safety Stock" value="999"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.safetyWeeks" label="Safety Weeks"/>
+                  <v-text-field v-model="editedItem.safetyWeeks" validate-on-blur :rules="[rules.number]" ref="safety" type="number" min=0 label="Safety Weeks"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.leadTimeDays" label="Lead Time (Days)"/>
+                  <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" ref="leadtime" type="number" min=0 label="Lead Time (Days)"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.reorderWeeks" label="Reorder Weeks"/>
+                  <v-text-field v-model="editedItem.reorderWeeks" validate-on-blur :rules="[rules.number]" ref="reorder" type="number" min=0 label="Reorder Weeks"/>
                 </v-flex>
                 <v-flex xs6>
                   <v-text-field disabled label="Reorder Point" value="999"/>
@@ -49,11 +49,19 @@
                 <v-flex xs6>
                   <v-text-field disabled label="Reorder Quantity" value="999"/>
                 </v-flex>
+                <v-flex xs12>
+                  <v-alert
+                    :value="alert"
+                    type="error"
+                  >
+                    Please fix issues
+                  </v-alert>
+                </v-flex>
               </v-layout>
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="red darken-1" flat @click="deleteItem(currentItem)" v-if="currentItem != null">Delete</v-btn>
+            <v-btn color="red darken-1" flat @click.native="deleteItem(currentItem)" v-if="currentItem != null">Delete</v-btn>
             <v-spacer/>
             <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
             <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
@@ -97,6 +105,23 @@ export default {
     return {
       currentItem: null,
       dialog: false,
+      alert: false,
+      error: [],
+      rules: {
+        number: (v) => {
+          const num = parseFloat(v)
+          if (!isNaN(num) && num >= 0) {
+            this.error.pop()
+            return true
+          } else {
+            this.error.push('')
+            return 'Please enter a valid number'
+          }
+        },
+        text: (v) => {
+          return v.length < 140 || 'Max 140 characters'
+        }
+      },
       info: {
         title: 'admin title'
       },
@@ -209,7 +234,6 @@ export default {
 
     editItem (item) {
       this.currentItem = item
-      console.log(this.currentItem)
       this.editedIndex = this.supplies.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
@@ -233,13 +257,20 @@ export default {
     },
 
     save () {
-      if (this.editedIndex > -1) {
-        this.editedItem.lastUpdate = moment().format('MMM-DD-YYYY HH:mm:ss')
-        Object.assign(this.supplies[this.editedIndex], this.editedItem)
+      // console.log(this.error)
+      if (this.error.length > 0) {
+        this.alert = true
       } else {
-        this.supplies.push(this.editedItem)
+        this.alert = false
+        if (this.editedIndex > -1) {
+          this.editedItem.lastUpdate = moment().format('MMM-DD-YYYY HH:mm:ss')
+          this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
+          Object.assign(this.supplies[this.editedIndex], this.editedItem)
+        } else {
+          this.supplies.push(this.editedItem)
+        }
+        this.close()
       }
-      this.close()
     }
   }
 }
