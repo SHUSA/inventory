@@ -62,7 +62,7 @@
         <td>{{props.item.previousStock}}</td>
         <td>{{props.item.currentStock}}</td>
         <td>{{props.item.toOrder}}</td>
-        <td>{{props.item.comment}}</td>
+        <td class="comment" id="comment" @click="expand">{{props.item.comment}}</td>
         <td>{{props.item.lastUpdate}}</td>
         <td class="justify-center layout px-0">
             <v-btn icon class="mx-0" @click="editItem(props.item)">
@@ -154,6 +154,19 @@ export default {
   },
 
   methods: {
+    expand () {
+      let ele = document.getElementById('comment')
+      let classes = []
+
+      classes = ele.className.split(' ')
+
+      if (classes.includes('expanded')) {
+        ele.classList.remove('expanded')
+      } else {
+        ele.classList.add('expanded')
+      }
+    },
+
     editItem (item) {
       this.editedIndex = this.supplies.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -174,20 +187,6 @@ export default {
       } else {
         this.alert = false
         if (this.editedIndex > -1) {
-          let comment = this.editedItem.comment.split(' ')
-          console.log(comment)
-          comment.map((x, i) => {
-            let charLength = 15
-            if (x.length > charLength) {
-              comment.splice(i, 1)
-              for (let i = 0; i < Math.ceil(x.length / charLength); i++) {
-                comment.push(x.substring(i * charLength, Math.min((i + 1) * charLength, x.length)))
-              }
-            }
-          })
-          console.log(comment.join(' '))
-          this.editedItem.comment = comment.join(' ')
-
           this.editedItem.lastUpdate = moment().format('MMM-DD-YYYY HH:mm:ss')
           this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
           Object.assign(this.supplies[this.editedIndex], this.editedItem)
@@ -201,6 +200,18 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+  table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  td.comment {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  td.comment.expanded {
+    overflow: visible;
+    white-space: normal;
+  }
 </style>

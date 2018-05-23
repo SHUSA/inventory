@@ -81,7 +81,7 @@
           <td>{{props.item.description}}</td>
           <td>{{props.item.currentStock}}</td>
           <td>{{props.item.toOrder}}</td>
-          <td>{{props.item.comment}}</td>
+          <td class="comment" id="comment" @click="expand">{{props.item.comment}}</td>
           <td>{{props.item.lastUpdate}}</td>
           <td class="justify-center layout px-0">
             <v-btn icon class="mx-0" @click="editItem(props.item)">
@@ -231,6 +231,19 @@ export default {
           lastUpdate: moment().format('MMM-DD-YYYY HH:mm:ss')
         }
       ]
+    },
+
+    expand () {
+      let ele = document.getElementById('comment')
+      let classes = []
+
+      classes = ele.className.split(' ')
+
+      if (classes.includes('expanded')) {
+        ele.classList.remove('expanded')
+      } else {
+        ele.classList.add('expanded')
+      }
     },
 
     editItem (item) {
