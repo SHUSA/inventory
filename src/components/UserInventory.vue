@@ -96,7 +96,7 @@ export default {
           }
         },
         text: (v) => {
-          if (v.length < 140) {
+          if (v.length <= 140) {
             this.error.pop()
             return true
           } else {
@@ -174,6 +174,20 @@ export default {
       } else {
         this.alert = false
         if (this.editedIndex > -1) {
+          let comment = this.editedItem.comment.split(' ')
+          console.log(comment)
+          comment.map((x, i) => {
+            let charLength = 15
+            if (x.length > charLength) {
+              comment.splice(i, 1)
+              for (let i = 0; i < Math.ceil(x.length / charLength); i++) {
+                comment.push(x.substring(i * charLength, Math.min((i + 1) * charLength, x.length)))
+              }
+            }
+          })
+          console.log(comment.join(' '))
+          this.editedItem.comment = comment.join(' ')
+
           this.editedItem.lastUpdate = moment().format('MMM-DD-YYYY HH:mm:ss')
           this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
           Object.assign(this.supplies[this.editedIndex], this.editedItem)

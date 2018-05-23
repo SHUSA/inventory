@@ -120,7 +120,7 @@ export default {
           }
         },
         text: (v) => {
-          return v.length < 140 || 'Max 140 characters'
+          return v.length <= 140 || 'Max 140 characters'
         }
       },
       info: {
