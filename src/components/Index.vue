@@ -3,8 +3,11 @@
     <v-navigation-drawer
     clipped
     app
-    permanent
+    temporary
+    :value="drawer"
     width="150"
+    hide-overlay
+    stateless
     >
       <v-toolbar flat>
         <v-list>
@@ -27,7 +30,13 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-flex xs12 offset-xs2>
+    <v-flex xs12 offset-xs2 v-if="drawer">
+      <user-inventory v-if="items[0].tag && user"/>
+      <admin-inventory v-if="items[1].tag && admin"/>
+      <item v-if="items[2].tag && admin"/>
+      <assay v-if="items[3].tag"/>
+    </v-flex>
+    <v-flex xs12 v-else>
       <user-inventory v-if="items[0].tag && user"/>
       <admin-inventory v-if="items[1].tag && admin"/>
       <item v-if="items[2].tag && admin"/>
@@ -64,7 +73,8 @@ export default {
     ...mapState([
       'user',
       'admin',
-      'pageTitle'
+      'pageTitle',
+      'drawer'
     ])
   },
   methods: {
@@ -73,6 +83,7 @@ export default {
       for (let i = 0; i < this.items.length; i++) {
         if (i === index) {
           this.$store.dispatch('setTitle', this.items[i].title)
+          this.$store.dispatch('setDrawer')
           this.items[i].tag = true
         } else {
           this.items[i].tag = false

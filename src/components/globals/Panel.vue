@@ -7,7 +7,7 @@
             {{info.title}}
           </v-toolbar-title>
           <v-toolbar-items>
-            <v-btn flat>
+            <v-btn flat @click.native="drawer">
               {{info.assay}}
               {{info.vendor}}
               {{info.item}}
@@ -42,6 +42,12 @@ export default {
           title: 'test'
         }
       }
+    }
+  },
+
+  methods: {
+    drawer () {
+      this.$store.dispatch('setDrawer')
     }
   }
 }

@@ -5,7 +5,7 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items>
-      <v-btn flat>
+      <v-btn flat @click.native="drawer">
         {{pageTitle}}
       </v-btn>
     </v-toolbar-items>
@@ -42,6 +42,10 @@ export default {
       this.$router.push({
         path: '/login'
       })
+    },
+
+    drawer () {
+      this.$store.dispatch('setDrawer')
     }
   }
 }

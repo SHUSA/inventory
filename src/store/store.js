@@ -13,7 +13,8 @@ export default new Vuex.Store({
     // set to true for testing
     user: true,
     admin: true,
-    pageTitle: 'test'
+    pageTitle: 'test',
+    drawer: true
   },
   mutations: {
     setUser (state, type) {
@@ -29,6 +30,9 @@ export default new Vuex.Store({
     },
     setTitle (state, title) {
       state.pageTitle = title
+    },
+    setDrawer (state) {
+      state.drawer = !state.drawer
     }
   },
   actions: {
@@ -37,6 +41,9 @@ export default new Vuex.Store({
     },
     setTitle ({ commit }, title) {
       commit('setTitle', title)
+    },
+    setDrawer ({ commit }) {
+      commit('setDrawer')
     }
   }
 })
