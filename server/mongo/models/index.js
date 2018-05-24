@@ -1,32 +1,28 @@
-const path = require('path')
 const fs = require('fs')
 const Mongoose = require('mongoose')
 const config = require('../config/config')
-const db = {}
+const out = {}
 
-fs.readdirSync(__dirname)
-  .filter((file) =>
-    file !== 'index.js'
-  ).forEach((file) => {
-    const model = sequelize['import'](path.join(__dirname, file))
-    db[model.name] = model
-  })
-
-module.exports.connect = (uri) => {
-  Mongoose.connect(uri);
+module.exports = () => {
+  const db = Mongoose.connect(config.db, { keepAlive: 500 })
   // plug in the promise library:
-  Mongoose.Promise = global.Promise;
-
+  Mongoose.Promise = global.Promise
 
   Mongoose.connection.on('error', (err) => {
-    console.error(`Mongoose connection error: ${err}`);
-    process.exit(1);
-  });
+    console.error(`Mongoose connection error: ${err}`)
+    process.exit(1)
+  })
 
   // load models
-  require("./Home");
-  require("./Bill");
-  require("./Roommate");
-};
+  fs.readdirSync(__dirname)
+    .filter((file) =>
+      file !== 'index.js'
+    ).forEach((file) => {
+      const model = file.split('.')[0]
+      out[model] = require('../models/' + file)
+    })
 
-module.exports = db
+  out.db = db
+
+  return out
+}
