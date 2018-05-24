@@ -1,0 +1,17 @@
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const AssaySchema = new Schema({
+  name: {type: String, unique: [true, 'That assay already exists'], required: [true, 'An assay needs a name']},
+  weeklyVolume: {type: Number, default: 0},
+  weeklyRuns: {type: Number, default: 0},
+  controlsPerRun: {type: Number, default: 0},
+  maxBatchSize: {type: Number, default: 0},
+  sampleReplicates: {type: Number, default: 0},
+  items: {
+    type: Schema.Types.ObjectId,
+    ref: 'Item'
+  }
+})
+
+module.exports = mongoose.model('Assay', AssaySchema)
