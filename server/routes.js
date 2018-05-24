@@ -1,4 +1,4 @@
-const TestController = require('./controllers/TestController')
+const TestController = require('./sequelize/controllers/TestController')
 
 module.exports = (app) => {
   app.post('/test', TestController.post)
