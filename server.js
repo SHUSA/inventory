@@ -4,15 +4,18 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
-// const { sequelize } = require('./server/models')
-
-const config = require('./server/config/config')
+// const { sequelize } = require('./server/sequelize/models')
+// const config = require('./server/sequelize/config/config')
+const config = require('./server/mongo/config/config')
+require('./server/mongo/models')
 
 // create the express app
 const app = express()
 app.use(morgan('combined'))
 app.use(bodyParser.json())
 app.use(cors())
+// adjust jwtstrategy for mongoose in passport
+// require('./server/passport')
 require('./server/routes')(app)
 
 // create middleware to handle the serving the app
@@ -23,7 +26,11 @@ app.get('*', function (req, res) {
     res.sendFile(__dirname + '/dist/index.html')
 })
 
-sequelize.sync({ force: false }).then(() => {
-  app.listen(config.port)
+// sequelize.sync({ force: false }).then(() => {
+//   app.listen(config.port)
+//   console.log(`Server started on port ${config.port}`)
+// })
+
+app.listen(config.port, () => {
   console.log(`Server started on port ${config.port}`)
 })
