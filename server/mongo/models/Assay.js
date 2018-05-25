@@ -11,7 +11,8 @@ const AssaySchema = new Schema({
   items: {
     type: Schema.Types.ObjectId,
     ref: 'Item'
-  }
+  },
+  active: {type: Boolean, default: true}
 })
 
 module.exports = mongoose.model('Assay', AssaySchema)

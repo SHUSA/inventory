@@ -11,7 +11,8 @@ const ItemSchema = new Schema({
   leadTimeDays: {type: Number},
   weeksOfReorder: {type: Number},
   comment: {type: String},
-  updatedAt: {type: Date, default: Date.now}
+  updatedAt: {type: Date, default: Date.now},
+  active: {type: Boolean, default: true}
 })
 
 module.exports = mongoose.model('Item', ItemSchema)
