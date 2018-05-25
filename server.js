@@ -7,8 +7,7 @@ const morgan = require('morgan')
 // const { sequelize } = require('./server/sequelize/models')
 // const config = require('./server/sequelize/config/config')
 const config = require('./server/mongo/config/config')
-require('./server/mongo/models')
-
+require('./server/mongo/models').connect(config.db)
 // create the express app
 const app = express()
 app.use(morgan('combined'))

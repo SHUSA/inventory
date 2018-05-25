@@ -1,10 +1,9 @@
 const fs = require('fs')
 const Mongoose = require('mongoose')
-const config = require('../config/config')
 const out = {}
 
-module.exports = () => {
-  const db = Mongoose.connect(config.db, { keepAlive: 500 })
+module.exports.connect = (uri) => {
+  Mongoose.connect(uri, { keepAlive: 500 })
   // plug in the promise library:
   Mongoose.Promise = global.Promise
 
@@ -21,8 +20,6 @@ module.exports = () => {
       const model = file.split('.')[0]
       out[model] = require('../models/' + file)
     })
-
-  out.db = db
 
   return out
 }
