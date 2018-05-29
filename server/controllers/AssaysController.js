@@ -82,7 +82,7 @@ module.exports = {
     }
 
     try {
-      await Assay.update({_id: req.params.id}, assayData, (err, doc) => {
+      await Assay.update({_id: req.body.id}, assayData, (err, doc) => {
         if (err) {
           console.log(err)
         } else {
