@@ -4,15 +4,17 @@ const Assay = require('mongoose').model('Assay')
 module.exports = {
   async index (req, res) {
     try {
-      await Assay.find({}).sort({name: -1}, (err, doc) => {
-        if (err) {
-          console.log(err)
-          // planned issue logger
-          // Issue.issue(err, 'assay all')
-        } else {
-          res.send(doc)
-        }
-      })
+      await Assay.find({})
+        .populate(['items'])
+        .sort({name: -1}, (err, doc) => {
+          if (err) {
+            console.log(err)
+            // planned issue logger
+            // Issue.issue(err, 'assay all')
+          } else {
+            res.send(doc)
+          }
+        })
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching assays'
