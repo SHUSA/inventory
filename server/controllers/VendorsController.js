@@ -23,13 +23,15 @@ module.exports = {
     const vendor = req.body
 
     try {
-      await Vendor.find({_id: vendor.id}, (err, doc) => {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send(doc)
-        }
-      })
+      await Vendor.find({_id: vendor.id})
+        .populate(['items'])
+        .exec((err, doc) => {
+          if (err) {
+            console.log(err)
+          } else {
+            res.send(doc)
+          }
+        })
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching vendor'
