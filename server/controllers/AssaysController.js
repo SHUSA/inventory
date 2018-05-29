@@ -26,13 +26,15 @@ module.exports = {
     const assay = req.body
 
     try {
-      await Assay.find({_id: assay.id}, (err, doc) => {
-        if (err) {
-          console.log(err)
-        } else {
-          res.send(doc)
-        }
-      })
+      await Assay.find({_id: assay.id})
+        .populate(['items'])
+        .exec((err, doc) => {
+          if (err) {
+            console.log(err)
+          } else {
+            res.send(doc)
+          }
+        })
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching assay'
@@ -78,7 +80,7 @@ module.exports = {
       controlsPerRun: assay.controlsPerRun,
       maxBatchSize: assay.maxBatchSize,
       sampleReplicates: assay.sampleReplicates,
-      active: true
+      active: assay.active
     }
 
     try {
