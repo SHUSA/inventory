@@ -3,6 +3,8 @@ const Schema = mongoose.Schema
 
 const ItemSchema = new Schema({
   name: {type: String, required: [true, 'An item needs a name']},
+  vendor: {type: String, required: true},
+  assay: {type: String, required: true},
   catalogNumber: {type: String, required: [true, 'Need cats for the log'], unique: [true, 'That cat already exists']},
   itemDescription: {type: String},
   currentStock: {type: Array},
