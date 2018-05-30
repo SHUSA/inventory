@@ -3,7 +3,7 @@ const Order = require('mongoose').model('Order')
 module.exports = {
   async index (req, res) {
     try {
-      await Order.find({})
+      await Order.find()
         .populate(['items'])
         .sort({time: 1}, (err, doc) => {
           if (err) {

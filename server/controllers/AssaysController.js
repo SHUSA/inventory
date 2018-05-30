@@ -4,7 +4,7 @@ const Assay = require('mongoose').model('Assay')
 module.exports = {
   async index (req, res) {
     try {
-      await Assay.find({})
+      await Assay.find()
         .populate(['items'])
         .sort({name: -1}, (err, doc) => {
           if (err) {
