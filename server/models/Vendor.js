@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const VendorSchema = new Schema({
-  name: {type: String, unique: [true, 'That vendor already exists']},
+  name: {type: String, unique: true, required: true},
   shortName: {type: String},
   items: [{
     type: Schema.Types.ObjectId,

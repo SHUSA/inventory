@@ -6,9 +6,10 @@ const Assay = require('mongoose').model('Assay')
 module.exports = {
   async index (req, res) {
     try {
-      await Item.find().sort({name: -1}, (err, doc) => {
+      await Item.find().sort({name: -1}).exec((err, doc) => {
         if (err) {
           console.log(err)
+          res.send(err.message)
         } else {
           res.send(doc)
         }
@@ -21,12 +22,11 @@ module.exports = {
   },
 
   async show (req, res) {
-    const item = req.body
-
     try {
-      await Item.find({_id: item.id}, (err, doc) => {
+      await Item.find({_id: req.params.itemId}, (err, doc) => {
         if (err) {
           console.log(err)
+          res.send(err.message)
         } else {
           res.send(doc)
         }
@@ -60,11 +60,13 @@ module.exports = {
       await newItem.save((err, doc) => {
         if (err) {
           console.log(err)
+          res.send(err.message)
         } else {
           Assay.findOneAndUpdate({name: item.assay},
             {$push: {items: doc._id}}, {new: true}, (err, newdoc) => {
               if (err) {
                 console.log(err)
+                res.send(err.message)
               } else {
                 // specify assay, do a console.log on newdoc
                 console.log('item inserted into assay')
@@ -74,6 +76,7 @@ module.exports = {
             { $push: { items: doc._id } }, { new: true }, (err, newdoc) => {
               if (err) {
                 console.log(err)
+                res.send(err.message)
               } else {
                 // specify assay, do a console.log on newdoc
                 console.log('item inserted into vendor')
@@ -84,9 +87,10 @@ module.exports = {
               { new: true }, (err, newdoc) => {
                 if (err) {
                   console.log(err)
+                  res.send(err.message)
                 } else {
                   // specify assay, do a console.log on newdoc
-                  res.send(newdoc)
+                  res.send(doc)
                 }
               })
         }
@@ -114,38 +118,44 @@ module.exports = {
       comment: item.comment,
       active: item.active
     }
-
+    // get ID from req somehow
+    const tempId = req.params.itemId
     try {
-      await Item.update({_id: req.body.id}, itemData, (err, doc) => {
+      // push new quantity in currentStock either here or before passing
+      await Item.update({_id: tempId}, itemData, (err, doc) => {
         if (err) {
           console.log(err)
+          res.send(err.message)
         } else {
           Assay.findOneAndUpdate({ name: item.assay },
-            { $push: { items: doc._id } }, { new: true }, (err, newdoc) => {
+            { $push: { items: tempId } }, { new: true }, (err, newdoc) => {
               if (err) {
                 console.log(err)
+                res.send(err.message)
               } else {
                 // specify assay, do a console.log on newdoc
                 console.log('item inserted into assay')
               }
             })
           Vendor.findOneAndUpdate({ name: item.vendor },
-            { $push: { items: doc._id } }, { new: true }, (err, newdoc) => {
+            { $push: { items: tempId } }, { new: true }, (err, newdoc) => {
               if (err) {
                 console.log(err)
+                res.send(err.message)
               } else {
                 // specify assay, do a console.log on newdoc
                 console.log('item inserted into vendor')
               }
             })
           Order.find().sort({ _id: -1 }).limit(1)
-            .updateOne({ $push: { items: doc._id } },
+            .updateOne({ $push: { items: tempId } },
               { new: true }, (err, newdoc) => {
                 if (err) {
                   console.log(err)
+                  res.send(err.message)
                 } else {
                   // specify assay, do a console.log on newdoc
-                  res.send(newdoc)
+                  res.send(doc)
                 }
               })
         }

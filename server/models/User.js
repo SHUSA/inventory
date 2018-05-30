@@ -28,7 +28,7 @@ UserSchema.pre('save', function saveHook (next) {
     .genSaltAsync(SALT_FACTOR)
     .then(salt => bcrypt.hashAsync(user.password, salt, null))
     .then(hash => {
-      user.setDataValue('password', hash)
+      user.password = hash
     })
 })
 

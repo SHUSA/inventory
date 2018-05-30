@@ -15,6 +15,7 @@ module.exports = (app) => {
     AuthenticationControllerPolicy.register,
     AuthenticationController.register)
   app.post('/login', AuthenticationController.login)
+  app.put('/userupdate', AuthenticationController.update)
 
   app.get('/vendors', VendorsController.index)
   app.get('/vendors/:vendorId', VendorsController.show)

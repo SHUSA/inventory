@@ -6,7 +6,8 @@ module.exports = {
     try {
       await Assay.find()
         .populate(['items'])
-        .sort({name: -1}, (err, doc) => {
+        .sort({name: -1})
+        .exec((err, doc) => {
           if (err) {
             console.log(err)
             // planned issue logger
@@ -16,6 +17,7 @@ module.exports = {
           }
         })
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         error: 'An error occured fetching assays'
       })
@@ -23,10 +25,8 @@ module.exports = {
   },
 
   async show (req, res) {
-    const assay = req.body
-
     try {
-      await Assay.find({_id: assay.id})
+      await Assay.find({_id: req.params.assayId})
         .populate(['items'])
         .exec((err, doc) => {
           if (err) {
@@ -84,10 +84,11 @@ module.exports = {
     }
 
     try {
-      await Assay.update({_id: req.body.id}, assayData, (err, doc) => {
+      await Assay.update({_id: req.params.assayId}, assayData, (err, doc) => {
         if (err) {
           console.log(err)
         } else {
+          console.log(assayData)
           res.send(doc)
         }
       })

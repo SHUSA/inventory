@@ -5,9 +5,11 @@ module.exports = {
     try {
       await Vendor.find()
         .populate(['items'])
-        .sort({name: -1}, (err, doc) => {
+        .sort({name: -1})
+        .exec((err, doc) => {
           if (err) {
             console.log(err)
+            res.send(err.message)
           } else {
             res.send(doc)
           }
@@ -20,14 +22,13 @@ module.exports = {
   },
 
   async show (req, res) {
-    const vendor = req.body
-
     try {
-      await Vendor.find({_id: vendor.id})
+      await Vendor.find({_id: req.params.vendorId})
         .populate(['items'])
         .exec((err, doc) => {
           if (err) {
             console.log(err)
+            res.send(err.message)
           } else {
             res.send(doc)
           }
@@ -52,6 +53,7 @@ module.exports = {
       await newVendor.save((err) => {
         if (err) {
           console.log(err)
+          res.send(err.message)
         } else {
           res.send('saved vendor')
         }
@@ -72,9 +74,10 @@ module.exports = {
     }
 
     try {
-      await Vendor.update({_id: req.body.id}, vendorData, (err, doc) => {
+      await Vendor.update({_id: req.params.vendorId}, vendorData, (err, doc) => {
         if (err) {
           console.log(err)
+          res.send(err.message)
         } else {
           res.send(doc)
         }

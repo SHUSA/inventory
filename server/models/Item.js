@@ -2,10 +2,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const ItemSchema = new Schema({
-  name: {type: String, required: [true, 'An item needs a name']},
+  name: {type: String, required: true},
   vendor: {type: String, required: true},
   assay: {type: String, required: true},
-  catalogNumber: {type: String, required: [true, 'Need cats for the log'], unique: [true, 'That cat already exists']},
+  catalogNumber: {type: String, required: true, unique: true},
   itemDescription: {type: String},
   currentStock: {type: Array},
   reactionsPerItem: {type: Number},

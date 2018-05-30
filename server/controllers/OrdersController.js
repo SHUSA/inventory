@@ -5,9 +5,11 @@ module.exports = {
     try {
       await Order.find()
         .populate(['items'])
-        .sort({time: 1}, (err, doc) => {
+        .sort({time: 1})
+        .exec((err, doc) => {
           if (err) {
             console.log(err)
+            res.send(err.message)
           } else {
             res.send(doc)
           }
@@ -20,14 +22,13 @@ module.exports = {
   },
 
   async show (req, res) {
-    const order = req.body
-
     try {
-      await Order.find({_id: order.id})
+      await Order.find({_id: req.params.orderId})
         .populate(['items'])
         .exec((err, doc) => {
           if (err) {
             console.log(err)
+            res.send(err.message)
           } else {
             res.send(doc)
           }
@@ -49,6 +50,7 @@ module.exports = {
       await newOrder.save((err) => {
         if (err) {
           console.log(err)
+          res.send(err.message)
         } else {
           res.send('saved order')
         }
@@ -62,11 +64,12 @@ module.exports = {
   // no put statement because orders are updated through items?
   async remove (req, res) {
     try {
-      await Order.findByIdAndRemove({_id: req.body.id}, (err, doc) => {
+      await Order.findByIdAndRemove({_id: req.params.orderId}, (err, doc) => {
         if (err) {
           console.log(err)
+          res.send(err.message)
         } else {
-          res.send(doc)
+          res.send('order deleted')
         }
       })
     } catch (error) {

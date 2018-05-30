@@ -234,6 +234,8 @@ export default {
     },
 
     expand () {
+      // figure out how to do dynamic IDs
+      // may add as action button
       let ele = document.getElementById('comment')
       let classes = []
 
