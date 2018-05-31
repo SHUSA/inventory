@@ -1,16 +1,11 @@
 const AuthenticationController = require('./controllers/AuthenticationController')
 const AuthenticationControllerPolicy = require('./policies/AuthenticationControllerPolicy')
-// const isAuthenticated = require('./policies/isAuthenticated')
 const VendorsController = require('./controllers/VendorsController')
 const ItemsController = require('./controllers/ItemsController')
 const AssaysController = require('./controllers/AssaysController')
 const OrdersController = require('./controllers/OrdersController')
 
 module.exports = (app) => {
-  // app.post('/test', TestController.post)
-  // app.put('/test2', TestController.put)
-  // app.get('/test3', TestController.index)
-
   app.post('/register',
     AuthenticationControllerPolicy.register,
     AuthenticationController.register)

@@ -7,7 +7,7 @@ const UserSchema = new Schema({
   email: {type: String, unique: true},
   password: {type: String},
   initials: {type: String},
-  username: {type: String},
+  username: {type: String, unique: true, required: true},
   accessLevel: {type: Number, default: 1}
 })
 
