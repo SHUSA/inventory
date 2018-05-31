@@ -53,7 +53,7 @@ module.exports = {
           res.send(err.message)
         } else {
           Assay.findOneAndUpdate({name: item.assay},
-            {$push: {items: doc._id}}, {new: true}, (err, newdoc) => {
+            {$addToSet: {items: doc._id}}, {new: true}, (err, newdoc) => {
               if (err) {
                 console.log(err)
                 res.send(err.message)
@@ -62,18 +62,20 @@ module.exports = {
                 console.log('item inserted into assay')
               }
             })
-          Vendor.findOneAndUpdate({ name: item.vendor },
-            { $push: { items: doc._id } }, { new: true }, (err, newdoc) => {
-              if (err) {
-                console.log(err)
-                res.send(err.message)
-              } else {
-                // specify assay, do a console.log on newdoc
-                console.log('item inserted into vendor')
-              }
-            })
+          Vendor.findOneAndUpdate({
+            $or: [{name: item.vendor}, {shortName: item.vendor}]
+          },
+          { $addToSet: { items: doc._id } }, { new: true }, (err, newdoc) => {
+            if (err) {
+              console.log(err)
+              res.send(err.message)
+            } else {
+              // specify assay, do a console.log on newdoc
+              console.log('item inserted into vendor')
+            }
+          })
           Order.find().sort({_id: -1}).limit(1)
-            .updateOne({ $push: { items: doc._id } },
+            .updateOne({ $addToSet: { items: doc._id } },
               { new: true }, (err, newdoc) => {
                 if (err) {
                   console.log(err)
@@ -98,6 +100,7 @@ module.exports = {
     for (let key in item) {
       itemData[key] = item[key]
     }
+    itemData.updatedAt = Date.now()
     // get ID from req somehow
     const tempId = req.params.itemId
     try {
@@ -108,7 +111,7 @@ module.exports = {
           res.send(err.message)
         } else {
           Assay.findOneAndUpdate({ name: item.assay },
-            { $push: { items: tempId } }, { new: true }, (err, newdoc) => {
+            { $addToSet: { items: tempId } }, { new: true }, (err, newdoc) => {
               if (err) {
                 console.log(err)
                 res.send(err.message)
@@ -117,18 +120,20 @@ module.exports = {
                 console.log('item inserted into assay')
               }
             })
-          Vendor.findOneAndUpdate({ name: item.vendor },
-            { $push: { items: tempId } }, { new: true }, (err, newdoc) => {
-              if (err) {
-                console.log(err)
-                res.send(err.message)
-              } else {
-                // specify assay, do a console.log on newdoc
-                console.log('item inserted into vendor')
-              }
-            })
+          Vendor.findOneAndUpdate({
+            $or: [{name: item.vendor}, {shortName: item.vendor}]
+          },
+          { $addToSet: { items: tempId } }, { new: true }, (err, newdoc) => {
+            if (err) {
+              console.log(err)
+              res.send(err.message)
+            } else {
+              // specify assay, do a console.log on newdoc
+              console.log('item inserted into vendor')
+            }
+          })
           Order.find().sort({ _id: -1 }).limit(1)
-            .updateOne({ $push: { items: tempId } },
+            .updateOne({ $addToSet: { items: tempId } },
               { new: true }, (err, newdoc) => {
                 if (err) {
                   console.log(err)
