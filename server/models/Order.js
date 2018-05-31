@@ -6,7 +6,7 @@ const OrderSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Item'
   },
-  time: {type: Date, default: Date.now},
+  createdAt: {type: Date, default: Date.now},
   completed: {type: Boolean, default: false},
   completeDate: {type: Date}
 })
