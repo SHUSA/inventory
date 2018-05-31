@@ -8,10 +8,10 @@ const AssaySchema = new Schema({
   controlsPerRun: {type: Number, default: 0},
   maxBatchSize: {type: Number, default: 0},
   sampleReplicates: {type: Number, default: 0},
-  items: {
+  items: [{
     type: Schema.Types.ObjectId,
     ref: 'Item'
-  },
+  }],
   active: {type: Boolean, default: true}
 })
 
