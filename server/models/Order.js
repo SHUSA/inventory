@@ -6,7 +6,9 @@ const OrderSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Item'
   },
-  time: {type: Date}
+  time: {type: Date, default: Date.now},
+  completed: {type: Boolean, default: false},
+  completeDate: {type: Date}
 })
 
 module.exports = mongoose.model('Order', OrderSchema)

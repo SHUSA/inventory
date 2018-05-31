@@ -4,6 +4,8 @@ const VendorsController = require('./controllers/VendorsController')
 const ItemsController = require('./controllers/ItemsController')
 const AssaysController = require('./controllers/AssaysController')
 const OrdersController = require('./controllers/OrdersController')
+// const isAuthenticated = require('./policies/isAuthenticated')
+// define placement of authentication
 
 module.exports = (app) => {
   app.post('/register',
