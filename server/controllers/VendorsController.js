@@ -49,12 +49,12 @@ module.exports = {
     const newVendor = new Vendor(vendorData)
 
     try {
-      await newVendor.save((err) => {
+      await newVendor.save((err, doc) => {
         if (err) {
           console.log(err)
           res.send(err.message)
         } else {
-          res.send('saved vendor')
+          res.send(doc)
         }
       })
     } catch (error) {

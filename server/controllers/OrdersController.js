@@ -47,12 +47,12 @@ module.exports = {
     const newOrder = new Order(orderData)
 
     try {
-      await newOrder.save((err) => {
+      await newOrder.save((err, doc) => {
         if (err) {
           console.log(err)
           res.send(err.message)
         } else {
-          res.send('saved order')
+          res.send(doc)
         }
       })
     } catch (error) {

@@ -51,11 +51,11 @@ module.exports = {
     const newAssay = new Assay(assayData)
 
     try {
-      await newAssay.save((err) => {
+      await newAssay.save((err, doc) => {
         if (err) {
           console.log(err)
         } else {
-          res.send('Saved assay')
+          res.send(doc)
           // res.redirect(where?)
         }
       })
