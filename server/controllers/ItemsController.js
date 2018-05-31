@@ -40,19 +40,9 @@ module.exports = {
 
   async post (req, res) {
     const item = req.body
-    const itemData = {
-      name: item.name,
-      assay: item.assay,
-      vendor: item.vendor,
-      catalogNumber: item.catalogNumber,
-      itemDescription: item.itemDescription,
-      currentStock: item.currentStock,
-      reactionsPerItem: item.reactionsPerItem,
-      weeksOfSafetyStock: item.weeksOfSafetyStock,
-      leadTimeDays: item.leadTimeDays,
-      weeksOfReorder: item.weeksOfReorder,
-      comment: item.comment,
-      active: true
+    const itemData = {}
+    for (let key in item) {
+      itemData[key] = item[key]
     }
     const newItem = new Item(itemData)
 
@@ -104,19 +94,9 @@ module.exports = {
 
   async put (req, res) {
     const item = req.body
-    const itemData = {
-      name: item.name,
-      assay: item.assay,
-      vendor: item.vendor,
-      catalogNumber: item.catalogNumber,
-      itemDescription: item.itemDescription,
-      currentStock: item.currentStock,
-      reactionsPerItem: item.reactionsPerItem,
-      weeksOfSafetyStock: item.weeksOfSafetyStock,
-      leadTimeDays: item.leadTimeDays,
-      weeksOfReorder: item.weeksOfReorder,
-      comment: item.comment,
-      active: item.active
+    const itemData = {}
+    for (let key in item) {
+      itemData[key] = item[key]
     }
     // get ID from req somehow
     const tempId = req.params.itemId

@@ -44,14 +44,9 @@ module.exports = {
 
   async post (req, res) {
     const assay = req.body
-    const assayData = {
-      name: assay.name,
-      weeklyVolume: assay.weeklyVolume,
-      weeklyRuns: assay.weeklyRuns,
-      controlsPerRun: assay.controlsPerRun,
-      maxBatchSize: assay.maxBatchSize,
-      sampleReplicates: assay.sampleReplicates,
-      active: true
+    const assayData = {}
+    for (let key in assay) {
+      assayData[key] = assay[key]
     }
     const newAssay = new Assay(assayData)
 
@@ -73,14 +68,9 @@ module.exports = {
 
   async put (req, res) {
     const assay = req.body
-    const assayData = {
-      name: assay.name,
-      weeklyVolume: assay.weeklyVolume,
-      weeklyRuns: assay.weeklyRuns,
-      controlsPerRun: assay.controlsPerRun,
-      maxBatchSize: assay.maxBatchSize,
-      sampleReplicates: assay.sampleReplicates,
-      active: assay.active
+    const assayData = {}
+    for (let key in assay) {
+      assayData[key] = assay[key]
     }
 
     try {

@@ -12,11 +12,9 @@ function jwtSignUser (user) {
 module.exports = {
   async register (req, res) {
     const user = req.body
-    const userData = {
-      email: user.email,
-      password: user.password,
-      initials: user.initials,
-      username: user.username
+    const userData = {}
+    for (let key in user) {
+      userData[key] = user[key]
     }
     const newUser = new User(userData)
     const userJson = newUser.toJSON()
@@ -41,12 +39,9 @@ module.exports = {
 
   async update (req, res) {
     const user = req.body
-    const userData = {
-      email: user.email,
-      password: user.password,
-      initials: user.initials,
-      username: user.username,
-      accessLevel: user.accessLevel
+    const userData = {}
+    for (let key in user) {
+      userData[key] = user[key]
     }
 
     try {

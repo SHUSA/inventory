@@ -42,10 +42,9 @@ module.exports = {
 
   async post (req, res) {
     const vendor = req.body
-    const vendorData = {
-      name: vendor.name,
-      shortName: vendor.shortName,
-      active: true
+    const vendorData = {}
+    for (let key in vendor) {
+      vendorData[key] = vendor[key]
     }
     const newVendor = new Vendor(vendorData)
 
@@ -67,10 +66,9 @@ module.exports = {
 
   async put (req, res) {
     const vendor = req.body
-    const vendorData = {
-      name: vendor.name,
-      shortName: vendor.shortName,
-      active: vendor.active
+    const vendorData = {}
+    for (let key in vendor) {
+      vendorData[key] = vendor[key]
     }
 
     try {
