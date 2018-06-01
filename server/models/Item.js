@@ -14,7 +14,10 @@ const ItemSchema = new Schema({
   weeksOfReorder: {type: Number},
   comment: {type: String},
   updatedAt: {type: Date, default: Date.now},
-  active: {type: Boolean, default: true}
+  safetyStock: {type: Number, default: 0},
+  reorderPoint: {type: Number, default: 0},
+  reorderQuantity: {type: Number, default: 0},
+  active: { type: Boolean, default: true }
 })
 
 module.exports = mongoose.model('Item', ItemSchema)
