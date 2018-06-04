@@ -5,7 +5,6 @@ module.exports = {
   async index (req, res) {
     try {
       await Assay.find()
-        .populate(['items'])
         .sort({name: -1})
         .exec((err, doc) => {
           if (err) {
@@ -27,7 +26,6 @@ module.exports = {
   async show (req, res) {
     try {
       await Assay.find({_id: req.params.assayId})
-        .populate(['items'])
         .exec((err, doc) => {
           if (err) {
             console.log(err)

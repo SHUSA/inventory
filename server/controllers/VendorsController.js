@@ -4,7 +4,6 @@ module.exports = {
   async index (req, res) {
     try {
       await Vendor.find()
-        .populate(['items'])
         .sort({name: -1})
         .exec((err, doc) => {
           if (err) {
@@ -24,7 +23,6 @@ module.exports = {
   async show (req, res) {
     try {
       await Vendor.find({_id: req.params.vendorId})
-        .populate(['items'])
         .exec((err, doc) => {
           if (err) {
             console.log(err)
