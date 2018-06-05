@@ -26,22 +26,22 @@
                   <v-text-field v-model="editedItem.itemDescription" label="Item Description"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.reactionsPerItem" validate-on-blur :rules="[rules.number]" type="number" min=0 hint="Use 0 for general items." persistent-hint label="Reactions per Item"/>
+                  <v-text-field v-model="editedItem.reactionsPerItem" validate-on-blur :rules="[rules.number]" ref="reactionsPerItem" type="number" min=0 hint="Use 0 for general items." persistent-hint label="Reactions per Item"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.currentStock" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Current Stock"/>
+                  <v-text-field v-model="editedItem.currentStock" validate-on-blur :rules="[rules.number]" ref="currentStock" type="number" min=0 label="Current Stock"/>
                 </v-flex>
                 <v-flex xs6>
                   <v-text-field disabled label="Safety Stock" value="999"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Safety Weeks"/>
+                  <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Lead Time (Days)"/>
+                  <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Reorder Weeks"/>
+                  <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
                 </v-flex>
                 <template v-if="editedItem.reactionsPerItem = 0">
                   <v-flex xs6>
@@ -53,10 +53,10 @@
                 </template>
                 <template v-else>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.reorderPoint" label="Reorder Point" value="999"/>
+                    <v-text-field v-model="editedItem.reorderPoint" ref="reorderPoint" label="Reorder Point" value="999"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.reorderQuantity" label="Reorder Quantity" value="999"/>
+                    <v-text-field v-model="editedItem.reorderQuantity" ref="reorderQuantity" label="Reorder Quantity" value="999"/>
                   </v-flex>
                 </template>
                 <v-flex xs12>
@@ -94,19 +94,19 @@
                   <v-text-field v-model="editedAssay.name" label="Name"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.weeklyVolume" :rules="[rules.number]" type="number" min=0 label="Weekly Volume"/>
+                  <v-text-field v-model="editedAssay.weeklyVolume" ref="weeklyVolume" :rules="[rules.number]" type="number" min=0 label="Weekly Volume"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.weeklyRuns" :rules="[rules.number]" type="number" min=0 label="Runs per Week"/>
+                  <v-text-field v-model="editedAssay.weeklyRuns" ref="weeklyRuns" :rules="[rules.number]" type="number" min=0 label="Runs per Week"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.controlsPerRun" :rules="[rules.number]" type="number" min=0 label="Controls per Run"/>
+                  <v-text-field v-model="editedAssay.controlsPerRun" ref="controlsPerRun" :rules="[rules.number]" type="number" min=0 label="Controls per Run"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.maxBatchSize" :rules="[rules.number]" type="number" min=0 label="Max Batch Size"/>
+                  <v-text-field v-model="editedAssay.maxBatchSize" ref="maxBatchSize" :rules="[rules.number]" type="number" min=0 label="Max Batch Size"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.sampleReplicates" :rules="[rules.number]" type="number" min=0 label="Sample Replicates"/>
+                  <v-text-field v-model="editedAssay.sampleReplicates" ref="sampleReplicates" :rules="[rules.number]" type="number" min=0 label="Sample Replicates"/>
                 </v-flex>
                 <v-flex xs12>
                   <v-alert
@@ -174,6 +174,8 @@ export default {
       rules: {
         number: (val) => {
           const num = parseFloat(val)
+          // create error object with all number validated refs, check $ref.<refname>.value to see if is num, true if yes, false if no
+          console.log(this.$refs)
           if (!isNaN(num) && num >= 0) {
             this.error.pop()
             return true
@@ -183,14 +185,16 @@ export default {
           }
         },
         assay: (text) => {
+          const errMessage = 'assayErr'
+          const err = this.error
           if (this.assays.find(assay => assay.name.toLowerCase() === text.toLowerCase()) !== undefined) {
-            this.error.pop()
+            err.splice(err.indexOf(errMessage), 1)
             this.newAssay = false
             return true
           } else {
             this.newAssay = true
             this.editedAssay.name = text
-            this.error.push('')
+            err.indexOf(errMessage) === -1 ? err.push(errMessage) : console.log(null)
             return 'Please enter a valid assay'
           }
         }
