@@ -1,42 +1,29 @@
 const Item = require('mongoose').model('Item')
 const Order = require('mongoose').model('Order')
-const Assay = require('mongoose').model('Assay')
 // should probably search by assay or vendor then display items
 
-function calculateStockLevels (item, res) {
-  Assay.find({ name: item.assay }, (err, doc) => {
-    let assay = {}
-    let weeklyUse = 0
-    let baseStock = 0
-    let leadTimeUsage = 0
-    console.log('ping')
-    if (err) {
-      console.log(err)
-      res.send(err)
-    } else {
-      assay = doc[0]
-      console.log('pong')
-      // double check logic; example BV plates
-      if (assay.weeklyVolume !== 0 || item.reactionsPerItem !== 0) {
-        // console.log(`weeklyVolume ${assay.weeklyVolume}`)
-        // console.log(`replicates ${assay.sampleReplicates}`)
-        // console.log(`weekly runs ${assay.weeklyRuns}`)
-        // console.log(`controlsPerRun ${assay.controlsPerRun}`)
-        weeklyUse = (assay.weeklyVolume * assay.sampleReplicates +
-          assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem
-        // console.log(`weeklyUse ${weeklyUse}`)
-        baseStock = weeklyUse * 4
-        // console.log(`baseStock ${baseStock}`)
-        item.safetyStock = Math.ceil(weeklyUse * item.weeksOfSafetyStock * 100) / 100
-        leadTimeUsage = weeklyUse * item.leadTimeDays / 7
-        // console.log(`leadTimeUsage ${leadTimeUsage}`)
-        item.reorderPoint = Math.ceil((leadTimeUsage + item.safetyStock + baseStock) * 100) / 100
-        item.reorderQuantity = Math.ceil(weeklyUse * item.weeksOfReorder)
-      }
-      // console.log(item)
-      return item
-    }
-  })
+function calculateStockLevels (item, assay) {
+  let weeklyUse = 0
+  let baseStock = 0
+  let leadTimeUsage = 0
+  if (assay.weeklyVolume !== 0 || item.reactionsPerItem !== 0) {
+    // console.log(`weeklyVolume ${assay.weeklyVolume}`)
+    // console.log(`replicates ${assay.sampleReplicates}`)
+    // console.log(`weekly runs ${assay.weeklyRuns}`)
+    // console.log(`controlsPerRun ${assay.controlsPerRun}`)
+    weeklyUse = (assay.weeklyVolume * assay.sampleReplicates +
+      assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem
+    // console.log(`weeklyUse ${weeklyUse}`)
+    baseStock = weeklyUse * 4
+    // console.log(`baseStock ${baseStock}`)
+    item.safetyStock = Math.ceil(weeklyUse * item.weeksOfSafetyStock * 100) / 100
+    leadTimeUsage = weeklyUse * item.leadTimeDays / 7
+    // console.log(`leadTimeUsage ${leadTimeUsage}`)
+    item.reorderPoint = Math.ceil((leadTimeUsage + item.safetyStock + baseStock) * 100) / 100
+    item.reorderQuantity = Math.ceil(weeklyUse * item.weeksOfReorder)
+  }
+  // console.log(item)
+  return item
 }
 
 module.exports = {
@@ -75,12 +62,13 @@ module.exports = {
   },
 
   async post (req, res) {
-    const item = req.body
+    const item = req.body.params.item
+    const assay = req.body.params.assay
     let itemData = {}
     for (let key in item) {
       itemData[key] = item[key]
     }
-    itemData = await calculateStockLevels(itemData, res)
+    itemData = calculateStockLevels(itemData, assay)
     const newItem = new Item(itemData)
 
     try {
@@ -111,17 +99,18 @@ module.exports = {
   },
 
   async put (req, res) {
-    const item = req.body
+    console.log(req.body)
+    const item = req.body.params.item
+    const assay = req.body.params.assay
     let itemData = {}
     for (let key in item) {
       itemData[key] = item[key]
     }
-    itemData = await calculateStockLevels(itemData, res)
-    console.log('item data')
-    console.log(itemData)
+    itemData = calculateStockLevels(itemData, assay)
+
     try {
       // push new quantity in currentStock either here or before passing
-      await Item.update({_id: itemData._id}, itemData, (err, doc) => {
+      await Item.update({ _id: itemData._id }, itemData, (err, doc) => {
         if (err) {
           console.log(err)
           res.send(err.message)
@@ -133,13 +122,13 @@ module.exports = {
                   console.log(err)
                   res.send(err.message)
                 } else {
-                  // specify assay, do a console.log on newdoc
-                  res.send(doc)
+                  res.send(itemData)
                 }
               })
         }
       })
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         error: 'An error occured updating item'
       })

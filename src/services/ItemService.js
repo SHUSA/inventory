@@ -9,11 +9,21 @@ export default {
     return API().get(`items/${itemId}`)
   },
 
-  post (item) {
-    return API().post('items', item)
+  post (item, assay) {
+    return API().post('items', {
+      params: {
+        item: item,
+        assay: assay
+      }
+    })
   },
 
-  put (itemId) {
-    return API().put(`items/${itemId}`)
+  put (itemId, item, assay) {
+    return API().put(`items/${itemId}`, {
+      params: {
+        item: item,
+        assay: assay
+      }
+    })
   }
 }
