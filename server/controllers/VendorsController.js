@@ -3,7 +3,7 @@ const Vendor = require('mongoose').model('Vendor')
 module.exports = {
   async index (req, res) {
     try {
-      await Vendor.find()
+      await Vendor.find({active: req.query.status})
         .sort({name: -1})
         .exec((err, doc) => {
           if (err) {

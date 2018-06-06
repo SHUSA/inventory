@@ -1,8 +1,12 @@
 import API from './API'
 
 export default {
-  index () {
-    return API().get('vendors')
+  index (status) {
+    return API().get('vendors', {
+      params: {
+        status: status
+      }
+    })
   },
 
   show (vendorId) {

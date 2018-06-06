@@ -6,6 +6,7 @@ function calculateStockLevels (item, assay) {
   let weeklyUse = 0
   let baseStock = 0
   let leadTimeUsage = 0
+  // consider if reactionsPerItem is 0 but is used in a volume dependent assay; avoid  divided by 0
   if (assay.weeklyVolume !== 0 || item.reactionsPerItem !== 0) {
     // console.log(`weeklyVolume ${assay.weeklyVolume}`)
     // console.log(`replicates ${assay.sampleReplicates}`)
@@ -29,7 +30,7 @@ function calculateStockLevels (item, assay) {
 module.exports = {
   async index (req, res) {
     try {
-      await Item.find().sort({name: -1}).exec((err, doc) => {
+      await Item.find({active: req.query.status}).sort({name: -1}).exec((err, doc) => {
         if (err) {
           console.log(err)
           res.send(err.message)
@@ -64,10 +65,13 @@ module.exports = {
   async post (req, res) {
     const item = req.body.params.item
     const assay = req.body.params.assay
+    console.log(req.body.params)
+    // console.log(assay)
     let itemData = {}
     for (let key in item) {
       itemData[key] = item[key]
     }
+    itemData.assay = assay.name
     itemData = calculateStockLevels(itemData, assay)
     const newItem = new Item(itemData)
 
@@ -86,7 +90,7 @@ module.exports = {
                   res.send(err.message)
                 } else {
                   // specify assay, do a console.log on newdoc
-                  res.send(doc)
+                  res.send(newItem)
                 }
               })
         }
@@ -106,6 +110,7 @@ module.exports = {
     for (let key in item) {
       itemData[key] = item[key]
     }
+    itemData.assay = assay.name
     itemData = calculateStockLevels(itemData, assay)
 
     try {

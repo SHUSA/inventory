@@ -1,8 +1,12 @@
 import API from './API'
 
 export default {
-  index () {
-    return API().get('assays')
+  index (status) {
+    return API().get('assays', {
+      params: {
+        status: status
+      }
+    })
   },
 
   show (assayId) {
