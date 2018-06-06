@@ -14,13 +14,16 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.name" label="Item Name"/>
+                  <v-text-field v-model="editedItem.name" label="Item Name" required/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.assay" :rules="[rules.assay]" :append-icon="newAssay ? 'note_add' : null" :append-icon-cb="addAssay" label="Assay"/>
+                  <v-text-field v-model="editedItem.assay" :rules="[rules.assay]" :append-icon="newAssay ? 'note_add' : null" :append-icon-cb="addAssay" label="Assay" required/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.catalogNumber" label="Catalog Number"/>
+                  <v-text-field v-model="editedItem.vendor" :rules="[rules.vendor]" :append-icon="newVendor ? 'note_add' : null" :append-icon-cb="addVendor" label="Vendor" required/>
+                </v-flex>
+                <v-flex xs6>
+                  <v-text-field v-model="editedItem.catalogNumber" :rules="[rules.catalog]" label="Catalog Number" required/>
                 </v-flex>
                 <v-flex xs6>
                   <v-text-field v-model="editedItem.itemDescription" label="Item Description"/>
@@ -91,22 +94,58 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.name" label="Name"/>
+                  <v-text-field v-model="editedAssay.name" label="Name" required/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.weeklyVolume" ref="weeklyVolume" :rules="[rules.number]" type="number" min=0 label="Weekly Volume"/>
+                  <v-text-field v-model="editedAssay.weeklyVolume" ref="weeklyVolume" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Weekly Volume"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.weeklyRuns" ref="weeklyRuns" :rules="[rules.number]" type="number" min=0 label="Runs per Week"/>
+                  <v-text-field v-model="editedAssay.weeklyRuns" ref="weeklyRuns" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Runs per Week"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.controlsPerRun" ref="controlsPerRun" :rules="[rules.number]" type="number" min=0 label="Controls per Run"/>
+                  <v-text-field v-model="editedAssay.controlsPerRun" ref="controlsPerRun" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Controls per Run"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.maxBatchSize" ref="maxBatchSize" :rules="[rules.number]" type="number" min=0 label="Max Batch Size"/>
+                  <v-text-field v-model="editedAssay.maxBatchSize" ref="maxBatchSize" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Max Batch Size"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.sampleReplicates" ref="sampleReplicates" :rules="[rules.number]" type="number" min=0 label="Sample Replicates"/>
+                  <v-text-field v-model="editedAssay.sampleReplicates" ref="sampleReplicates" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Sample Replicates"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-alert
+                    :value="alert"
+                    type="error"
+                  >
+                    {{alertMessage}}
+                  </v-alert>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog
+        v-model="vendorDialog"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title>
+            <span class="headline">New Vendor</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs6>
+                  <v-text-field v-model="editedVendor.name" label="Name" required/>
+                </v-flex>
+                <v-flex xs6>
+                  <v-text-field v-model="editedVendor.shortName" label="Short Name"/>
                 </v-flex>
                 <v-flex xs12>
                   <v-alert
@@ -158,8 +197,15 @@
 <script>
 import itemService from '@/services/ItemService.js'
 import assayService from '@/services/AssayService.js'
+import vendorService from '@/services/VendorService.js'
 const moment = require('moment')
 document.getElementsByTagName('input').onwheel = () => false
+// Notes on number input type
+// -unable to block e, -, +
+// -unable to prevent mouse scroll
+// -possible vue limitation?
+// -look into https://www.npmjs.com/package/@paulpv/vuetify-number-field?activeTab=readme
+// in the meantime, treat as text and only allow real and positive numbers to pass through
 
 export default {
   data () {
@@ -167,7 +213,9 @@ export default {
       currentItem: null,
       dialog: false,
       assayDialog: false,
+      vendorDialog: false,
       newAssay: false,
+      newVendor: false,
       alert: false,
       alertMessage: '',
       error: [],
@@ -175,13 +223,31 @@ export default {
         number: (val) => {
           const num = parseFloat(val)
           // create error object with all number validated refs, check $ref.<refname>.value to see if is num, true if yes, false if no
-          console.log(this.$refs)
           if (!isNaN(num) && num >= 0) {
             this.error.pop()
             return true
           } else {
             this.error.push('')
             return 'Please enter a valid number'
+          }
+        },
+        catalog: (text) => {
+          const errMessage = 'catErr'
+          const err = this.error
+          if (text === '') {
+            err.indexOf(errMessage) === -1 ? err.push(errMessage) : console.log()
+            return 'Please enter a catalog number'
+          } else if (this.supplies.find(item => item.catalogNumber.toLowerCase() === text.toLowerCase()) !== undefined) {
+            if (this.editedIndex > -1) {
+              err.splice(err.indexOf(errMessage), 1)
+              return true
+            } else {
+              err.indexOf(errMessage) === -1 ? err.push(errMessage) : console.log()
+              return 'Duplicate catalog found'
+            }
+          } else {
+            err.splice(err.indexOf(errMessage), 1)
+            return true
           }
         },
         assay: (text) => {
@@ -194,8 +260,24 @@ export default {
           } else {
             this.newAssay = true
             this.editedAssay.name = text
-            err.indexOf(errMessage) === -1 ? err.push(errMessage) : console.log(null)
+            err.indexOf(errMessage) === -1 ? err.push(errMessage) : console.log()
             return 'Please enter a valid assay'
+          }
+        },
+        vendor: (text) => {
+          const errMessage = 'vendorErr'
+          const err = this.error
+          const name = this.vendors.find(vendor => vendor.name.toLowerCase() === text.toLowerCase()) !== undefined
+          const shortName = this.vendors.find(vendor => vendor.shortName.toLowerCase() === text.toLowerCase()) !== undefined
+          if (name || shortName) {
+            err.splice(err.indexOf(errMessage), 1)
+            this.newVendor = false
+            return true
+          } else {
+            this.newVendor = true
+            this.editedVendor.name = text
+            err.indexOf(errMessage) === -1 ? err.push(errMessage) : console.log()
+            return 'Please enter a valid vendor'
           }
         }
       },
@@ -215,6 +297,7 @@ export default {
       ],
       supplies: [],
       assays: [],
+      vendors: [],
       editedAssay: {
         name: '',
         weeklyVolume: 0,
@@ -222,6 +305,10 @@ export default {
         controlsPerRun: 0,
         maxBatchSize: 0,
         sampleReplicates: 0
+      },
+      editedVendor: {
+        name: '',
+        shortName: ''
       },
       editedIndex: -1,
       editedItem: {
@@ -256,8 +343,9 @@ export default {
   },
 
   async mounted () {
-    this.supplies = (await itemService.index()).data
-    this.assays = (await assayService.index()).data
+    this.supplies = (await itemService.index(true)).data
+    this.assays = (await assayService.index(true)).data
+    this.vendors = (await vendorService.index(true)).data
   },
 
   computed: {
@@ -283,6 +371,10 @@ export default {
 
     addAssay () {
       this.assayDialog = !this.assayDialog
+    },
+
+    addVendor () {
+      this.vendorDialog = !this.vendorDialog
     },
 
     expand () {
@@ -319,6 +411,8 @@ export default {
     close () {
       if (this.assayDialog) {
         this.assayDialog = false
+      } else if (this.vendorDialog) {
+        this.vendorDialog = false
       } else {
         this.dialog = false
         setTimeout(() => {
@@ -329,10 +423,13 @@ export default {
     },
 
     async save () {
+      // check if assay exists, if not then create before continuing
       if (this.assayDialog) {
         this.assays.push((await assayService.post(this.editedAssay)).data)
+      } else if (this.vendorDialog) {
+        this.vendors.push((await vendorService.post(this.editedVendor)).data)
       } else {
-        let assayInfo = this.assays.find(assay => assay.name === this.editedItem.assay)
+        let assayInfo = this.assays.find(assay => assay.name.toLowerCase() === this.editedItem.assay.toLowerCase())
 
         if (this.error.length > 0) {
           this.alert = true
@@ -340,13 +437,15 @@ export default {
         } else {
           this.alert = false
           if (this.editedIndex > -1) {
+            // existing item
             let focusedItem = this.supplies[this.editedIndex]
             this.editedItem.updatedAt = moment().format('MMM-DD-YYYY HH:mm:ss')
             this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
             Object.assign(focusedItem, (await itemService.put(focusedItem._id, this.editedItem, assayInfo)).data)
           } else {
-            // check if assay exists, if not then create before continuing
-            this.supplies.push(this.editedItem)
+            // new item
+            console.log('saved new item')
+            this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
           }
         }
       }
