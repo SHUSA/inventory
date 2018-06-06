@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const VendorSchema = new Schema({
   name: {type: String, unique: true, required: true},
-  shortName: {type: String},
+  shortName: {type: String, unique: true},
   active: {type: Boolean, default: true}
 })
 

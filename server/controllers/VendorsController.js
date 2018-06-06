@@ -45,6 +45,9 @@ module.exports = {
       vendorData[key] = vendor[key]
     }
     const newVendor = new Vendor(vendorData)
+    if (newVendor.shortName === '') {
+      newVendor.shortName = newVendor.name
+    }
 
     try {
       await newVendor.save((err, doc) => {

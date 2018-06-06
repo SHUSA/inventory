@@ -9,8 +9,7 @@ module.exports = {
         .exec((err, doc) => {
           if (err) {
             console.log(err)
-            // planned issue logger
-            // Issue.issue(err, 'assay all')
+            res.send(err.message)
           } else {
             res.send(doc)
           }
@@ -29,6 +28,7 @@ module.exports = {
         .exec((err, doc) => {
           if (err) {
             console.log(err)
+            res.send(err.message)
           } else {
             res.send(doc)
           }
@@ -52,6 +52,7 @@ module.exports = {
       await newAssay.save((err, doc) => {
         if (err) {
           console.log(err)
+          res.send(err.message)
         } else {
           res.send(doc)
           // res.redirect(where?)
@@ -75,6 +76,7 @@ module.exports = {
       await Assay.update({_id: req.params.assayId}, assayData, (err, doc) => {
         if (err) {
           console.log(err)
+          res.send(err.message)
         } else {
           console.log(assayData)
           res.send(doc)
