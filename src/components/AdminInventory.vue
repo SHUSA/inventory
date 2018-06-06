@@ -179,7 +179,7 @@
           <td>{{props.item.currentStock[props.item.currentStock.length - 1]}}</td>
           <td>{{props.item.toOrder}}</td>
           <td class="comment" id="comment" @click="expand">{{props.item.comment}}</td>
-          <td>{{props.item.updatedAt}}</td>
+          <td>{{time(props.item)}}</td>
           <td class="justify-center layout px-0">
             <v-btn icon class="mx-0" @click="editItem(props.item)">
               <v-icon color="teal">info</v-icon>
@@ -369,6 +369,10 @@ export default {
       this.supplies = []
     },
 
+    time (item) {
+      return moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
+    },
+
     addAssay () {
       this.assayDialog = !this.assayDialog
     },
@@ -439,12 +443,11 @@ export default {
           if (this.editedIndex > -1) {
             // existing item
             let focusedItem = this.supplies[this.editedIndex]
-            this.editedItem.updatedAt = moment().format('MMM-DD-YYYY HH:mm:ss')
+            this.editedItem.updatedAt = Date.now()
             this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
             Object.assign(focusedItem, (await itemService.put(focusedItem._id, this.editedItem, assayInfo)).data)
           } else {
             // new item
-            console.log('saved new item')
             this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
           }
         }
