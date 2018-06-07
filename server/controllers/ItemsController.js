@@ -1,5 +1,6 @@
 const Item = require('mongoose').model('Item')
 const Order = require('mongoose').model('Order')
+const moment = require('moment')
 // should probably search by assay or vendor then display items
 
 function calculateStockLevels (item, assay) {
@@ -65,8 +66,6 @@ module.exports = {
   async post (req, res) {
     const item = req.body.params.item
     const assay = req.body.params.assay
-    console.log(req.body.params)
-    // console.log(assay)
     let itemData = {}
     for (let key in item) {
       itemData[key] = item[key]
@@ -82,17 +81,7 @@ module.exports = {
           console.log(err)
           res.send(err.message)
         } else {
-          Order.find().sort({_id: -1}).limit(1)
-            .updateOne({ $addToSet: { items: doc._id } },
-              { new: true }, (err, newdoc) => {
-                if (err) {
-                  console.log(err)
-                  res.send(err.message)
-                } else {
-                  // specify assay, do a console.log on newdoc
-                  res.send(newItem)
-                }
-              })
+          res.send(newItem)
         }
       })
     } catch (error) {
@@ -103,9 +92,9 @@ module.exports = {
   },
 
   async put (req, res) {
-    console.log(req.body)
     const item = req.body.params.item
     const assay = req.body.params.assay
+    const lastSunday = moment().startOf('week').toISOString()
     let itemData = {}
     for (let key in item) {
       itemData[key] = item[key]
@@ -115,21 +104,34 @@ module.exports = {
 
     try {
       // push new quantity in currentStock either here or before passing
+      // add to order only it is an actual order and not data fix. add flag somewhere?
       await Item.update({ _id: itemData._id }, itemData, (err, doc) => {
         if (err) {
           console.log(err)
           res.send(err.message)
         } else {
-          Order.find().sort({ _id: -1 }).limit(1)
-            .updateOne({ $addToSet: { items: itemData._id } },
-              { new: true }, (err, newdoc) => {
-                if (err) {
-                  console.log(err)
-                  res.send(err.message)
-                } else {
-                  res.send(itemData)
-                }
-              })
+          Order.findOneAndUpdate(
+            {createdAt: {$gte: lastSunday}},
+            { $pull: { items: { _id: itemData._id } } }, (err, newdoc) => {
+              if (err) {
+                console.log(err)
+                res.send(err.message)
+              } else {
+                console.log('pull done')
+              }
+            })
+          Order.findOneAndUpdate(
+            { createdAt: { $gte: lastSunday } },
+            { $push: { items: itemData } },
+            { new: true }, (err, newdoc) => {
+              if (err) {
+                console.log(err)
+                res.send(err.message)
+              } else {
+                console.log('pushed')
+                res.send(itemData)
+              }
+            })
         }
       })
     } catch (error) {
