@@ -4,8 +4,7 @@ module.exports = {
   async index (req, res) {
     try {
       await Order.find()
-        .populate(['items'])
-        .sort({time: 1})
+        .sort({updatedAt: 1})
         .exec((err, doc) => {
           if (err) {
             console.log(err)
@@ -24,7 +23,6 @@ module.exports = {
   async show (req, res) {
     try {
       await Order.find({_id: req.params.orderId})
-        .populate(['items'])
         .exec((err, doc) => {
           if (err) {
             console.log(err)
