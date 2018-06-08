@@ -102,6 +102,13 @@ module.exports = {
     itemData.assay = assay.name
     itemData = calculateStockLevels(itemData, assay)
 
+    itemData.entry = [{
+      item: itemData._id,
+      updatedAt: itemData.updatedAt,
+      currentStock: itemData.currentStock,
+      comment: itemData.comment
+    }]
+
     try {
       // push new quantity in currentStock either here or before passing
       // add to order only it is an actual order and not data fix. add flag somewhere?
@@ -112,7 +119,7 @@ module.exports = {
         } else {
           Order.findOneAndUpdate(
             {createdAt: {$gte: lastSunday}},
-            { $pull: { items: { _id: itemData._id } } }, (err, newdoc) => {
+            { $pull: { entry: { item: itemData._id } } }, (err, newdoc) => {
               if (err) {
                 console.log(err)
                 res.send(err.message)
@@ -122,7 +129,7 @@ module.exports = {
             })
           Order.findOneAndUpdate(
             { createdAt: { $gte: lastSunday } },
-            { $push: { items: itemData } },
+            { $push: { entry: itemData.entry } },
             { new: true }, (err, newdoc) => {
               if (err) {
                 console.log(err)

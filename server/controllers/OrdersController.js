@@ -61,6 +61,7 @@ module.exports = {
   },
   // no put statement because orders are updated through items?
   async remove (req, res) {
+    // delete order if item array is emmpty
     try {
       await Order.findByIdAndRemove({_id: req.params.orderId}, (err, doc) => {
         if (err) {
