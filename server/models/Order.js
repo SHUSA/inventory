@@ -2,17 +2,14 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const OrderSchema = new Schema({
-  items: [{
-    _id: {type: Schema.Types.ObjectId, ref: 'Item'},
-    name: {type: String},
-    assay: {type: String},
-    vendor: {type: String},
-    catalogNumber: {type: String},
-    itemDescription: {type: String},
-    reorderQuantity: {type: Number},
+  entry: [{
+    item: {
+      type: Schema.Types.ObjectId,
+      ref: 'Item'
+    },
+    updateAt: {type: Date},
     currentStock: {type: Number},
-    comment: {type: String},
-    updatedAt: {type: Date}
+    comment: {type: String}
   }],
   createdAt: {type: Date, default: Date.now},
   completed: {type: Boolean, default: false},

@@ -7,7 +7,7 @@ const ItemSchema = new Schema({
   assay: {type: String, required: true},
   catalogNumber: {type: String, required: true, unique: true},
   itemDescription: {type: String},
-  currentStock: {type: Array},
+  currentStock: {type: Number},
   reactionsPerItem: {type: Number},
   weeksOfSafetyStock: {type: Number},
   leadTimeDays: {type: Number},
