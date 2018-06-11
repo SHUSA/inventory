@@ -7,8 +7,9 @@ function calculateStockLevels (item, assay) {
   let weeklyUse = 0
   let baseStock = 0
   let leadTimeUsage = 0
-  // consider if reactionsPerItem is 0 but is used in a volume dependent assay; avoid  divided by 0
-  if (assay.weeklyVolume !== 0 || item.reactionsPerItem !== 0) {
+  // stock calculation will only run if weekly volume AND reactions per item > 0
+  // otherwise, reorder points will be user defined
+  if (parseInt(assay.weeklyVolume) !== 0 && parseFloat(item.reactionsPerItem) !== 0) {
     // console.log(`weeklyVolume ${assay.weeklyVolume}`)
     // console.log(`replicates ${assay.sampleReplicates}`)
     // console.log(`weekly runs ${assay.weeklyRuns}`)
@@ -24,7 +25,6 @@ function calculateStockLevels (item, assay) {
     item.reorderPoint = Math.ceil((leadTimeUsage + item.safetyStock + baseStock) * 100) / 100
     item.reorderQuantity = Math.ceil(weeklyUse * item.weeksOfReorder)
   }
-  // console.log(item)
   return item
 }
 
@@ -75,7 +75,6 @@ module.exports = {
     const newItem = new Item(itemData)
 
     try {
-      console.log('try')
       await newItem.save((err, doc) => {
         if (err) {
           console.log(err)
@@ -96,13 +95,14 @@ module.exports = {
     const assay = req.body.params.assay
     const lastSunday = moment().startOf('week').toISOString()
     let itemData = {}
+    let entry = []
     for (let key in item) {
       itemData[key] = item[key]
     }
     itemData.assay = assay.name
     itemData = calculateStockLevels(itemData, assay)
 
-    itemData.entry = [{
+    entry = [{
       item: itemData._id,
       updatedAt: itemData.updatedAt,
       currentStock: itemData.currentStock,
@@ -129,7 +129,7 @@ module.exports = {
             })
           Order.findOneAndUpdate(
             { createdAt: { $gte: lastSunday } },
-            { $push: { entry: itemData.entry } },
+            { $push: { entry: entry } },
             { new: true }, (err, newdoc) => {
               if (err) {
                 console.log(err)
