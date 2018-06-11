@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from '@/components/Index'
+// temp route
+import Index from '@/components/Dev/Index'
 import Login from '@/components/Login'
 
 Vue.use(Router)

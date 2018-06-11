@@ -46,22 +46,12 @@
                 <v-flex xs6>
                   <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
                 </v-flex>
-                <template v-if="editedItem.reactionsPerItem = 0">
                   <v-flex xs6>
-                    <v-text-field disabled label="Reorder Point" value="999"/>
+                    <v-text-field v-model="editedItem.reorderPoint" ref="reorderPoint" label="Reorder Point"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field disabled label="Reorder Quantity" value="999"/>
+                    <v-text-field v-model="editedItem.reorderQuantity" ref="reorderQuantity" label="Reorder Quantity"/>
                   </v-flex>
-                </template>
-                <template v-else>
-                  <v-flex xs6>
-                    <v-text-field v-model="editedItem.reorderPoint" ref="reorderPoint" label="Reorder Point" value="999"/>
-                  </v-flex>
-                  <v-flex xs6>
-                    <v-text-field v-model="editedItem.reorderQuantity" ref="reorderQuantity" label="Reorder Quantity" value="999"/>
-                  </v-flex>
-                </template>
                 <v-flex xs12>
                   <v-alert
                     :value="alert"
@@ -176,7 +166,7 @@
           <td>{{props.item.assay}}</td>
           <td>{{props.item.catalogNumber}}</td>
           <td>{{props.item.itemDescription}}</td>
-          <td>{{props.item.currentStock[props.item.currentStock.length - 1]}}</td>
+          <td>{{props.item.currentStock}}</td>
           <td>{{props.item.toOrder}}</td>
           <td class="comment" id="comment" @click="expand">{{props.item.comment}}</td>
           <td>{{time(props.item)}}</td>
@@ -344,6 +334,7 @@ export default {
 
   async mounted () {
     this.supplies = (await itemService.index(true)).data
+    console.log(this.supplies)
     this.assays = (await assayService.index(true)).data
     this.vendors = (await vendorService.index(true)).data
   },
