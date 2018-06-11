@@ -11,20 +11,27 @@ export default new Vuex.Store({
   ],
   state: {
     // set to true for testing
-    user: true,
-    admin: true,
+    users: {
+      user: true,
+      admin: true,
+      demo: true
+    },
     pageTitle: 'test',
-    drawer: true
+    drawer: true,
+    token: null,
+    userId: null,
+    isUserLoggedIn: false,
+    isAdminLoggedIn: false
   },
   mutations: {
     setUser (state, type) {
-      for (let key in state) {
+      for (let key in state.users) {
         if (key === type) {
           // always true for testing
-          state[key] = state[key]
+          state[key] = true
         } else {
           // set to true for testing
-          state[key] = state[key]
+          state[key] = false
         }
       }
     },
