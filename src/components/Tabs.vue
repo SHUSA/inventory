@@ -14,8 +14,8 @@
             <v-list-tile-title>{{item.name}}</v-list-tile-title>
           </v-list-tile-content>
     </v-list-tile> -->
-    <admin-inventory :items='items' v-if="admin"/>
-    <user-inventory :items='items' v-if="user"/>
+    <admin-inventory :items='items' :assays="assays" :vendors="vendors" v-if="admin"/>
+    <user-inventory :items='items' :assays="assays" v-if="user"/>
   </div>
 </template>
 
@@ -29,7 +29,9 @@ import { mapState } from 'vuex'
 export default {
   props: [
     'selection',
-    'search'
+    'search',
+    'assays',
+    'vendors'
   ],
   components: {
     Panel,

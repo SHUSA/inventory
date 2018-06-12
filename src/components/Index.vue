@@ -20,7 +20,7 @@
       </v-toolbar>
       <v-divider></v-divider>
       <v-list dense class="pt-0">
-        <v-list-tile v-for="(item, index) in items" :key="item.name" @click="set(index)">
+        <v-list-tile v-for="(item, index) in list" :key="item.name" @click="set(index)">
           <v-list-tile-action>
             <v-icon>keyboard_arrow_right</v-icon>
           </v-list-tile-action>
@@ -32,10 +32,10 @@
       </v-list>
     </v-navigation-drawer>
     <v-flex xs12 offset-xs2 v-if="drawer">
-      <tabs :list="items[index]" :search="drawerTitle"/>
+      <tabs :selection="list[index]" :assays="assays" :vendors="vendors" :search="drawerTitle"/>
     </v-flex>
     <v-flex xs12 v-else>
-      <tabs :list="items[index]" :search="drawerTitle"/>
+      <tabs :selection="list[index]" :assays="assays" :vendors="vendors"  :search="drawerTitle"/>
     </v-flex>
   </v-layout>
 </template>
@@ -49,7 +49,9 @@ import Tabs from './Tabs'
 export default {
   data () {
     return {
-      items: [],
+      list: [],
+      assays: [],
+      vendors: [],
       drawerTitle: '',
       index: 0
     }
@@ -66,20 +68,23 @@ export default {
     ])
   },
   async mounted () {
+    // call all index things here: item, vendor, assay, and pass them around
+    this.assays = (await assayService.index(true)).data
+    this.vendors = (await vendorService.index(true)).data
     if (this.user) {
-      this.items = (await assayService.index(true)).data
+      this.list = this.assays
       this.drawerTitle = 'Assays'
     } else if (this.admin) {
-      this.items = (await vendorService.index(true)).data
+      this.list = this.vendors
       this.drawerTitle = 'Vendors'
     } else {
-      this.items = [{name: 1}, {name: 2}, {name: 3}]
+      this.list = [{name: 1}, {name: 2}, {name: 3}]
       this.drawerTitle = 'Demos'
     }
   },
   methods: {
     set (index) {
-      this.$store.dispatch('setTitle', this.items[index].name)
+      this.$store.dispatch('setTitle', this.list[index].name)
       this.$store.dispatch('setDrawer')
       this.index = index
     }
