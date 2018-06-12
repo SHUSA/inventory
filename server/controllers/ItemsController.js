@@ -103,16 +103,18 @@ module.exports = {
     for (let key in item) {
       itemData[key] = item[key]
     }
-    itemData.assay = assay.name
-    itemData = calculateStockLevels(itemData, assay)
-
+    if (!item.order && !item.user) {
+      itemData.assay = assay.name
+      itemData = calculateStockLevels(itemData, assay)
+    }
     entry = [{
       item: itemData._id,
       updatedAt: itemData.updatedAt,
       currentStock: itemData.currentStock,
       comment: itemData.comment
     }]
-
+    console.log('before try')
+    console.log(itemData)
     try {
       // push new quantity in currentStock either here or before passing
       // add to order only it is an actual order and not data fix. add flag somewhere?
@@ -120,7 +122,7 @@ module.exports = {
         if (err) {
           console.log(err)
           res.send(err.message)
-        } else {
+        } else if (item.order) {
           Order.findOneAndUpdate(
             {createdAt: {$gte: lastSunday}},
             { $pull: { entry: { item: itemData._id } } }, (err, newdoc) => {
@@ -143,6 +145,9 @@ module.exports = {
                 res.send(itemData)
               }
             })
+        } else {
+          console.log('normal update')
+          res.send(itemData)
         }
       })
     } catch (error) {
