@@ -6,38 +6,51 @@
       <v-tab>Main</v-tab>
       <v-tab>Support</v-tab>
     </v-tabs>
-    <v-list-tile v-for="(item, index) in items" :key="item.name" @click="set(index)">
+    <!-- <v-list-tile v-for="(item, index) in items" :key="item.name" @click="set(index)">
           <v-list-tile-action>
             <v-icon>keyboard_arrow_right</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>{{item.name}}</v-list-tile-title>
           </v-list-tile-content>
-        </v-list-tile>
+    </v-list-tile> -->
+    <admin-inventory :items='items' v-if="admin"/>
+    <user-inventory :items='items' v-if="user"/>
   </div>
 </template>
 
 <script>
 import Panel from './globals/Panel'
+import AdminInventory from './AdminInventory'
+import UserInventory from './UserInventory'
 import itemService from '@/services/ItemService.js'
+import { mapState } from 'vuex'
 
 export default {
   props: [
-    'list',
+    'selection',
     'search'
   ],
   components: {
-    Panel
+    Panel,
+    AdminInventory,
+    UserInventory
   },
   data () {
     return {
-      items: {}
+      items: []
     }
   },
-
+  computed: {
+    ...mapState([
+      'user',
+      'admin',
+      'drawer'
+    ])
+  },
   watch: {
-    async list () {
-      this.items = (await itemService.index(this.list, true, this.search.toLowerCase().slice(0, -1))).data
+    async selection () {
+      this.items = (await itemService.index(this.selection, true, this.search.toLowerCase().slice(0, -1))).data
     }
   }
 }
