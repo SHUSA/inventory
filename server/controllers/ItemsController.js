@@ -30,8 +30,11 @@ function calculateStockLevels (item, assay) {
 
 module.exports = {
   async index (req, res) {
+    let search = {}
+    search.active = req.query.status
+    search[req.query.search] = JSON.parse(req.query.item).name
     try {
-      await Item.find({active: req.query.status}).sort({name: -1}).exec((err, doc) => {
+      await Item.find(search).sort({name: -1}).exec((err, doc) => {
         if (err) {
           console.log(err)
           res.send(err.message)

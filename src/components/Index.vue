@@ -32,10 +32,10 @@
       </v-list>
     </v-navigation-drawer>
     <v-flex xs12 offset-xs2 v-if="drawer">
-      <tabs/>
+      <tabs :list="items[index]" :search="drawerTitle"/>
     </v-flex>
     <v-flex xs12 v-else>
-      <tabs/>
+      <tabs :list="items[index]" :search="drawerTitle"/>
     </v-flex>
   </v-layout>
 </template>
@@ -50,7 +50,8 @@ export default {
   data () {
     return {
       items: [],
-      drawerTitle: ''
+      drawerTitle: '',
+      index: 0
     }
   },
   components: {
@@ -65,6 +66,9 @@ export default {
     ])
   },
   async mounted () {
+    console.log('login status')
+    console.log(`user: ${this.user}`)
+    console.log(`admin: ${this.admin}`)
     if (this.user) {
       this.items = (await assayService.index(true)).data
       this.drawerTitle = 'Assays'
@@ -73,21 +77,15 @@ export default {
       this.drawerTitle = 'Vendors'
     } else {
       this.items = [{name: 1}, {name: 2}, {name: 3}]
-      this.drawerTitle = 'Demo'
+      this.drawerTitle = 'Demos'
     }
   },
   methods: {
-    // find a smarter way to do this
     set (index) {
-      for (let i = 0; i < this.items.length; i++) {
-        if (i === index) {
-          this.$store.dispatch('setTitle', this.items[index].name)
-          this.$store.dispatch('setDrawer')
-          this.items[i].tag = true
-        } else {
-          this.items[i].tag = false
-        }
-      }
+      this.$store.dispatch('setTitle', this.items[index].name)
+      this.$store.dispatch('setDrawer')
+      this.index = index
+      console.log(this.index)
     }
   }
 }
