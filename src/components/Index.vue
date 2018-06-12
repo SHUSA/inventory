@@ -66,9 +66,6 @@ export default {
     ])
   },
   async mounted () {
-    console.log('login status')
-    console.log(`user: ${this.user}`)
-    console.log(`admin: ${this.admin}`)
     if (this.user) {
       this.items = (await assayService.index(true)).data
       this.drawerTitle = 'Assays'
@@ -85,7 +82,6 @@ export default {
       this.$store.dispatch('setTitle', this.items[index].name)
       this.$store.dispatch('setDrawer')
       this.index = index
-      console.log(this.index)
     }
   }
 }
