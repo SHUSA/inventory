@@ -1,86 +1,88 @@
 <template>
-  <panel :info="info">
-    <div>
-      <v-dialog
-        v-model="dialog"
-        max-width="500px"
-      >
-        <v-card>
-          <v-card-title>
-            <span class="headline">Update Inventory</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container grid-list-md>
-              <v-layout wrap>
-                <v-flex xs12>
-                  <v-text-field v-model="editedItem.currentStock"
-                    type="number"
-                    min=0
-                    validate-on-blur
-                    :rules="[rules.number]"
-                    label="Current Stock"/>
-                </v-flex>
-                <v-flex xs12>
-                  <v-text-field
-                    v-model="editedItem.comment"
-                    textarea
-                    no-resize
-                    counter=140
-                    validate-on-blur
-                    :rules="[rules.text]"
-                    label="Comment"/>
-                </v-flex>
-                <v-flex xs12>
-                  <v-alert
-                    :value="alert"
-                    type="error"
-                  >
-                    Please fix issues
-                  </v-alert>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer/>
-            <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-            <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <v-data-table
-      :headers="headers"
-      :items="supplies"
-      hide-actions
+  <div>
+    <v-dialog
+      v-model="dialog"
+      max-width="500px"
     >
-      <template slot="items" slot-scope="props">
-        <td>{{props.item.name}}</td>
-        <td>{{props.item.vendor}}</td>
-        <td>{{props.item.catalogNumber}}</td>
-        <td>{{props.item.description}}</td>
-        <td>{{props.item.previousStock}}</td>
-        <td>{{props.item.currentStock}}</td>
-        <td>{{props.item.toOrder}}</td>
-        <td class="comment" id="comment" @click="expand">{{props.item.comment}}</td>
-        <td>{{props.item.lastUpdate}}</td>
-        <td class="justify-center layout px-0">
-            <v-btn icon class="mx-0" @click="editItem(props.item)">
-              <v-icon color="teal">edit</v-icon>
-            </v-btn>
-          </td>
-      </template>
-    </v-data-table>
-    </div>
+      <v-card>
+        <v-card-title>
+          <span class="headline">Update Inventory</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-text-field v-model="editedItem.currentStock"
+                  type="number"
+                  min=0
+                  validate-on-blur
+                  :rules="[rules.number]"
+                  label="Current Stock"/>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field
+                  v-model="editedItem.comment"
+                  textarea
+                  no-resize
+                  counter=140
+                  validate-on-blur
+                  :rules="[rules.text]"
+                  label="Comment"/>
+              </v-flex>
+              <v-flex xs12>
+                <v-alert
+                  :value="alert"
+                  type="error"
+                >
+                  Please fix issues
+                </v-alert>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer/>
+          <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+          <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-  </panel>
+    <v-data-table
+    :headers="headers"
+    :items="items"
+    hide-actions
+  >
+    <template slot="items" slot-scope="props">
+      <td>{{props.item.name}}</td>
+      <td>{{props.item.vendor}}</td>
+      <td>{{props.item.catalogNumber}}</td>
+      <td>{{props.item.itemDescription}}</td>
+      <td>{{props.item.previousStock}}</td>
+      <td>{{props.item.currentStock}}</td>
+      <td>{{props.item.reorderQuantity}}</td>
+      <td class="comment" id="comment" @click="expand">{{props.item.comment}}</td>
+      <td>{{time(props.item)}}</td>
+      <td class="justify-center layout px-0">
+          <v-btn icon class="mx-0" @click="editItem(props.item)">
+            <v-icon color="teal">edit</v-icon>
+          </v-btn>
+        </td>
+    </template>
+  </v-data-table>
+  </div>
 </template>
 
 <script>
+import itemService from '@/services/ItemService.js'
 const moment = require('moment')
 document.getElementsByTagName('input').onwheel = () => false
 
 export default {
+  props: [
+    'items',
+    'assays'
+  ],
   data () {
     return {
       error: [],
@@ -110,11 +112,11 @@ export default {
       editedIndex: -1,
       editedItem: {
         currentStock: 0,
-        comment: 'd'
+        comment: ''
       },
       defaultItem: {
         currentStock: 0,
-        comment: 'd'
+        comment: ''
       },
       info: {
         title: 'user title'
@@ -123,33 +125,25 @@ export default {
         {text: 'Item', value: 'name'},
         {text: 'Vendor', value: 'vendor'},
         {text: 'Catalog #', value: 'catalogNumber'},
-        {text: 'Desc', value: 'description'},
+        {text: 'Desc', value: 'itemDescription'},
         {text: 'Prev Stock', value: 'previousStock'},
         {text: 'Stock', value: 'currentStock'},
-        {text: 'To Order', value: 'toOrder'},
+        {text: 'To Order', value: 'reorderQuantity'},
         {text: 'Comment', value: 'comment'},
-        {text: 'Last Update', value: 'lastUpdate'}
+        {text: 'Last Update', value: 'updatedAt'},
+        {text: '', value: 'name', sortable: false}
       ],
-      supplies: [
-        {
-          value: false,
-          name: 'name',
-          vendor: 'vendor',
-          catalogNumber: '0123456789',
-          description: '9999 cases',
-          previousStock: 999999,
-          currentStock: 0,
-          toOrder: 1,
-          comment: 'enter your comment in this field for further clarification',
-          lastUpdate: moment().format('MMM-DD-YYYY HH:mm:ss')
-        }
-      ]
+      supplies: []
     }
   },
 
   watch: {
     dialog (val) {
       val || this.close()
+    },
+
+    items () {
+      this.supplies = this.items
     }
   },
 
@@ -167,6 +161,10 @@ export default {
       }
     },
 
+    time (item) {
+      return moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
+    },
+
     editItem (item) {
       this.editedIndex = this.supplies.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -181,18 +179,22 @@ export default {
       }, 300)
     },
 
-    save () {
+    async save () {
       if (this.error.length > 0) {
         this.alert = true
       } else {
         this.alert = false
-        if (this.editedIndex > -1) {
-          this.editedItem.lastUpdate = moment().format('MMM-DD-YYYY HH:mm:ss')
-          this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
-          Object.assign(this.supplies[this.editedIndex], this.editedItem)
+        let thisItem = this.editedItem
+        thisItem.updatedAt = Date.now()
+        thisItem.currentStock = parseInt(thisItem.currentStock * 100) / 100
+        if (thisItem.currentStock <= thisItem.reorderPoint) {
+          thisItem.order = true
         } else {
-          this.supplies.push(this.editedItem)
+          thisItem.order = false
         }
+        thisItem.user = true
+        console.log(thisItem.order)
+        Object.assign(this.supplies[this.editedIndex], (await itemService.put(thisItem._id, thisItem, thisItem.assay)).data)
         this.close()
       }
     }
