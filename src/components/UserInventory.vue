@@ -42,6 +42,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
+          <v-progress-circular indeterminate color="primary" v-if="loading"/>
           <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
           <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
         </v-card-actions>
@@ -60,8 +61,8 @@
       <td>{{props.item.itemDescription}}</td>
       <td>{{props.item.previousStock}}</td>
       <td>{{props.item.currentStock}}</td>
-      <td>{{props.item.reorderQuantity}}</td>
-      <td class="comment" id="comment" @click="expand">{{props.item.comment}}</td>
+      <td>{{props.item.toOrder}}</td>
+      <td class="comment" :id=props.item._id @click="expand(props.item._id)">{{props.item.comment}}</td>
       <td>{{time(props.item)}}</td>
       <td class="justify-center layout px-0">
           <v-btn icon class="mx-0" @click="editItem(props.item)">
@@ -109,6 +110,7 @@ export default {
       },
       alert: false,
       dialog: false,
+      loading: false,
       editedIndex: -1,
       editedItem: {
         currentStock: 0,
@@ -122,14 +124,14 @@ export default {
         title: 'user title'
       },
       headers: [
-        {text: 'Item', value: 'name'},
+        {text: 'Item', value: 'name', width: '15%'},
         {text: 'Vendor', value: 'vendor'},
         {text: 'Catalog #', value: 'catalogNumber'},
         {text: 'Desc', value: 'itemDescription'},
         {text: 'Prev Stock', value: 'previousStock'},
         {text: 'Stock', value: 'currentStock'},
-        {text: 'To Order', value: 'reorderQuantity'},
-        {text: 'Comment', value: 'comment'},
+        {text: 'To Order', value: 'toOrder'},
+        {text: 'Comment', value: 'comment', width: '15%'},
         {text: 'Last Update', value: 'updatedAt'},
         {text: '', value: 'name', sortable: false}
       ],
@@ -144,15 +146,32 @@ export default {
 
     items () {
       this.supplies = this.items
+      this.supplies.map(x => {
+        x.toOrder = 0
+        x.order = false
+      })
     }
   },
 
-  methods: {
-    expand () {
-      let ele = document.getElementById('comment')
-      let classes = []
+  mounted () {
+    // this section mainly for dev
+    // limited function in live?
+    this.supplies = this.items
+    this.supplies.map(x => {
+      x.toOrder = 0
+      x.order = false
+    })
+  },
 
+  methods: {
+    expand (id) {
+      console.log('expand')
+      console.log(id)
+      let ele = document.getElementById(id)
+      let classes = []
+      console.log(ele)
       classes = ele.className.split(' ')
+      console.log(classes)
 
       if (classes.includes('expanded')) {
         ele.classList.remove('expanded')
@@ -189,12 +208,15 @@ export default {
         thisItem.currentStock = parseInt(thisItem.currentStock * 100) / 100
         if (thisItem.currentStock <= thisItem.reorderPoint) {
           thisItem.order = true
+          thisItem.toOrder = thisItem.reorderQuantity
         } else {
           thisItem.order = false
+          thisItem.toOrder = 0
         }
         thisItem.user = true
-        console.log(thisItem.order)
+        this.loading = true
         Object.assign(this.supplies[this.editedIndex], (await itemService.put(thisItem._id, thisItem, thisItem.assay)).data)
+        this.loading = false
         this.close()
       }
     }
@@ -213,7 +235,8 @@ export default {
     white-space: nowrap;
   }
   td.comment.expanded {
-    overflow: visible;
+    overflow: auto;
+    text-overflow: initial;
     white-space: normal;
   }
 </style>
