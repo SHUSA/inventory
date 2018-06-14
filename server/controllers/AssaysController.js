@@ -52,7 +52,7 @@ module.exports = {
       await newAssay.save((err, doc) => {
         if (err) {
           console.log(err)
-          res.send(err.message)
+          res.status(400).send(err.message)
         } else {
           res.send(doc)
           // res.redirect(where?)
@@ -76,7 +76,7 @@ module.exports = {
       await Assay.update({_id: req.params.assayId}, assayData, (err, doc) => {
         if (err) {
           console.log(err)
-          res.send(err.message)
+          res.status(400).send(err.message)
         } else {
           console.log(assayData)
           res.send(doc)

@@ -48,7 +48,7 @@ module.exports = {
       await newOrder.save((err, doc) => {
         if (err) {
           console.log(err)
-          res.send(err.message)
+          res.status(400).send(err.message)
         } else {
           res.send(doc)
         }

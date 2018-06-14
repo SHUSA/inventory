@@ -53,7 +53,7 @@ module.exports = {
       await newVendor.save((err, doc) => {
         if (err) {
           console.log(err)
-          res.send(err.message)
+          res.status(400).send(err.message)
         } else {
           res.send(doc)
         }
@@ -76,7 +76,7 @@ module.exports = {
       await Vendor.update({_id: req.params.vendorId}, vendorData, (err, doc) => {
         if (err) {
           console.log(err)
-          res.send(err.message)
+          res.status(400).send(err.message)
         } else {
           res.send(doc)
         }

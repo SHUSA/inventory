@@ -82,7 +82,7 @@ module.exports = {
       await newItem.save((err, doc) => {
         if (err) {
           console.log(err)
-          res.send(err.message)
+          res.status(400).send(err.message)
         } else {
           res.send(newItem)
         }
@@ -121,7 +121,7 @@ module.exports = {
       await Item.update({ _id: itemData._id }, itemData, (err, doc) => {
         if (err) {
           console.log(err)
-          res.send(err.message)
+          res.status(400).send(err.message)
         } else if (item.order) {
           Order.findOneAndUpdate(
             {createdAt: {$gte: lastSunday}},
