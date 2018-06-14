@@ -14,10 +14,14 @@ export default {
   },
 
   post (assay) {
-    return API().post('assays', assay)
+    return API().post('assays', assay).catch(err =>
+      JSON.parse(JSON.stringify(err)).response
+    )
   },
 
   put (assayId) {
-    return API().put(`assays/${assayId}`)
+    return API().put(`assays/${assayId}`).catch(err =>
+      JSON.parse(JSON.stringify(err)).response
+    )
   }
 }

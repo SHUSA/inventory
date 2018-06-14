@@ -21,7 +21,9 @@ export default {
         item: item,
         assay: assay
       }
-    })
+    }).catch(err =>
+      JSON.parse(JSON.stringify(err)).response
+    )
   },
 
   put (itemId, item, assay) {
@@ -30,6 +32,8 @@ export default {
         item: item,
         assay: assay
       }
-    })
+    }).catch(err =>
+      JSON.parse(JSON.stringify(err)).response
+    )
   }
 }
