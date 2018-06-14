@@ -23,7 +23,7 @@
                     item-text="name"
                     item-value="name"
                     v-model="editedItem.assay"
-                    :append-icon="'note_add'"
+                    append-icon="note_add"
                     :append-icon-cb="addAssay"
                     :rules="[rules.assay]"
                     dense
@@ -38,7 +38,7 @@
                     item-text="name"
                     item-value="name"
                     v-model="editedItem.vendor"
-                    :append-icon="'note_add'"
+                    append-icon="note_add"
                     :append-icon-cb="addVendor"
                     :rules="[rules.vendor]"
                     dense
@@ -293,15 +293,15 @@ export default {
         title: 'admin title'
       },
       headers: [
-        {text: 'Item', value: 'name'},
+        {text: 'Item', value: 'name', width: '15%'},
         {text: 'Assay', value: 'assay'},
         {text: 'Catalog #', value: 'catalogNumber'},
         {text: 'Desc', value: 'itemDescription'},
         {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'reorderQuantity'},
-        {text: 'Comment', value: 'comment'},
+        {text: 'Comment', value: 'comment', width: '15%'},
         {text: 'Last Update', value: 'updatedAt'},
-        {text: '', value: 'name', sortable: false}
+        {text: '', value: 'name', sortable: false, width: '5%'}
       ],
       supplies: [],
       assayList: [],
