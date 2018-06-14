@@ -23,11 +23,6 @@ app.get('*', function (req, res) {
     res.sendFile(__dirname + '/dist/index.html')
 })
 
-// sequelize.sync({ force: false }).then(() => {
-//   app.listen(config.port)
-//   console.log(`Server started on port ${config.port}`)
-// })
-
 app.listen(config.port, () => {
   console.log(`Server started on port ${config.port}`)
 })

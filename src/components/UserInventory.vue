@@ -165,13 +165,9 @@ export default {
 
   methods: {
     expand (id) {
-      console.log('expand')
-      console.log(id)
       let ele = document.getElementById(id)
       let classes = []
-      console.log(ele)
       classes = ele.className.split(' ')
-      console.log(classes)
 
       if (classes.includes('expanded')) {
         ele.classList.remove('expanded')
