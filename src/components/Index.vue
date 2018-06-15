@@ -25,7 +25,7 @@
             <v-icon>keyboard_arrow_right</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title v-if="item.shortName">{{item.shortName}}</v-list-tile-title>
+            <v-list-tile-title v-if="item.name">{{item.name}}</v-list-tile-title>
             <v-list-tile-title v-else>{{item.name}}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
