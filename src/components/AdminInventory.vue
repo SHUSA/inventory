@@ -13,7 +13,7 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs6>
-                  <v-text-field v-model="editedItem.name" label="Item Name" required/>
+                  <v-text-field v-model="editedItem.name" :rules="[rules.item]" label="Item Name" required/>
                 </v-flex>
                 <v-flex xs6>
                   <v-select
@@ -155,7 +155,7 @@
             <v-container grid-list-md>
               <v-layout wrap>
                 <v-flex xs12>
-                  <v-text-field v-model="editedVendor.name" label="Name" required/>
+                  <v-text-field v-model="editedVendor.name" label="Name" :rules="[rules.vendor]" required/>
                 </v-flex>
                 <v-flex xs12>
                   <v-alert
@@ -230,67 +230,71 @@ export default {
       vendorDialog: false,
       alert: false,
       alertMessage: '',
-      errors: [],
+      errors: {
+        assay: false,
+        vendor: false,
+        catalog: false,
+        item: false,
+        num: []
+      },
       rules: {
         number: (val) => {
           const num = parseFloat(val)
           // create error object with all number validated refs, check $ref.<refname>.value to see if is num, true if yes, false if no
           if (!isNaN(num) && num >= 0) {
-            this.errors.pop()
-            console.log('pop')
+            this.errors.num.pop()
             return true
           } else {
-            this.errors.push('')
-            console.log('push')
+            this.errors.num.push('')
             return 'Please enter a valid number'
           }
         },
         catalog: (text) => {
-          const errMessage = 'catErr'
-          const err = this.errors
-          if (text === '') {
-            err.indexOf(errMessage) === -1 ? err.push(errMessage) : console.log()
+          if (text.length === 0) {
+            this.errors.catalog = true
             return 'Please enter a catalog number'
-          } else if (this.supplies.find(item => item.catalogNumber.toLowerCase() === text.toLowerCase()) !== undefined) {
+          } else if (this.supplies.find(item => item.catalogNumber.toUpperCase() === text.toUpperCase()) !== undefined) {
+            // fixes error throwing on existing items
             if (this.editedIndex > -1) {
-              err.splice(err.indexOf(errMessage), 1)
+              this.errors.catalog = false
               return true
             } else {
-              err.indexOf(errMessage) === -1 ? err.push(errMessage) : console.log()
+              this.errors.catalog = true
               return 'Duplicate catalog found'
             }
           } else {
-            err.splice(err.indexOf(errMessage), 1)
+            this.errors.catalog = false
             return true
           }
         },
         assay: (text) => {
-          const errMessage = 'assayErr'
-          const err = this.errors
           if (text.length === 0) {
-            this.editedAssay.name = text
-            err.indexOf(errMessage) === -1 ? err.push(errMessage) : console.log()
-            return 'Please enter a valid assay'
+            this.errors.assay = true
+            return 'Please enter a valid name'
           } else {
-            err.splice(err.indexOf(errMessage), 1)
+            this.errors.assay = false
             return true
           }
         },
         vendor: (text) => {
-          const errMessage = 'vendorErr'
-          const err = this.errors
           if (text.length === 0) {
-            this.editedVendor.name = text
-            err.indexOf(errMessage) === -1 ? err.push(errMessage) : console.log()
-            return 'Please enter a valid assay'
+            this.errors.vendor = true
+            return 'Please enter a valid name'
           } else {
-            err.splice(err.indexOf(errMessage), 1)
+            this.errors.assay = false
+            return true
+          }
+        },
+
+        item: (text) => {
+          if (text.length === 0) {
+            this.errors.item = true
+            return 'Please enter a valid name'
+          } else {
+            this.errors.item = false
             return true
           }
         }
-      },
-      info: {
-        title: 'admin title'
       },
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
@@ -360,6 +364,18 @@ export default {
       val || this.close()
     },
 
+    assayDialog (val) {
+      if (!val) {
+        this.alert = false
+      }
+    },
+
+    vendorDialog (val) {
+      if (!val) {
+        this.alert = false
+      }
+    },
+
     items () {
       this.supplies = this.items
       this.vendorList = this.vendors
@@ -407,9 +423,11 @@ export default {
       this.dialog = true
     },
 
-    deleteItem (item) {
+    async deleteItem (item) {
       const index = this.supplies.indexOf(item)
-      if (confirm(`Are you sure you want to delete ${item.name}?`)) {
+      if (confirm(`Are you sure you want to deactivate ${item.name}?`)) {
+        item.active = false
+        await itemService.put(item._id, item, null)
         this.supplies.splice(index, 1)
         this.dialog = false
       }
@@ -431,24 +449,43 @@ export default {
     },
 
     async save () {
+      const num = this.errors.num.length
+      this.alertMessage = 'Please fix issues'
       if (this.assayDialog) {
-        this.assays.push((await assayService.post(this.editedAssay)).data)
-      } else if (this.vendorDialog) {
-        this.vendors.push((await vendorService.post(this.editedVendor)).data)
-      } else {
-        console.log(this.editedItem.assay)
-        let assayInfo = this.assays.find(assay => assay.name.toLowerCase() === this.editedItem.assay.toLowerCase())
-
-        if (this.errors.length > 0) {
+        if (this.errors.assay || num) {
           this.alert = true
-          this.alertMessage = 'Please fix issues'
         } else {
           this.alert = false
+          this.editedItem.assay = this.editedAssay.name
+          this.assays.push((await assayService.post(this.editedAssay)).data)
+        }
+      } else if (this.vendorDialog) {
+        if (this.errors.vendor || num) {
+          this.alert = true
+        } else {
+          this.alert = false
+          this.editedItem.vendor = this.editedVendor.name
+          this.vendors.push((await vendorService.post(this.editedVendor)).data)
+        }
+      } else {
+        if (this.errors.item || num) {
+          this.alert = true
+          console.log(this.errors)
+        } else {
+          let assayInfo = this.assays.find(assay => assay.name.toUpperCase() === this.editedItem.assay.toUpperCase())
+          this.alert = false
+          for (let key in this.editedItem) {
+            if (typeof this.editedItem[key] === 'string') {
+              this.editedItem[key] = this.editedItem[key].trim()
+            }
+          }
+          this.editedItem.catalogNumber = this.editedItem.catalogNumber.toUpperCase()
+          this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
+
           if (this.editedIndex > -1) {
             // existing item
             let focusedItem = this.supplies[this.editedIndex]
             this.editedItem.updatedAt = Date.now()
-            this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
             Object.assign(focusedItem, (await itemService.put(focusedItem._id, this.editedItem, assayInfo)).data)
           } else {
             // new item
