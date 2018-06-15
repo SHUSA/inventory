@@ -6,6 +6,7 @@
     <v-spacer></v-spacer>
     <v-toolbar-items>
       <v-btn flat @click.native="drawer">
+        <v-icon>menu</v-icon>
         {{pageTitle}}
       </v-btn>
     </v-toolbar-items>

@@ -71,7 +71,7 @@ module.exports = {
     for (let key in assay) {
       assayData[key] = assay[key]
     }
-
+    // add case, if active === false, deactivate all associated items
     try {
       await Assay.update({_id: req.params.assayId}, assayData, (err, doc) => {
         if (err) {

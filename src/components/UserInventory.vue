@@ -120,9 +120,6 @@ export default {
         currentStock: 0,
         comment: ''
       },
-      info: {
-        title: 'user title'
-      },
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
         {text: 'Vendor', value: 'vendor'},

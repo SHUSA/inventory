@@ -16,7 +16,7 @@ export default new Vuex.Store({
       admin: true,
       demo: true
     },
-    pageTitle: 'test',
+    pageTitle: '',
     drawer: true,
     token: null,
     userId: null,

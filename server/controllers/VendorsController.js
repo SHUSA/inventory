@@ -68,7 +68,7 @@ module.exports = {
     for (let key in vendor) {
       vendorData[key] = vendor[key]
     }
-
+    // add case, if active === false, deactivate all associated items
     try {
       await Vendor.update({_id: req.params.vendorId}, vendorData, (err, doc) => {
         if (err) {
