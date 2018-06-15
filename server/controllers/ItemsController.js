@@ -103,7 +103,7 @@ module.exports = {
     for (let key in item) {
       itemData[key] = item[key]
     }
-    if (!item.order && !item.user) {
+    if (!item.order && !item.user && item.active) {
       itemData.assay = assay.name
       itemData = calculateStockLevels(itemData, assay)
     }
