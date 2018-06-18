@@ -6,16 +6,10 @@
       <v-tab>Main</v-tab>
       <v-tab>Support</v-tab>
     </v-tabs>
-    <!-- <v-list-tile v-for="(item, index) in items" :key="item.name" @click="set(index)">
-          <v-list-tile-action>
-            <v-icon>keyboard_arrow_right</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>{{item.name}}</v-list-tile-title>
-          </v-list-tile-content>
-    </v-list-tile> -->
-    <admin-inventory :items='items' :assays="assays" :vendors="vendors" v-if="admin"/>
-    <user-inventory :items='items' :assays="assays" v-if="user"/>
+    <template>
+      <admin-inventory :items='items' :assays="assays" :vendors="vendors" v-if="admin"/>
+      <user-inventory :items='items' :assays="assays" v-if="user"/>
+    </template>
   </div>
 </template>
 
@@ -52,7 +46,7 @@ export default {
   },
   watch: {
     async selection () {
-      this.items = (await itemService.index(this.selection, true, this.search.toLowerCase().slice(0, -1))).data
+      this.items = (await itemService.index(this.selection, true, this.search.toLowerCase())).data
     }
   }
 }
