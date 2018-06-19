@@ -122,7 +122,6 @@ export default {
     },
 
     viewOrder (index) {
-      console.log('vieworder')
       this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
       this.$store.dispatch('setDrawer')
       this.index = index

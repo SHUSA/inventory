@@ -6,7 +6,7 @@
       <v-tab>Main</v-tab>
       <v-tab>Coming Soon&#8482;</v-tab>
     </v-tabs>
-    <order :orderId="selection._id" :items="items" v-if="search === 'order'"/>
+    <order :order="selection" :items="items" v-if="search === 'order'"/>
     <template v-else>
       <admin-inventory :items="items" :assays="assays" :vendors="vendors" v-if="admin"/>
       <user-inventory :items="items" :assays="assays" v-if="user"/>
@@ -54,7 +54,9 @@ export default {
         this.selection.entry.map(entry => {
           this.orders.push(entry.item)
         })
+        // combine current stock and comments from entry to existing data
         this.items = (await itemService.show(this.orders)).data
+        console.log(this.items)
       } else {
         this.items = (await itemService.index(this.selection, true, this.search.toLowerCase())).data
       }
