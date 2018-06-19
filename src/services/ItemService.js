@@ -11,8 +11,12 @@ export default {
     })
   },
 
-  show (itemId) {
-    return API().get(`items/${itemId}`)
+  show (itemIds) {
+    return API().get('items/list', {
+      params: {
+        itemIds: itemIds
+      }
+    })
   },
 
   post (item, assay) {

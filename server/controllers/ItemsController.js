@@ -51,7 +51,7 @@ module.exports = {
 
   async show (req, res) {
     try {
-      await Item.find({_id: req.params.itemId}, (err, doc) => {
+      await Item.find({_id: {$in: req.query.itemIds}}, (err, doc) => {
         if (err) {
           console.log(err)
           res.send(err.message)

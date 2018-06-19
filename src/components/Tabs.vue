@@ -34,7 +34,8 @@ export default {
   },
   data () {
     return {
-      items: []
+      items: [],
+      orders: []
     }
   },
   computed: {
@@ -46,7 +47,15 @@ export default {
   },
   watch: {
     async selection () {
-      this.items = (await itemService.index(this.selection, true, this.search.toLowerCase())).data
+      // get sent order or assay/vendor selection
+      if (this.search === 'order') {
+        this.selection.entry.map(entry => {
+          this.orders.push(entry.item)
+        })
+        this.items = (await itemService.show(this.orders)).data
+      } else {
+        this.items = (await itemService.index(this.selection, true, this.search.toLowerCase())).data
+      }
     }
   }
 }

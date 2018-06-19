@@ -20,7 +20,7 @@ module.exports = (app) => {
   app.put('/vendors/:vendorId', VendorsController.put)
 
   app.get('/items', ItemsController.index)
-  app.get('/items/:itemId', ItemsController.show)
+  app.get('/items/list', ItemsController.show)
   app.post('/items', ItemsController.post)
   app.put('/items/:itemId', ItemsController.put)
 
