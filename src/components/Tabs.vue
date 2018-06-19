@@ -4,11 +4,12 @@
       dark
     >
       <v-tab>Main</v-tab>
-      <v-tab>Support</v-tab>
+      <v-tab>Coming Soon&#8482;</v-tab>
     </v-tabs>
-    <template>
-      <admin-inventory :items='items' :assays="assays" :vendors="vendors" v-if="admin"/>
-      <user-inventory :items='items' :assays="assays" v-if="user"/>
+    <order :orderId="selection._id" :items="items" v-if="search === 'order'"/>
+    <template v-else>
+      <admin-inventory :items="items" :assays="assays" :vendors="vendors" v-if="admin"/>
+      <user-inventory :items="items" :assays="assays" v-if="user"/>
     </template>
   </div>
 </template>
@@ -17,6 +18,7 @@
 import Panel from './globals/Panel'
 import AdminInventory from './AdminInventory'
 import UserInventory from './UserInventory'
+import Order from './Order'
 import itemService from '@/services/ItemService.js'
 import { mapState } from 'vuex'
 
@@ -30,7 +32,8 @@ export default {
   components: {
     Panel,
     AdminInventory,
-    UserInventory
+    UserInventory,
+    Order
   },
   data () {
     return {
@@ -47,7 +50,6 @@ export default {
   },
   watch: {
     async selection () {
-      // get sent order or assay/vendor selection
       if (this.search === 'order') {
         this.selection.entry.map(entry => {
           this.orders.push(entry.item)
