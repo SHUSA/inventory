@@ -51,14 +51,16 @@ module.exports = {
 
   async show (req, res) {
     try {
-      await Item.find({_id: {$in: req.query.itemIds}}, (err, doc) => {
-        if (err) {
-          console.log(err)
-          res.send(err.message)
-        } else {
-          res.send(doc)
-        }
-      })
+      await Item.find({_id: {$in: req.query.itemIds}})
+        .sort({vendor: -1})
+        .exec((err, doc) => {
+          if (err) {
+            console.log(err)
+            res.send(err.message)
+          } else {
+            res.send(doc)
+          }
+        })
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching item'
