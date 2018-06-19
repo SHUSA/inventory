@@ -32,5 +32,6 @@ module.exports = (app) => {
   app.get('/orders', OrdersController.index)
   app.get('/orders/:orderId', OrdersController.show)
   app.post('/orders', OrdersController.post)
+  app.put('/orders/:orderId', OrdersController.put)
   app.delete('/orders/:orderId', OrdersController.remove)
 }
