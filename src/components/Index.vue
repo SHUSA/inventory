@@ -47,10 +47,10 @@
       </v-list>
     </v-navigation-drawer>
     <v-flex xs12 offset-xs3 v-if="drawer">
-      <tabs :selection="index" :assays="assays" :vendors="vendors" :orders="orders" :search="search"/>
+      <tabs :selection="items[index]" :assays="assays" :vendors="vendors" :search="search"/>
     </v-flex>
     <v-flex xs12 v-else>
-      <tabs :selection="index" :assays="assays" :vendors="vendors" :orders="orders" :search="search"/>
+      <tabs :selection="items[index]" :assays="assays" :vendors="vendors" :search="search"/>
     </v-flex>
   </v-layout>
 </template>
@@ -67,6 +67,7 @@ export default {
   data () {
     return {
       list: [],
+      items: [],
       assays: [],
       vendors: [],
       orders: [],
@@ -101,8 +102,6 @@ export default {
       this.list = [{name: 1}, {name: 2}, {name: 3}]
       this.drawerTitle = 'Demo'
     }
-
-    this.search = this.drawerTitle
   },
   methods: {
     time (order) {
@@ -113,13 +112,22 @@ export default {
       this.$store.dispatch('setTitle', this.list[index].name)
       this.$store.dispatch('setDrawer')
       this.index = index
+      this.search = this.drawerTitle.toLowerCase()
+      if (this.search === 'vendor') {
+        this.list = this.vendors
+      } else if (this.search === 'assay') {
+        this.list = this.assays
+      }
+      this.items = this.list
     },
 
     viewOrder (index) {
-      this.$store.dispatch('setTitle', `Week of ${this.order[index].createdAt}`)
+      console.log('vieworder')
+      this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
       this.$store.dispatch('setDrawer')
       this.index = index
       this.search = 'order'
+      this.items = this.orders
     }
   }
 }
