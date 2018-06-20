@@ -63,11 +63,12 @@ module.exports = {
   async put (req, res) {
     try {
       Order.findOneAndUpdate({_id: req.params.orderId},
-        {$set: {completed: !req.body.params.order.completed}}, (err, doc) => {
+        req.body.params.order, (err, doc) => {
           if (err) {
             console.log(err)
             res.send(err.message)
           } else {
+            console.log(doc)
             res.send(doc)
           }
         })

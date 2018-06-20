@@ -60,7 +60,6 @@ export default {
         this.items.map(x => {
           for (let i = 0; i < entry.length; i++) {
             if (entry[i].item === x._id) {
-              console.log(entry[i])
               Object.assign(x, entry[i])
               break
             }

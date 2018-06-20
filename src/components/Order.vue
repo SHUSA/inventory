@@ -4,10 +4,12 @@
       v-model="dialog"
       max-width="500px"
     >
-      <v-btn slot="activator" color="primary" class="mb-0" dark>{{orderButton}}</v-btn>
+      <v-btn v-if="!thisOrder.completed" slot="activator" color="primary" class="mb-0" dark>Complete Order</v-btn>
+      <v-btn v-else slot="activator" color="error" class="mb-0" dark>Undo Complete</v-btn>
       <v-card>
         <v-card-title>
-          <span class="headline">{{buttonPrompt}}</span>
+          <span v-if="!thisOrder.completed" class="headline">Is the order complete?</span>
+          <span v-else class="headline">Undo completed status?</span>
           <v-card-actions>
             <v-btn color="error" @click.native="close">No</v-btn>
             <v-btn color="primary" @click.native="changeOrder">Yes</v-btn>
@@ -15,6 +17,10 @@
         </v-card-title>
       </v-card>
     </v-dialog>
+
+    <v-card v-if="thisOrder.completed" class="ma-2">
+      <v-card-text>Completed on {{time(thisOrder.completeDate)}}</v-card-text>
+    </v-card>
 
     <v-data-table
         :headers="headers"
@@ -29,7 +35,7 @@
           <td>{{props.item.currentStock}}</td>
           <td>{{props.item.reorderQuantity}}</td>
           <td class="comment" :id=props.item._id @click="expand(props.item._id)">{{props.item.comment}}</td>
-          <td>{{time(props.item)}}</td>
+          <td>{{time(props.item.updatedAt)}}</td>
         </template>
         <template slot="no-data">
           <v-alert color="error" icon="warning">Nothing here!</v-alert>
@@ -69,6 +75,9 @@ export default {
   watch: {
     items () {
       this.supplies = this.items
+    },
+
+    order () {
       this.thisOrder = this.order
     }
   },
@@ -79,26 +88,9 @@ export default {
     this.thisOrder = this.order
   },
 
-  computed: {
-    orderButton: {
-      cache: false,
-      get () {
-        console.log(`order button ${this.thisOrder.completed}`)
-        return this.thisOrder.completed ? 'Undo Order' : 'Complete Order'
-      }
-    },
-
-    buttonPrompt: {
-      cache: false,
-      get () {
-        return this.thisOrder.completed ? 'Undo completed status?' : 'Is the order complete?'
-      }
-    }
-  },
-
   methods: {
-    time (item) {
-      return moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
+    time (time) {
+      return moment(time).format('MMM-DD-YYYY HH:mm:ss')
     },
 
     expand (id) {
@@ -118,7 +110,13 @@ export default {
     },
 
     async changeOrder () {
-      this.thisOrder = (await orderService.put(this.thisOrder)).data
+      if (this.thisOrder.completed) {
+        this.thisOrder.completeDate = null
+      } else {
+        this.thisOrder.completeDate = Date.now()
+      }
+      this.thisOrder.completed = !this.thisOrder.completed
+      await orderService.put(this.thisOrder)
       this.close()
     }
   }
