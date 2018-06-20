@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}}
+      {{title}} v.a001
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items>
