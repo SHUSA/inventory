@@ -51,12 +51,23 @@ export default {
   watch: {
     async selection () {
       if (this.search === 'order') {
-        this.selection.entry.map(entry => {
+        let entry = this.selection.entry
+        entry.map(entry => {
           this.orders.push(entry.item)
         })
         // combine current stock and comments from entry to existing data
         this.items = (await itemService.show(this.orders)).data
-        console.log(this.items)
+        this.items.map(x => {
+          for (let i = 0; i < entry.length; i++) {
+            if (entry[i].item === x._id) {
+              console.log(entry[i])
+              Object.assign(x, entry[i])
+              break
+            }
+          }
+        })
+        // reset orders to prevent inflation
+        this.orders = []
       } else {
         this.items = (await itemService.index(this.selection, true, this.search.toLowerCase())).data
       }
