@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import Panel from './globals/Panel'
 import AdminInventory from './AdminInventory'
 import UserInventory from './UserInventory'
 import Order from './Order'
@@ -30,7 +29,6 @@ export default {
     'vendors'
   ],
   components: {
-    Panel,
     AdminInventory,
     UserInventory,
     Order
