@@ -1,5 +1,6 @@
 <template>
-    <div>
+  <v-card>
+    <v-card-title>
       <v-dialog
         v-model="dialog"
         max-width="500px"
@@ -95,6 +96,14 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-spacer/>
+      <v-text-field
+        v-model="search"
+        append-icon="search"
+        label="Search"
+        single-line
+        hide-details
+      />
 
       <v-dialog
         v-model="assayDialog"
@@ -178,32 +187,37 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+    </v-card-title>
 
-      <v-data-table
-        :headers="headers"
-        :items="items"
-        hide-actions
-      >
-        <template slot="items" slot-scope="props">
-          <td>{{props.item.name}}</td>
-          <td>{{props.item.assay}}</td>
-          <td>{{props.item.catalogNumber}}</td>
-          <td>{{props.item.itemDescription}}</td>
-          <td>{{props.item.currentStock}}</td>
-          <td>{{props.item.reorderQuantity}}</td>
-          <td class="comment" :id=props.item._id @click="expand(props.item._id)">{{props.item.comment}}</td>
-          <td>{{time(props.item)}}</td>
-          <td class="justify-center layout px-0">
-            <v-btn icon class="mx-0" @click="editItem(props.item)">
-              <v-icon color="teal">info</v-icon>
-            </v-btn>
-          </td>
-        </template>
-        <template slot="no-data">
-          <v-alert color="error" icon="warning">Nothing here!</v-alert>
-        </template>
-      </v-data-table>
-    </div>
+    <v-data-table
+      :headers="headers"
+      :items="items"
+      :search="search"
+      hide-actions
+    >
+      <template slot="items" slot-scope="props">
+        <td>{{props.item.name}}</td>
+        <td>{{props.item.assay}}</td>
+        <td>{{props.item.catalogNumber}}</td>
+        <td>{{props.item.itemDescription}}</td>
+        <td>{{props.item.currentStock}}</td>
+        <td>{{props.item.reorderQuantity}}</td>
+        <td class="comment" :id=props.item._id @click="expand(props.item._id)">{{props.item.comment}}</td>
+        <td>{{time(props.item)}}</td>
+        <td class="justify-center layout px-0">
+          <v-btn icon class="mx-0" @click="editItem(props.item)">
+            <v-icon color="teal">info</v-icon>
+          </v-btn>
+        </td>
+      </template>
+      <template slot="no-data">
+        <v-alert color="error" icon="warning">Nothing here!</v-alert>
+      </template>
+      <v-alert slot="no-results" :value="true" color="error" icon="warning">
+        No results for {{search}}.
+      </v-alert>
+    </v-data-table>
+  </v-card>
 </template>
 
 <script>
@@ -233,6 +247,7 @@ export default {
       vendorDialog: false,
       alert: false,
       loading: false,
+      search: '',
       alertMessage: '',
       errors: {
         assay: false,

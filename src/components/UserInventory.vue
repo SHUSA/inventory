@@ -1,77 +1,91 @@
 <template>
-  <div>
-    <v-dialog
-      v-model="dialog"
-      max-width="500px"
-    >
-      <v-card>
-        <v-card-title>
-          <span class="headline">Update Inventory</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-text-field v-model="editedItem.currentStock"
-                  type="number"
-                  min=0
-                  validate-on-blur
-                  :rules="[rules.number]"
-                  label="Current Stock"/>
-              </v-flex>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="editedItem.comment"
-                  textarea
-                  no-resize
-                  counter=140
-                  validate-on-blur
-                  :rules="[rules.text]"
-                  label="Comment"/>
-              </v-flex>
-              <v-flex xs12>
-                <v-alert
-                  :value="alert"
-                  type="error"
-                >
-                  Please fix issues
-                </v-alert>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer/>
-          <v-progress-circular indeterminate color="primary" v-if="loading"/>
-          <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+  <v-card>
+    <v-card-title>
+      <v-dialog
+        v-model="dialog"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title>
+            <span class="headline">Update Inventory</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12>
+                  <v-text-field v-model="editedItem.currentStock"
+                    type="number"
+                    min=0
+                    validate-on-blur
+                    :rules="[rules.number]"
+                    label="Current Stock"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-text-field
+                    v-model="editedItem.comment"
+                    textarea
+                    no-resize
+                    counter=140
+                    validate-on-blur
+                    :rules="[rules.text]"
+                    label="Comment"/>
+                </v-flex>
+                <v-flex xs12>
+                  <v-alert
+                    :value="alert"
+                    type="error"
+                  >
+                    Please fix issues
+                  </v-alert>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer/>
+            <v-progress-circular indeterminate color="primary" v-if="loading"/>
+            <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-spacer/>
+      <v-text-field
+        v-model="search"
+        append-icon="search"
+        label="Search"
+        single-line
+        hide-details
+      />
+    </v-card-title>
 
     <v-data-table
-    :headers="headers"
-    :items="items"
-    hide-actions
-  >
-    <template slot="items" slot-scope="props">
-      <td>{{props.item.name}}</td>
-      <td>{{props.item.vendor}}</td>
-      <td>{{props.item.catalogNumber}}</td>
-      <td>{{props.item.itemDescription}}</td>
-      <td>{{props.item.previousStock}}</td>
-      <td>{{props.item.currentStock}}</td>
-      <td>{{props.item.toOrder}}</td>
-      <td class="comment" :id=props.item._id @click="expand(props.item._id)">{{props.item.comment}}</td>
-      <td>{{time(props.item)}}</td>
-      <td class="justify-center layout px-0">
-          <v-btn icon class="mx-0" @click="editItem(props.item)">
-            <v-icon color="teal">edit</v-icon>
-          </v-btn>
-        </td>
-    </template>
-  </v-data-table>
-  </div>
+      :headers="headers"
+      :items="items"
+      :search="search"
+      hide-actions
+    >
+      <template slot="items" slot-scope="props">
+        <td>{{props.item.name}}</td>
+        <td>{{props.item.vendor}}</td>
+        <td>{{props.item.catalogNumber}}</td>
+        <td>{{props.item.itemDescription}}</td>
+        <td>{{props.item.previousStock}}</td>
+        <td>{{props.item.currentStock}}</td>
+        <td>{{props.item.toOrder}}</td>
+        <td class="comment" :id=props.item._id @click="expand(props.item._id)">{{props.item.comment}}</td>
+        <td>{{time(props.item)}}</td>
+        <td class="justify-center layout px-0">
+            <v-btn icon class="mx-0" @click="editItem(props.item)">
+              <v-icon color="teal">edit</v-icon>
+            </v-btn>
+          </td>
+      </template>
+      <v-alert slot="no-results" :value="true" color="error" icon="warning">
+        No results for {{search}}.
+      </v-alert>
+    </v-data-table>
+  </v-card>
 </template>
 
 <script>
@@ -111,6 +125,7 @@ export default {
       alert: false,
       dialog: false,
       loading: false,
+      search: '',
       editedIndex: -1,
       editedItem: {
         currentStock: 0,
