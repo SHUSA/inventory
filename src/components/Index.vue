@@ -97,13 +97,18 @@ export default {
       this.list = this.assays
       this.drawerTitle = 'Assay'
     } else if (this.admin) {
-      this.list = this.vendors
+      if (this.vendors.length > 0) {
+        this.list = this.vendors
+      } else {
+        this.list = [{name: 'Add New Item'}]
+      }
       this.drawerTitle = 'Vendor'
     } else {
       this.list = [{name: 1}, {name: 2}, {name: 3}]
       this.drawerTitle = 'Demo'
     }
   },
+
   methods: {
     time (order) {
       return moment(order).format('MMM-DD-YYYY')
@@ -115,7 +120,11 @@ export default {
       this.index = index
       this.search = this.drawerTitle.toLowerCase()
       if (this.search === 'vendor') {
-        this.list = this.vendors
+        if (this.vendors.length > 0) {
+          this.list = this.vendors
+        } else {
+          this.list = [{name: 'Add New Item'}]
+        }
       } else if (this.search === 'assay') {
         this.list = this.assays
       }
@@ -127,7 +136,11 @@ export default {
       this.$store.dispatch('setDrawer')
       this.index = index
       this.search = 'order'
-      this.items = this.orders
+      if (this.orders.length === 0) {
+        this.items = [{name: 'Add New Order'}]
+      } else {
+        this.items = this.orders
+      }
     }
   }
 }
