@@ -13,8 +13,27 @@
           <v-card-actions>
             <v-btn color="error" @click.native="close">No</v-btn>
             <v-btn color="primary" @click.native="changeOrder">Yes</v-btn>
+            <v-spacer/>
+            <v-progress-circular indeterminate color="primary" v-if="loading"/>
           </v-card-actions>
         </v-card-title>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      v-model="dialog2"
+      max-width="500px"
+    >
+      <v-btn slot="activator" color="primary" class="mb-0">New Order</v-btn>
+      <v-card>
+        <v-card-title>
+          <span class="headline">Create a new order?</span>
+        </v-card-title>
+        <v-card-actions>
+          <v-progress-circular indeterminate color="primary" v-if="loading"/>
+          <v-btn color="error" @click.native="close">No</v-btn>
+          <v-btn color="primary" @click.native="createOrder">Yes</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
 
@@ -56,6 +75,8 @@ export default {
   data () {
     return {
       dialog: false,
+      dialog2: false,
+      loading: false,
       completed: false,
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
@@ -107,9 +128,18 @@ export default {
 
     close () {
       this.dialog = false
+      this.dialog2 = false
+    },
+
+    async createOrder () {
+      this.loading = true
+      await orderService.post()
+      this.loading = false
+      location.reload()
     },
 
     async changeOrder () {
+      this.loading = true
       if (this.thisOrder.completed) {
         this.thisOrder.completeDate = null
       } else {
@@ -117,6 +147,7 @@ export default {
       }
       this.thisOrder.completed = !this.thisOrder.completed
       await orderService.put(this.thisOrder)
+      this.loading = false
       this.close()
     }
   }

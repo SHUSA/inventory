@@ -89,6 +89,7 @@
           <v-card-actions>
             <v-btn color="red darken-1" flat @click.native="deleteItem(currentItem)" v-if="currentItem != null">Delete</v-btn>
             <v-spacer/>
+            <v-progress-circular indeterminate color="primary" v-if="loading"/>
             <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
             <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
           </v-card-actions>
@@ -137,6 +138,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer/>
+            <v-progress-circular indeterminate color="primary" v-if="loading"/>
             <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
             <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
           </v-card-actions>
@@ -170,6 +172,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer/>
+            <v-progress-circular indeterminate color="primary" v-if="loading"/>
             <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
             <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
           </v-card-actions>
@@ -229,6 +232,7 @@ export default {
       assayDialog: false,
       vendorDialog: false,
       alert: false,
+      loading: false,
       alertMessage: '',
       errors: {
         assay: false,
@@ -455,6 +459,7 @@ export default {
         if (this.errors.assay || num) {
           this.alert = true
         } else {
+          this.loading = true
           this.alert = false
           this.editedItem.assay = this.editedAssay.name
           this.assays.push((await assayService.post(this.editedAssay)).data)
@@ -463,6 +468,7 @@ export default {
         if (this.errors.vendor || num) {
           this.alert = true
         } else {
+          this.loading = true
           this.alert = false
           this.editedItem.vendor = this.editedVendor.name
           this.vendors.push((await vendorService.post(this.editedVendor)).data)
@@ -473,6 +479,7 @@ export default {
           console.log(this.errors)
         } else {
           let assayInfo = this.assays.find(assay => assay.name.toUpperCase() === this.editedItem.assay.toUpperCase())
+          this.loading = true
           this.alert = false
           for (let key in this.editedItem) {
             if (typeof this.editedItem[key] === 'string') {
@@ -495,6 +502,7 @@ export default {
       }
 
       if (!this.alert) {
+        this.loading = false
         this.close()
       }
     }

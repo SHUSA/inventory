@@ -9,8 +9,8 @@ export default {
     return API().get(`orders/${orderId}`)
   },
 
-  post (order) {
-    return API().post('orders', order).catch(err =>
+  post () {
+    return API().post('orders').catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   },
