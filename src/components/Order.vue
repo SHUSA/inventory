@@ -136,6 +136,7 @@ export default {
       this.loading = true
       await orderService.post()
       this.loading = false
+      this.$store.dispatch('setDrawer')
       location.reload()
     },
 
@@ -150,6 +151,8 @@ export default {
       await orderService.put(this.thisOrder)
       this.loading = false
       this.close()
+      this.$store.dispatch('setDrawer')
+      location.reload()
     }
   }
 }

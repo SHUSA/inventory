@@ -27,7 +27,8 @@
           </v-list-tile>
           <v-list-tile v-for="(order, index) in orders" :key="order.createdAt" @click="viewOrder(index)">
             <v-list-tile-action>
-              <v-icon>keyboard_arrow_right</v-icon>
+              <v-icon v-if="order.completed">check</v-icon>
+              <v-icon v-else>keyboard_arrow_right</v-icon>
             </v-list-tile-action>
             <v-list-tile-title>Week of {{time(order.createdAt)}}</v-list-tile-title>
           </v-list-tile>
