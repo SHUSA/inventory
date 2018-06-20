@@ -11,10 +11,10 @@
           <span v-if="!thisOrder.completed" class="headline">Is the order complete?</span>
           <span v-else class="headline">Undo completed status?</span>
           <v-card-actions>
-            <v-btn color="error" @click.native="close">No</v-btn>
-            <v-btn color="primary" @click.native="changeOrder">Yes</v-btn>
             <v-spacer/>
             <v-progress-circular indeterminate color="primary" v-if="loading"/>
+            <v-btn color="error" @click.native="close">No</v-btn>
+            <v-btn color="primary" @click.native="changeOrder">Yes</v-btn>
           </v-card-actions>
         </v-card-title>
       </v-card>
@@ -30,6 +30,7 @@
           <span class="headline">Create a new order?</span>
         </v-card-title>
         <v-card-actions>
+          <v-spacer/>
           <v-progress-circular indeterminate color="primary" v-if="loading"/>
           <v-btn color="error" @click.native="close">No</v-btn>
           <v-btn color="primary" @click.native="createOrder">Yes</v-btn>
