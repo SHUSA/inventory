@@ -197,7 +197,7 @@
     >
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
-        <td>{{props.item.assay}}</td>
+        <td @click="editAssay(props.item.assay)">{{props.item.assay}}</td>
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
         <td>{{props.item.currentStock}}</td>
@@ -433,6 +433,18 @@ export default {
       } else {
         ele.classList.add('expanded')
       }
+    },
+
+    editAssay (assay) {
+      let index = 0
+      let assays = this.assayList
+      for (let i = 0; i < assays.length; i++) {
+        if (assay === assays.name) {
+          this.editedAssay = Object.assign({}, assays)
+          break
+        }
+      }
+      this.assayDialog = true
     },
 
     editItem (item) {
