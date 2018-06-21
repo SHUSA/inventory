@@ -438,8 +438,9 @@ export default {
     editAssay (assay) {
       let assays = this.assayList
       for (let i = 0; i < assays.length; i++) {
-        if (assay === assays.name) {
-          this.editedAssay = Object.assign({}, assays)
+        if (assay === assays[i].name) {
+          console.log(`i = ${i}`)
+          this.editedAssay = Object.assign({}, assays[i])
           break
         }
       }
