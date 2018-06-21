@@ -49,7 +49,7 @@ export default {
   watch: {
     async selection () {
       if (this.search === 'order') {
-        let entry = this.selection.entry
+        let entry = this.selection.entry || []
         entry.map(entry => {
           this.orders.push(entry.item)
         })
@@ -66,7 +66,7 @@ export default {
         // reset orders to prevent inflation
         this.orders = []
       } else {
-        this.items = (await itemService.index(this.selection, true, this.search.toLowerCase())).data
+        this.items = (await itemService.index(this.selection, true, this.search.toLowerCase())).data || []
       }
     }
   }

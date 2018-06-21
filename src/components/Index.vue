@@ -25,12 +25,13 @@
           <v-list-tile v-if="admin" slot="activator">
             <v-list-tile-title>Orders</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile v-for="(order, index) in orders" :key="order.createdAt" @click="viewOrder(index)">
+          <v-list-tile v-for="(order, index) in orderList" :key="order.createdAt" @click="viewOrder(index)">
             <v-list-tile-action>
               <v-icon v-if="order.completed">check</v-icon>
               <v-icon v-else>keyboard_arrow_right</v-icon>
             </v-list-tile-action>
-            <v-list-tile-title>Week of {{time(order.createdAt)}}</v-list-tile-title>
+            <v-list-tile-title v-if="order.new">{{order.name}}</v-list-tile-title>
+            <v-list-tile-title v-else>Week of {{time(order.createdAt)}}</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
         <v-list-group>
@@ -68,6 +69,7 @@ export default {
   data () {
     return {
       list: [],
+      orderList: [],
       items: [],
       assays: [],
       vendors: [],
@@ -107,6 +109,12 @@ export default {
       this.list = [{name: 1}, {name: 2}, {name: 3}]
       this.drawerTitle = 'Demo'
     }
+
+    if (this.orders.length === 0) {
+      this.orderList = [{name: 'Add New Order', new: true}]
+    } else {
+      this.orderList = this.orders
+    }
   },
 
   methods: {
@@ -132,13 +140,15 @@ export default {
     },
 
     viewOrder (index) {
-      this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
       this.$store.dispatch('setDrawer')
-      this.index = index
       this.search = 'order'
+      this.index = index
+
       if (this.orders.length === 0) {
+        this.$store.dispatch('setTitle', 'Create a New Order')
         this.items = [{name: 'Add New Order'}]
       } else {
+        this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
         this.items = this.orders
       }
     }

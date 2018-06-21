@@ -513,6 +513,7 @@ export default {
             // new item
             this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
           }
+          location.reload()
         }
       }
 
