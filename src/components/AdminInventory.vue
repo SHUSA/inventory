@@ -300,7 +300,7 @@ export default {
             this.errors.vendor = true
             return 'Please enter a valid name'
           } else {
-            this.errors.assay = false
+            this.errors.vendor = false
             return true
           }
         },
