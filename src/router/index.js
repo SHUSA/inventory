@@ -10,12 +10,12 @@ export default new Router({
   base: __dirname,
   routes: [
     {
-      path: '/',
+      path: '/index',
       name: 'index',
       component: Index
     },
     {
-      path: '/login',
+      path: '/',
       name: 'login',
       component: Login
     }
