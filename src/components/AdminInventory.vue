@@ -436,7 +436,6 @@ export default {
     },
 
     editAssay (assay) {
-      let index = 0
       let assays = this.assayList
       for (let i = 0; i < assays.length; i++) {
         if (assay === assays.name) {
@@ -489,7 +488,7 @@ export default {
           this.loading = true
           this.alert = false
           this.editedItem.assay = this.editedAssay.name
-          this.assays.push((await assayService.post(this.editedAssay)).data)
+          this.assayList.push((await assayService.post(this.editedAssay)).data)
         }
       } else if (this.vendorDialog) {
         if (this.errors.vendor || num) {
@@ -498,7 +497,7 @@ export default {
           this.loading = true
           this.alert = false
           this.editedItem.vendor = this.editedVendor.name
-          this.vendors.push((await vendorService.post(this.editedVendor)).data)
+          this.vendorList.push((await vendorService.post(this.editedVendor)).data)
         }
       } else {
         if (this.errors.item || num) {
