@@ -96,37 +96,32 @@ module.exports = {
   },
 
   async put (req, res) {
-    const item = req.body.params.item
+    let item = req.body.params.item
     const assay = req.body.params.assay
     const lastSunday = moment().startOf('week').toISOString()
-    let itemData = {}
     let entry = []
-    for (let key in item) {
-      itemData[key] = item[key]
-    }
+
     if (!item.order && !item.user && item.active) {
-      itemData.assay = assay.name
-      itemData = calculateStockLevels(itemData, assay)
+      item.assay = assay.name
+      item = calculateStockLevels(item, assay)
     }
     entry = [{
-      item: itemData._id,
-      updatedAt: itemData.updatedAt,
-      currentStock: itemData.currentStock,
-      comment: itemData.comment
+      item: item._id,
+      updatedAt: item.updatedAt,
+      currentStock: item.currentStock,
+      comment: item.comment
     }]
-    console.log('before try')
-    console.log(itemData)
     try {
       // push new quantity in currentStock either here or before passing
       // add to order only it is an actual order and not data fix. add flag somewhere?
-      await Item.update({ _id: itemData._id }, itemData, (err, doc) => {
+      await Item.update({ _id: item._id }, item, (err, doc) => {
         if (err) {
           console.log(err)
           res.status(400).send(err.message)
         } else if (item.order) {
           Order.findOneAndUpdate(
             {createdAt: {$gte: lastSunday}},
-            { $pull: { entry: { item: itemData._id } } }, (err, newdoc) => {
+            { $pull: { entry: { item: item._id } } }, (err, newdoc) => {
               if (err) {
                 console.log(err)
                 res.send(err.message)
@@ -143,12 +138,12 @@ module.exports = {
                 res.send(err.message)
               } else {
                 console.log('pushed')
-                res.send(itemData)
+                res.send(item)
               }
             })
         } else {
           console.log('normal update')
-          res.send(itemData)
+          res.send(item)
         }
       })
     } catch (error) {

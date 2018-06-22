@@ -73,7 +73,7 @@
         <td>{{props.item.previousStock}}</td>
         <td>{{props.item.currentStock}}</td>
         <td>{{props.item.toOrder}}</td>
-        <td class="comment" :id=props.item._id @click="expand(props.item._id)">{{props.item.comment}}</td>
+        <td class="comment" :id=props.item.catalogNumber @click="expand(props.item.catalogNumber)">{{props.item.comment}}</td>
         <td>{{time(props.item)}}</td>
         <td class="justify-center layout px-0">
             <v-btn icon class="mx-0" @click="editItem(props.item)">
@@ -176,8 +176,8 @@ export default {
   },
 
   methods: {
-    expand (id) {
-      let ele = document.getElementById(id)
+    expand (catalogNumber) {
+      let ele = document.getElementById(catalogNumber)
       let classes = []
       classes = ele.className.split(' ')
 
@@ -222,12 +222,13 @@ export default {
           thisItem.toOrder = 0
         }
         thisItem.user = true
-        if (thisItem > 0) {
+
+        if (thisItem.comment.length > 0) {
           thisItem.comment = thisItem.comment.trim()
         } else {
           thisItem.comment = ''
         }
-        
+
         this.loading = true
         Object.assign(this.supplies[this.editedIndex], (await itemService.put(thisItem._id, thisItem, thisItem.assay)).data)
         this.loading = false
