@@ -1,4 +1,5 @@
 const Assay = require('mongoose').model('Assay')
+const Item = require('mongoose').model('Item')
 // const Issue = require('../models/Issues')
 
 module.exports = {
@@ -66,20 +67,30 @@ module.exports = {
   },
 
   async put (req, res) {
-    const assay = req.body
-    const assayData = {}
-    for (let key in assay) {
-      assayData[key] = assay[key]
-    }
-    // add case, if active === false, deactivate all associated items
+    const assay = req.body.params.assay
+    const assayName = req.body.params.origName
+    console.log('put assay')
+    console.log(req.params)
+    console.log(assay)
+    console.log(assayName)
     try {
-      await Assay.update({_id: req.params.assayId}, assayData, (err, doc) => {
+      await Assay.update({_id: req.params.assayId}, assay, (err, doc) => {
         if (err) {
           console.log(err)
           res.status(400).send(err.message)
         } else {
-          console.log(assayData)
-          res.send(doc)
+          // update all items with the assay being updated
+          Item.update({assay: assayName},
+            {$set: {assay: assay.name, active: assay.active}},
+            {multi: true})
+            .exec((err, doc) => {
+              if (err) {
+                console.log(err)
+                res.send(err.message)
+              } else {
+                res.send(assay)
+              }
+            })
         }
       })
     } catch (error) {

@@ -111,7 +111,7 @@
       >
         <v-card>
           <v-card-title>
-            <span class="headline">New Assay</span>
+            <span class="headline">{{assayForm}}</span>
           </v-card-title>
           <v-card-text>
             <v-container grid-list-md>
@@ -149,7 +149,7 @@
             <v-spacer/>
             <v-progress-circular indeterminate color="primary" v-if="loading"/>
             <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
-            <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="saveAssay">Save</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -158,9 +158,10 @@
         v-model="vendorDialog"
         max-width="500px"
       >
+        <v-btn slot="activator" color="primary" class="mb-0" dark @click="editVendor">Edit Vendor</v-btn>
         <v-card>
           <v-card-title>
-            <span class="headline">New Vendor</span>
+            <span class="headline">{{vendorForm}}</span>
           </v-card-title>
           <v-card-text>
             <v-container grid-list-md>
@@ -197,12 +198,12 @@
     >
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
-        <td @click="editAssay(props.item.assay)">{{props.item.assay}}</td>
+        <td @click="editAssay(props.item)">{{props.item.assay}}</td>
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
         <td>{{props.item.currentStock}}</td>
         <td>{{props.item.reorderQuantity}}</td>
-        <td class="comment" :id=props.item._id @click="expand(props.item._id)">{{props.item.comment}}</td>
+        <td class="comment" :id=props.item.catalogNumber @click="expand(props.item.catalogNumber)">{{props.item.comment}}</td>
         <td>{{time(props.item)}}</td>
         <td class="justify-center layout px-0">
           <v-btn icon class="mx-0" @click="editItem(props.item)">
@@ -221,6 +222,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import itemService from '@/services/ItemService.js'
 import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
@@ -249,6 +251,8 @@ export default {
       loading: false,
       search: '',
       alertMessage: '',
+      assayForm: '',
+      vendorForm: '',
       errors: {
         assay: false,
         vendor: false,
@@ -375,7 +379,10 @@ export default {
   computed: {
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-    }
+    },
+    ...mapState([
+      'pageTitle'
+    ])
   },
 
   watch: {
@@ -416,15 +423,17 @@ export default {
     },
 
     addAssay () {
+      this.assayForm = 'New Assay'
       this.assayDialog = true
     },
 
     addVendor () {
+      this.vendorForm = 'New Vendor'
       this.vendorDialog = true
     },
 
-    expand (id) {
-      let ele = document.getElementById(id)
+    expand (catalogNumber) {
+      let ele = document.getElementById(catalogNumber)
       let classes = []
       classes = ele.className.split(' ')
 
@@ -435,16 +444,28 @@ export default {
       }
     },
 
-    editAssay (assay) {
+    editAssay (item) {
       let assays = this.assayList
+      this.assayForm = 'Edit Assay'
       for (let i = 0; i < assays.length; i++) {
-        if (assay === assays[i].name) {
-          console.log(`i = ${i}`)
+        if (item.assay === assays[i].name) {
           this.editedAssay = Object.assign({}, assays[i])
           break
         }
       }
       this.assayDialog = true
+    },
+
+    editVendor () {
+      let vendors = this.vendorList
+      this.vendorForm = 'Edit Vendor'
+      for (let i = 0; i < vendors.length; i++) {
+        if (this.pageTitle === vendors[i].name) {
+          this.editedVendor = Object.assign({}, vendors[i])
+          break
+        }
+      }
+      this.vendorDialog = true
     },
 
     editItem (item) {
@@ -479,19 +500,78 @@ export default {
       }
     },
 
+    async saveAssay () {
+      const num = this.errors.num.length
+      this.alertMessage = 'Please fix issues'
+
+      if (this.errors.assay || num) {
+        this.alert = true
+      } else {
+        this.loading = true
+        this.alert = false
+        if (this.assayForm === 'Edit Assay') {
+          // existing assay
+          let assayInfo = {}
+          let edited = this.editedAssay
+          for (let i = 0; i < this.assayList.length; i++) {
+            if (this.assayList[i]._id === edited._id) {
+              assayInfo = this.assayList[i]
+              break
+            }
+          }
+          Object.assign(assayInfo, await assayService.put(edited, assayInfo.name))
+          // update items in list to contain new assay name
+          // use $store values
+        } else {
+          // new assay
+          this.assayList.push((await assayService.post(this.editedAssay)).data)
+        }
+      }
+
+      if (!this.alert) {
+        this.loading = false
+        this.close()
+      }
+    },
+
+    async saveVendor () {
+      const num = this.errors.num.length
+      this.alertMessage = 'Please fix issues'
+
+      if (this.errors.vendor || num) {
+        this.alert = true
+      } else {
+        this.loading = true
+        this.alert = false
+        this.editedItem.vendor = this.editedVendor.name
+        if (this.vendorForm === 'Edit Vendor') {
+          // existing vendor
+          let vendorInfo = {}
+          let edited = this.editedVendor
+          for (let i = 0; i < this.vendorList.length; i++) {
+            if (this.vendorList[i]._id === edited._id) {
+              vendorInfo = this.vendorList[i]
+              break
+            }
+          }
+          Object.assign(vendorInfo, await vendorService.put(edited, vendorInfo.name))
+        } else {
+          // new vendor
+          this.vendorList.push((await vendorService.post(this.editedVendor)).data)
+        }
+      }
+
+      if (!this.alert) {
+        this.loading = false
+        this.close()
+      }
+    },
+
     async save () {
       const num = this.errors.num.length
       this.alertMessage = 'Please fix issues'
-      if (this.assayDialog) {
-        if (this.errors.assay || num) {
-          this.alert = true
-        } else {
-          this.loading = true
-          this.alert = false
-          this.editedItem.assay = this.editedAssay.name
-          this.assayList.push((await assayService.post(this.editedAssay)).data)
-        }
-      } else if (this.vendorDialog) {
+
+      if (this.vendorDialog) {
         if (this.errors.vendor || num) {
           this.alert = true
         } else {
@@ -505,7 +585,7 @@ export default {
           this.alert = true
           console.log(this.errors)
         } else {
-          let assayInfo = this.assays.find(assay => assay.name.toUpperCase() === this.editedItem.assay.toUpperCase())
+          let assayInfo = this.assayList.find(assay => assay.name.toUpperCase() === this.editedItem.assay.toUpperCase())
           this.loading = true
           this.alert = false
           for (let key in this.editedItem) {
