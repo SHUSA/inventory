@@ -222,7 +222,12 @@ export default {
           thisItem.toOrder = 0
         }
         thisItem.user = true
-        thisItem.comment = thisItem.comment.trim()
+        if (thisItem > 0) {
+          thisItem.comment = thisItem.comment.trim()
+        } else {
+          thisItem.comment = ''
+        }
+        
         this.loading = true
         Object.assign(this.supplies[this.editedIndex], (await itemService.put(thisItem._id, thisItem, thisItem.assay)).data)
         this.loading = false
