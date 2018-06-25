@@ -69,10 +69,6 @@ module.exports = {
   async put (req, res) {
     const assay = req.body.params.assay
     const assayName = req.body.params.origName
-    console.log('put assay')
-    console.log(req.params)
-    console.log(assay)
-    console.log(assayName)
     try {
       await Assay.update({_id: req.params.assayId}, assay, (err, doc) => {
         if (err) {

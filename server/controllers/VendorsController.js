@@ -1,4 +1,5 @@
 const Vendor = require('mongoose').model('Vendor')
+const Item = require('mongoose').model('Item')
 
 module.exports = {
   async index (req, res) {
@@ -63,19 +64,26 @@ module.exports = {
   },
 
   async put (req, res) {
-    const vendor = req.body
-    const vendorData = {}
-    for (let key in vendor) {
-      vendorData[key] = vendor[key]
-    }
-    // add case, if active === false, deactivate all associated items
+    const vendor = req.body.params.vendor
+    const vendorName = req.body.params.origName
     try {
-      await Vendor.update({_id: req.params.vendorId}, vendorData, (err, doc) => {
+      await Vendor.update({_id: req.params.vendorId}, vendor, (err, doc) => {
         if (err) {
           console.log(err)
           res.status(400).send(err.message)
         } else {
-          res.send(doc)
+          // update all items with the vendor being updated
+          Item.update({vendor: vendorName},
+            {$set: {vendor: vendor.name, active: vendor.active}},
+            {multi: true})
+            .exec((err, doc) => {
+              if (err) {
+                console.log(err)
+                res.send(err.message)
+              } else {
+                res.send(vendor)
+              }
+            })
         }
       })
     } catch (error) {
