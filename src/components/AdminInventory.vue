@@ -571,42 +571,31 @@ export default {
       const num = this.errors.num.length
       this.alertMessage = 'Please fix issues'
 
-      if (this.vendorDialog) {
-        if (this.errors.vendor || num) {
-          this.alert = true
-        } else {
-          this.loading = true
-          this.alert = false
-          this.editedItem.vendor = this.editedVendor.name
-          this.vendorList.push((await vendorService.post(this.editedVendor)).data)
-        }
+      if (this.errors.item || num) {
+        this.alert = true
+        console.log(this.errors)
       } else {
-        if (this.errors.item || num) {
-          this.alert = true
-          console.log(this.errors)
-        } else {
-          let assayInfo = this.assayList.find(assay => assay.name.toUpperCase() === this.editedItem.assay.toUpperCase())
-          this.loading = true
-          this.alert = false
-          for (let key in this.editedItem) {
-            if (typeof this.editedItem[key] === 'string') {
-              this.editedItem[key] = this.editedItem[key].trim()
-            }
+        let assayInfo = this.assayList.find(assay => assay.name.toUpperCase() === this.editedItem.assay.toUpperCase())
+        this.loading = true
+        this.alert = false
+        for (let key in this.editedItem) {
+          if (typeof this.editedItem[key] === 'string') {
+            this.editedItem[key] = this.editedItem[key].trim()
           }
-          this.editedItem.catalogNumber = this.editedItem.catalogNumber.toUpperCase()
-          this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
-
-          if (this.editedIndex > -1) {
-            // existing item
-            let focusedItem = this.supplies[this.editedIndex]
-            this.editedItem.updatedAt = Date.now()
-            Object.assign(focusedItem, (await itemService.put(focusedItem._id, this.editedItem, assayInfo)).data)
-          } else {
-            // new item
-            this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
-          }
-          location.reload()
         }
+        this.editedItem.catalogNumber = this.editedItem.catalogNumber.toUpperCase()
+        this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
+
+        if (this.editedIndex > -1) {
+          // existing item
+          let focusedItem = this.supplies[this.editedIndex]
+          this.editedItem.updatedAt = Date.now()
+          Object.assign(focusedItem, (await itemService.put(focusedItem._id, this.editedItem, assayInfo)).data)
+        } else {
+          // new item
+          this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
+        }
+        location.reload()
       }
 
       if (!this.alert) {
