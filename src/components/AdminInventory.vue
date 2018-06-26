@@ -59,7 +59,7 @@
                   <v-text-field v-model="editedItem.currentStock" validate-on-blur :rules="[rules.number]" ref="currentStock" type="number" min=0 label="Current Stock"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field disabled label="Safety Stock" value="999"/>
+                  <v-text-field disabled v-model="editedItem.safetyStock" label="Safety Stock"/>
                 </v-flex>
                 <v-flex xs6>
                   <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
@@ -88,7 +88,7 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="red darken-1" flat @click.native="deleteItem(currentItem)" v-if="currentItem != null">Delete</v-btn>
+            <v-btn color="red darken-1" disabled flat @click.native="deleteItem(currentItem)" v-if="currentItem != null">Deactivate</v-btn>
             <v-spacer/>
             <v-progress-circular indeterminate color="primary" v-if="loading"/>
             <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
