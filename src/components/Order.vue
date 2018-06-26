@@ -83,7 +83,8 @@ const moment = require('moment')
 export default {
   props: [
     'order',
-    'items'
+    'items',
+    'orders'
   ],
   data () {
     return {
@@ -102,13 +103,15 @@ export default {
         {text: 'Comment', value: 'comment', width: '15%'},
         {text: 'Last Update', value: 'updatedAt'}
       ],
-      thisOrder: {}
+      thisOrder: {},
+      orderList: []
     }
   },
 
   mounted () {
     // initialize variables
     this.thisOrder = this.order
+    this.orderList = this.orders
   },
 
   methods: {
@@ -136,10 +139,9 @@ export default {
     async createOrder () {
       this.loading = true
       await orderService.delete()
-      await orderService.post()
+      this.orderList.push((await orderService.post()).data)
       this.loading = false
       this.close()
-      this.$store.dispatch('setDrawer')
     },
 
     async changeOrder () {

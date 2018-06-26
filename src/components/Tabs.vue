@@ -6,7 +6,7 @@
       <v-tab>Main</v-tab>
       <v-tab>Coming Soon&#8482;</v-tab>
     </v-tabs>
-    <order :order="selection" :items="items" v-if="search === 'order'"/>
+    <order :order="selection" :orders="orders" :items="items" v-if="search === 'order'"/>
     <template v-else>
       <admin-inventory :items="items" :assays="assays" :vendors="vendors" v-if="admin"/>
       <user-inventory :items="items" :assays="assays" v-if="user"/>
@@ -26,7 +26,8 @@ export default {
     'selection',
     'search',
     'assays',
-    'vendors'
+    'vendors',
+    'orders'
   ],
   components: {
     AdminInventory,
@@ -36,7 +37,7 @@ export default {
   data () {
     return {
       items: [],
-      orders: []
+      orderEntries: []
     }
   },
   computed: {
@@ -51,10 +52,10 @@ export default {
       if (this.search === 'order') {
         let entry = this.selection.entry || []
         entry.map(entry => {
-          this.orders.push(entry.item)
+          this.orderEntries.push(entry.item)
         })
         // combine current stock and comments from entry to existing data
-        this.items = (await itemService.show(this.orders)).data
+        this.items = (await itemService.show(this.orderEntries)).data
         this.items.map(x => {
           for (let i = 0; i < entry.length; i++) {
             if (entry[i].item === x._id) {
@@ -64,7 +65,7 @@ export default {
           }
         })
         // reset orders to prevent inflation
-        this.orders = []
+        this.orderEntries = []
       } else {
         this.items = (await itemService.index(this.selection, true, this.search.toLowerCase())).data || []
       }

@@ -49,10 +49,10 @@
       </v-list>
     </v-navigation-drawer>
     <v-flex xs12 offset-xs3 v-if="drawer">
-      <tabs :selection="items[index]" :assays="assays" :vendors="vendors" :search="search"/>
+      <tabs :selection="items[index]" :orders="orders" :assays="assays" :vendors="vendors" :search="search"/>
     </v-flex>
     <v-flex xs12 v-else>
-      <tabs :selection="items[index]" :assays="assays" :vendors="vendors" :search="search"/>
+      <tabs :selection="items[index]" :orders="orders" :assays="assays" :vendors="vendors" :search="search"/>
     </v-flex>
   </v-layout>
 </template>
