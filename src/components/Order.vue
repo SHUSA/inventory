@@ -107,8 +107,7 @@ export default {
   },
 
   mounted () {
-    // dev workaround
-    this.supplies = this.items
+    // initialize variables
     this.thisOrder = this.order
   },
 
@@ -136,6 +135,7 @@ export default {
 
     async createOrder () {
       this.loading = true
+      await orderService.delete()
       await orderService.post()
       this.loading = false
       this.close()

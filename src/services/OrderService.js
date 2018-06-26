@@ -23,5 +23,11 @@ export default {
     }).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
+  },
+
+  delete () {
+    return API().delete('orders').catch(err =>
+      JSON.parse(JSON.stringify(err)).response
+    )
   }
 }

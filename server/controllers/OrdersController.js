@@ -82,12 +82,12 @@ module.exports = {
   async remove (req, res) {
     // delete order if entry array is emmpty
     try {
-      await Order.findByIdAndRemove({_id: req.params.orderId}, (err, doc) => {
+      await Order.deleteMany({entry: {$size: 0}}, (err, doc) => {
         if (err) {
           console.log(err)
           res.send(err.message)
         } else {
-          res.send('order deleted')
+          res.send('order(s) deleted')
         }
       })
     } catch (error) {

@@ -403,6 +403,7 @@ export default {
     },
 
     items () {
+      // how is this triggering on item udpdate/addition?
       this.supplies = this.items
       this.vendorList = this.vendors
       this.assayList = this.assays
@@ -410,7 +411,7 @@ export default {
   },
 
   mounted () {
-    // dev workaround
+    // initialize variables
     this.supplies = this.items
     this.vendorList = this.vendors
     this.assayList = this.assays
