@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title>
       <v-dialog
-        v-model="dialog"
+        v-model="completedDialog"
         max-width="500px"
       >
         <v-btn v-if="!thisOrder.completed" slot="activator" color="primary" class="mb-0" dark>Complete Order</v-btn>
@@ -21,7 +21,7 @@
         </v-card>
       </v-dialog>
       <v-dialog
-        v-model="dialog2"
+        v-model="createDialog"
         max-width="500px"
       >
         <v-btn slot="activator" color="primary" class="mb-0">New Order</v-btn>
@@ -87,8 +87,8 @@ export default {
   ],
   data () {
     return {
-      dialog: false,
-      dialog2: false,
+      completedDialog: false,
+      createDialog: false,
       loading: false,
       completed: false,
       search: '',
@@ -102,18 +102,7 @@ export default {
         {text: 'Comment', value: 'comment', width: '15%'},
         {text: 'Last Update', value: 'updatedAt'}
       ],
-      supplies: [],
       thisOrder: {}
-    }
-  },
-
-  watch: {
-    items () {
-      this.supplies = this.items
-    },
-
-    order () {
-      this.thisOrder = this.order
     }
   },
 
@@ -141,16 +130,16 @@ export default {
     },
 
     close () {
-      this.dialog = false
-      this.dialog2 = false
+      this.completedDialog = false
+      this.createDialog = false
     },
 
     async createOrder () {
       this.loading = true
       await orderService.post()
       this.loading = false
+      this.close()
       this.$store.dispatch('setDrawer')
-      location.reload()
     },
 
     async changeOrder () {
@@ -164,8 +153,6 @@ export default {
       await orderService.put(this.thisOrder)
       this.loading = false
       this.close()
-      this.$store.dispatch('setDrawer')
-      location.reload()
     }
   }
 }
