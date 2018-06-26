@@ -192,7 +192,7 @@
 
     <v-data-table
       :headers="headers"
-      :items="items"
+      :items="supplies"
       :search="search"
       hide-actions
     >
@@ -516,12 +516,10 @@ export default {
           for (let i = 0; i < this.assayList.length; i++) {
             if (this.assayList[i]._id === edited._id) {
               assayInfo = this.assayList[i]
+              Object.assign(assayInfo, (await assayService.put(edited, assayInfo.name)).data)
               break
             }
           }
-          Object.assign(assayInfo, await assayService.put(edited, assayInfo.name))
-          // update items in list to contain new assay name
-          // use $store values
         } else {
           // new assay
           this.assayList.push((await assayService.post(this.editedAssay)).data)
@@ -551,10 +549,11 @@ export default {
           for (let i = 0; i < this.vendorList.length; i++) {
             if (this.vendorList[i]._id === edited._id) {
               vendorInfo = this.vendorList[i]
+              Object.assign(vendorInfo, (await vendorService.put(edited, vendorInfo.name)).data)
+              this.$store.dispatch('setTitle', this.vendorList[i].name)
               break
             }
           }
-          Object.assign(vendorInfo, await vendorService.put(edited, vendorInfo.name))
         } else {
           // new vendor
           this.vendorList.push((await vendorService.post(this.editedVendor)).data)
@@ -589,13 +588,16 @@ export default {
         if (this.editedIndex > -1) {
           // existing item
           let focusedItem = this.supplies[this.editedIndex]
+          let initalVendor = focusedItem.vendor
           this.editedItem.updatedAt = Date.now()
           Object.assign(focusedItem, (await itemService.put(focusedItem._id, this.editedItem, assayInfo)).data)
+          if (initalVendor !== focusedItem.vendor) {
+            this.supplies.splice(this.editedIndex, 1)
+          }
         } else {
           // new item
           this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
         }
-        location.reload()
       }
 
       if (!this.alert) {

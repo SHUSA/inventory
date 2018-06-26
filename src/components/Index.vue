@@ -90,6 +90,7 @@ export default {
       'drawer'
     ])
   },
+
   async mounted () {
     // call all index things here: item, vendor, assay, and pass them around
     this.assays = (await assayService.index(true)).data
