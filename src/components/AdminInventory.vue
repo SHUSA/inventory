@@ -542,7 +542,6 @@ export default {
       } else {
         this.loading = true
         this.alert = false
-        this.editedItem.vendor = this.editedVendor.name
         if (this.vendorForm === 'Edit Vendor') {
           // existing vendor
           let vendorInfo = {}
