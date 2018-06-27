@@ -194,7 +194,7 @@ export default {
 
     editItem (item) {
       this.editedIndex = this.supplies.indexOf(item)
-      this.editedItem = Object.assign({}, item)
+      this.editedItem = Object.assign(this.editedItem, item)
       this.dialog = true
     },
 
@@ -223,11 +223,7 @@ export default {
         }
         thisItem.user = true
 
-        if (thisItem.comment.length > 0) {
-          thisItem.comment = thisItem.comment.trim()
-        } else {
-          thisItem.comment = ''
-        }
+        thisItem.comment = thisItem.comment.trim()
 
         this.loading = true
         Object.assign(this.supplies[this.editedIndex], (await itemService.put(thisItem._id, thisItem, thisItem.assay)).data)
