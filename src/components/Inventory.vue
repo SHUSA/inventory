@@ -198,6 +198,7 @@
     >
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
+        <td>{{props.item.vendor}}</td>
         <td @click="editAssay(props.item)">{{props.item.assay}}</td>
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
@@ -321,6 +322,7 @@ export default {
       },
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
+        {text: 'Vendor', value: 'vendor'},
         {text: 'Assay', value: 'assay'},
         {text: 'Catalog #', value: 'catalogNumber'},
         {text: 'Desc', value: 'itemDescription'},

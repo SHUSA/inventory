@@ -6,7 +6,7 @@
       <v-tab>Main</v-tab>
       <v-tab>Coming Soon&#8482;</v-tab>
     </v-tabs>
-    <order v-if="search === 'order'" :order="selection" :orders="orders" :items="items"/>
+    <order v-if="search === 'order'" :order="selection" :orders="orders" :items="orderItems"/>
     <template v-else>
       <inventory :items="items" :assays="assays" :vendors="vendors"/>
     </template>
@@ -21,11 +21,12 @@ import { mapState } from 'vuex'
 
 export default {
   props: [
-    'selection',
+    'items',
     'search',
     'assays',
     'vendors',
-    'orders'
+    'orders',
+    'selection'
   ],
   components: {
     Inventory,
@@ -33,8 +34,8 @@ export default {
   },
   data () {
     return {
-      items: [],
-      orderEntries: []
+      orderEntries: [],
+      orderItems: []
     }
   },
   computed: {
@@ -52,8 +53,8 @@ export default {
           this.orderEntries.push(entry.item)
         })
         // combine current stock and comments from entry to existing data
-        this.items = (await itemService.show(this.orderEntries)).data
-        this.items.map(x => {
+        this.orderItems = (await itemService.show(this.orderEntries)).data
+        this.orderItems.map(x => {
           for (let i = 0; i < entry.length; i++) {
             if (entry[i].item === x._id) {
               Object.assign(x, entry[i])
@@ -63,8 +64,6 @@ export default {
         })
         // reset orders to prevent inflation
         this.orderEntries = []
-      } else {
-        this.items = (await itemService.index(this.selection, true, this.search.toLowerCase())).data || []
       }
     }
   }
