@@ -6,17 +6,15 @@
       <v-tab>Main</v-tab>
       <v-tab>Coming Soon&#8482;</v-tab>
     </v-tabs>
-    <order :order="selection" :orders="orders" :items="items" v-if="search === 'order'"/>
+    <order v-if="search === 'order'" :order="selection" :orders="orders" :items="items"/>
     <template v-else>
-      <admin-inventory :items="items" :assays="assays" :vendors="vendors" v-if="admin"/>
-      <user-inventory :items="items" :assays="assays" v-if="user"/>
+      <inventory :items="items" :assays="assays" :vendors="vendors"/>
     </template>
   </div>
 </template>
 
 <script>
-import AdminInventory from './AdminInventory'
-import UserInventory from './UserInventory'
+import Inventory from './Inventory'
 import Order from './Order'
 import itemService from '@/services/ItemService.js'
 import { mapState } from 'vuex'
@@ -30,8 +28,7 @@ export default {
     'orders'
   ],
   components: {
-    AdminInventory,
-    UserInventory,
+    Inventory,
     Order
   },
   data () {

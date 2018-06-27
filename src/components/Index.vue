@@ -20,9 +20,8 @@
             <v-list-tile-title>{{item.name}}</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
-        <template v-if="admin">
-          <v-list-group>
-          <v-list-tile v-if="admin" slot="activator">
+        <v-list-group>
+          <v-list-tile slot="activator">
             <v-list-tile-title>Orders</v-list-tile-title>
           </v-list-tile>
           <v-list-tile v-for="(order, index) in orderList" :key="order.createdAt" @click="viewOrder(index)">
@@ -45,7 +44,6 @@
             <v-list-tile-title>To be implemented</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
-        </template>
       </v-list>
     </v-navigation-drawer>
     <v-flex xs12 offset-xs3 v-if="drawer">
@@ -79,9 +77,11 @@ export default {
       index: 0
     }
   },
+
   components: {
     Tabs
   },
+
   computed: {
     ...mapState([
       'user',
@@ -93,6 +93,7 @@ export default {
 
   async mounted () {
     // call all index things here: item, vendor, assay, and pass them around
+    // call all items here and sort them later
     this.assays = (await assayService.index(true)).data
     this.vendors = (await vendorService.index(true)).data
     this.orders = (await orderService.index()).data

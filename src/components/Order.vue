@@ -5,8 +5,8 @@
         v-model="completedDialog"
         max-width="500px"
       >
-        <v-btn v-if="!thisOrder.completed" slot="activator" color="primary" class="mb-0" dark>Complete Order</v-btn>
-        <v-btn v-else slot="activator" color="error" class="mb-0" dark>Undo Complete</v-btn>
+        <v-btn v-if="!thisOrder.completed && admin" slot="activator" color="primary" class="mb-0" dark>Complete Order</v-btn>
+        <v-btn v-if="thisOrder.completed && admin" slot="activator" color="error" class="mb-0" dark>Undo Complete</v-btn>
         <v-card>
           <v-card-title>
             <span v-if="!thisOrder.completed" class="headline">Is the order complete?</span>
@@ -20,11 +20,12 @@
           </v-card-title>
         </v-card>
       </v-dialog>
+
       <v-dialog
         v-model="createDialog"
         max-width="500px"
       >
-        <v-btn slot="activator" color="primary" class="mb-0">New Order</v-btn>
+        <v-btn v-if="admin" slot="activator" color="primary" class="mb-0">New Order</v-btn>
         <v-card>
           <v-card-title>
             <span class="headline">Create a new order?</span>
@@ -77,6 +78,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import orderService from '@/services/OrderService.js'
 const moment = require('moment')
 
@@ -106,6 +108,12 @@ export default {
       thisOrder: {},
       orderList: []
     }
+  },
+
+  computed: {
+    ...mapState([
+      'admin'
+    ])
   },
 
   mounted () {
