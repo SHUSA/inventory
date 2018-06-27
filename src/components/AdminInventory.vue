@@ -410,11 +410,11 @@ export default {
     }
   },
 
-  mounted () {
+  async mounted () {
     // initialize variables
     this.supplies = this.items
-    this.vendorList = this.vendors
-    this.assayList = this.assays
+    this.vendorList = (await vendorService.index(true)).data
+    this.assayList = (await assayService.index(true)).data
   },
 
   methods: {
@@ -472,7 +472,7 @@ export default {
     editItem (item) {
       this.currentItem = item
       this.editedIndex = this.supplies.indexOf(item)
-      this.editedItem = Object.assign({}, item)
+      this.editedItem = Object.assign(this.editedItem, item)
       this.dialog = true
     },
 
