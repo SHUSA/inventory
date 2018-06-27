@@ -412,6 +412,7 @@ export default {
 
   async mounted () {
     // initialize variables
+    // initialize items
     this.supplies = this.items
     this.vendorList = (await vendorService.index(true)).data
     this.assayList = (await assayService.index(true)).data
