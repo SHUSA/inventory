@@ -27,6 +27,6 @@ sequelize.sync({ force: true }).then(() => {
   console.log(`Server started on port ${config.port}`)
  })
 
-app.listen(config.port, () => {
+app.listen(config.port, config.db.options.host, () => {
   console.log(`Server started on port ${config.port}`)
 })
