@@ -1,4 +1,4 @@
-const { User } = require('../models')
+const User = require('mongoose').model('User')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 

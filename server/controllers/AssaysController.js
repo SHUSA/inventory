@@ -1,20 +1,11 @@
-const Assay = require('mongoose').model('Assay')
-const Item = require('mongoose').model('Item')
+const { Assay } = require('../models')
+const { Item } = require('../models')
 // const Issue = require('../models/Issues')
 
 module.exports = {
   async index (req, res) {
     try {
-      await Assay.find({active: req.query.status})
-        .sort({name: -1})
-        .exec((err, doc) => {
-          if (err) {
-            console.log(err)
-            res.send(err.message)
-          } else {
-            res.send(doc)
-          }
-        })
+      
     } catch (error) {
       console.log(error)
       res.status(500).send({
@@ -25,15 +16,7 @@ module.exports = {
 
   async show (req, res) {
     try {
-      await Assay.find({_id: req.params.assayId})
-        .exec((err, doc) => {
-          if (err) {
-            console.log(err)
-            res.send(err.message)
-          } else {
-            res.send(doc)
-          }
-        })
+      
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching assay'
@@ -50,15 +33,7 @@ module.exports = {
     const newAssay = new Assay(assayData)
 
     try {
-      await newAssay.save((err, doc) => {
-        if (err) {
-          console.log(err)
-          res.status(400).send(err.message)
-        } else {
-          res.send(doc)
-          // res.redirect(where?)
-        }
-      })
+      
     } catch (error) {
       res.status(500).send({
         error: 'An error occured saving assay'
@@ -70,25 +45,7 @@ module.exports = {
     const assay = req.body.params.assay
     const assayName = req.body.params.origName
     try {
-      await Assay.update({_id: req.params.assayId}, assay, (err, doc) => {
-        if (err) {
-          console.log(err)
-          res.status(400).send(err.message)
-        } else {
-          // update all items with the assay being updated
-          Item.update({assay: assayName},
-            {$set: {assay: assay.name, active: assay.active}},
-            {multi: true})
-            .exec((err, doc) => {
-              if (err) {
-                console.log(err)
-                res.send(err.message)
-              } else {
-                res.send(assay)
-              }
-            })
-        }
-      })
+      
     } catch (error) {
       res.status(500).send({
         error: 'An error occured updating assay'

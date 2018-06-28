@@ -1,5 +1,5 @@
-const { Item } = require('../models')
-const { Order } = require('../models')
+const Item = require('mongoose').model('Item')
+const Order = require('mongoose').model('Order')
 const moment = require('moment')
 // should probably search by assay or vendor then display items
 
@@ -33,7 +33,14 @@ module.exports = {
     let search = {}
     search.active = req.query.status
     try {
-      
+      await Item.find(search).sort({name: -1}).exec((err, doc) => {
+        if (err) {
+          console.log(err)
+          res.send(err.message)
+        } else {
+          res.send(doc)
+        }
+      })
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching items'
@@ -43,7 +50,16 @@ module.exports = {
 
   async show (req, res) {
     try {
-      
+      await Item.find({_id: {$in: req.query.itemIds}})
+        .sort({vendor: -1})
+        .exec((err, doc) => {
+          if (err) {
+            console.log(err)
+            res.send(err.message)
+          } else {
+            res.send(doc)
+          }
+        })
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching item'
@@ -63,7 +79,14 @@ module.exports = {
     const newItem = new Item(itemData)
 
     try {
-      
+      await newItem.save((err, doc) => {
+        if (err) {
+          console.log(err)
+          res.status(400).send(err.message)
+        } else {
+          res.send(newItem)
+        }
+      })
     } catch (error) {
       res.status(500).send({
         error: 'An error occured saving item'
@@ -90,7 +113,33 @@ module.exports = {
     try {
       // push new quantity in currentStock either here or before passing
       // add to order only it is an actual order and not data fix. add flag somewhere?
-      
+      await Item.update({ _id: item._id }, item, (err, doc) => {
+        if (err) {
+          console.log(err)
+          res.status(400).send(err.message)
+        } else if (item.order) {
+          Order.findOneAndUpdate(
+            {createdAt: {$gte: lastSunday}},
+            { $pull: { entry: { item: item._id } } }, (err, newdoc) => {
+              if (err) {
+                console.log(err)
+                res.send(err.message)
+              } else {
+                console.log('pull done')
+              }
+            })
+          Order.findOneAndUpdate(
+            { createdAt: { $gte: lastSunday } },
+            { $push: { entry: entry } },
+            { new: true }, (err, newdoc) => {
+              if (err) {
+                console.log(err)
+                res.send(err.message)
+              } else {
+                console.log('pushed')
+                res.send(item)
+              }
+            })
         } else {
           console.log('normal update')
           res.send(item)
