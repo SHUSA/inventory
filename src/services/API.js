@@ -3,6 +3,6 @@ import axios from 'axios'
 // baseURL: process.env.baseURL || 'http://localhost:8081/'
 export default () => {
   return axios.create({
-    baseURL: process.env.baseURL
+    baseURL: 'http://localhost:8081/'
   })
 }
