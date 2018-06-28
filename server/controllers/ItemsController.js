@@ -91,11 +91,6 @@ module.exports = {
       // push new quantity in currentStock either here or before passing
       // add to order only it is an actual order and not data fix. add flag somewhere?
       
-        } else {
-          console.log('normal update')
-          res.send(item)
-        }
-      })
     } catch (error) {
       console.log(error)
       res.status(500).send({
