@@ -144,7 +144,7 @@ export default {
         {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'toOrder'},
         {text: 'Comment', value: 'comment', width: '15%'},
-        {text: 'Last Update', value: 'lastUpdate'},
+        {text: 'Last Update', value: 'updatedAt'},
         {text: '', value: 'name', sortable: false}
       ],
       supplies: []
@@ -189,7 +189,7 @@ export default {
     },
 
     time (item) {
-      return moment(item.lastUpdate).format('MMM-DD-YYYY HH:mm:ss')
+      return moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
     },
 
     editItem (item) {
@@ -212,7 +212,7 @@ export default {
       } else {
         this.alert = false
         let thisItem = this.editedItem
-        thisItem.lastUpdate = Date.now()
+        thisItem.updatedAt = Date.now()
         thisItem.currentStock = parseInt(thisItem.currentStock * 100) / 100
         if (thisItem.currentStock <= thisItem.reorderPoint) {
           thisItem.order = true

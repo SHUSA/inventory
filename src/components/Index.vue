@@ -21,13 +21,13 @@
           <v-list-tile slot="activator">
             <v-list-tile-title>Orders</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile v-for="(order, index) in orderList" :key="order.createDate" @click="viewOrder(index)">
+          <v-list-tile v-for="(order, index) in orderList" :key="order.createdAt" @click="viewOrder(index)">
             <v-list-tile-action>
               <v-icon v-if="order.completed">check</v-icon>
               <v-icon v-else>keyboard_arrow_right</v-icon>
             </v-list-tile-action>
             <v-list-tile-title v-if="order.new">{{order.name}}</v-list-tile-title>
-            <v-list-tile-title v-else>Week of {{time(order.createDate)}}</v-list-tile-title>
+            <v-list-tile-title v-else>Week of {{time(order.createdAt)}}</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
         <v-list-group>
@@ -123,7 +123,7 @@ export default {
         this.$store.dispatch('setTitle', 'Create a New Order')
         this.list = [{name: 'Add New Order'}]
       } else {
-        this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createDate)}`)
+        this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
         this.list = this.orders
       }
     }

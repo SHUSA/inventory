@@ -83,7 +83,7 @@ module.exports = {
     }
     entry = [{
       item: item._id,
-      lastUpdate: item.lastUpdate,
+      updatedAt: item.updatedAt,
       currentStock: item.currentStock,
       comment: item.comment
     }]

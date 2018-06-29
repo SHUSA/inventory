@@ -43,10 +43,6 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0
     },
     comment: DataTypes.STRING,
-    lastUpdate: {
-      type: DataTypes.DATE,
-      defaultValue: Date.now()
-    },
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true

@@ -106,7 +106,7 @@ module.exports = {
     }
     entry = [{
       item: item._id,
-      lastUpdate: item.lastUpdate,
+      updatedAt: item.updatedAt,
       currentStock: item.currentStock,
       comment: item.comment
     }]
@@ -119,7 +119,7 @@ module.exports = {
           res.status(400).send(err.message)
         } else if (item.order) {
           Order.findOneAndUpdate(
-            {createDate: {$gte: lastSunday}},
+            {createdAt: {$gte: lastSunday}},
             { $pull: { entry: { item: item._id } } }, (err, newdoc) => {
               if (err) {
                 console.log(err)
@@ -129,7 +129,7 @@ module.exports = {
               }
             })
           Order.findOneAndUpdate(
-            { createDate: { $gte: lastSunday } },
+            { createdAt: { $gte: lastSunday } },
             { $push: { entry: entry } },
             { new: true }, (err, newdoc) => {
               if (err) {

@@ -4,11 +4,11 @@ const Schema = mongoose.Schema
 const OrderSchema = new Schema({
   entry: [{
     item: {type: Schema.Types.ObjectId},
-    lastUpdate: {type: Date},
+    updatedAt: {type: Date},
     currentStock: {type: Number},
     comment: {type: String}
   }],
-  createDate: {type: Date, default: Date.now},
+  createdAt: {type: Date, default: Date.now},
   completed: {type: Boolean, default: false},
   completeDate: {type: Date}
 })
