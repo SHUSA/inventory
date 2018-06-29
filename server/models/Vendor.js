@@ -1,11 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
   const Vendor = sequelize.define('Vendor', {
-    longName: DataTypes.STRING,
-    shortName: DataTypes.STRING
+    name: {
+      type: DataTypes.STRING,
+      unique: true
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   })
-
-  Vendor.associate = function (models) {
-  }
 
   return Vendor
 }
