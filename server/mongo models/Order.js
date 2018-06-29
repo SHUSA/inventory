@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const OrderSchema = new Schema({
   entry: [{
     item: {type: Schema.Types.ObjectId},
-    updatedAt: {type: Date},
+    lastUpdate: {type: Date},
     currentStock: {type: Number},
     comment: {type: String}
   }],

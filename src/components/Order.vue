@@ -65,7 +65,7 @@
         <td>{{props.item.currentStock}}</td>
         <td>{{props.item.reorderQuantity}}</td>
         <td class="comment" :id=props.item._id @click="expand(props.item._id)">{{props.item.comment}}</td>
-        <td>{{time(props.item.updatedAt)}}</td>
+        <td>{{time(props.item.lastUpdate)}}</td>
       </template>
       <template slot="no-data">
         <v-alert color="error" icon="warning">Nothing here!</v-alert>
@@ -103,7 +103,7 @@ export default {
         {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'reorderQuantity'},
         {text: 'Comment', value: 'comment', width: '15%'},
-        {text: 'Last Update', value: 'updatedAt'}
+        {text: 'Last Update', value: 'lastUpdate'}
       ],
       thisOrder: {},
       orderList: []

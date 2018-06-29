@@ -329,7 +329,7 @@ export default {
         {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'reorderQuantity'},
         {text: 'Comment', value: 'comment', width: '15%'},
-        {text: 'Last Update', value: 'updatedAt'},
+        {text: 'Last Update', value: 'lastUpdate'},
         {text: '', value: 'name', sortable: false, width: '5%'}
       ],
       supplies: [],
@@ -424,7 +424,7 @@ export default {
   methods: {
 
     time (item) {
-      return moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
+      return moment(item.lastUpdate).format('MMM-DD-YYYY HH:mm:ss')
     },
 
     addAssay () {
@@ -593,7 +593,7 @@ export default {
           // existing item
           let focusedItem = this.supplies[this.editedIndex]
           let initalVendor = focusedItem.vendor
-          this.editedItem.updatedAt = Date.now()
+          this.editedItem.lastUpdate = Date.now()
           Object.assign(focusedItem, (await itemService.put(focusedItem._id, this.editedItem, assayInfo)).data)
           if (initalVendor !== focusedItem.vendor) {
             this.supplies.splice(this.editedIndex, 1)

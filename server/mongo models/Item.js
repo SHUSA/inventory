@@ -13,7 +13,7 @@ const ItemSchema = new Schema({
   leadTimeDays: {type: Number},
   weeksOfReorder: {type: Number},
   comment: {type: String},
-  updatedAt: {type: Date, default: Date.now},
+  lastUpdate: {type: Date, default: Date.now},
   safetyStock: {type: Number, default: 0},
   reorderPoint: {type: Number, default: 0},
   reorderQuantity: {type: Number, default: 0},

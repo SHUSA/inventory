@@ -4,7 +4,7 @@ module.exports = {
   async index (req, res) {
     try {
       await Order.find()
-        .sort({updatedAt: 1})
+        .sort({lastUpdate: 1})
         .exec((err, doc) => {
           if (err) {
             console.log(err)
