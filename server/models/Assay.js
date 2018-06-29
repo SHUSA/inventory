@@ -2,16 +2,37 @@ module.exports = (sequelize, DataTypes) => {
   const Assay = sequelize.define('Assay', {
     name: {
       type: DataTypes.STRING,
-      unique: true
+      unique: true,
+      required: true
     },
-    weeklyVolume: DataTypes.TINYINT,
-    weeklyRuns: DataTypes.TINYINT,
-    controlsPerRun: DataTypes.TINYINT,
-    maxBatchSize: DataTypes.INTEGER,
-    sampleReplicates: DataTypes.INTEGER
+    weeklyVolume: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    weeklyRuns: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    controlsPerRun: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    maxBatchSize: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    sampleReplicates: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   })
 
   Assay.associate = function (models) {
+    Assay.belongsTo(models.Department)
   }
 
   return Assay
