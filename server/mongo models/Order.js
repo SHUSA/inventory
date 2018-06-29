@@ -8,7 +8,7 @@ const OrderSchema = new Schema({
     currentStock: {type: Number},
     comment: {type: String}
   }],
-  createdAt: {type: Date, default: Date.now},
+  createDate: {type: Date, default: Date.now},
   completed: {type: Boolean, default: false},
   completeDate: {type: Date}
 })
