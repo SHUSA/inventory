@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Order.associate = function (models) {
     Order.belongsTo(models.Department)
+    Order.hasMany(models.Entry)
   }
 
   return Order
