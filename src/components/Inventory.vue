@@ -521,7 +521,7 @@ export default {
           for (let i = 0; i < this.assayList.length; i++) {
             if (this.assayList[i]._id === edited._id) {
               assayInfo = this.assayList[i]
-              Object.assign(assayInfo, (await assayService.put(edited, assayInfo.name)).data)
+              Object.assign(assayInfo, (await assayService.put(edited)).data)
               break
             }
           }

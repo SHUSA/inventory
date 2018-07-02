@@ -19,13 +19,8 @@ export default {
     )
   },
 
-  put (assay, origName) {
-    return API().put(`assays/${assay._id}`, {
-      params: {
-        assay: assay,
-        origName: origName
-      }
-    }).catch(err =>
+  put (assay) {
+    return API().put(`assays/${assay._id}`, assay).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   }
