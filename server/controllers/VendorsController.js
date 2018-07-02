@@ -1,10 +1,17 @@
 const { Vendor } = require('../models')
-const { Item } = require('../models')
 
 module.exports = {
   async index (req, res) {
     try {
-      
+      let vendors = await Vendor.findAll({
+        where: {
+          active: req.query.status
+        },
+        order: [
+          ['name', 'DESC']
+        ]
+      })
+      res.send(vendors)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching vendors'
@@ -14,7 +21,8 @@ module.exports = {
 
   async show (req, res) {
     try {
-      
+      let vendor = await Vendor.findById(req.params.vendorId)
+      res.send(vendor)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching vendor'
@@ -23,15 +31,9 @@ module.exports = {
   },
 
   async post (req, res) {
-    const vendor = req.body
-    const vendorData = {}
-    for (let key in vendor) {
-      vendorData[key] = vendor[key]
-    }
-    const newVendor = new Vendor(vendorData)
-
     try {
-      
+      const vendor = await Vendor.create(req.body)
+      res.send(vendor)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured saving vendor'
@@ -40,10 +42,13 @@ module.exports = {
   },
 
   async put (req, res) {
-    const vendor = req.body.params.vendor
-    const vendorName = req.body.params.origName
     try {
-      
+      const vendor = await Vendor.update(req.body, {
+        where: {
+          id: req.params.vendorId
+        }
+      })
+      res.send(vendor)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured updating vendor'

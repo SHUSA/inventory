@@ -553,7 +553,7 @@ export default {
           for (let i = 0; i < this.vendorList.length; i++) {
             if (this.vendorList[i]._id === edited._id) {
               vendorInfo = this.vendorList[i]
-              Object.assign(vendorInfo, (await vendorService.put(edited, vendorInfo.name)).data)
+              Object.assign(vendorInfo, (await vendorService.put(edited)).data)
               this.$store.dispatch('setTitle', this.vendorList[i].name)
               break
             }

@@ -19,13 +19,8 @@ export default {
     )
   },
 
-  put (vendor, origName) {
-    return API().put(`vendors/${vendor._id}`, {
-      params: {
-        vendor: vendor,
-        origName: origName
-      }
-    }).catch(err =>
+  put (vendor) {
+    return API().put(`vendors/${vendor._id}`, vendor).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   }
