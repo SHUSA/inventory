@@ -20,7 +20,7 @@ export default {
   },
 
   put (assay) {
-    return API().put(`assays/${assay._id}`, assay).catch(err =>
+    return API().put(`assays/${assay.id}`, assay).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   }

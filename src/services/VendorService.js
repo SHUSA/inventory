@@ -20,7 +20,7 @@ export default {
   },
 
   put (vendor) {
-    return API().put(`vendors/${vendor._id}`, vendor).catch(err =>
+    return API().put(`vendors/${vendor.id}`, vendor).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   }
