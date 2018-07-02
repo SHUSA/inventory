@@ -16,11 +16,7 @@ export default {
   },
 
   put (order) {
-    return API().put(`orders/${order._id}`, {
-      params: {
-        order: order
-      }
-    }).catch(err =>
+    return API().put(`orders/${order.id}`, order).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   },
