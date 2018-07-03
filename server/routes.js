@@ -4,6 +4,7 @@ const VendorsController = require('./controllers/VendorsController')
 const ItemsController = require('./controllers/ItemsController')
 const AssaysController = require('./controllers/AssaysController')
 const OrdersController = require('./controllers/OrdersController')
+const DepartmentController = require('./controllers/DepartmentController')
 // const isAuthenticated = require('./policies/isAuthenticated')
 // define placement of authentication
 
@@ -13,6 +14,11 @@ module.exports = (app) => {
     AuthenticationController.register)
   app.post('/login', AuthenticationController.login)
   app.put('/userupdate', AuthenticationController.update)
+
+  app.get('/department', DepartmentController.index)
+  app.get('/department/:deptId', DepartmentController.show)
+  app.post('/department', DepartmentController.post)
+  app.put('/department/:deptId', DepartmentController.put)
 
   app.get('/vendors', VendorsController.index)
   app.get('/vendors/:vendorId', VendorsController.show)
