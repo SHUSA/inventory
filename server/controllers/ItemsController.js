@@ -1,5 +1,6 @@
 const { Item } = require('../models')
 const { Order } = require('../models')
+// const { Entry } = require('../models')
 const moment = require('moment')
 // should probably search by assay or vendor then display items
 
@@ -33,7 +34,13 @@ module.exports = {
     let search = {}
     search.active = req.query.status
     try {
-      
+      let items = await Item.findAll({
+        where: search,
+        order: [
+          ['name', 'DESC']
+        ]
+      })
+      res.send(items)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching items'
@@ -43,7 +50,15 @@ module.exports = {
 
   async show (req, res) {
     try {
-      
+      let items = await Item.findAll({
+        where: {
+          id: req.query.itemIds
+        },
+        order: [
+          ['assay', 'DESC']
+        ]
+      })
+      res.send(items)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching item'
@@ -52,18 +67,13 @@ module.exports = {
   },
 
   async post (req, res) {
-    const item = req.body.params.item
+    let item = req.body.params.item
     const assay = req.body.params.assay
-    let itemData = {}
-    for (let key in item) {
-      itemData[key] = item[key]
-    }
-    itemData.assay = assay.name
-    itemData = calculateStockLevels(itemData, assay)
-    const newItem = new Item(itemData)
+    item = calculateStockLevels(item, assay)
 
     try {
-      
+      item = await Item.create(item)
+      res.send(item)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured saving item'
@@ -74,23 +84,39 @@ module.exports = {
   async put (req, res) {
     let item = req.body.params.item
     const assay = req.body.params.assay
-    const lastSunday = moment().startOf('week').toISOString()
-    let entry = []
+    const lastSunday = moment().startOf('week')
+    let entry = {}
 
     if (!item.order && !item.user && item.active) {
-      item.assay = assay.name
       item = calculateStockLevels(item, assay)
     }
-    entry = [{
-      item: item._id,
+
+    entry = {
+      ItemId: item.id,
       updatedAt: item.updatedAt,
       currentStock: item.currentStock,
       comment: item.comment
-    }]
+    }
     try {
-      // push new quantity in currentStock either here or before passing
       // add to order only it is an actual order and not data fix. add flag somewhere?
-      
+      await Item.update(item, {
+        where: {
+          id: item.id
+        }
+      })
+      // fix order/entry associations
+      // if (item.order) {
+      //   await Order.findOne({
+      //     where: {
+      //       createdAt: {
+      //         gte: lastSunday
+      //       }
+      //     }
+      //   }).then(order => {
+      //     order.setEntry(entry)
+      //   })
+      //   res.send(item)
+      // }
     } catch (error) {
       console.log(error)
       res.status(500).send({
