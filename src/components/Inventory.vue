@@ -22,7 +22,7 @@
                     autocomplete
                     label="Assay"
                     item-text="name"
-                    item-value="name"
+                    item-value="id"
                     v-model="editedItem.assay"
                     append-icon="note_add"
                     :append-icon-cb="addAssay"
@@ -37,7 +37,7 @@
                     autocomplete
                     label="Vendor"
                     item-text="name"
-                    item-value="name"
+                    item-value="id"
                     v-model="editedItem.vendor"
                     append-icon="note_add"
                     :append-icon-cb="addVendor"
@@ -227,6 +227,8 @@ import { mapState } from 'vuex'
 import itemService from '@/services/ItemService.js'
 import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
+import entryService from '@/services/EntryService.js'
+import orderService from '@/services/OrderService.js'
 const moment = require('moment')
 document.getElementsByTagName('input').onwheel = () => false
 // Notes on number input type
