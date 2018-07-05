@@ -23,7 +23,7 @@
                     label="Assay"
                     item-text="name"
                     item-value="id"
-                    v-model="editedItem.assay"
+                    v-model="editedItem.AssayId"
                     append-icon="note_add"
                     :append-icon-cb="addAssay"
                     :rules="[rules.assay]"
@@ -38,7 +38,7 @@
                     label="Vendor"
                     item-text="name"
                     item-value="id"
-                    v-model="editedItem.vendor"
+                    v-model="editedItem.VendorId"
                     append-icon="note_add"
                     :append-icon-cb="addVendor"
                     :rules="[rules.vendor]"
@@ -198,8 +198,8 @@
     >
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
-        <td>{{props.item.vendor}}</td>
-        <td @click="editAssay(props.item)">{{props.item.assay}}</td>
+        <td>{{getVendor(props.item.VendorId)}}</td>
+        <td @click="editAssay(props.item)">{{getAssay(props.item.AssayId)}}</td>
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
         <td>{{props.item.currentStock}}</td>
@@ -351,8 +351,8 @@ export default {
       editedIndex: -1,
       editedItem: {
         name: '',
-        assay: '',
-        vendor: '',
+        AssayId: '',
+        VendorId: '',
         catalogNumber: '',
         itemDescription: '',
         reactionsPerItem: 0,
@@ -365,8 +365,8 @@ export default {
       },
       defaultItem: {
         name: '',
-        assay: '',
-        vendor: '',
+        AssayId: '',
+        VendorId: '',
         catalogNumber: '',
         itemDescription: '',
         reactionsPerItem: 0,
@@ -429,6 +429,14 @@ export default {
       return moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
     },
 
+    getAssay (id) {
+      return this.assayList.find(assay => assay.id === id).name
+    },
+
+    getVendor (id) {
+      return this.vendorList.find(assay => assay.id === id).name
+    },
+
     addAssay () {
       this.assayForm = 'New Assay'
       this.assayDialog = true
@@ -486,7 +494,7 @@ export default {
       const index = this.supplies.indexOf(item)
       if (confirm(`Are you sure you want to deactivate ${item.name}?`)) {
         item.active = false
-        await itemService.put(item._id, item, null)
+        await itemService.put(item.id, item, null)
         this.supplies.splice(index, 1)
         this.dialog = false
       }
@@ -521,7 +529,7 @@ export default {
           let assayInfo = {}
           let edited = this.editedAssay
           for (let i = 0; i < this.assayList.length; i++) {
-            if (this.assayList[i]._id === edited._id) {
+            if (this.assayList[i].id === edited.id) {
               assayInfo = this.assayList[i]
               Object.assign(assayInfo, (await assayService.put(edited)).data)
               break
@@ -553,7 +561,7 @@ export default {
           let vendorInfo = {}
           let edited = this.editedVendor
           for (let i = 0; i < this.vendorList.length; i++) {
-            if (this.vendorList[i]._id === edited._id) {
+            if (this.vendorList[i].id === edited.id) {
               vendorInfo = this.vendorList[i]
               Object.assign(vendorInfo, (await vendorService.put(edited)).data)
               this.$store.dispatch('setTitle', this.vendorList[i].name)
@@ -580,7 +588,7 @@ export default {
         this.alert = true
         console.log(this.errors)
       } else {
-        let assayInfo = this.assayList.find(assay => assay.name.toUpperCase() === this.editedItem.assay.toUpperCase())
+        let assayInfo = this.assayList.find(assay => assay.id === this.editedItem.AssayId)
         this.loading = true
         this.alert = false
         for (let key in this.editedItem) {
@@ -596,12 +604,16 @@ export default {
           let focusedItem = this.supplies[this.editedIndex]
           let initalVendor = focusedItem.vendor
           this.editedItem.updatedAt = Date.now()
-          Object.assign(focusedItem, (await itemService.put(focusedItem._id, this.editedItem, assayInfo)).data)
+          console.log('existing item')
+          console.log(this.editedItem)
+          Object.assign(focusedItem, (await itemService.put(focusedItem.id, this.editedItem, assayInfo)).data)
           if (initalVendor !== focusedItem.vendor) {
             this.supplies.splice(this.editedIndex, 1)
           }
         } else {
           // new item
+          console.log('new item')
+          console.log(this.editedItem)
           this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
         }
       }
