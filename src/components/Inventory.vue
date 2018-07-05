@@ -158,7 +158,6 @@
         v-model="vendorDialog"
         max-width="500px"
       >
-        <v-btn v-if="admin" slot="activator" color="primary" class="mb-0" dark @click="editVendor">Edit Vendor</v-btn>
         <v-card>
           <v-card-title>
             <span class="headline">{{vendorForm}}</span>
@@ -198,8 +197,8 @@
     >
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
-        <td>{{getVendor(props.item.VendorId)}}</td>
-        <td @click="editAssay(props.item)">{{getAssay(props.item.AssayId)}}</td>
+        <td @click="editVendor(props.item.VendorId)">{{getVendor(props.item.VendorId)}}</td>
+        <td @click="editAssay(props.item.AssayId)">{{getAssay(props.item.AssayId)}}</td>
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
         <td>{{props.item.currentStock}}</td>
@@ -279,7 +278,7 @@ export default {
           if (text.length === 0) {
             this.errors.catalog = true
             return 'Please enter a catalog number'
-          } else if (this.supplies.find(item => item.catalogNumber.toUpperCase() === text.toUpperCase()) !== undefined) {
+          } else if (this.supplies.find(item => item.catalogNumber === text.toUpperCase()) !== undefined) {
             // fixes error throwing on existing items
             if (this.editedIndex > -1) {
               this.errors.catalog = false
@@ -361,7 +360,8 @@ export default {
         leadTimeDays: 7,
         weeksOfReorder: 8,
         reorderPoint: 0,
-        reorderQuantity: 0
+        reorderQuantity: 0,
+        comment: ''
       },
       defaultItem: {
         name: '',
@@ -375,7 +375,8 @@ export default {
         leadTimeDays: 7,
         weeksOfReorder: 8,
         reorderPoint: 0,
-        reorderQuantity: 0
+        reorderQuantity: 0,
+        comment: ''
       }
     }
   },
@@ -418,7 +419,7 @@ export default {
   async mounted () {
     // initialize variables
     // initialize items
-    this.supplies = this.items
+    this.supplies = (await itemService.index(true)).data
     this.vendorList = (await vendorService.index(true)).data
     this.assayList = (await assayService.index(true)).data
   },
@@ -430,11 +431,17 @@ export default {
     },
 
     getAssay (id) {
+      if (this.assayList.length === 0) {
+        return null
+      }
       return this.assayList.find(assay => assay.id === id).name
     },
 
     getVendor (id) {
-      return this.vendorList.find(assay => assay.id === id).name
+      if (this.vendorList.length === 0) {
+        return null
+      }
+      return this.vendorList.find(vendor => vendor.id === id).name
     },
 
     addAssay () {
@@ -459,27 +466,15 @@ export default {
       }
     },
 
-    editAssay (item) {
-      let assays = this.assayList
+    editAssay (id) {
       this.assayForm = 'Edit Assay'
-      for (let i = 0; i < assays.length; i++) {
-        if (item.assay === assays[i].name) {
-          this.editedAssay = Object.assign({}, assays[i])
-          break
-        }
-      }
+      this.editedAssay = Object.assign({}, this.assayList.find(assay => assay.id === id))
       this.assayDialog = true
     },
 
-    editVendor () {
-      let vendors = this.vendorList
+    editVendor (id) {
       this.vendorForm = 'Edit Vendor'
-      for (let i = 0; i < vendors.length; i++) {
-        if (this.pageTitle === vendors[i].name) {
-          this.editedVendor = Object.assign({}, vendors[i])
-          break
-        }
-      }
+      this.editedVendor = Object.assign({}, this.vendorList.find(vendor => vendor.id === id))
       this.vendorDialog = true
     },
 
@@ -564,6 +559,7 @@ export default {
             if (this.vendorList[i].id === edited.id) {
               vendorInfo = this.vendorList[i]
               Object.assign(vendorInfo, (await vendorService.put(edited)).data)
+              // clean up; top bar not to show vendor name
               this.$store.dispatch('setTitle', this.vendorList[i].name)
               break
             }
