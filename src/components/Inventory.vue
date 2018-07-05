@@ -197,8 +197,8 @@
     >
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
-        <td @click="editVendor(props.item.VendorId)">{{getVendor(props.item.VendorId)}}</td>
-        <td @click="editAssay(props.item.AssayId)">{{getAssay(props.item.AssayId)}}</td>
+        <td @click="editVendor(props.item.VendorId)">{{getVendor(props.item)}}</td>
+        <td @click="editAssay(props.item.AssayId)">{{getAssay(props.item)}}</td>
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
         <td>{{props.item.currentStock}}</td>
@@ -330,7 +330,7 @@ export default {
         {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'reorderQuantity'},
         {text: 'Comment', value: 'comment', width: '15%'},
-        {text: 'Last Update', value: 'updatedAt'},
+        {text: 'Last Update', value: 'lastUpdate'},
         {text: '', value: 'name', sortable: false, width: '5%'}
       ],
       supplies: [],
@@ -427,21 +427,24 @@ export default {
   methods: {
 
     time (item) {
-      return moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
+      item.lastUpdate = moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
+      return item.lastUpdate
     },
 
-    getAssay (id) {
+    getAssay (item) {
       if (this.assayList.length === 0) {
         return null
       }
-      return this.assayList.find(assay => assay.id === id).name
+      item.assay = this.assayList.find(assay => assay.id === item.AssayId).name
+      return item.assay
     },
 
-    getVendor (id) {
+    getVendor (item) {
       if (this.vendorList.length === 0) {
         return null
       }
-      return this.vendorList.find(vendor => vendor.id === id).name
+      item.vendor = this.vendorList.find(vendor => vendor.id === item.VendorId).name
+      return item.vendor
     },
 
     addAssay () {
