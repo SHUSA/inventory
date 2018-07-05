@@ -517,23 +517,20 @@ export default {
       if (this.errors.assay || num) {
         this.alert = true
       } else {
+        let assayInfo = {}
+        let edited = this.editedAssay
         this.loading = true
         this.alert = false
         if (this.assayForm === 'Edit Assay') {
           // existing assay
-          let assayInfo = {}
-          let edited = this.editedAssay
-          for (let i = 0; i < this.assayList.length; i++) {
-            if (this.assayList[i].id === edited.id) {
-              assayInfo = this.assayList[i]
-              Object.assign(assayInfo, (await assayService.put(edited)).data)
-              break
-            }
-          }
+          assayInfo = this.assayList.find(assay => assay.id === edited.id)
+          Object.assign(assayInfo, (await assayService.put(edited)).data)
         } else {
           // new assay
-          this.assayList.push((await assayService.post(this.editedAssay)).data)
+          assayInfo = (await assayService.post(edited)).data
+          this.assayList.push(assayInfo)
         }
+        this.editedItem.AssayId = assayInfo.id
       }
 
       if (!this.alert) {
@@ -549,25 +546,20 @@ export default {
       if (this.errors.vendor || num) {
         this.alert = true
       } else {
+        let vendorInfo = {}
+        let edited = this.editedVendor
         this.loading = true
         this.alert = false
         if (this.vendorForm === 'Edit Vendor') {
           // existing vendor
-          let vendorInfo = {}
-          let edited = this.editedVendor
-          for (let i = 0; i < this.vendorList.length; i++) {
-            if (this.vendorList[i].id === edited.id) {
-              vendorInfo = this.vendorList[i]
-              Object.assign(vendorInfo, (await vendorService.put(edited)).data)
-              // clean up; top bar not to show vendor name
-              this.$store.dispatch('setTitle', this.vendorList[i].name)
-              break
-            }
-          }
+          vendorInfo = this.vendorList.find(vendor => vendor.id === edited.id)
+          Object.assign(vendorInfo, (await vendorService.put(edited)).data)
         } else {
           // new vendor
-          this.vendorList.push((await vendorService.post(this.editedVendor)).data)
+          vendorInfo = (await vendorService.post(edited)).data
+          this.vendorList.push(vendorInfo)
         }
+        this.editedItem.VendorId = vendorInfo.id
       }
 
       if (!this.alert) {
