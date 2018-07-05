@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
   const Entry = sequelize.define('Entry', {
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4
+    },
     currentStock: DataTypes.REAL,
     comment: DataTypes.STRING
   })
