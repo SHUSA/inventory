@@ -13,69 +13,86 @@
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap>
-                <v-flex xs6>
-                  <v-text-field v-model="editedItem.name" :rules="[rules.item]" label="Item Name" required/>
-                </v-flex>
-                <v-flex xs6>
-                  <v-select
-                    :items="assayList"
-                    autocomplete
-                    label="Assay"
-                    item-text="name"
-                    item-value="id"
-                    v-model="editedItem.AssayId"
-                    append-icon="note_add"
-                    :append-icon-cb="addAssay"
-                    :rules="[rules.assay]"
-                    dense
-                    required
-                  />
-                </v-flex>
-                <v-flex xs6>
-                  <v-select
-                    :items="vendorList"
-                    autocomplete
-                    label="Vendor"
-                    item-text="name"
-                    item-value="id"
-                    v-model="editedItem.VendorId"
-                    append-icon="note_add"
-                    :append-icon-cb="addVendor"
-                    :rules="[rules.vendor]"
-                    dense
-                    required
-                  />
-                </v-flex>
-                <v-flex xs6>
-                  <v-text-field v-model="editedItem.catalogNumber" :rules="[rules.catalog]" label="Catalog Number" required/>
-                </v-flex>
-                <v-flex xs6>
-                  <v-text-field v-model="editedItem.itemDescription" label="Item Description"/>
-                </v-flex>
-                <v-flex xs6>
-                  <v-text-field v-model="editedItem.reactionsPerItem" validate-on-blur :rules="[rules.number]" ref="reactionsPerItem" type="number" min=0 hint="Use 0 for general items." persistent-hint label="Reactions per Item"/>
-                </v-flex>
-                <v-flex xs6>
-                  <v-text-field v-model="editedItem.currentStock" validate-on-blur :rules="[rules.number]" ref="currentStock" type="number" min=0 label="Current Stock"/>
-                </v-flex>
-                <v-flex xs6>
-                  <v-text-field disabled v-model="editedItem.safetyStock" label="Safety Stock"/>
-                </v-flex>
-                <v-flex xs6>
-                  <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
-                </v-flex>
-                <v-flex xs6>
-                  <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)"/>
-                </v-flex>
-                <v-flex xs6>
-                  <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
-                </v-flex>
+                <template v-if="admin">
+                  <v-flex xs6>
+                    <v-text-field v-model="editedItem.name" :rules="[rules.item]" label="Item Name" required/>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-select
+                      :items="assayList"
+                      autocomplete
+                      label="Assay"
+                      item-text="name"
+                      item-value="id"
+                      v-model="editedItem.AssayId"
+                      append-icon="note_add"
+                      :append-icon-cb="addAssay"
+                      :rules="[rules.assay]"
+                      dense
+                      required
+                    />
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-select
+                      :items="vendorList"
+                      autocomplete
+                      label="Vendor"
+                      item-text="name"
+                      item-value="id"
+                      v-model="editedItem.VendorId"
+                      append-icon="note_add"
+                      :append-icon-cb="addVendor"
+                      :rules="[rules.vendor]"
+                      dense
+                      required
+                    />
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-text-field v-model="editedItem.catalogNumber" :rules="[rules.catalog]" label="Catalog Number" required/>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-text-field v-model="editedItem.itemDescription" label="Item Description"/>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-text-field v-model="editedItem.reactionsPerItem" validate-on-blur :rules="[rules.number]" ref="reactionsPerItem" type="number" min=0 hint="Use 0 for general items." persistent-hint label="Reactions per Item"/>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-text-field v-model="editedItem.currentStock" validate-on-blur :rules="[rules.number]" ref="currentStock" type="number" min=0 label="Current Stock"/>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-text-field disabled v-model="editedItem.safetyStock" label="Safety Stock"/>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)"/>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
+                  </v-flex>
                   <v-flex xs6>
                     <v-text-field v-model="editedItem.reorderPoint" ref="reorderPoint" label="Reorder Point"/>
                   </v-flex>
                   <v-flex xs6>
                     <v-text-field v-model="editedItem.reorderQuantity" ref="reorderQuantity" label="Reorder Quantity"/>
                   </v-flex>
+                </template>
+                <template v-if="user">
+                  <v-flex xs12>
+                    <v-text-field v-model="editedItem.currentStock" validate-on-blur :rules="[rules.number]" ref="currentStock" type="number" min=0 label="Current Stock"/>
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-text-field
+                    v-model="editedItem.comment"
+                    textarea
+                    no-resize
+                    counter=140
+                    validate-on-blur
+                    :rules="[rules.text]"
+                    label="Comment"/>
+                  </v-flex>
+                </template>
                 <v-flex xs12>
                   <v-alert
                     :value="alert"
@@ -88,7 +105,7 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="red darken-1" disabled flat @click.native="deleteItem(currentItem)" v-if="currentItem != null">Deactivate</v-btn>
+            <v-btn color="red darken-1" disabled flat @click.native="deleteItem(currentItem)" v-if="currentItem !== null && admin">Deactivate</v-btn>
             <v-spacer/>
             <v-progress-circular indeterminate color="primary" v-if="loading"/>
             <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
@@ -260,6 +277,7 @@ export default {
         vendor: false,
         catalog: false,
         item: false,
+        text: false,
         num: []
       },
       rules: {
@@ -272,6 +290,15 @@ export default {
           } else {
             this.errors.num.push('')
             return 'Please enter a valid number'
+          }
+        },
+        text: (v) => {
+          if (v.length <= 140) {
+            this.errors.text = false
+            return true
+          } else {
+            this.errors.text = true
+            return 'Max 140 characters'
           }
         },
         catalog: (text) => {
@@ -387,7 +414,8 @@ export default {
     },
     ...mapState([
       'pageTitle',
-      'admin'
+      'admin',
+      'user'
     ])
   },
 
@@ -589,22 +617,18 @@ export default {
         }
         this.editedItem.catalogNumber = this.editedItem.catalogNumber.toUpperCase()
         this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
-
+        // determine Ordering and Entry; not yet done
         if (this.editedIndex > -1) {
           // existing item
           let focusedItem = this.supplies[this.editedIndex]
           let initalVendor = focusedItem.vendor
           this.editedItem.updatedAt = Date.now()
-          console.log('existing item')
-          console.log(this.editedItem)
           Object.assign(focusedItem, (await itemService.put(focusedItem.id, this.editedItem, assayInfo)).data)
           if (initalVendor !== focusedItem.vendor) {
             this.supplies.splice(this.editedIndex, 1)
           }
         } else {
           // new item
-          console.log('new item')
-          console.log(this.editedItem)
           this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
         }
       }
