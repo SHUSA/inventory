@@ -5,7 +5,7 @@ module.exports = {
     try {
       let orders = await Order.findAll({
         order: [
-          ['createdAt', 'DESC']
+          ['createdAt', 'ASC']
         ]
       })
       res.send(orders)

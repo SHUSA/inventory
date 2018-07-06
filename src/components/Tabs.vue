@@ -8,7 +8,7 @@
     </v-tabs>
     <order v-if="search === 'order'" :order="selection" :orders="orders"/>
     <template v-else>
-      <inventory :items="selection" :assays="assays" :vendors="vendors"/>
+      <inventory :items="selection" :assays="assays" :vendors="vendors" :recentOrder="orders[orders.length - 1]"/>
     </template>
   </div>
 </template>

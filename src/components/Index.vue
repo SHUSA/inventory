@@ -21,7 +21,7 @@
           <v-list-tile slot="activator">
             <v-list-tile-title>Orders</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile v-for="(order, index) in orderList" :key="order.createdAt" @click="viewOrder(index)">
+          <v-list-tile v-for="(order, index) in orderList.splice().reverse()" :key="order.createdAt" @click="viewOrder(index)">
             <v-list-tile-action>
               <v-icon v-if="order.completed">check</v-icon>
               <v-icon v-else>keyboard_arrow_right</v-icon>
