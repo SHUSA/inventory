@@ -8,7 +8,7 @@
     </v-tabs>
     <order v-if="search === 'order'" :order="selection" :orders="orders" :items="orderItems"/>
     <template v-else>
-      <inventory :items="items" :assays="assays" :vendors="vendors"/>
+      <inventory :items="selection" :assays="assays" :vendors="vendors"/>
     </template>
   </div>
 </template>
@@ -17,11 +17,11 @@
 import Inventory from './Inventory'
 import Order from './Order'
 import itemService from '@/services/ItemService.js'
+import orderService from '@/services/OrderService.js'
 import { mapState } from 'vuex'
 
 export default {
   props: [
-    'items',
     'search',
     'assays',
     'vendors',
@@ -34,7 +34,6 @@ export default {
   },
   data () {
     return {
-      orderEntries: [],
       orderItems: []
     }
   },
@@ -48,22 +47,8 @@ export default {
   watch: {
     async selection () {
       if (this.search === 'order') {
-        let entry = this.selection.entry || []
-        entry.map(entry => {
-          this.orderEntries.push(entry.item)
-        })
-        // combine current stock and comments from entry to existing data
-        this.orderItems = (await itemService.show(this.orderEntries)).data
-        this.orderItems.map(x => {
-          for (let i = 0; i < entry.length; i++) {
-            if (entry[i].item === x._id) {
-              Object.assign(x, entry[i])
-              break
-            }
-          }
-        })
-        // reset orders to prevent inflation
-        this.orderEntries = []
+        this.orderItems = [(await orderService.show(this.selection.id)).data]
+        // get array of order entries and pass it to order component
       }
     }
   }
