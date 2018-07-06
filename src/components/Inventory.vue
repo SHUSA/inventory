@@ -105,10 +105,11 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="red darken-1" disabled flat @click.native="deleteItem(currentItem)" v-if="currentItem !== null && admin">Deactivate</v-btn>
+            <v-btn color="red darken-1" disabled @click.native="deleteItem(currentItem)" v-if="currentItem !== null && admin">Deactivate</v-btn>
+            <v-btn color="green" @click.native="save(true)">Order</v-btn>
             <v-spacer/>
             <v-progress-circular indeterminate color="primary" v-if="loading"/>
-            <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+            <v-btn color="red darken-1" flat @click.native="close">Cancel</v-btn>
             <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
           </v-card-actions>
         </v-card>
@@ -599,7 +600,7 @@ export default {
       }
     },
 
-    async save () {
+    async save (order = false) {
       const num = this.errors.num.length
       this.alertMessage = 'Please fix issues'
 
