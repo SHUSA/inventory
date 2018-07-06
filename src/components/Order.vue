@@ -15,30 +15,14 @@
               <v-spacer/>
               <v-progress-circular indeterminate color="primary" v-if="loading"/>
               <v-btn color="error" @click.native="close">No</v-btn>
-              <v-btn color="primary" @click.native="changeOrder">Yes</v-btn>
+              <v-btn color="primary" @click.native="changeStatus">Yes</v-btn>
             </v-card-actions>
           </v-card-title>
         </v-card>
       </v-dialog>
 
-      <v-dialog
-        v-model="createDialog"
-        max-width="500px"
-      >
-        <v-btn v-if="admin" slot="activator" color="primary" class="mb-0">New Order</v-btn>
-        <v-card>
-          <v-card-title>
-            <span class="headline">Create a new order?</span>
-          </v-card-title>
-          <v-card-actions>
-            <v-spacer/>
-            <v-progress-circular indeterminate color="primary" v-if="loading"/>
-            <v-btn color="error" @click.native="close">No</v-btn>
-            <v-btn color="primary" @click.native="createOrder">Yes</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
       <v-spacer/>
+
       <v-text-field
         v-model="search"
         append-icon="search"
@@ -64,7 +48,7 @@
         <td>{{props.item.itemDescription}}</td>
         <td>{{props.item.currentStock}}</td>
         <td>{{props.item.reorderQuantity}}</td>
-        <td class="comment" :id=props.item._id @click="expand(props.item._id)">{{props.item.comment}}</td>
+        <td class="comment" :id=props.item.catalogNumber @click="expand(props.item.catalogNumber)">{{props.item.comment}}</td>
         <td>{{time(props.item.updatedAt)}}</td>
       </template>
       <template slot="no-data">
@@ -85,13 +69,11 @@ const moment = require('moment')
 export default {
   props: [
     'order',
-    'items',
     'orders'
   ],
   data () {
     return {
       completedDialog: false,
-      createDialog: false,
       loading: false,
       completed: false,
       search: '',
@@ -106,7 +88,7 @@ export default {
         {text: 'Last Update', value: 'updatedAt'}
       ],
       thisOrder: {},
-      orderList: []
+      items: []
     }
   },
 
@@ -119,7 +101,8 @@ export default {
   mounted () {
     // initialize variables
     this.thisOrder = this.order
-    this.orderList = this.orders
+    // get entries
+    // this.items = (await orderService.show(this.order.id)).data
   },
 
   methods: {
@@ -141,18 +124,9 @@ export default {
 
     close () {
       this.completedDialog = false
-      this.createDialog = false
     },
 
-    async createOrder () {
-      this.loading = true
-      await orderService.delete()
-      this.orderList.push((await orderService.post()).data)
-      this.loading = false
-      this.close()
-    },
-
-    async changeOrder () {
+    async changeStatus () {
       this.loading = true
       if (this.thisOrder.completed) {
         this.thisOrder.completeDate = null
