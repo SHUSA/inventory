@@ -80,18 +80,11 @@ module.exports = {
   async put (req, res) {
     let item = req.body.params.item
     const assay = req.body.params.assay
-    // const lastSunday = moment().startOf('week')
 
     if (!item.order && !item.user && item.active) {
       item = calculateStockLevels(item, assay)
     }
-
-    // entry = {
-    //   ItemId: item.id,
-    //   updatedAt: item.updatedAt,
-    //   currentStock: item.currentStock,
-    //   comment: item.comment
-    // }
+    
     try {
       await Item.update(item, {
         where: {
