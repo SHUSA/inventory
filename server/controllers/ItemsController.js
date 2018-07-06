@@ -1,8 +1,4 @@
 const { Item } = require('../models')
-const { Order } = require('../models')
-// const { Entry } = require('../models')
-const moment = require('moment')
-// should probably search by assay or vendor then display items
 
 function calculateStockLevels (item, assay) {
   let weeklyUse = 0
@@ -84,39 +80,24 @@ module.exports = {
   async put (req, res) {
     let item = req.body.params.item
     const assay = req.body.params.assay
-    const lastSunday = moment().startOf('week')
-    let entry = {}
+    // const lastSunday = moment().startOf('week')
 
     if (!item.order && !item.user && item.active) {
       item = calculateStockLevels(item, assay)
     }
 
-    entry = {
-      ItemId: item.id,
-      updatedAt: item.updatedAt,
-      currentStock: item.currentStock,
-      comment: item.comment
-    }
+    // entry = {
+    //   ItemId: item.id,
+    //   updatedAt: item.updatedAt,
+    //   currentStock: item.currentStock,
+    //   comment: item.comment
+    // }
     try {
-      // add to order only it is an actual order and not data fix. add flag somewhere?
       await Item.update(item, {
         where: {
           id: item.id
         }
       })
-      // fix order/entry associations
-      // if (item.order) {
-      //   await Order.findOne({
-      //     where: {
-      //       createdAt: {
-      //         gte: lastSunday
-      //       }
-      //     }
-      //   }).then(order => {
-      //     order.setEntry(entry)
-      //   })
-      //   res.send(item)
-      // }
       res.send(item)
     } catch (error) {
       console.log(error)
