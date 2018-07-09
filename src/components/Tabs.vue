@@ -8,7 +8,7 @@
     </v-tabs>
     <order v-if="search === 'order'" :order="selection" :orders="orders"/>
     <template v-else>
-      <inventory :items="selection" :assays="assays" :vendors="vendors" :recentOrder="orders[orders.length - 1]"/>
+      <inventory :items="selection" :assays="assays" :vendors="vendors" :orders="orders"/>
     </template>
   </div>
 </template>
@@ -16,8 +16,6 @@
 <script>
 import Inventory from './Inventory'
 import Order from './Order'
-import itemService from '@/services/ItemService.js'
-import orderService from '@/services/OrderService.js'
 import { mapState } from 'vuex'
 
 export default {
