@@ -21,7 +21,7 @@
           <v-list-tile slot="activator">
             <v-list-tile-title>Orders</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile v-for="(order, index) in orderList.splice().reverse()" :key="order.createdAt" @click="viewOrder(index)">
+          <v-list-tile v-for="(order, index) in orderList" :key="order.createdAt" @click="viewOrder(index)">
             <v-list-tile-action>
               <v-icon v-if="order.completed">check</v-icon>
               <v-icon v-else>keyboard_arrow_right</v-icon>
@@ -95,11 +95,15 @@ export default {
     this.vendors = (await vendorService.index(true)).data
     this.orders = (await orderService.index()).data
     this.items = (await itemService.index(true)).data
+  },
 
-    if (this.orders.length === 0) {
-      this.orderList = [{name: 'Add New Order', new: true}]
-    } else {
-      this.orderList = this.orders
+  watch: {
+    orders (val) {
+      if (val.length === 0) {
+        this.orderList = [{name: 'Add New Order', new: true}]
+      } else {
+        this.orderList = val.splice().reverse()
+      }
     }
   },
 
@@ -124,7 +128,7 @@ export default {
         this.list = []
       } else {
         this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
-        this.list = this.orders[index]
+        this.list = this.orders
       }
     }
   }
