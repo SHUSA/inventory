@@ -9,18 +9,14 @@ export default {
     return API().get(`entries/${entryId}`)
   },
 
-  post () {
-    return API().post('entries').catch(err =>
+  post (entry) {
+    return API().post('entries', entry).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   },
 
   put (entry) {
-    return API().put(`entries/${entry.id}`, {
-      params: {
-        entry: entry
-      }
-    }).catch(err =>
+    return API().put(`entries/${entry.id}`, entry).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   }

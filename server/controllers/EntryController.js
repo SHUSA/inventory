@@ -22,8 +22,8 @@ module.exports = {
 
   async show (req, res) {
     try {
-      let department = await Entry.findById(req.params.deptId)
-      res.send(department)
+      let entry = await Entry.findById(req.params.deptId)
+      res.send(entry)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching Entry'
@@ -33,8 +33,8 @@ module.exports = {
 
   async post (req, res) {
     try {
-      const department = await Entry.create(req.body)
-      res.send(department)
+      const entry = await Entry.create(req.body)
+      res.send(entry)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured saving Entry'
@@ -44,12 +44,12 @@ module.exports = {
 
   async put (req, res) {
     try {
-      const department = await Entry.update(req.body, {
+      const entry = await Entry.update(req.body, {
         where: {
-          id: req.params.deptId
+          id: req.body.id
         }
       })
-      res.send(department)
+      res.send(entry)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured updating Entry'
