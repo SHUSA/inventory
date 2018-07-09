@@ -110,7 +110,7 @@
             <v-spacer/>
             <v-progress-circular indeterminate color="primary" v-if="loading"/>
             <v-btn color="red darken-1" flat @click.native="close">Cancel</v-btn>
-            <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="save(false)">Save</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -259,7 +259,8 @@ export default {
   props: [
     'items',
     'vendors',
-    'assays'
+    'assays',
+    'orders'
   ],
   data () {
     return {
@@ -364,6 +365,7 @@ export default {
       supplies: [],
       assayList: [],
       vendorList: [],
+      orderList: [],
       editedAssay: {
         name: '',
         weeklyVolume: 0,
@@ -442,6 +444,7 @@ export default {
       this.supplies = this.items
       this.vendorList = this.vendors
       this.assayList = this.assays
+      this.orderList = this.orders
     }
   },
 
@@ -451,6 +454,7 @@ export default {
     this.supplies = (await itemService.index(true)).data
     this.vendorList = (await vendorService.index(true)).data
     this.assayList = (await assayService.index(true)).data
+    this.orderList = (await orderService.index()).data
   },
 
   methods: {
@@ -600,9 +604,10 @@ export default {
       }
     },
 
-    async save (order = false) {
+    async save (order) {
       const num = this.errors.num.length
       this.alertMessage = 'Please fix issues'
+      console.log(`order = ${order}`)
 
       if (this.errors.item || num) {
         this.alert = true
@@ -618,19 +623,63 @@ export default {
         }
         this.editedItem.catalogNumber = this.editedItem.catalogNumber.toUpperCase()
         this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
-        // determine Ordering and Entry; not yet done
+
         if (this.editedIndex > -1) {
           // existing item
           let focusedItem = this.supplies[this.editedIndex]
-          let initalVendor = focusedItem.vendor
           this.editedItem.updatedAt = Date.now()
           Object.assign(focusedItem, (await itemService.put(focusedItem.id, this.editedItem, assayInfo)).data)
-          if (initalVendor !== focusedItem.vendor) {
-            this.supplies.splice(this.editedIndex, 1)
-          }
         } else {
           // new item
           this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
+        }
+
+        if (order) {
+          let entry = {
+            ItemId: this.editedItem.id,
+            updatedAt: this.editedItem.updatedAt,
+            currentStock: this.editedItem.currentStock,
+            comment: this.editedItem.comment
+          }
+          console.log('entry')
+          console.log(entry)
+          console.log('orderList')
+          console.log(this.orderList)
+          if (this.orderList.length === 0) {
+            // initial orders
+            const newOrder = (await orderService.post()).data
+            this.orderList.push(newOrder)
+            entry.OrderId = newOrder.id
+            await entryService.post(entry)
+          } else {
+            const lastSunday = moment().startOf('week').format()
+            const recentOrder = this.orderList[this.orderList.length - 1]
+            console.log('date comparison')
+            console.log(recentOrder.createdAt)
+            console.log(lastSunday)
+
+            if (recentOrder.createdAt < lastSunday) {
+              // recent order too old, create new order and associate OrderId
+              const newOrder = (await orderService.post()).data
+              this.orderList.push(newOrder)
+              entry.OrderId = newOrder.id
+              await entryService.post(entry)
+            } else {
+              // add current OrderId to entry
+              console.log('recentOrder')
+              console.log(recentOrder)
+              const orderEntries = (await orderService.show(recentOrder.id)).data
+              console.log('order entries')
+              console.log(orderEntries)
+              entry.OrderId = recentOrder.id
+              // check if current entry's ItemId is in recentOrder, update if so
+              if (orderEntries.find(orderEntry => orderEntry.ItemId === entry.ItemId) === undefined) {
+                await entryService.post(entry)
+              } else {
+                await entryService.put(entry)
+              }
+            }
+          }
         }
       }
 
