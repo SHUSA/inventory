@@ -43,7 +43,7 @@
     >
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
-        <td>{{props.item.vendor}}</td>
+        <td>{{getVendor(props.item)}}</td>
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
         <td>{{props.item.currentStock}}</td>
@@ -64,12 +64,13 @@
 <script>
 import { mapState } from 'vuex'
 import orderService from '@/services/OrderService.js'
+import itemService from '@/services/ItemService.js'
 const moment = require('moment')
 
 export default {
   props: [
     'order',
-    'orders'
+    'vendors'
   ],
   data () {
     return {
@@ -88,7 +89,8 @@ export default {
         {text: 'Last Update', value: 'updatedAt'}
       ],
       thisOrder: {},
-      items: []
+      items: [],
+      entries: []
     }
   },
 
@@ -98,16 +100,27 @@ export default {
     ])
   },
 
-  mounted () {
+  async mounted () {
     // initialize variables
+    let itemIds = null
     this.thisOrder = this.order
     // get entries
-    // this.items = (await orderService.show(this.order.id)).data
+    this.entries = (await orderService.show(this.order.id)).data.Entries
+    itemIds = this.entries.map(x => x.ItemId)
+    this.items = (await itemService.show(itemIds)).data
   },
 
   methods: {
     time (time) {
       return moment(time).format('MMM-DD-YYYY HH:mm:ss')
+    },
+
+    getVendor (item) {
+      if (this.vendors.length === 0) {
+        return null
+      }
+      item.vendor = this.vendors.find(vendor => vendor.id === item.VendorId).name
+      return item.vendor
     },
 
     expand (id) {
