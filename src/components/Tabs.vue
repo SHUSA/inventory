@@ -6,7 +6,7 @@
       <v-tab>Main</v-tab>
       <v-tab>Coming Soon&#8482;</v-tab>
     </v-tabs>
-    <order v-if="search === 'order'" :order="selection" :orders="orders"/>
+    <order v-if="search === 'order'" :order="selection" :vendors="vendors"/>
     <template v-else>
       <inventory :items="selection" :assays="assays" :vendors="vendors" :orders="orders"/>
     </template>
