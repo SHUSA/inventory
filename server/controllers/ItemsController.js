@@ -51,7 +51,7 @@ module.exports = {
           id: req.query.itemIds
         },
         order: [
-          ['assay', 'DESC']
+          ['VendorId', 'DESC']
         ]
       })
       res.send(items)
@@ -84,7 +84,7 @@ module.exports = {
     if (!item.order && !item.user && item.active) {
       item = calculateStockLevels(item, assay)
     }
-    
+
     try {
       await Item.update(item, {
         where: {
