@@ -106,7 +106,7 @@
           </v-card-text>
           <v-card-actions>
             <v-btn color="red darken-1" disabled @click.native="deleteItem(currentItem)" v-if="currentItem !== null && admin">Deactivate</v-btn>
-            <v-btn color="green" @click.native="save(true)">Order</v-btn>
+            <v-btn color="green" @click.native="save(true)" v-if="user">Order</v-btn>
             <v-spacer/>
             <v-progress-circular indeterminate color="primary" v-if="loading"/>
             <v-btn color="red darken-1" flat @click.native="close">Cancel</v-btn>
@@ -641,10 +641,7 @@ export default {
             currentStock: this.editedItem.currentStock,
             comment: this.editedItem.comment
           }
-          console.log('entry')
-          console.log(entry)
-          console.log('orderList')
-          console.log(this.orderList)
+
           if (this.orderList.length === 0) {
             // initial orders
             const newOrder = (await orderService.post()).data
@@ -654,9 +651,6 @@ export default {
           } else {
             const lastSunday = moment().startOf('week').format()
             const recentOrder = this.orderList[this.orderList.length - 1]
-            console.log('date comparison')
-            console.log(recentOrder.createdAt)
-            console.log(lastSunday)
 
             if (recentOrder.createdAt < lastSunday) {
               // recent order too old, create new order and associate OrderId
@@ -666,17 +660,15 @@ export default {
               await entryService.post(entry)
             } else {
               // add current OrderId to entry
-              console.log('recentOrder')
-              console.log(recentOrder)
+              let matchedEntry = null
               const orderEntries = (await orderService.show(recentOrder.id)).data
-              console.log('order entries')
-              console.log(orderEntries)
-              entry.OrderId = recentOrder.id
+              matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
               // check if current entry's ItemId is in recentOrder, update if so
-              if (orderEntries.find(orderEntry => orderEntry.ItemId === entry.ItemId) === undefined) {
+              if (matchedEntry === undefined) {
                 await entryService.post(entry)
               } else {
-                await entryService.put(entry)
+                Object.assign(matchedEntry, entry)
+                await entryService.put(matchedEntry)
               }
             }
           }
