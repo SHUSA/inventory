@@ -95,15 +95,12 @@ export default {
     this.vendors = (await vendorService.index(true)).data
     this.orders = (await orderService.index()).data
     this.items = (await itemService.index(true)).data
-  },
 
-  watch: {
-    orders (val) {
-      if (val.length === 0) {
-        this.orderList = [{name: 'Add New Order', new: true}]
-      } else {
-        this.orderList = val.splice().reverse()
-      }
+    if (this.orders.length === 0) {
+      this.orderList = [{name: 'Add New Order', new: true}]
+    } else {
+      this.orderList = this.orders
+      this.orderList.reverse()
     }
   },
 
@@ -128,7 +125,7 @@ export default {
         this.list = []
       } else {
         this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
-        this.list = this.orders
+        this.list = this.orders[index]
       }
     }
   }
