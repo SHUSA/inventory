@@ -1,4 +1,5 @@
 const { Order } = require('../models')
+const { Entry } = require('../models')
 
 module.exports = {
   async index (req, res) {
@@ -18,9 +19,16 @@ module.exports = {
 
   async show (req, res) {
     try {
-      let order = await Order.findById(req.params.orderId)
-      // find associated entries
-      res.send(order)
+      let entries = null
+      await Order.find({
+        where: {
+          id: req.params.orderId
+        },
+        include: [Entry]
+      }).then(orderEntry => {
+        entries = orderEntry
+      })
+      res.send(entries)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured fetching order'
