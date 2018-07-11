@@ -13,8 +13,7 @@ export default new Vuex.Store({
     // set to true for testing
     users: {
       user: true,
-      admin: true,
-      demo: true
+      admin: true
     },
     pageTitle: '',
     drawer: true,

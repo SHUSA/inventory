@@ -9,7 +9,6 @@
         <v-card-actions>
           <v-btn flat @click="login('user')">User</v-btn>
           <v-btn flat @click="login('admin')">Admin</v-btn>
-          <v-btn flat @click="login('demo')">Demo</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
