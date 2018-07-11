@@ -362,10 +362,10 @@ export default {
         {text: 'Last Update', value: 'lastUpdate'},
         {text: '', value: 'name', sortable: false, width: '5%'}
       ],
-      supplies: [],
-      assayList: [],
-      vendorList: [],
-      orderList: [],
+      supplies: this.items,
+      assayList: this.assays,
+      vendorList: this.vendors,
+      orderList: this.orders,
       editedAssay: {
         name: '',
         weeklyVolume: 0,
@@ -439,11 +439,7 @@ export default {
       }
     },
 
-    items () {
-      // how is this triggering on item udpdate/addition?
-      this.supplies = this.items
-      this.vendorList = this.vendors
-      this.assayList = this.assays
+    orderList () {
       this.orderList = this.orders
     }
   },
@@ -535,8 +531,10 @@ export default {
     close () {
       if (this.assayDialog) {
         this.assayDialog = false
+        this.editedAssay.name = ''
       } else if (this.vendorDialog) {
         this.vendorDialog = false
+        this.editedVendor.name = ''
       } else {
         this.dialog = false
         setTimeout(() => {
@@ -607,11 +605,9 @@ export default {
     async save (order) {
       const num = this.errors.num.length
       this.alertMessage = 'Please fix issues'
-      console.log(`order = ${order}`)
 
       if (this.errors.item || num) {
         this.alert = true
-        console.log(this.errors)
       } else {
         let assayInfo = this.assayList.find(assay => assay.id === this.editedItem.AssayId)
         this.loading = true
@@ -642,9 +638,10 @@ export default {
             comment: this.editedItem.comment
           }
 
-          if (this.orderList.length === 0) {
+          if (this.orderList[0].new) {
             // initial orders
             const newOrder = (await orderService.post()).data
+            this.orderList.pop()
             this.orderList.push(newOrder)
             entry.OrderId = newOrder.id
             await entryService.post(entry)
