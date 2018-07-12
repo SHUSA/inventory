@@ -362,10 +362,10 @@ export default {
         {text: 'Last Update', value: 'lastUpdate'},
         {text: '', value: 'name', sortable: false, width: '5%'}
       ],
-      supplies: this.items,
-      assayList: this.assays,
-      vendorList: this.vendors,
-      orderList: this.orders,
+      supplies: [],
+      assayList: [],
+      vendorList: [],
+      orderList: [],
       editedAssay: {
         name: '',
         weeklyVolume: 0,
@@ -439,6 +439,14 @@ export default {
       }
     },
 
+    items () {
+      console.log('inventory item watch')
+      this.supplies = this.items
+      this.vendorList = this.vendors
+      this.assayList = this.assays
+      this.orderList = this.orders
+    },
+
     orderList () {
       this.orderList = this.orders
     }
@@ -446,7 +454,6 @@ export default {
 
   async mounted () {
     // initialize variables
-    // initialize items
     this.supplies = (await itemService.index(true)).data
     this.vendorList = (await vendorService.index(true)).data
     this.assayList = (await assayService.index(true)).data
@@ -652,7 +659,7 @@ export default {
             if (recentOrder.createdAt < lastSunday) {
               // recent order too old, create new order and associate OrderId
               const newOrder = (await orderService.post()).data
-              this.orderList.push(newOrder)
+              this.orderList.splice(0, 0, newOrder)
               entry.OrderId = newOrder.id
               await entryService.post(entry)
             } else {
