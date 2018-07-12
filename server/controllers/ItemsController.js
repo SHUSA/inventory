@@ -38,6 +38,7 @@ module.exports = {
       })
       res.send(items)
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         error: 'An error occured fetching items'
       })
@@ -56,6 +57,7 @@ module.exports = {
       })
       res.send(items)
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         error: 'An error occured fetching item'
       })
@@ -71,6 +73,7 @@ module.exports = {
       item = await Item.create(item)
       res.send(item)
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         error: 'An error occured saving item'
       })

@@ -25,6 +25,7 @@ module.exports = {
       let entry = await Entry.findById(req.params.deptId)
       res.send(entry)
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         error: 'An error occured fetching Entry'
       })
@@ -36,6 +37,7 @@ module.exports = {
       const entry = await Entry.create(req.body)
       res.send(entry)
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         error: 'An error occured saving Entry'
       })
@@ -51,6 +53,7 @@ module.exports = {
       })
       res.send(entry)
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         error: 'An error occured updating Entry'
       })

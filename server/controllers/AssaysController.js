@@ -37,6 +37,7 @@ module.exports = {
       const assay = await Assay.create(req.body)
       res.send(assay)
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         error: 'An error occured saving assay'
       })

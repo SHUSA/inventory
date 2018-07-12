@@ -440,7 +440,6 @@ export default {
     },
 
     items () {
-      console.log('inventory item watch')
       this.supplies = this.items
       this.vendorList = this.vendors
       this.assayList = this.assays

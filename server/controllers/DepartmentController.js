@@ -25,6 +25,7 @@ module.exports = {
       let department = await Department.findById(req.params.deptId)
       res.send(department)
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         error: 'An error occured fetching Department'
       })
