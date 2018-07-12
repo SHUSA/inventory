@@ -8,6 +8,12 @@
 # install dependencies
 npm install
 
+# start server, defaulted to port 8081
+npm start
+
+# start server and create new tables, use bash on Windows
+NEWDB=true npm start
+
 # serve with hot reload at localhost:8080
 npm run dev
 
