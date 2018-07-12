@@ -1,6 +1,6 @@
 # Inventory
 
-> A laboratory inventory project using Vue.js
+> A laboratory inventory project using Vue.js, node, express, and postgres.
 
 ## Build Setup
 
