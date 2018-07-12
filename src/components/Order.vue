@@ -101,13 +101,24 @@ export default {
   },
 
   async mounted () {
-    // initialize variables
-    let itemIds = null
+    // initial mount
     this.thisOrder = this.order
+    let itemIds = null
     // get entries
     this.entries = (await orderService.show(this.order.id)).data.Entries
     itemIds = this.entries.map(x => x.ItemId)
     this.items = (await itemService.show(itemIds)).data
+  },
+
+  watch: {
+    async order () {
+      this.thisOrder = this.order
+      let itemIds = null
+      // get entries
+      this.entries = (await orderService.show(this.order.id)).data.Entries
+      itemIds = this.entries.map(x => x.ItemId)
+      this.items = (await itemService.show(itemIds)).data
+    }
   },
 
   methods: {
