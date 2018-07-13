@@ -12,6 +12,8 @@ npm install
 npm start
 
 # start server and create new tables, use bash on Windows
+# db must first be created in either Postgres or MYSQL
+# check server/config/config.js for settings
 NEWDB=true npm start
 
 # serve with hot reload at localhost:8080
