@@ -96,7 +96,7 @@ export default {
     this.items = (await itemService.index(true)).data
 
     if (this.orders.length === 0) {
-      this.orders = [{name: 'Add New Order', new: true}]
+      this.orders = [{name: 'No orders to list', new: true}]
     }
   },
 
@@ -116,8 +116,8 @@ export default {
       this.$store.dispatch('setDrawer')
       this.search = 'order'
 
-      if (this.orders.length === 0) {
-        this.$store.dispatch('setTitle', 'Create a New Order')
+      if (this.orders[0].new) {
+        this.$store.dispatch('setTitle', 'No Orders')
         this.list = []
       } else {
         this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)

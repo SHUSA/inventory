@@ -100,28 +100,28 @@ export default {
     ])
   },
 
-  async mounted () {
-    // initial mount
-    this.thisOrder = this.order
-    let itemIds = null
-    // get entries
-    this.entries = (await orderService.show(this.order.id)).data.Entries
-    itemIds = this.entries.map(x => x.ItemId)
-    this.items = (await itemService.show(itemIds)).data
+  mounted () {
+    this.initialize()
   },
 
   watch: {
-    async order () {
-      this.thisOrder = this.order
-      let itemIds = null
-      // get entries
-      this.entries = (await orderService.show(this.order.id)).data.Entries
-      itemIds = this.entries.map(x => x.ItemId)
-      this.items = (await itemService.show(itemIds)).data
+    order () {
+      this.initialize()
     }
   },
 
   methods: {
+    async initialize () {
+      if (this.order.length > 0) {
+        this.thisOrder = this.order
+        let itemIds = null
+        // get entries
+        this.entries = (await orderService.show(this.order.id)).data.Entries
+        itemIds = this.entries.map(x => x.ItemId)
+        this.items = (await itemService.show(itemIds)).data
+      }
+    },
+
     time (time) {
       return moment(time).format('MMM-DD-YYYY HH:mm:ss')
     },
