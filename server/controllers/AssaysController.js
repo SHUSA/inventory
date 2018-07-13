@@ -46,12 +46,12 @@ module.exports = {
 
   async put (req, res) {
     try {
-      const assay = await Assay.update(req.body, {
+      await Assay.update(req.body, {
         where: {
           id: req.params.assayId
         }
       })
-      res.send(assay)
+      res.send(req.body)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured updating assay'

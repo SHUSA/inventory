@@ -46,12 +46,12 @@ module.exports = {
 
   async put (req, res) {
     try {
-      const entry = await Entry.update(req.body, {
+      await Entry.update(req.body, {
         where: {
           id: req.body.id
         }
       })
-      res.send(entry)
+      res.send(req.body)
     } catch (error) {
       console.log(error)
       res.status(500).send({

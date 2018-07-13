@@ -43,12 +43,12 @@ module.exports = {
 
   async put (req, res) {
     try {
-      const vendor = await Vendor.update(req.body, {
+      await Vendor.update(req.body, {
         where: {
           id: req.params.vendorId
         }
       })
-      res.send(vendor)
+      res.send(req.body)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured updating vendor'

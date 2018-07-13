@@ -49,12 +49,12 @@ module.exports = {
 
   async put (req, res) {
     try {
-      const order = await Order.update(req.body, {
+      await Order.update(req.body, {
         where: {
           id: req.params.orderId
         }
       })
-      res.send(order)
+      res.send(req.body)
     } catch (error) {
       res.status(500).send({
         error: 'An error occured changing order'
