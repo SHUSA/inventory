@@ -215,8 +215,8 @@
     >
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
-        <td @click="editVendor(props.item.VendorId)">{{getVendor(props.item)}}</td>
-        <td @click="editAssay(props.item.AssayId)">{{getAssay(props.item)}}</td>
+        <td class="pointer" @click="editVendor(props.item.VendorId)">{{getVendor(props.item)}}</td>
+        <td class="pointer" @click="editAssay(props.item.AssayId)">{{getAssay(props.item)}}</td>
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
         <td>{{props.item.currentStock}}</td>
@@ -460,7 +460,6 @@ export default {
   },
 
   methods: {
-
     time (item) {
       item.lastUpdate = moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
       return item.lastUpdate
@@ -537,10 +536,8 @@ export default {
     close () {
       if (this.assayDialog) {
         this.assayDialog = false
-        this.editedAssay.name = ''
       } else if (this.vendorDialog) {
         this.vendorDialog = false
-        this.editedVendor.name = ''
       } else {
         this.dialog = false
         setTimeout(() => {
@@ -688,5 +685,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .pointer {
+    cursor: pointer;
+  }
 </style>
