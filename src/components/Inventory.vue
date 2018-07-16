@@ -214,7 +214,7 @@
       hide-actions
     >
       <template slot="items" slot-scope="props">
-        <td>{{props.item.name}}</td>
+        <td class="help" @click="getInfo(props.item)">{{props.item.name}}</td>
         <td class="pointer" @click="editVendor(props.item.VendorId)">{{getVendor(props.item)}}</td>
         <td class="pointer" @click="editAssay(props.item.AssayId)">{{getAssay(props.item)}}</td>
         <td>{{props.item.catalogNumber}}</td>
@@ -418,7 +418,9 @@ export default {
     ...mapState([
       'pageTitle',
       'admin',
-      'user'
+      'user',
+      'infoTab',
+      'activeTab'
     ])
   },
 
@@ -460,6 +462,11 @@ export default {
   },
 
   methods: {
+    getInfo (item) {
+      this.$store.dispatch('setTabInfo', item)
+      this.$store.dispatch('setActiveTab', 'tab-2')
+    },
+
     time (item) {
       item.lastUpdate = moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
       return item.lastUpdate
@@ -687,5 +694,9 @@ export default {
 <style scoped>
   .pointer {
     cursor: pointer;
+  }
+
+  .help {
+    cursor: help;
   }
 </style>
