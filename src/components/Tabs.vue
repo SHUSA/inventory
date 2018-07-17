@@ -11,15 +11,13 @@
         :id="'tab-' + n"
         :key="n"
       >
-          <template v-if="active == 'tab-1'">
-            <order v-if="search === 'order'" :order="selection" :vendors="vendors"/>
-            <template v-else>
-              <inventory :items="selection" :assays="assays" :vendors="vendors" :orders="orders"/>
-            </template>
-          </template>
+        <template v-if="n == 1">
+          <order v-if="search === 'order'" :order="selection" :vendors="vendors"/>
           <template v-else>
-            {{JSON.stringify(infoTab)}}
+            <inventory :items="selection" :assays="assays" :vendors="vendors" :orders="orders" :getInfo="getInfo"/>
           </template>
+        </template>
+        <info-page v-else/>
       </v-tab-item>
     </v-tabs>
   </div>
@@ -28,12 +26,13 @@
 <script>
 import Inventory from './Inventory'
 import Order from './Order'
+import InfoPage from './InfoPage'
 import { mapState } from 'vuex'
 
 export default {
   data () {
     return {
-      // active: null
+      active: null
     }
   },
 
@@ -47,35 +46,23 @@ export default {
 
   components: {
     Inventory,
-    Order
+    Order,
+    InfoPage
   },
 
   computed: {
     ...mapState([
       'user',
       'admin',
-      'drawer',
-      'infoTab',
-      'activeTab'
-    ]),
-
-    active: {
-      get () {
-        return this.activeTab
-      },
-      set (value) {
-        this.$store.dispatch('setActiveTab', value)
-      }
-    }
+      'drawer'
+    ])
   },
 
   methods: {
-    // test () {
-    //   console.log('tab test')
-    //   this.$store.dispatch('setActiveTab', 1)
-    //   this.active = parseInt(this.active) + 1
-    //   console.log(this.active)
-    // }
+    getInfo (data) {
+      this.$store.dispatch('setTabInfo', data)
+      this.active = 'tab-2'
+    }
   }
 }
 </script>
