@@ -260,7 +260,8 @@ export default {
     'items',
     'vendors',
     'assays',
-    'orders'
+    'orders',
+    'getInfo'
   ],
   data () {
     return {
@@ -419,8 +420,7 @@ export default {
       'pageTitle',
       'admin',
       'user',
-      'infoTab',
-      'activeTab'
+      'infoTab'
     ])
   },
 
@@ -462,11 +462,6 @@ export default {
   },
 
   methods: {
-    getInfo (item) {
-      this.$store.dispatch('setTabInfo', item)
-      this.$store.dispatch('setActiveTab', 'tab-2')
-    },
-
     time (item) {
       item.lastUpdate = moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
       return item.lastUpdate
