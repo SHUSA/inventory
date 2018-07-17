@@ -21,8 +21,7 @@ export default new Vuex.Store({
     userId: null,
     isUserLoggedIn: false,
     isAdminLoggedIn: false,
-    infoTab: null,
-    activeTab: 0
+    infoTab: null
   },
   mutations: {
     setUser (state, type) {
@@ -44,9 +43,6 @@ export default new Vuex.Store({
     },
     setTabInfo (state, data) {
       state.infoTab = data
-    },
-    setActiveTab (state, index) {
-      state.activeTab = index
     }
   },
   actions: {
@@ -61,9 +57,6 @@ export default new Vuex.Store({
     },
     setTabInfo ({ commit }, data) {
       commit('setTabInfo', data)
-    },
-    setActiveTab ({ commit }, index) {
-      commit('setActiveTab', index)
     }
   }
 })
