@@ -21,7 +21,7 @@ export default new Vuex.Store({
     userId: null,
     isUserLoggedIn: false,
     isAdminLoggedIn: false,
-    infoTab: null
+    infoTab: {}
   },
   mutations: {
     setUser (state, type) {
