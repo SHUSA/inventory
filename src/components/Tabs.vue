@@ -25,7 +25,7 @@
           </template>
         </template>
         <info-page v-else>
-
+          <item/>
         </info-page>
       </v-tab-item>
     </v-tabs>
@@ -36,16 +36,14 @@
 import Inventory from './Inventory'
 import Order from './Order'
 import InfoPage from './information/InfoPage'
+import Item from './information/Item'
 import { mapState } from 'vuex'
 
 export default {
   data () {
     return {
       active: null,
-      tabs: [
-        'Main',
-        'Info Tab'
-      ]
+      tabs: ['Main']
     }
   },
 
@@ -60,7 +58,8 @@ export default {
   components: {
     Inventory,
     Order,
-    InfoPage
+    InfoPage,
+    Item
   },
 
   computed: {
@@ -73,21 +72,25 @@ export default {
 
   watch: {
     active (val) {
-      if (this.active === 'tab-1' && this.tabs.length > 2) {
+      if (this.active === 'tab-1' && this.tabs.length > 1) {
         this.tabs.pop()
+        this.$store.dispatch('setTabInfo', {})
       }
     },
 
     selection () {
       this.active = 'tab-1'
+      this.tabs = ['Main']
     }
   },
 
   methods: {
     getInfo (data) {
+      if (this.tabs.length < 2) {
+        this.tabs.push('Item Info')
+      }
       this.$store.dispatch('setTabInfo', data)
       this.active = 'tab-2'
-      this.tabs.push('test')
     }
   }
 }
