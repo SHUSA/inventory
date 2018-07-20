@@ -20,7 +20,8 @@ export default new Vuex.Store({
     token: null,
     userId: null,
     isUserLoggedIn: false,
-    isAdminLoggedIn: false
+    isAdminLoggedIn: false,
+    infoTab: {}
   },
   mutations: {
     setUser (state, type) {
@@ -39,6 +40,9 @@ export default new Vuex.Store({
     },
     setDrawer (state) {
       state.drawer = !state.drawer
+    },
+    setTabInfo (state, data) {
+      state.infoTab = data
     }
   },
   actions: {
@@ -50,6 +54,9 @@ export default new Vuex.Store({
     },
     setDrawer ({ commit }) {
       commit('setDrawer')
+    },
+    setTabInfo ({ commit }, data) {
+      commit('setTabInfo', data)
     }
   }
 })

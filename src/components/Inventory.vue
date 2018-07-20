@@ -214,9 +214,29 @@
       hide-actions
     >
       <template slot="items" slot-scope="props">
-        <td>{{props.item.name}}</td>
-        <td class="pointer" @click="editVendor(props.item.VendorId)">{{getVendor(props.item)}}</td>
-        <td class="pointer" @click="editAssay(props.item.AssayId)">{{getAssay(props.item)}}</td>
+        <td class="pointer" @click="getInfo(props.item)">
+          <v-tooltip top open-delay=50>
+            <span slot="activator">{{props.item.name}}</span>
+            <span>Get {{props.item.name}} info</span>
+          </v-tooltip>
+        </td>
+
+        <td v-if="admin" class="pointer" @click="editVendor(props.item.VendorId)">
+          <v-tooltip top open-delay=50>
+            <span slot="activator">{{getVendor(props.item)}}</span>
+            <span>Edit Vendor</span>
+          </v-tooltip>
+        </td>
+        <td v-else>{{getVendor(props.item)}}</td>
+
+        <td v-if="admin" class="pointer" @click="editAssay(props.item.AssayId)">
+          <v-tooltip top open-delay=50>
+            <span slot="activator">{{getAssay(props.item)}}</span>
+            <span>Edit Assay</span>
+          </v-tooltip>
+        </td>
+        <td v-else @click="editAssay(props.item.AssayId)">{{getAssay(props.item)}}</td>
+
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
         <td>{{props.item.currentStock}}</td>
@@ -260,7 +280,8 @@ export default {
     'items',
     'vendors',
     'assays',
-    'orders'
+    'orders',
+    'getInfo'
   ],
   data () {
     return {
@@ -418,7 +439,8 @@ export default {
     ...mapState([
       'pageTitle',
       'admin',
-      'user'
+      'user',
+      'infoTab'
     ])
   },
 
@@ -687,5 +709,9 @@ export default {
 <style scoped>
   .pointer {
     cursor: pointer;
+  }
+
+  .help {
+    cursor: help;
   }
 </style>
