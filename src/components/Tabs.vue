@@ -70,7 +70,7 @@ export default {
     active (val) {
       if (this.active === 'tab-1' && this.tabs.length > 1) {
         this.tabs.pop()
-        this.$store.dispatch('setTabInfo', {})
+        this.$store.dispatch('setItemInfo', {})
       }
     },
 
@@ -85,7 +85,7 @@ export default {
       if (this.tabs.length < 2) {
         this.tabs.push('Item Info')
       }
-      this.$store.dispatch('setTabInfo', data)
+      this.$store.dispatch('setItemInfo', data)
       this.active = 'tab-2'
     }
   }

@@ -440,7 +440,7 @@ export default {
       'pageTitle',
       'admin',
       'user',
-      'infoTab'
+      'itemInfo'
     ])
   },
 
