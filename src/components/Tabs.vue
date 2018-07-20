@@ -24,9 +24,7 @@
             <inventory :items="selection" :assays="assays" :vendors="vendors" :orders="orders" :getInfo="getInfo"/>
           </template>
         </template>
-        <info-page v-else>
-          <item/>
-        </info-page>
+        <item/>
       </v-tab-item>
     </v-tabs>
   </div>
@@ -35,7 +33,6 @@
 <script>
 import Inventory from './Inventory'
 import Order from './Order'
-import InfoPage from './information/InfoPage'
 import Item from './information/Item'
 import { mapState } from 'vuex'
 
@@ -58,7 +55,6 @@ export default {
   components: {
     Inventory,
     Order,
-    InfoPage,
     Item
   },
 
