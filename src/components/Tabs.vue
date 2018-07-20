@@ -24,7 +24,7 @@
             <inventory :items="selection" :assays="assays" :vendors="vendors" :orders="orders" :getInfo="getInfo"/>
           </template>
         </template>
-        <item/>
+        <item v-else/>
       </v-tab-item>
     </v-tabs>
   </div>
