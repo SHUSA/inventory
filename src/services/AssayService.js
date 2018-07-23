@@ -6,22 +6,26 @@ export default {
       params: {
         status: status
       }
-    })
+    }).catch(err =>
+      alert(JSON.parse(JSON.stringify(err)).response)
+    )
   },
 
   show (assayId) {
-    return API().get(`assays/${assayId}`)
+    return API().get(`assays/${assayId}`).catch(err =>
+      alert(JSON.parse(JSON.stringify(err)).response)
+    )
   },
 
   post (assay) {
     return API().post('assays', assay).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      alert(JSON.parse(JSON.stringify(err)).response)
     )
   },
 
   put (assay) {
     return API().put(`assays/${assay.id}`, assay).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      alert(JSON.parse(JSON.stringify(err)).response)
     )
   }
 }
