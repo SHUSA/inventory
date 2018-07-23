@@ -696,6 +696,7 @@ export default {
               matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
               // check if current entry's ItemId is in recentOrder, update if so
               if (matchedEntry === undefined) {
+                entry.OrderId = recentOrder.id
                 await entryService.post(entry)
               } else {
                 Object.assign(matchedEntry, entry)
