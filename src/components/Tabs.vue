@@ -11,8 +11,7 @@
       >
         {{value}}
       </v-tab>
-      <!-- <v-tab href="#tab-1">Main</v-tab>
-      <v-tab href="#tab-2">Info Tab</v-tab> -->
+
       <v-tab-item
         v-for="n in 2"
         :id="'tab-' + n"
