@@ -641,7 +641,7 @@ export default {
       const num = this.errors.num.length
       this.alertMessage = 'Please fix issues'
 
-      if (this.errors.item || num) {
+      if (this.errors.item || num || this.errors.catalog) {
         this.alert = true
       } else {
         let assayInfo = this.assayList.find(assay => assay.id === this.editedItem.AssayId)
