@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-build-1.3
+      {{title}} v.b-build-1.4
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items>
