@@ -493,7 +493,6 @@ export default {
     },
 
     checkQuantity (item) {
-      console.log(item)
       return item.currentStock < item.reorderPoint
     },
 
