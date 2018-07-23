@@ -235,7 +235,7 @@
             <span>Edit Assay</span>
           </v-tooltip>
         </td>
-        <td v-else @click="editAssay(props.item.AssayId)">{{getAssay(props.item)}}</td>
+        <td v-else>{{getAssay(props.item)}}</td>
 
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
