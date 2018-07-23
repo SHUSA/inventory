@@ -112,7 +112,7 @@ export default {
 
   methods: {
     async initialize () {
-      if (this.order.length > 0) {
+      if (this.order.id) {
         this.thisOrder = this.order
         let itemIds = null
         // get entries
