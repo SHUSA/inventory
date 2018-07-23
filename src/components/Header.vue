@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.a-build-8
+      {{title}} v.b-build-1
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items>
