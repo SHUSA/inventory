@@ -11,9 +11,7 @@ module.exports = {
       })
       res.send(orders)
     } catch (error) {
-      res.status(500).send({
-        error: 'An error occured fetching orders'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -30,9 +28,7 @@ module.exports = {
       })
       res.send(entries)
     } catch (error) {
-      res.status(500).send({
-        error: 'An error occured fetching order'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -41,9 +37,7 @@ module.exports = {
       const order = await Order.create(req.body)
       res.send(order)
     } catch (error) {
-      res.status(500).send({
-        error: 'An error occured creating order'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -56,9 +50,7 @@ module.exports = {
       })
       res.send(req.body)
     } catch (error) {
-      res.status(500).send({
-        error: 'An error occured changing order'
-      })
+      res.status(500).send(error.message)
     }
   },
 

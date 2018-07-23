@@ -7,7 +7,7 @@ export default {
         status: status
       }
     }).catch(err =>
-      alert(JSON.parse(JSON.stringify(err)).response)
+      alert(JSON.stringify(JSON.parse(JSON.stringify(err)).response))
     )
   },
 
@@ -17,7 +17,7 @@ export default {
         itemIds: itemIds
       }
     }).catch(err =>
-      alert(JSON.parse(JSON.stringify(err)).response)
+      alert(JSON.stringify(JSON.parse(JSON.stringify(err)).response))
     )
   },
 
@@ -28,7 +28,7 @@ export default {
         assay: assay
       }
     }).catch(err =>
-      alert(JSON.parse(JSON.stringify(err)).response)
+      alert(JSON.stringify(JSON.parse(JSON.stringify(err)).response))
     )
   },
 
@@ -39,7 +39,7 @@ export default {
         assay: assay
       }
     }).catch(err =>
-      alert(JSON.parse(JSON.stringify(err)).response)
+      alert(JSON.stringify(JSON.parse(JSON.stringify(err)).response))
     )
   }
 }

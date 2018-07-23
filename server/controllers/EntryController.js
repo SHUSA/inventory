@@ -14,9 +14,7 @@ module.exports = {
       res.send(entries)
     } catch (error) {
       console.log(error)
-      res.status(500).send({
-        error: 'An error occured fetching entries'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -26,9 +24,7 @@ module.exports = {
       res.send(entry)
     } catch (error) {
       console.log(error)
-      res.status(500).send({
-        error: 'An error occured fetching Entry'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -38,9 +34,7 @@ module.exports = {
       res.send(entry)
     } catch (error) {
       console.log(error)
-      res.status(500).send({
-        error: 'An error occured saving Entry'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -54,9 +48,7 @@ module.exports = {
       res.send(req.body)
     } catch (error) {
       console.log(error)
-      res.status(500).send({
-        error: 'An error occured updating Entry'
-      })
+      res.status(500).send(error.message)
     }
   }
 }

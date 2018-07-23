@@ -15,9 +15,7 @@ module.exports = {
       res.send(assays)
     } catch (error) {
       console.log(error)
-      res.status(500).send({
-        error: 'An error occured fetching assays'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -26,9 +24,7 @@ module.exports = {
       let assay = await Assay.findById(req.params.assayId)
       res.send(assay)
     } catch (error) {
-      res.status(500).send({
-        error: 'An error occured fetching assay'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -38,9 +34,7 @@ module.exports = {
       res.send(assay)
     } catch (error) {
       console.log(error)
-      res.status(500).send({
-        error: 'An error occured saving assay'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -53,9 +47,7 @@ module.exports = {
       })
       res.send(req.body)
     } catch (error) {
-      res.status(500).send({
-        error: 'An error occured updating assay'
-      })
+      res.status(500).send(error.message)
     }
   }
 }

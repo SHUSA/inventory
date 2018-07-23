@@ -13,9 +13,7 @@ module.exports = {
       })
       res.send(vendors)
     } catch (error) {
-      res.status(500).send({
-        error: 'An error occured fetching vendors'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -24,9 +22,7 @@ module.exports = {
       let vendor = await Vendor.findById(req.params.vendorId)
       res.send(vendor)
     } catch (error) {
-      res.status(500).send({
-        error: 'An error occured fetching vendor'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -35,9 +31,7 @@ module.exports = {
       const vendor = await Vendor.create(req.body)
       res.send(vendor)
     } catch (error) {
-      res.status(500).send({
-        error: 'An error occured saving vendor'
-      })
+      res.status(500).send(error.message)
     }
   },
 
@@ -50,9 +44,7 @@ module.exports = {
       })
       res.send(req.body)
     } catch (error) {
-      res.status(500).send({
-        error: 'An error occured updating vendor'
-      })
+      res.status(500).send(error.message)
     }
   }
 }
