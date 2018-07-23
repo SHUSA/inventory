@@ -6,22 +6,26 @@ export default {
       params: {
         status: status
       }
-    })
+    }).catch(err =>
+      alert(JSON.parse(JSON.stringify(err)).response)
+    )
   },
 
   show (vendorId) {
-    return API().get(`vendors/${vendorId}`)
+    return API().get(`vendors/${vendorId}`).catch(err =>
+      alert(JSON.parse(JSON.stringify(err)).response)
+    )
   },
 
   post (vendor) {
     return API().post('vendors', vendor).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      alert(JSON.parse(JSON.stringify(err)).response)
     )
   },
 
   put (vendor) {
     return API().put(`vendors/${vendor.id}`, vendor).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      alert(JSON.parse(JSON.stringify(err)).response)
     )
   }
 }

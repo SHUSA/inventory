@@ -6,7 +6,9 @@ export default {
       params: {
         status: status
       }
-    })
+    }).catch(err =>
+      alert(JSON.parse(JSON.stringify(err)).response)
+    )
   },
 
   show (itemIds) {
@@ -14,7 +16,9 @@ export default {
       params: {
         itemIds: itemIds
       }
-    })
+    }).catch(err =>
+      alert(JSON.parse(JSON.stringify(err)).response)
+    )
   },
 
   post (item, assay) {
@@ -24,7 +28,7 @@ export default {
         assay: assay
       }
     }).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      alert(JSON.parse(JSON.stringify(err)).response)
     )
   },
 
@@ -35,7 +39,7 @@ export default {
         assay: assay
       }
     }).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      alert(JSON.parse(JSON.stringify(err)).response)
     )
   }
 }

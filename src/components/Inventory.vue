@@ -239,7 +239,12 @@
 
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
-        <td>{{props.item.currentStock}}</td>
+        <td>
+          <v-badge color="red">
+            <span slot="badge" v-if="checkQuantity(props.item)">!</span>
+            {{props.item.currentStock}}
+          </v-badge>
+        </td>
         <td>{{props.item.reorderQuantity}}</td>
         <td class="comment" :id=props.item.catalogNumber @click="expand(props.item.catalogNumber)">{{props.item.comment}}</td>
         <td>{{time(props.item)}}</td>
@@ -436,11 +441,11 @@ export default {
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },
+
     ...mapState([
       'pageTitle',
       'admin',
-      'user',
-      'infoTab'
+      'user'
     ])
   },
 
@@ -485,6 +490,11 @@ export default {
     time (item) {
       item.lastUpdate = moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
       return item.lastUpdate
+    },
+
+    checkQuantity (item) {
+      console.log(item)
+      return item.currentStock < item.reorderPoint
     },
 
     getAssay (item) {
