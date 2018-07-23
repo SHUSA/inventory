@@ -13,7 +13,7 @@ module.exports = {
       })
       res.send(vendors)
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error)
     }
   },
 
@@ -22,7 +22,7 @@ module.exports = {
       let vendor = await Vendor.findById(req.params.vendorId)
       res.send(vendor)
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error)
     }
   },
 
@@ -31,7 +31,7 @@ module.exports = {
       const vendor = await Vendor.create(req.body)
       res.send(vendor)
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error)
     }
   },
 
@@ -44,7 +44,7 @@ module.exports = {
       })
       res.send(req.body)
     } catch (error) {
-      res.status(500).send(error.message)
+      res.status(500).send(error)
     }
   }
 }
