@@ -22,8 +22,9 @@ module.exports = {
         "NODE_ENV": "development",
         SRL_INVENTORY_HOST: '10.212.148.45',
         PORT: 4040,
+        HOST: "10.212.148.42"
       },
-      "pre-setup" : "NEWDB=false npm start",
+      "post-setup" : "npm install && NEWDB=false npm start",
     },
     production : {
       user : 'rails',
