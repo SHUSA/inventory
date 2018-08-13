@@ -16,7 +16,7 @@ set :keep_releases, 4
 #set :passenger_restart_with_touch, true
 
 # Dafault to QA ENV stageless deploy
-set :stage, :qa
+set :stage, :staging
 
 
 namespace :deploy do
