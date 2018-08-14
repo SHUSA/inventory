@@ -30,6 +30,6 @@ if (process.env.NEWDB) {
   })  
 }
 
-app.listen(config.port, config.db.options.host, () => {
+app.listen(config.port, config.host, () => {
   console.log(`Server started on port ${config.port}`)
 })

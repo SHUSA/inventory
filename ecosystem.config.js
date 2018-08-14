@@ -29,7 +29,7 @@ module.exports = {
     production : {
       user : 'rails',
       host : '10.212.148.42',
-      ref  : 'origin/deploy-scripts',
+      ref  : 'origin/master',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production',

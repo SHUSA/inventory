@@ -1,5 +1,7 @@
 module.exports = {
   port: process.env.PORT || 8081,
+  host: process.env.HOST || "localhost",
+
   db: {
     database: process.env.SRL_DB_NAME || 'mol_inventory',
     user: process.env.LABIS_POSTGRES_DATABASE_USERNAME || 'postgres',
