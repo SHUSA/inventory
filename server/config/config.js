@@ -6,7 +6,8 @@ module.exports = {
     password: process.env.LABIS_POSTGRES_DATABASE_PASSWORD || 'root',
     options: {
       dialect: process.env.DIALECT || 'postgres',
-      host: process.env.SRL_INVENTORY_HOST || 'localhost'
+      host: process.env.SRL_INVENTORY_HOST || 'localhost',
+      port: process.env.SRL_INVENTORY_DB_PORT || '5432',
     }
   },
   authentication: {
