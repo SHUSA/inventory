@@ -1,6 +1,6 @@
 module.exports = {
   port: process.env.PORT || 8081,
-  host: process.env.HOST || "localhost",
+  host: process.env.HOST || 'localhost',
 
   db: {
     database: process.env.SRL_DB_NAME || 'mol_inventory',
@@ -9,7 +9,7 @@ module.exports = {
     options: {
       dialect: process.env.DIALECT || 'postgres',
       host: process.env.SRL_INVENTORY_HOST || 'localhost',
-      port: process.env.SRL_INVENTORY_DB_PORT || '5432',
+      port: process.env.SRL_INVENTORY_DB_PORT || '5432'
     }
   },
   authentication: {
