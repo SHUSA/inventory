@@ -23,7 +23,7 @@ app.get('*', function (req, res) {
 })
 
 if (process.env.NEWDB) {
-  sequelize.sync({ force: false }).then(() => {
+  sequelize.sync({ force: process.env.NEWDB || false }).then(() => {
     app.listen(config.port, config.host)
     if (process.env.NEWDB) console.log('Tables have been formatted')
     console.log(`Server started on port ${config.port}`)
