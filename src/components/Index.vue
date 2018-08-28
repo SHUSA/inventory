@@ -69,6 +69,9 @@ export default {
       assays: [],
       vendors: [],
       orders: [],
+      inactiveItems: [],
+      inactiveAssays: [],
+      inactiveVendors: [],
       search: '',
       selection: ''
     }
@@ -94,6 +97,10 @@ export default {
     this.vendors = (await vendorService.index(true)).data
     this.orders = (await orderService.index()).data
     this.items = (await itemService.index(true)).data
+
+    this.inactiveAssays = (await assayService.index(false)).data
+    this.inactiveVendors = (await vendorService.index(false)).data
+    this.inactiveItems = (await itemService.index(false)).data
 
     if (this.orders.length === 0) {
       this.orders = [{name: 'No orders to list', new: true}]
