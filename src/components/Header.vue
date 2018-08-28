@@ -5,7 +5,7 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items>
-      <v-btn flat @click.native="drawer">
+      <v-btn v-if="$route.name !== 'login'" flat @click.native="drawer">
         <v-icon>menu</v-icon>
         {{pageTitle}}
       </v-btn>
