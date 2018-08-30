@@ -14,7 +14,7 @@ module.exports = {
       res.send(entries)
     } catch (error) {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.errors)
     }
   },
 
@@ -24,7 +24,7 @@ module.exports = {
       res.send(entry)
     } catch (error) {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.errors)
     }
   },
 
@@ -34,7 +34,7 @@ module.exports = {
       res.send(entry)
     } catch (error) {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.errors)
     }
   },
 
@@ -48,7 +48,7 @@ module.exports = {
       res.send(req.body)
     } catch (error) {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.errors)
     }
   }
 }

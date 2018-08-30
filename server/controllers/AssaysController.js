@@ -15,7 +15,7 @@ module.exports = {
       res.send(assays)
     } catch (error) {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.errors)
     }
   },
 
@@ -24,7 +24,7 @@ module.exports = {
       let assay = await Assay.findById(req.params.assayId)
       res.send(assay)
     } catch (error) {
-      res.status(500).send(error)
+      res.status(500).send(error.errors)
     }
   },
 
@@ -34,7 +34,7 @@ module.exports = {
       res.send(assay)
     } catch (error) {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.errors)
     }
   },
 
@@ -47,7 +47,7 @@ module.exports = {
       })
       res.send(req.body)
     } catch (error) {
-      res.status(500).send(error)
+      res.status(500).send(error.errors)
     }
   }
 }

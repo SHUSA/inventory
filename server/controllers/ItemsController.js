@@ -39,7 +39,7 @@ module.exports = {
       res.send(items)
     } catch (error) {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.errors)
     }
   },
 
@@ -56,7 +56,7 @@ module.exports = {
       res.send(items)
     } catch (error) {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.errors)
     }
   },
 
@@ -91,7 +91,7 @@ module.exports = {
       res.send(item)
     } catch (error) {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.errors)
     }
   }
 }
