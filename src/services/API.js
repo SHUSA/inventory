@@ -1,8 +1,11 @@
 import axios from 'axios'
-const config = require('../../server/config/config')
 
-let baseURL = `${config.host}:${config.port}`
-baseURL = baseURL === 'localhost:8081' ? 'http://' + baseURL : baseURL
+// env taken from webpack
+const port = process.env.PORT || 8081
+const host = process.env.HOST || 'localhost'
+
+let baseURL = `${host}:${port}`
+baseURL = host === 'localhost' ? 'http://' + baseURL : baseURL
 
 export default () => {
   return axios.create({
