@@ -400,7 +400,18 @@ export default {
         maxBatchSize: 0,
         sampleReplicates: 0
       },
+      defaultAssay: {
+        name: '',
+        weeklyVolume: 0,
+        weeklyRuns: 0,
+        controlsPerRun: 0,
+        maxBatchSize: 0,
+        sampleReplicates: 0
+      },
       editedVendor: {
+        name: ''
+      },
+      defaultVendor: {
         name: ''
       },
       editedIndex: -1,
@@ -567,8 +578,10 @@ export default {
     close () {
       if (this.assayDialog) {
         this.assayDialog = false
+        this.editedAssay = Object.assign({}, this.defaultAssay)
       } else if (this.vendorDialog) {
         this.vendorDialog = false
+        this.editedVendor = Object.assign({}, this.defaultVendor)
       } else {
         this.dialog = false
         setTimeout(() => {
