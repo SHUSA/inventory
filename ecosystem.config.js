@@ -2,7 +2,7 @@ module.exports = {
   apps : [{
     name      : 'srl_inventory',
     script    : 'server.js',
-    env: {
+    env: { 
       NODE_ENV: 'development'
     },
     env_production : {
@@ -14,7 +14,7 @@ module.exports = {
     development : {
       user : 'rails',
       host : '10.212.148.42',
-      ref  : 'origin/pm2-deploy-script',
+      ref  : 'origin/dev',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
       'post-deploy' : 'npm install && npm run build && pm2 reload ecosystem.config.js --env development',
@@ -24,7 +24,7 @@ module.exports = {
         PORT: 4040,
         HOST: "10.212.148.42"
       },
-      "post-setup" : "HOST=10.212.148.42 PORT=4040 SRL_INVENTORY_HOST=10.212.148.45 npm install && NEWDB=true npm start",
+      "post-setup" : "HOST=10.212.148.42 PORT=4040 SRL_INVENTORY_HOST=10.212.148.45 npm install && npm start",
     },
     production : {
       user : 'rails',
