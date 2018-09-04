@@ -507,6 +507,19 @@ export default {
       return item.currentStock < item.reorderPoint
     },
 
+    checkErrorMessage (resp) {
+      if (resp.message) {
+        // stop process and display error message
+        this.loading = false
+        this.alert = true
+        this.alertMessage = resp.message
+        return true
+      } else {
+        // no errors received
+        return false
+      }
+    },
+
     getAssay (item) {
       if (this.assayList.length === 0) {
         return null
@@ -604,14 +617,21 @@ export default {
         this.alert = false
         if (this.assayForm === 'Edit Assay') {
           // existing assay
-          assayInfo = this.assayList.find(assay => assay.id === edited.id)
-          Object.assign(assayInfo, (await assayService.put(edited)).data)
+          let response = await assayService.put(edited)
+
+          if (this.checkErrorMessage(response)) {
+            // do nothing
+          } else {
+            assayInfo = this.assayList.find(assay => assay.id === edited.id)
+            this.editedItem.AssayId = assayInfo.id
+            Object.assign(assayInfo, response.data)
+          }
         } else {
           // new assay
           assayInfo = (await assayService.post(edited)).data
+          this.editedItem.AssayId = assayInfo.id
           this.assayList.push(assayInfo)
         }
-        this.editedItem.AssayId = assayInfo.id
       }
 
       if (!this.alert) {
@@ -633,14 +653,21 @@ export default {
         this.alert = false
         if (this.vendorForm === 'Edit Vendor') {
           // existing vendor
-          vendorInfo = this.vendorList.find(vendor => vendor.id === edited.id)
-          Object.assign(vendorInfo, (await vendorService.put(edited)).data)
+          let response = await vendorService.put(edited)
+
+          if (this.checkErrorMessage(response)) {
+            // do nothing
+          } else {
+            vendorInfo = this.vendorList.find(vendor => vendor.id === edited.id)
+            this.editedItem.VendorId = vendorInfo.id
+            Object.assign(vendorInfo, response.data)
+          }
         } else {
           // new vendor
           vendorInfo = (await vendorService.post(edited)).data
+          this.editedItem.VendorId = vendorInfo.id
           this.vendorList.push(vendorInfo)
         }
-        this.editedItem.VendorId = vendorInfo.id
       }
 
       if (!this.alert) {
@@ -671,7 +698,13 @@ export default {
           // existing item
           let focusedItem = this.supplies[this.editedIndex]
           this.editedItem.updatedAt = Date.now()
-          Object.assign(focusedItem, (await itemService.put(focusedItem.id, this.editedItem, assayInfo)).data)
+          let response = await itemService.put(focusedItem.id, this.editedItem, assayInfo)
+
+          if (this.checkErrorMessage(response)) {
+            // do nothing
+          } else {
+            Object.assign(focusedItem, response.data)
+          }
         } else {
           // new item
           this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
