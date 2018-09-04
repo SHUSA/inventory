@@ -7,25 +7,25 @@ export default {
         status: status
       }
     }).catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   },
 
   show (assayId) {
     return API().get(`assays/${assayId}`).catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   },
 
   post (assay) {
     return API().post('assays', assay).catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   },
 
   put (assay) {
     return API().put(`assays/${assay.id}`, assay).catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   }
 }

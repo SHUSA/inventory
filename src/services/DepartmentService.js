@@ -3,19 +3,19 @@ import API from './API'
 export default {
   index () {
     return API().get('departments').catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   },
 
   show (departmentId) {
     return API().get(`departments/${departmentId}`).catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   },
 
   post () {
     return API().post('departments').catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   },
 
@@ -25,7 +25,7 @@ export default {
         department: department
       }
     }).catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   }
 }

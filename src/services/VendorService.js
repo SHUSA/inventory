@@ -7,25 +7,25 @@ export default {
         status: status
       }
     }).catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   },
 
   show (vendorId) {
     return API().get(`vendors/${vendorId}`).catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   },
 
   post (vendor) {
     return API().post('vendors', vendor).catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   },
 
   put (vendor) {
     return API().put(`vendors/${vendor.id}`, vendor).catch(err =>
-      alert((JSON.parse(JSON.stringify(err)).response).data[0].message)
+      (JSON.parse(JSON.stringify(err)).response).data[0]
     )
   }
 }
