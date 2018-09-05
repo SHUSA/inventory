@@ -13,7 +13,7 @@ module.exports = {
   deploy : {
     development : {
       user : 'srlped',
-      host : '10.212.148.42',
+      host : 'srl',
       ref  : 'origin/beta',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
