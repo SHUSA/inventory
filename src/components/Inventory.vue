@@ -105,7 +105,7 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="red darken-1" disabled @click.native="deleteItem(currentItem)" v-if="currentItem !== null && admin">Deactivate</v-btn>
+            <v-btn color="red darken-1" @click.native="deactivationDialog = !deactivationDialog" v-if="currentItem.name && admin">Deactivate</v-btn>
             <v-btn color="green" @click.native="save(true)" v-if="user">Order</v-btn>
             <v-spacer/>
             <v-progress-circular indeterminate color="primary" v-if="loading"/>
@@ -205,6 +205,22 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog
+        v-model="deactivationDialog"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title>
+            <span class="headline">Deactivate {{currentItem.name}}?</span>
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn color="blue darken-1" flat @click="deactivationDialog = false">No</v-btn>
+            <v-btn color="red darken-1" flat @click="deleteItem(currentItem)">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card-title>
 
     <v-data-table
@@ -290,10 +306,11 @@ export default {
   ],
   data () {
     return {
-      currentItem: null,
+      currentItem: {},
       dialog: false,
       assayDialog: false,
       vendorDialog: false,
+      deactivationDialog: false,
       alert: false,
       loading: false,
       search: '',
@@ -579,13 +596,12 @@ export default {
 
     async deleteItem (item) {
       const index = this.supplies.indexOf(item)
-      if (confirm(`Are you sure you want to deactivate ${item.name}?`)) {
-        item.active = false
-        await itemService.put(item.id, item, null)
-        this.supplies.splice(index, 1)
-        this.dialog = false
-      }
-      this.currentItem = null
+      item.active = false
+      await itemService.put(item.id, item, null)
+      this.supplies.splice(index, 1)
+      this.dialog = false
+      this.deactivationDialog = false
+      this.currentItem = {}
     },
 
     close () {
@@ -597,6 +613,7 @@ export default {
         this.editedVendor = Object.assign({}, this.defaultVendor)
       } else {
         this.dialog = false
+        this.currentItem = {}
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
