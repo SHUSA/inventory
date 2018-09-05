@@ -12,7 +12,7 @@ module.exports = {
 
   deploy : {
     development : {
-      user : 'rails',
+      user : 'srlped',
       host : '10.212.148.42',
       ref  : 'origin/beta',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
