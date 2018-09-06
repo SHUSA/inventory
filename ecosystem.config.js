@@ -3,7 +3,10 @@ module.exports = {
     name      : 'srl_inventory',
     script    : 'server.js',
     env: { 
-      NODE_ENV: 'development'
+      NODE_ENV: 'development',
+      SRL_INVENTORY_HOST: '10.212.148.45',
+      PORT: 4040,
+      HOST: "10.212.148.42"
     },
     env_production : {
       NODE_ENV: 'production'
@@ -18,12 +21,12 @@ module.exports = {
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
       'post-deploy' : 'npm install && npm run build && pm2 reload ecosystem.config.js --env development',
-      "env"  : {
-        "NODE_ENV": "development",
-        SRL_INVENTORY_HOST: '10.212.148.45',
-        PORT: 4040,
-        HOST: "10.212.148.42"
-      },
+      // "env"  : {
+      //   "NODE_ENV": "development",
+      //   SRL_INVENTORY_HOST: '10.212.148.45',
+      //   PORT: 4040,
+      //   HOST: "10.212.148.42"
+      // },
       "post-setup" : "HOST=10.212.148.42 PORT=4040 SRL_INVENTORY_HOST=10.212.148.45 npm install && npm start",
     },
     production : {
