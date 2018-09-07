@@ -34,11 +34,23 @@
           <v-list-tile slot="activator">
             <v-list-tile-title>Info</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile>
+          <v-list-tile @click="info('items')">
             <v-list-tile-action>
               <v-icon>keyboard_arrow_right</v-icon>
             </v-list-tile-action>
-            <v-list-tile-title>To be implemented</v-list-tile-title>
+            <v-list-tile-title>Items</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="info('assays')">
+            <v-list-tile-action>
+              <v-icon>keyboard_arrow_right</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>Assays</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="info('vendors')">
+            <v-list-tile-action>
+              <v-icon>keyboard_arrow_right</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>Vendors</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
       </v-list>
@@ -72,6 +84,9 @@ export default {
       inactiveItems: [],
       inactiveAssays: [],
       inactiveVendors: [],
+      allItems: [],
+      allAssays: [],
+      allVendors: [],
       search: '',
       selection: ''
     }
@@ -102,6 +117,10 @@ export default {
     this.inactiveVendors = (await vendorService.index(false)).data
     this.inactiveItems = (await itemService.index(false)).data
 
+    this.allAssays = [...this.assays, ...this.inactiveAssays]
+    this.allVendors = [...this.vendors, ...this.inactiveVendors]
+    this.allItems = [...this.items, ...this.inactiveItems]
+
     if (this.orders.length === 0) {
       this.orders = [{name: 'No orders to list', new: true}]
     }
@@ -113,10 +132,28 @@ export default {
     },
 
     open () {
-      this.$store.dispatch('setTitle', 'All Items')
+      this.$store.dispatch('setTitle', 'Inventory')
       this.$store.dispatch('setDrawer')
       this.list = this.items
       this.search = 'items'
+    },
+
+    info (list) {
+      this.$store.dispatch('setTitle', 'Info List')
+      this.$store.dispatch('setDrawer')
+
+      switch (list) {
+        case 'assays':
+          this.list = this.allAssays
+          break
+        case 'vendors':
+          this.list = this.allVendors
+          break
+        default:
+          this.list = this.allItems
+          break
+      }
+      this.search = 'info'
     },
 
     viewOrder (index) {

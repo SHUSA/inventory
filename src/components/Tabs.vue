@@ -19,9 +19,8 @@
       >
         <template v-if="n == 1">
           <order v-if="search === 'order'" :order="selection" :vendors="vendors"/>
-          <template v-else>
-            <inventory :items="selection" :assays="assays" :vendors="vendors" :orders="orders" :getInfo="getInfo"/>
-          </template>
+          <list v-else-if="search === 'info'" :list="selection"/>
+          <inventory v-else :items="selection" :assays="assays" :vendors="vendors" :orders="orders" :getInfo="getInfo"/>
         </template>
         <item v-else/>
       </v-tab-item>
@@ -33,6 +32,7 @@
 import Inventory from './Inventory'
 import Order from './Order'
 import Item from './information/Item'
+import List from './List'
 import { mapState } from 'vuex'
 
 export default {
@@ -54,7 +54,8 @@ export default {
   components: {
     Inventory,
     Order,
-    Item
+    Item,
+    List
   },
 
   computed: {
