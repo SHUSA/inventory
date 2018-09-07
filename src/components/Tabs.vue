@@ -32,7 +32,7 @@
 import Inventory from './Inventory'
 import Order from './Order'
 import Item from './information/Item'
-import List from './List'
+import InfoList from './InfoList'
 import { mapState } from 'vuex'
 
 export default {
@@ -55,7 +55,7 @@ export default {
     Inventory,
     Order,
     Item,
-    List
+    InfoList
   },
 
   computed: {
