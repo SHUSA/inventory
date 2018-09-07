@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-card>
     <v-card-title primary-title class="pb-0">
       <h3 class="headline mb-0">{{itemInfo.name}}</h3>
       <v-chip v-if="checkQuantity" color="red lighten-3" small>QTY: {{itemInfo.currentStock}}</v-chip>
@@ -60,7 +60,7 @@
         </v-layout>
       </v-container>
     </v-card-text>
-  </div>
+  </v-card>
 </template>
 
 <script>
