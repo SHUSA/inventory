@@ -18,30 +18,28 @@
                     <v-text-field v-model="editedItem.name" :rules="[rules.item]" label="Item Name" required/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-select
+                    <v-autocomplete
                       :items="assayList"
-                      autocomplete
                       label="Assay"
                       item-text="name"
                       item-value="id"
                       v-model="editedItem.AssayId"
                       append-icon="note_add"
-                      :append-icon-cb="addAssay"
+                      @click:append="addAssay"
                       :rules="[rules.assay]"
                       dense
                       required
                     />
                   </v-flex>
                   <v-flex xs6>
-                    <v-select
+                    <v-autocomplete
                       :items="vendorList"
-                      autocomplete
                       label="Vendor"
                       item-text="name"
                       item-value="id"
                       v-model="editedItem.VendorId"
                       append-icon="note_add"
-                      :append-icon-cb="addVendor"
+                      @click:append="addVendor"
                       :rules="[rules.vendor]"
                       dense
                       required
