@@ -19,7 +19,7 @@
       >
         <template v-if="n == 1">
           <order v-if="search === 'order'" :order="selection" :vendors="vendors"/>
-          <list v-else-if="search === 'info'" :list="selection"/>
+          <info-list v-else-if="search === 'info'" :list="selection"/>
           <inventory v-else :items="selection" :assays="assays" :vendors="vendors" :orders="orders" :getInfo="getInfo"/>
         </template>
         <item v-else/>
