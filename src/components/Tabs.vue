@@ -22,7 +22,8 @@
           <info-list v-else-if="search === 'info'" :list="selection"/>
           <inventory v-else :items="selection" :assays="assays" :vendors="vendors" :orders="orders" :getInfo="getInfo"/>
         </template>
-        <item v-else/>
+        <item v-if="type === 'item'"/>
+        <assay v-if="type === 'assay'"/>
       </v-tab-item>
     </v-tabs>
   </div>
@@ -32,6 +33,7 @@
 import Inventory from './Inventory'
 import Order from './Order'
 import Item from './information/Item'
+import Assay from './information/Assay'
 import InfoList from './InfoList'
 import { mapState } from 'vuex'
 
@@ -39,7 +41,8 @@ export default {
   data () {
     return {
       active: null,
-      tabs: ['Main']
+      tabs: ['Main'],
+      type: null
     }
   },
 
@@ -55,6 +58,7 @@ export default {
     Inventory,
     Order,
     Item,
+    Assay,
     InfoList
   },
 
@@ -77,15 +81,28 @@ export default {
     selection () {
       this.active = 'tab-1'
       this.tabs = ['Main']
+      this.type = null
     }
   },
 
   methods: {
-    getInfo (data) {
-      if (this.tabs.length < 2) {
-        this.tabs.push('Item Info')
+    getInfo (data, type) {
+      this.type = type
+
+      if (type === 'item') {
+        if (this.tabs.length < 2) {
+          this.tabs.push('Item Info')
+        }
+        this.$store.dispatch('setItemInfo', data)
+      } else if (type === 'assay') {
+        if (this.tabs.length < 2) {
+          this.tabs.push('Assay Info')
+        }
+        this.$store.dispatch('setAssayInfo', data)
+      } else {
+        this.tabs.push('No Data')
+        this.$store.dispatch('setItemInfo', {})
       }
-      this.$store.dispatch('setItemInfo', data)
       this.active = 'tab-2'
     }
   }
