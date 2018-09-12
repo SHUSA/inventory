@@ -8,6 +8,7 @@
         v-model="search"
         append-icon="search"
         label="Search"
+        clearable
         single-line
         hide-details
       />

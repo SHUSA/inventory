@@ -118,6 +118,7 @@
         v-model="search"
         append-icon="search"
         label="Search"
+        clearable
         single-line
         hide-details
       />
@@ -229,7 +230,7 @@
       hide-actions
     >
       <template slot="items" slot-scope="props">
-        <td class="pointer" @click="getInfo(props.item)">
+        <td class="pointer" @click="getInfo(props.item, 'item')">
           <v-tooltip top open-delay=50>
             <span slot="activator">{{props.item.name}}</span>
             <span>Get {{props.item.name}} info</span>
