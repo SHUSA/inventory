@@ -27,8 +27,8 @@
           slot-scope="props"
           xs2
         >
-          <v-chip v-if="props.item.active" color="teal" label>{{props.item.name}}</v-chip>
-          <v-chip v-else color="red" label>{{props.item.name}}</v-chip>
+          <v-chip v-if="props.item.active" color="teal" label @click="getInfo(props.item)">{{props.item.name}}</v-chip>
+          <v-chip v-else color="red" label @click="getInfo(props.item)">{{props.item.name}}</v-chip>
         </v-flex>
       </v-data-iterator>
     </v-container>
@@ -38,11 +38,18 @@
 <script>
 export default {
   props: [
-    'list'
+    'list',
+    'getInfo'
   ],
   data () {
     return {
       search: ''
+    }
+  },
+  watch: {
+    list () {
+      // for testing; to verify information
+      console.log(this.list)
     }
   }
 }
