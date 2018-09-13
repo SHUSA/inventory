@@ -18,12 +18,12 @@
         :key="n"
       >
         <template v-if="n == 1">
-          <order v-if="search === 'order'" :order="selection" :vendors="vendors"/>
-          <info-list v-else-if="search === 'info'" :list="selection"/>
-          <inventory v-else :items="selection" :assays="assays" :vendors="vendors" :orders="orders" :getInfo="getInfo"/>
+          <order v-if="search === 'order'" :order="list" :vendors="vendors"/>
+          <info-list v-else-if="search === 'info'" :list="list" :getInfo="getInfo"/>
+          <inventory v-else :items="list" :assays="assays" :vendors="vendors" :orders="orders" :getInfo="getInfo"/>
         </template>
-        <item v-if="type === 'item'"/>
-        <assay v-if="type === 'assay'"/>
+        <item v-if="type === 'item' && active === 'tab-2'"/>
+        <assay v-if="type === 'assay' && active === 'tab-2'"/>
       </v-tab-item>
     </v-tabs>
   </div>
@@ -51,6 +51,7 @@ export default {
     'assays',
     'vendors',
     'orders',
+    'list',
     'selection'
   ],
 
@@ -78,7 +79,7 @@ export default {
       }
     },
 
-    selection () {
+    list () {
       this.active = 'tab-1'
       this.tabs = ['Main']
       this.type = null
@@ -86,15 +87,15 @@ export default {
   },
 
   methods: {
-    getInfo (data, type) {
-      this.type = type
+    getInfo (data) {
+      this.type = this.selection
 
-      if (type === 'item') {
+      if (this.type === 'item') {
         if (this.tabs.length < 2) {
           this.tabs.push('Item Info')
         }
         this.$store.dispatch('setItemInfo', data)
-      } else if (type === 'assay') {
+      } else if (this.type === 'assay') {
         if (this.tabs.length < 2) {
           this.tabs.push('Assay Info')
         }
@@ -103,6 +104,7 @@ export default {
         this.tabs.push('No Data')
         this.$store.dispatch('setItemInfo', {})
       }
+
       this.active = 'tab-2'
     }
   }
