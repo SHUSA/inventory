@@ -56,10 +56,10 @@
       </v-list>
     </v-navigation-drawer>
     <v-flex xs12 offset-xs3 v-if="drawer">
-      <tabs :selection="list" :orders="orders" :assays="assays" :vendors="vendors" :search="search"/>
+      <tabs :list="list" :selection="selection" :orders="orders" :assays="assays" :vendors="vendors" :search="search"/>
     </v-flex>
     <v-flex xs12 v-else>
-      <tabs :selection="list" :orders="orders" :assays="assays" :vendors="vendors" :search="search"/>
+      <tabs :list="list" :selection="selection" :orders="orders" :assays="assays" :vendors="vendors" :search="search"/>
     </v-flex>
   </v-layout>
 </template>
@@ -88,6 +88,7 @@ export default {
       allAssays: [],
       allVendors: [],
       search: '',
+      // set selection default to take into account refreshes?
       selection: ''
     }
   },
@@ -136,6 +137,7 @@ export default {
       this.$store.dispatch('setDrawer')
       this.list = this.items
       this.search = 'items'
+      this.selection = 'item'
     },
 
     info (list) {
@@ -145,12 +147,15 @@ export default {
       switch (list) {
         case 'assays':
           this.list = this.allAssays
+          this.selection = 'assay'
           break
         case 'vendors':
           this.list = this.allVendors
+          this.selection = 'vendor'
           break
         default:
           this.list = this.allItems
+          this.selection = 'item'
           break
       }
       this.search = 'info'
