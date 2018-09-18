@@ -88,8 +88,7 @@ export default {
       allAssays: [],
       allVendors: [],
       search: '',
-      // set selection default to take into account refreshes?
-      selection: ''
+      selection: 'item'
     }
   },
 
