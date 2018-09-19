@@ -51,6 +51,18 @@ export default {
       // for testing; to verify information
       console.log(this.list)
     }
+  },
+  computed: {
+    // to fix
+    filteredItems () {
+      let regexp = new RegExp(this.search, 'gi')
+      return this.list.filter(x => {
+        // do search vs name or active
+        if (x.name.match(regexp) || x.active.match(regexp)) {
+          return x
+        }
+      })
+    }
   }
 }
 </script>
