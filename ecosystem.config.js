@@ -17,14 +17,14 @@ module.exports = {
       ref  : 'origin/beta',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
-      'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env development',
+      'post-deploy': 'npm install && npm run build && pm2 reload ecosystem.config.js --env development',
       "env"  : {
         'NODE_ENV': "development",
         SRL_INVENTORY_HOST: '10.212.148.45',
         PORT: 4040,
         HOST: "10.212.148.42"
       },
-      "post-setup": "HOST=10.212.148.42 PORT=4040 SRL_INVENTORY_HOST=10.212.148.45 npm install && npm run build && npm start",
+      "post-setup": "HOST=10.212.148.42 PORT=4040 SRL_INVENTORY_HOST=10.212.148.45 npm install && npm start",
     },
     production : {
       user : 'rails',
