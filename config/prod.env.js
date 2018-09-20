@@ -3,5 +3,6 @@ module.exports = {
   NODE_ENV: '"production"',
   devtools: false,
   debug: false,
-  silent: true
+  silent: true,
+  TEST2: '"test2"'
 }
