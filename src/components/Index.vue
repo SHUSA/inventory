@@ -108,13 +108,6 @@ export default {
   async mounted () {
     // call all index things here: item, vendor, assay, and pass them around
     // call all items here and sort them later
-    const port = process.env.PORT || 8081
-    const host = process.env.HOST || 'http://localhost'
-
-    let baseURL = `${host}:${port}`
-    console.log(`NODE_ENV = ${process.env.NODE_ENV}`)
-    console.log(baseURL)
-
     this.assays = (await assayService.index(true)).data
     this.vendors = (await vendorService.index(true)).data
     this.orders = (await orderService.index()).data
