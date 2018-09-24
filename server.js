@@ -22,7 +22,7 @@ app.get('*', function (req, res) {
     res.sendFile(__dirname + '/dist/index.html')
 })
 
-let port = 8081 //config.db.options.port
+let port = config.port
 let host = config.host
 
 if (process.env.NEWDB) {
