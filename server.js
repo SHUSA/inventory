@@ -27,12 +27,12 @@ let host = config.host
 
 if (process.env.NEWDB) {
   sequelize.sync({ force: process.env.NEWDB || false }).then(() => {
-    app.listen(port, host)
+    app.listen(port)
     if (process.env.NEWDB) console.log('Tables have been formatted')
     console.log(`Server started on port ${port}`)
   })  
 }else{
-  app.listen(port, host, () => {
+  app.listen(port, () => {
     console.log(`Server started on port ${port}`)
   })
 }
