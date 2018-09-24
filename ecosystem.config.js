@@ -17,7 +17,7 @@ module.exports = {
       ref  : 'origin/beta',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
-      'post-deploy': 'git pull && npm install && npm run build && npm start && pm2 reload ecosystem.config.js --env development --update-env',
+      'post-deploy': 'git pull && npm install && npm run build && pm2 reload ecosystem.config.js --env development --update-env',
       "env"  : {
         'NODE_ENV': "development",
         SRL_INVENTORY_HOST: '10.212.148.45',
