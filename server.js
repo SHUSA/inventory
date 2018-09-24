@@ -24,12 +24,12 @@ app.get('*', function (req, res) {
 
 if (process.env.NEWDB) {
   sequelize.sync({ force: process.env.NEWDB || false }).then(() => {
-    app.listen(config.port, config.host)
+    app.listen(config.db.options.port, config.db.options.host)
     if (process.env.NEWDB) console.log('Tables have been formatted')
     console.log(`Server started on port ${config.port}`)
   })  
 }else{
-  app.listen(config.port, config.host, () => {
+  app.listen(config.db.options.port, config.db.options.host, () => {
     console.log(`Server started on port ${config.port}`)
   })
 }
