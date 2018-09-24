@@ -19,13 +19,13 @@ module.exports = {
       path : '/var/www/srl_inventory',
       'post-deploy': 'git pull && npm install && npm run build && pm2 reload ecosystem.config.js --env development --update-env && npm start',
       "env"  : {
-        'NODE_ENV': "development",
+        'NODE_ENV': "'development'",
         SRL_INVENTORY_HOST: '10.212.148.45',
         SRL_INVENTORY_DB_PORT: 5432,
         PORT: 4040,
         SERVER_PORT: 4041,
         HOST: "10.212.148.42",
-        NEWDB: "'true'"
+        NEWDB: "'false'"
       },
       "post-setup": "HOST=10.212.148.42 PORT=4040 SRL_INVENTORY_HOST=10.212.148.45 npm install && NEWDB=true npm start",
     },
