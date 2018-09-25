@@ -4,6 +4,7 @@
       <v-dialog
         v-model="dialog"
         max-width="500px"
+        @keydown.enter="save(false)"
       >
         <v-btn v-if="admin" slot="activator" color="primary" class="mb-0" dark>New Item</v-btn>
         <v-card>
@@ -81,9 +82,9 @@
                     <v-text-field v-model="editedItem.currentStock" validate-on-blur :rules="[rules.number]" ref="currentStock" type="number" min=0 label="Current Stock"/>
                   </v-flex>
                   <v-flex xs12>
-                    <v-text-field
+                    <v-textarea
                     v-model="editedItem.comment"
-                    textarea
+                    outline
                     no-resize
                     counter=140
                     validate-on-blur
@@ -126,6 +127,7 @@
       <v-dialog
         v-model="assayDialog"
         max-width="500px"
+        @keydown.enter="saveAssay"
       >
         <v-card>
           <v-card-title>
@@ -175,6 +177,7 @@
       <v-dialog
         v-model="vendorDialog"
         max-width="500px"
+        @keydown.enter="saveVendor"
       >
         <v-card>
           <v-card-title>
@@ -623,7 +626,7 @@ export default {
 
     async saveAssay () {
       const num = this.errors.num.length
-      this.alertMessage = 'Please fix issues'
+      this.alertMessage = 'Please a valid name or fix form'
 
       if (this.errors.assay || num) {
         this.alert = true
@@ -659,7 +662,7 @@ export default {
 
     async saveVendor () {
       const num = this.errors.num.length
-      this.alertMessage = 'Please fix issues'
+      this.alertMessage = 'Please enter a valid name'
 
       if (this.errors.vendor || num) {
         this.alert = true
@@ -695,7 +698,7 @@ export default {
 
     async save (order) {
       const num = this.errors.num.length
-      this.alertMessage = 'Please fix issues'
+      this.alertMessage = 'Minimum information needed: Item Name, Assay, Vendor, Catalog Number'
 
       if (this.errors.item || num || this.errors.catalog) {
         this.alert = true
