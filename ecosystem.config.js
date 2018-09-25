@@ -26,8 +26,8 @@ module.exports = {
         SERVER_PORT: 4041,
         HOST: "10.212.148.42",
         NEWDB: "'false'"
-      }
-      // "post-setup": "HOST=10.212.148.42 PORT=4040 SRL_INVENTORY_HOST=10.212.148.45 npm install && NEWDB=true npm start",
+      },
+      "post-setup": "HOST=10.212.148.42 PORT=4040 SRL_INVENTORY_HOST=10.212.148.45 npm install && npm start",
     },
     production : {
       user : 'rails',
