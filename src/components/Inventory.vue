@@ -515,6 +515,11 @@ export default {
     this.vendorList = (await vendorService.index(true)).data
     this.assayList = (await assayService.index(true)).data
     this.orderList = (await orderService.index()).data
+
+    if (this.orderList.length === 0) {
+      this.orderList = [{name: 'No orders to list', new: true}]
+    }
+    this.$store.dispatch('setTitle', 'Inventory')
   },
 
   methods: {

@@ -7,6 +7,7 @@
           <li>Update notes added to Header</li>
           <li>Calculation of Reorder Points now done whenever Item is updated and if it is active</li>
           <li>Enabled form submit on Enter</li>
+          <li>Ordering initialization fixed</li>
         </ul>
       </li>
       <br>
