@@ -737,7 +737,8 @@ export default {
             currentStock: this.editedItem.currentStock,
             comment: this.editedItem.comment
           }
-
+          console.log('order list')
+          console.log(this.orderList)
           if (this.orderList[0].new) {
             // initial orders
             const newOrder = (await orderService.post()).data

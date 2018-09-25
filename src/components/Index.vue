@@ -126,6 +126,7 @@ export default {
     if (this.orders.length === 0) {
       console.log('no orders')
       this.orders = [{name: 'No orders to list', new: true}]
+      console.log(this.orders)
     }
   },
 
