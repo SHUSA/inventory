@@ -529,7 +529,7 @@ export default {
     },
 
     checkQuantity (item) {
-      return item.currentStock < item.reorderPoint
+      return item.currentStock <= item.reorderPoint
     },
 
     checkErrorMessage (resp) {
@@ -735,7 +735,7 @@ export default {
           this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
         }
 
-        if (order) {
+        if (order || checkQuantity(this.editedItem)) {
           let entry = {
             ItemId: this.editedItem.id,
             updatedAt: this.editedItem.updatedAt,
