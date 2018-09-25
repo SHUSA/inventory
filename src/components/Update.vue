@@ -1,13 +1,13 @@
 <template>
-  <v-card-text>
+  <v-card-text style="height: 300px;">
     <ul>
       <li>
         2018.09.25 - v1.7c, Minor improvements
         <ul>
           <li>Update notes added to Header</li>
           <li>Calculation of Reorder Points now done whenever Item is updated and if it is active</li>
-          <li>Enabled form submit on Enter</li>
-          <li>Ordering initialization fixed</li>
+          <li>Enabled form submit on Enter for Item, Assay, Vendor, and Order Completion</li>
+          <li>Ordering initialization fixed and ready to use</li>
         </ul>
       </li>
       <br>

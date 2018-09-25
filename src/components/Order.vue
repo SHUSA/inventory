@@ -4,6 +4,7 @@
       <v-dialog
         v-model="completedDialog"
         max-width="500px"
+        @keydown.enter="changeStatus"
       >
         <v-btn v-if="!thisOrder.completed && admin" slot="activator" color="primary" class="mb-0" dark>Complete Order</v-btn>
         <v-btn v-if="thisOrder.completed && admin" slot="activator" color="error" class="mb-0" dark>Undo Complete</v-btn>
