@@ -78,7 +78,9 @@ module.exports = {
     let item = req.body.params.item
     const assay = req.body.params.assay
 
-    if (!item.order && !item.user && item.active) {
+    // calculate reorder point as long as item is active
+    // old condition: if (!item.order && !item.user && item.active)
+    if (item.active) {
       item = calculateStockLevels(item, assay)
     }
 
