@@ -735,7 +735,7 @@ export default {
           this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
         }
 
-        if (order || checkQuantity(this.editedItem)) {
+        if (order || (checkQuantity(this.editedItem) && this.user)) {
           let entry = {
             ItemId: this.editedItem.id,
             updatedAt: this.editedItem.updatedAt,
