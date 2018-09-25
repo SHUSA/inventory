@@ -121,7 +121,10 @@ export default {
     this.allVendors = [...this.vendors, ...this.inactiveVendors]
     this.allItems = [...this.items, ...this.inactiveItems]
 
+    console.log(this.orders)
+
     if (this.orders.length === 0) {
+      console.log('no orders')
       this.orders = [{name: 'No orders to list', new: true}]
     }
   },
