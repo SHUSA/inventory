@@ -520,6 +520,7 @@ export default {
       this.orderList = [{name: 'No orders to list', new: true}]
     }
     this.$store.dispatch('setTitle', 'Inventory')
+    this.$store.dispatch('setDrawer', false)
   },
 
   methods: {
@@ -529,7 +530,7 @@ export default {
     },
 
     checkQuantity (item) {
-      return item.currentStock < item.reorderPoint
+      return item.currentStock <= item.reorderPoint
     },
 
     checkErrorMessage (resp) {
@@ -735,7 +736,8 @@ export default {
           this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
         }
 
-        if (order) {
+        // add more robust conditions to ensure true orders go through
+        if (order || (this.checkQuantity(this.editedItem) && this.user)) {
           let entry = {
             ItemId: this.editedItem.id,
             updatedAt: this.editedItem.updatedAt,

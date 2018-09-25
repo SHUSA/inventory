@@ -39,8 +39,9 @@ export default new Vuex.Store({
     setTitle (state, title) {
       state.pageTitle = title
     },
-    setDrawer (state) {
-      state.drawer = !state.drawer
+    setDrawer (state, open) {
+      // initialize drawer to close
+      state.drawer = open !== undefined ? open : !state.drawer
     },
     setItemInfo (state, data) {
       state.itemInfo = data
@@ -56,8 +57,8 @@ export default new Vuex.Store({
     setTitle ({ commit }, title) {
       commit('setTitle', title)
     },
-    setDrawer ({ commit }) {
-      commit('setDrawer')
+    setDrawer ({ commit }, open) {
+      commit('setDrawer', open)
     },
     setItemInfo ({ commit }, data) {
       commit('setItemInfo', data)

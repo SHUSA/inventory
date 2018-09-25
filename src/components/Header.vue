@@ -4,6 +4,7 @@
       {{title}} v.b-build-1.7c
       <v-dialog
         v-model="dialog"
+        scrollable
         width="500"
       >
         <v-btn slot="activator" icon small class="mx-0">
