@@ -1,7 +1,20 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-build-1.7b
+      {{title}} v.b-build-1.7c
+      <v-dialog
+        v-model="dialog"
+        width="500"
+      >
+        <v-btn slot="activator" icon small class="mx-0">
+          <v-icon>info</v-icon>
+        </v-btn>
+        <v-card>
+          <v-card-title class="headline">What's New!</v-card-title>
+          <v-divider/>
+          <update/>
+        </v-card>
+      </v-dialog>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items>
@@ -24,19 +37,24 @@
 
 <script>
 import { mapState } from 'vuex'
+import Update from './Update'
 const moment = require('moment')
 
 export default {
   data () {
     return {
       time: moment().format('MMM DD, YYYY'),
-      title: 'Molecular Inventory'
+      title: 'Molecular Inventory',
+      dialog: false
     }
   },
   computed: {
     ...mapState([
       'pageTitle'
     ])
+  },
+  components: {
+    Update
   },
   methods: {
     login () {
