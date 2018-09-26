@@ -233,10 +233,10 @@
       hide-actions
     >
       <template slot="items" slot-scope="props">
-        <td class="pointer" @click="getInfo(props.item)">
+        <td class="pointer" @click="editItem(props.item)">
           <v-tooltip top open-delay=50>
             <span slot="activator">{{props.item.name}}</span>
-            <span>Get {{props.item.name}} info</span>
+            <span>Edit {{props.item.name}} info</span>
           </v-tooltip>
         </td>
 
@@ -268,8 +268,11 @@
         <td class="comment" :id=props.item.catalogNumber @click="expand(props.item.catalogNumber)">{{props.item.comment}}</td>
         <td>{{time(props.item)}}</td>
         <td class="justify-center layout px-0">
-          <v-btn icon class="mx-0" @click="editItem(props.item)">
-            <v-icon color="teal">info</v-icon>
+          <v-btn icon class="mx-0" @click="getInfo(props.item)">
+            <v-tooltip top open-delay=50>
+              <v-icon slot="activator" color="teal">info</v-icon>
+              <span>Get {{props.item.name}} info</span>
+            </v-tooltip>
           </v-btn>
         </td>
       </template>
