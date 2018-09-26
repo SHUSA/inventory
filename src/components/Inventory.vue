@@ -232,6 +232,7 @@
       :search="search"
       hide-actions
     >
+      <!-- item name -->
       <template slot="items" slot-scope="props">
         <td class="pointer" @click="editItem(props.item)">
           <v-tooltip top open-delay=50>
@@ -239,7 +240,7 @@
             <span>Edit {{props.item.name}} info</span>
           </v-tooltip>
         </td>
-
+        <!-- vendor name -->
         <td v-if="admin" class="pointer" @click="editVendor(props.item.VendorId)">
           <v-tooltip top open-delay=50>
             <span slot="activator">{{getVendor(props.item)}}</span>
@@ -247,7 +248,7 @@
           </v-tooltip>
         </td>
         <td v-else>{{getVendor(props.item)}}</td>
-
+        <!-- assay name -->
         <td v-if="admin" class="pointer" @click="editAssay(props.item.AssayId)">
           <v-tooltip top open-delay=50>
             <span slot="activator">{{getAssay(props.item)}}</span>
@@ -255,18 +256,24 @@
           </v-tooltip>
         </td>
         <td v-else>{{getAssay(props.item)}}</td>
-
+        <!-- catalog number -->
         <td>{{props.item.catalogNumber}}</td>
+        <!-- item description -->
         <td>{{props.item.itemDescription}}</td>
+        <!-- current stock -->
         <td>
           <v-badge color="red">
             <span slot="badge" v-if="checkQuantity(props.item)">!</span>
             {{props.item.currentStock}}
           </v-badge>
         </td>
+        <!-- reorder quantity -->
         <td>{{props.item.reorderQuantity}}</td>
+        <!-- comment -->
         <td class="comment" :id=props.item.catalogNumber @click="expand(props.item.catalogNumber)">{{props.item.comment}}</td>
+        <!-- last update -->
         <td>{{time(props.item)}}</td>
+        <!-- info icon -->
         <td class="justify-center layout px-0">
           <v-btn icon class="mx-0" @click="getInfo(props.item)">
             <v-tooltip top open-delay=50>
@@ -799,5 +806,20 @@ export default {
 
   .help {
     cursor: help;
+  }
+
+  table td{
+    table-layout: fixed;
+    max-width: 15px;
+  }
+  td.comment {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  td.comment.expanded {
+    overflow: auto;
+    text-overflow: initial;
+    white-space: normal;
   }
 </style>
