@@ -270,11 +270,11 @@
         <!-- reorder quantity -->
         <td>{{props.item.reorderQuantity}}</td>
         <!-- comment -->
-        <td class="comment pointer" :id=props.item.catalogNumber @click="expand(props.item.catalogNumber)">{{props.item.comment}}</td>
+        <td>{{props.item.comment}}</td>
         <!-- last update -->
         <td>{{time(props.item)}}</td>
         <!-- info icon -->
-        <td class="justify-center layout px-0">
+        <td>
           <v-btn icon class="mx-0" @click="getInfo(props.item)">
             <v-tooltip top open-delay=50>
               <v-icon slot="activator" color="teal">info</v-icon>
@@ -582,18 +582,6 @@ export default {
       this.vendorDialog = true
     },
 
-    expand (catalogNumber) {
-      let ele = document.getElementById(catalogNumber)
-      let classes = []
-      classes = ele.className.split(' ')
-
-      if (classes.includes('expanded')) {
-        ele.classList.remove('expanded')
-      } else {
-        ele.classList.add('expanded')
-      }
-    },
-
     editAssay (id) {
       this.assayForm = 'Edit Assay'
       this.editedAssay = Object.assign({}, this.assayList.find(assay => assay.id === id))
@@ -806,20 +794,5 @@ export default {
 
   .help {
     cursor: help;
-  }
-
-  table td{
-    table-layout: fixed;
-    max-width: 15px;
-  }
-  td.comment {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  td.comment.expanded {
-    overflow: auto;
-    text-overflow: initial;
-    white-space: normal;
   }
 </style>
