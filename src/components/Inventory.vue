@@ -270,7 +270,7 @@
         <!-- reorder quantity -->
         <td>{{props.item.reorderQuantity}}</td>
         <!-- comment -->
-        <td class="comment" :id=props.item.catalogNumber @click="expand(props.item.catalogNumber)">{{props.item.comment}}</td>
+        <td class="comment pointer" :id=props.item.catalogNumber @click="expand(props.item.catalogNumber)">{{props.item.comment}}</td>
         <!-- last update -->
         <td>{{time(props.item)}}</td>
         <!-- info icon -->
