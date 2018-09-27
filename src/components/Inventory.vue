@@ -268,7 +268,7 @@
           </v-badge>
         </td>
         <!-- reorder quantity -->
-        <td>{{props.item.reorderQuantity}}</td>
+        <td>{{toOrder(props.item)}}</td>
         <!-- comment -->
         <td>{{props.item.comment}}</td>
         <!-- last update -->
@@ -331,11 +331,11 @@ export default {
       assayForm: '',
       vendorForm: '',
       errors: {
-        assay: false,
-        vendor: false,
-        catalog: false,
-        item: false,
-        text: false,
+        assay: true,
+        vendor: true,
+        catalog: true,
+        item: true,
+        text: true,
         num: []
       },
       rules: {
@@ -543,6 +543,11 @@ export default {
       return item.currentStock <= item.reorderPoint
     },
 
+    toOrder (item) {
+      // account for items ordered but not less than reorder point
+      return this.checkQuantity(item) ? item.reorderQuantity : 0
+    },
+
     checkErrorMessage (resp) {
       if (resp.message) {
         // stop process and display error message
@@ -716,7 +721,8 @@ export default {
           }
         }
         this.editedItem.catalogNumber = this.editedItem.catalogNumber.toUpperCase()
-        this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100) / 100
+        // scaling to account for weird JS math
+        this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100 + 0.01) / 100
 
         if (this.editedIndex > -1) {
           // existing item
