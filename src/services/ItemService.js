@@ -7,7 +7,7 @@ export default {
         status: status
       }
     }).catch(err =>
-      (JSON.parse(JSON.stringify(err)).response).data[0]
+      JSON.parse(JSON.stringify(err)).response
     )
   },
 
@@ -17,7 +17,7 @@ export default {
         itemIds: itemIds
       }
     }).catch(err =>
-      (JSON.parse(JSON.stringify(err)).response).data[0]
+      JSON.parse(JSON.stringify(err)).response
     )
   },
 
@@ -28,7 +28,7 @@ export default {
         assay: assay
       }
     }).catch(err =>
-      (JSON.parse(JSON.stringify(err)).response).data[0]
+      JSON.parse(JSON.stringify(err)).response
     )
   },
 
@@ -39,7 +39,7 @@ export default {
         assay: assay
       }
     }).catch(err =>
-      (JSON.parse(JSON.stringify(err)).response).data[0]
+      JSON.parse(JSON.stringify(err)).response
     )
   }
 }
