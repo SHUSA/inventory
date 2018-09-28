@@ -123,7 +123,6 @@ export default {
 
     if (this.orders.length === 0) {
       this.orders = [{name: 'No orders to list', new: true}]
-      console.log(this.orders)
     }
   },
 

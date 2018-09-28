@@ -331,11 +331,11 @@ export default {
       assayForm: '',
       vendorForm: '',
       errors: {
-        assay: true,
-        vendor: true,
-        catalog: true,
-        item: true,
-        text: true,
+        assay: false,
+        vendor: false,
+        catalog: false,
+        item: false,
+        text: false,
         num: []
       },
       rules: {
@@ -549,11 +549,11 @@ export default {
     },
 
     checkErrorMessage (resp) {
-      if (resp.message) {
+      if (resp.status !== 200) {
         // stop process and display error message
         this.loading = false
         this.alert = true
-        this.alertMessage = resp.message
+        this.alertMessage = resp.data[0].message
         return true
       } else {
         // no errors received

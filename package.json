@@ -28,6 +28,7 @@
     "passport-jwt": "^4.0.0",
     "pg": "^7.4.3",
     "sequelize": "^4.38.0",
+    "sequelize-cli": "^4.1.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuetify": "^1.2.3",
