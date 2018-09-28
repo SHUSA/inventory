@@ -331,11 +331,11 @@ export default {
       assayForm: '',
       vendorForm: '',
       errors: {
-        assay: true,
-        vendor: true,
-        catalog: true,
-        item: true,
-        text: true,
+        assay: false,
+        vendor: false,
+        catalog: false,
+        item: false,
+        text: false,
         num: []
       },
       rules: {
