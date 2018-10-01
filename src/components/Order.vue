@@ -47,7 +47,15 @@
         <td>{{getVendor(props.item)}}</td>
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
-        <td>{{props.item.currentStock}}</td>
+        <td>
+          <v-tooltip top open-delay=50>
+            <v-badge slot="activator" color="orange">
+              <span slot="badge" v-if="checkQuantity(props.item)">?</span>
+              {{props.item.currentStock}}
+            </v-badge>
+            <span>Manually ordered</span>
+          </v-tooltip>
+        </td>
         <td>{{props.item.reorderQuantity}}</td>
         <td>{{props.item.comment}}</td>
         <td>{{time(props.item.updatedAt)}}</td>
@@ -143,6 +151,10 @@ export default {
       }
       item.vendor = this.vendors.find(vendor => vendor.id === item.VendorId).name
       return item.vendor
+    },
+
+    checkQuantity (item) {
+      return item.currentStock > item.reorderPoint
     },
 
     close () {
