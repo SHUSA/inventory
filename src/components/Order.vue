@@ -49,7 +49,7 @@
         <td>{{props.item.itemDescription}}</td>
         <td>{{props.item.currentStock}}</td>
         <td>{{props.item.reorderQuantity}}</td>
-        <td class="comment" :id=props.item.catalogNumber @click="expand(props.item.catalogNumber)">{{props.item.comment}}</td>
+        <td>{{props.item.comment}}</td>
         <td>{{time(props.item.updatedAt)}}</td>
       </template>
       <template slot="no-data">
@@ -120,6 +120,16 @@ export default {
         this.entries = (await orderService.show(this.order.id)).data.Entries
         itemIds = this.entries.map(x => x.ItemId)
         this.items = (await itemService.show(itemIds)).data
+        // merge currentStock and comment from entries to items
+        this.items.map(index => {
+          for (let i = 0; i < this.entries.length; i++) {
+            let entry = this.entries[i]
+            if (index.id === entry.ItemId) {
+              index.currentStock = entry.currentStock
+              index.comment = entry.comment
+            }
+          }
+        })
       }
     },
 
@@ -133,18 +143,6 @@ export default {
       }
       item.vendor = this.vendors.find(vendor => vendor.id === item.VendorId).name
       return item.vendor
-    },
-
-    expand (id) {
-      let ele = document.getElementById(id)
-      let classes = []
-      classes = ele.className.split(' ')
-
-      if (classes.includes('expanded')) {
-        ele.classList.remove('expanded')
-      } else {
-        ele.classList.add('expanded')
-      }
     },
 
     close () {
