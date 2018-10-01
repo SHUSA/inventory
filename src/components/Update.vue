@@ -2,6 +2,15 @@
   <v-card-text style="height: 300px;">
     <ul>
       <li>
+        2018.10.01 - v1.7f, Order Bug Fixes
+        <ul>
+          <li>Fixed a bug with ordering where a new order form is constantly created</li>
+          <li>Added a badge for manually ordered items in Order if it is under the reorder point</li>
+          <li>Change "Order" button to "Manual Order" for clarity</li>
+        </ul>
+      </li>
+      <br>
+      <li>
         2018.09.27 - v1.7e, Minor Bug Fixes
         <ul>
           <!-- <li>Enter to submit only succeeds for topmost dialog</li> -->
