@@ -415,7 +415,7 @@ export default {
         {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'reorderQuantity'},
         {text: 'Comment', value: 'comment', width: '15%'},
-        {text: 'Last Update', value: 'lastUpdate'},
+        {text: 'Last Update', value: 'updatedAt'},
         {text: '', value: 'name', sortable: false, width: '5%'}
       ],
       supplies: [],
@@ -428,7 +428,7 @@ export default {
         weeklyRuns: 0,
         controlsPerRun: 0,
         maxBatchSize: 0,
-        sampleReplicates: 0
+        sampleReplicates: 1
       },
       defaultAssay: {
         name: '',
