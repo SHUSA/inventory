@@ -106,7 +106,7 @@
           <v-card-actions>
             <!-- enable deactivation button once reactivation is complete -->
             <v-btn color="red darken-1" disabled @click.native="deactivationDialog = !deactivationDialog" v-if="currentItem.name && admin">Deactivate</v-btn>
-            <v-btn color="green" @click.native="save(true)" v-if="user">Order</v-btn>
+            <v-btn color="orange" small @click.native="save(true)" v-if="user">Manual Order</v-btn>
             <v-spacer/>
             <v-progress-circular indeterminate color="primary" v-if="loading"/>
             <v-btn color="red darken-1" flat @click.native="close">Cancel</v-btn>
@@ -758,7 +758,7 @@ export default {
             await entryService.post(entry)
           } else {
             const lastSunday = moment().startOf('week').format()
-            const recentOrder = this.orderList[this.orderList.length - 1]
+            const recentOrder = this.orderList[0]
 
             if (recentOrder.createdAt < lastSunday) {
               // recent order too old, create new order and associate OrderId
