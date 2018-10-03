@@ -61,6 +61,12 @@
     <v-flex xs12 v-else>
       <tabs :list="list" :selection="selection" :orders="orders" :assays="assays" :vendors="vendors" :search="search"/>
     </v-flex>
+    <!-- transition not working, fix -->
+    <v-fab-transition>
+      <v-btn v-scroll="onScroll" v-show="showButton" @click="goToTop" fixed bottom small right fab color="red">
+        <v-icon color="white">keyboard_arrow_up</v-icon>
+      </v-btn>
+    </v-fab-transition>
   </v-layout>
 </template>
 
@@ -76,6 +82,7 @@ const moment = require('moment')
 export default {
   data () {
     return {
+      showButton: false,
       list: [],
       items: [],
       assays: [],
@@ -129,6 +136,17 @@ export default {
   methods: {
     time (order) {
       return moment(order).format('MMM-DD-YYYY')
+    },
+    onScroll () {
+      this.showButton = document.documentElement.scrollTop > 210
+    },
+
+    goToTop () {
+      window.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      })
     },
 
     open () {
