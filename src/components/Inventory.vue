@@ -220,7 +220,7 @@
           <v-card-actions>
             <v-spacer/>
             <v-btn color="blue darken-1" flat @click="deactivationDialog = false">No</v-btn>
-            <v-btn color="red darken-1" flat @click="deleteItem(currentItem)">Yes</v-btn>
+            <v-btn color="red darken-1" flat @click="deactivateItem(currentItem)">Yes</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -420,14 +420,14 @@ export default {
       },
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
-        {text: 'Vendor', value: 'vendor'},
-        {text: 'Assay', value: 'assay'},
-        {text: 'Catalog #', value: 'catalogNumber'},
-        {text: 'Desc', value: 'itemDescription'},
-        {text: 'Stock', value: 'currentStock'},
-        {text: 'To Order', value: 'reorderQuantity'},
+        {text: 'Vendor', value: 'vendor', width: '9%'},
+        {text: 'Assay', value: 'assay', width: '9%'},
+        {text: 'Catalog #', value: 'catalogNumber', width: '9%'},
+        {text: 'Desc', value: 'itemDescription', width: '10%'},
+        {text: 'Stock', value: 'currentStock', width: '9%'},
+        {text: 'To Order', value: 'reorderQuantity', width: '9%'},
         {text: 'Comment', value: 'comment', width: '15%'},
-        {text: 'Last Update', value: 'updatedAt'},
+        {text: 'Last Update', value: 'updatedAt', width: '9%'},
         {text: '', value: 'name', sortable: false, width: '5%'}
       ],
       supplies: [],
@@ -625,7 +625,7 @@ export default {
       this.dialog = true
     },
 
-    async deleteItem (item) {
+    async deactivateItem (item) {
       const index = this.supplies.indexOf(item)
       item.active = false
       await itemService.put(item.id, item, null)
@@ -642,13 +642,15 @@ export default {
       } else if (this.vendorDialog) {
         this.vendorDialog = false
         this.editedVendor = Object.assign({}, this.defaultVendor)
-      } else {
+      } else if (this.dialog && !this.assayDialog && !this.vendorDialog) {
         this.dialog = false
         this.currentItem = {}
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         }, 300)
+      } else {
+        this.openSnack('Dialogues aren\'t closing. Tell the dev how you got here so it can be fixed. ❤️')
       }
     },
 
@@ -819,6 +821,22 @@ export default {
 </script>
 
 <style scoped>
+  .v-table {
+    table-layout: fixed;
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  .v-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .v-card {
+    max-width: 100%;
+  }
+
   .pointer {
     cursor: pointer;
   }
