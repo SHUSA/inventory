@@ -61,7 +61,6 @@
     <v-flex xs12 v-else>
       <tabs :list="list" :selection="selection" :orders="orders" :assays="assays" :vendors="vendors" :search="search"/>
     </v-flex>
-    <!-- transition not working, fix -->
     <v-fab-transition>
       <v-btn v-scroll="onScroll" v-show="showButton" @click="goToTop" fixed bottom small right fab color="red">
         <v-icon color="white">keyboard_arrow_up</v-icon>

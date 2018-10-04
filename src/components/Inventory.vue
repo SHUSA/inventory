@@ -226,6 +226,16 @@
       </v-dialog>
     </v-card-title>
 
+    <v-snackbar
+      v-model="snackbar"
+      color="primary"
+      bottom
+    >
+      <v-flex class="text-xs-center">
+        {{snackText}}
+      </v-flex>
+    </v-snackbar>
+
     <v-data-table
       :headers="headers"
       :items="supplies"
@@ -323,6 +333,8 @@ export default {
       dialog: false,
       assayDialog: false,
       vendorDialog: false,
+      snackbar: false,
+      snackText: '',
       deactivationDialog: false,
       alert: false,
       loading: false,
@@ -341,7 +353,7 @@ export default {
       rules: {
         number: (val) => {
           const num = parseFloat(val)
-          // create error object with all number validated refs, check $ref.<refname>.value to see if is num, true if yes, false if no
+          // to do: create error object with all number validated refs, check $ref.<refname>.value to see if is num, true if yes, false if no
           if (!isNaN(num) && num >= 0) {
             this.errors.num.pop()
             return true
@@ -362,7 +374,7 @@ export default {
         catalog: (text) => {
           if (text.length === 0) {
             this.errors.catalog = true
-            return 'Please enter a catalog number'
+            return 'Please enter a unique catalog number'
           } else if (this.supplies.find(item => item.catalogNumber === text.toUpperCase()) !== undefined) {
             // fixes error throwing on existing items
             if (this.editedIndex > -1) {
@@ -561,6 +573,11 @@ export default {
       }
     },
 
+    openSnack (text) {
+      this.snackText = text
+      this.snackbar = true
+    },
+
     getAssay (item) {
       if (this.assayList.length === 0) {
         return null
@@ -580,11 +597,13 @@ export default {
     addAssay () {
       this.assayForm = 'New Assay'
       this.assayDialog = true
+      this.alert = false
     },
 
     addVendor () {
       this.vendorForm = 'New Vendor'
       this.vendorDialog = true
+      this.alert = false
     },
 
     editAssay (id) {
@@ -665,6 +684,7 @@ export default {
 
       if (!this.alert) {
         this.loading = false
+        this.openSnack('Assay saved')
         this.close()
       }
     },
@@ -701,6 +721,7 @@ export default {
 
       if (!this.alert) {
         this.loading = false
+        this.openSnack('Vendor saved')
         this.close()
       }
     },
@@ -734,10 +755,12 @@ export default {
             // do nothing
           } else {
             Object.assign(focusedItem, response.data)
+            this.snackText = 'Item updated'
           }
         } else {
           // new item
           this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
+          this.snackText = 'Item saved'
         }
 
         // add more robust conditions to ensure true orders go through
@@ -781,11 +804,13 @@ export default {
               }
             }
           }
+          this.snackText += ' and ordered'
         }
       }
 
       if (!this.alert) {
         this.loading = false
+        this.openSnack(this.snackText)
         this.close()
       }
     }
