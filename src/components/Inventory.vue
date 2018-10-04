@@ -821,7 +821,7 @@ export default {
 </script>
 
 <style scoped>
-  .v-table {
+  /* .v-table {
     table-layout: fixed;
     width: 100%;
     white-space: nowrap;
@@ -835,7 +835,7 @@ export default {
 
   .v-card {
     max-width: 100%;
-  }
+  } */
 
   .pointer {
     cursor: pointer;
