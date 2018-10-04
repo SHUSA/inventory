@@ -220,11 +220,21 @@
           <v-card-actions>
             <v-spacer/>
             <v-btn color="blue darken-1" flat @click="deactivationDialog = false">No</v-btn>
-            <v-btn color="red darken-1" flat @click="deleteItem(currentItem)">Yes</v-btn>
+            <v-btn color="red darken-1" flat @click="deactivateItem(currentItem)">Yes</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-card-title>
+
+    <v-snackbar
+      v-model="snackbar"
+      color="primary"
+      bottom
+    >
+      <v-flex class="text-xs-center">
+        {{snackText}}
+      </v-flex>
+    </v-snackbar>
 
     <v-data-table
       :headers="headers"
@@ -323,6 +333,8 @@ export default {
       dialog: false,
       assayDialog: false,
       vendorDialog: false,
+      snackbar: false,
+      snackText: '',
       deactivationDialog: false,
       alert: false,
       loading: false,
@@ -341,7 +353,7 @@ export default {
       rules: {
         number: (val) => {
           const num = parseFloat(val)
-          // create error object with all number validated refs, check $ref.<refname>.value to see if is num, true if yes, false if no
+          // to do: create error object with all number validated refs, check $ref.<refname>.value to see if is num, true if yes, false if no
           if (!isNaN(num) && num >= 0) {
             this.errors.num.pop()
             return true
@@ -362,7 +374,7 @@ export default {
         catalog: (text) => {
           if (text.length === 0) {
             this.errors.catalog = true
-            return 'Please enter a catalog number'
+            return 'Please enter a unique catalog number'
           } else if (this.supplies.find(item => item.catalogNumber === text.toUpperCase()) !== undefined) {
             // fixes error throwing on existing items
             if (this.editedIndex > -1) {
@@ -408,14 +420,14 @@ export default {
       },
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
-        {text: 'Vendor', value: 'vendor'},
-        {text: 'Assay', value: 'assay'},
-        {text: 'Catalog #', value: 'catalogNumber'},
-        {text: 'Desc', value: 'itemDescription'},
-        {text: 'Stock', value: 'currentStock'},
-        {text: 'To Order', value: 'reorderQuantity'},
+        {text: 'Vendor', value: 'vendor', width: '9%'},
+        {text: 'Assay', value: 'assay', width: '9%'},
+        {text: 'Catalog #', value: 'catalogNumber', width: '9%'},
+        {text: 'Desc', value: 'itemDescription', width: '10%'},
+        {text: 'Stock', value: 'currentStock', width: '9%'},
+        {text: 'To Order', value: 'reorderQuantity', width: '9%'},
         {text: 'Comment', value: 'comment', width: '15%'},
-        {text: 'Last Update', value: 'updatedAt'},
+        {text: 'Last Update', value: 'updatedAt', width: '9%'},
         {text: '', value: 'name', sortable: false, width: '5%'}
       ],
       supplies: [],
@@ -561,6 +573,11 @@ export default {
       }
     },
 
+    openSnack (text) {
+      this.snackText = text
+      this.snackbar = true
+    },
+
     getAssay (item) {
       if (this.assayList.length === 0) {
         return null
@@ -580,11 +597,13 @@ export default {
     addAssay () {
       this.assayForm = 'New Assay'
       this.assayDialog = true
+      this.alert = false
     },
 
     addVendor () {
       this.vendorForm = 'New Vendor'
       this.vendorDialog = true
+      this.alert = false
     },
 
     editAssay (id) {
@@ -606,7 +625,7 @@ export default {
       this.dialog = true
     },
 
-    async deleteItem (item) {
+    async deactivateItem (item) {
       const index = this.supplies.indexOf(item)
       item.active = false
       await itemService.put(item.id, item, null)
@@ -623,13 +642,15 @@ export default {
       } else if (this.vendorDialog) {
         this.vendorDialog = false
         this.editedVendor = Object.assign({}, this.defaultVendor)
-      } else {
+      } else if (this.dialog && !this.assayDialog && !this.vendorDialog) {
         this.dialog = false
         this.currentItem = {}
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         }, 300)
+      } else {
+        this.openSnack('Dialogues aren\'t closing. Tell the dev how you got here so it can be fixed. ❤️')
       }
     },
 
@@ -665,6 +686,7 @@ export default {
 
       if (!this.alert) {
         this.loading = false
+        this.openSnack('Assay saved')
         this.close()
       }
     },
@@ -701,6 +723,7 @@ export default {
 
       if (!this.alert) {
         this.loading = false
+        this.openSnack('Vendor saved')
         this.close()
       }
     },
@@ -734,10 +757,12 @@ export default {
             // do nothing
           } else {
             Object.assign(focusedItem, response.data)
+            this.snackText = 'Item updated'
           }
         } else {
           // new item
           this.supplies.push((await itemService.post(this.editedItem, assayInfo)).data)
+          this.snackText = 'Item saved'
         }
 
         // add more robust conditions to ensure true orders go through
@@ -781,11 +806,13 @@ export default {
               }
             }
           }
+          this.snackText += ' and ordered'
         }
       }
 
       if (!this.alert) {
         this.loading = false
+        this.openSnack(this.snackText)
         this.close()
       }
     }
@@ -794,6 +821,22 @@ export default {
 </script>
 
 <style scoped>
+  /* .v-table {
+    table-layout: fixed;
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  .v-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .v-card {
+    max-width: 100%;
+  } */
+
   .pointer {
     cursor: pointer;
   }

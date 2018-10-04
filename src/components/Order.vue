@@ -40,11 +40,13 @@
       :headers="headers"
       :items="items"
       :search="search"
+      :pagination.sync="pagination"
+      :rows-per-page-items="[-1]"
       hide-actions
     >
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
-        <td>{{getVendor(props.item)}}</td>
+        <td>{{props.item.vendor}}</td>
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
         <td>
@@ -83,6 +85,10 @@ export default {
   ],
   data () {
     return {
+      pagination: {
+        sortBy: 'vendor',
+        descending: false
+      },
       completedDialog: false,
       loading: false,
       completed: false,
@@ -130,6 +136,7 @@ export default {
         this.items = (await itemService.show(itemIds)).data
         // merge currentStock and comment from entries to items
         this.items.map(index => {
+          this.getVendor(index)
           for (let i = 0; i < this.entries.length; i++) {
             let entry = this.entries[i]
             if (index.id === entry.ItemId) {

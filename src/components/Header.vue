@@ -1,14 +1,14 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-build-1.7f
+      {{title}} v.b-build-1.7g
       <v-dialog
         v-model="dialog"
         scrollable
         width="500"
       >
         <v-btn slot="activator" icon small class="mx-0">
-          <v-icon>info</v-icon>
+          <v-icon>announcement</v-icon>
         </v-btn>
         <v-card>
           <v-card-title class="headline">What's New!</v-card-title>
@@ -51,7 +51,9 @@ export default {
   },
   computed: {
     ...mapState([
-      'pageTitle'
+      'pageTitle',
+      'admin',
+      'user'
     ])
   },
   components: {
