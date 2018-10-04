@@ -2,6 +2,16 @@
   <v-card-text style="height: 300px;">
     <ul>
       <li>
+        2018.10.04 - v.1.7g, Helpful Things
+        <ul>
+          <li>Go to Top button added when you scroll too far down</li>
+          <li>Notifications added when things are saved, updated, or ordered</li>
+          <li>Fixed the issue where pressing Enter to submit forms closes all open dialog boxes</li>
+          <!-- <li>Error messages streamlined</li> -->
+        </ul>
+      </li>
+      <br>
+      <li>
         2018.10.01 - v1.7f, Order Bug Fixes
         <ul>
           <li>Fixed a bug with ordering where a new order form is constantly created</li>
