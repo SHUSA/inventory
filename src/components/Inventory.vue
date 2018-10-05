@@ -420,14 +420,14 @@ export default {
       },
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
-        {text: 'Vendor', value: 'vendor', width: '9%'},
-        {text: 'Assay', value: 'assay', width: '9%'},
-        {text: 'Catalog #', value: 'catalogNumber', width: '9%'},
+        {text: 'Vendor', value: 'vendor'},
+        {text: 'Assay', value: 'assay'},
+        {text: 'Catalog #', value: 'catalogNumber'},
         {text: 'Desc', value: 'itemDescription', width: '10%'},
-        {text: 'Stock', value: 'currentStock', width: '9%'},
-        {text: 'To Order', value: 'reorderQuantity', width: '9%'},
+        {text: 'Stock', value: 'currentStock'},
+        {text: 'To Order', value: 'reorderQuantity'},
         {text: 'Comment', value: 'comment', width: '15%'},
-        {text: 'Last Update', value: 'updatedAt', width: '9%'},
+        {text: 'Last Update', value: 'updatedAt'},
         {text: '', value: 'name', sortable: false, width: '5%'}
       ],
       supplies: [],
@@ -556,7 +556,6 @@ export default {
     },
 
     toOrder (item) {
-      // account for items ordered but not less than reorder point
       return this.checkQuantity(item) ? item.reorderQuantity : 0
     },
 
@@ -650,7 +649,7 @@ export default {
           this.editedIndex = -1
         }, 300)
       } else {
-        this.openSnack('Dialogues aren\'t closing. Tell the dev how you got here so it can be fixed. ❤️')
+        this.openSnack('Dialogues aren\'t closing. Tell the dev how you got here so it can be fixed ❤️')
       }
     },
 
@@ -821,20 +820,24 @@ export default {
 </script>
 
 <style scoped>
-  /* .v-table {
-    table-layout: fixed;
-    width: 100%;
-    white-space: nowrap;
+
+  /* deprecated but kept in case needed to reimplement
+  used to do smart table display
+  add 'fixed' class to v-data-table
+  @media screen and (min-width: 1200px){
+    .fixed >>> .v-table {
+      table-layout: fixed;
+      width: 100%;
+      white-space: nowrap;
+    }
   }
 
-  .v-table td {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .v-card {
-    max-width: 100%;
+  @media screen and (max-width: 800px) {
+    .fixed td {
+    white-space: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   } */
 
   .pointer {
