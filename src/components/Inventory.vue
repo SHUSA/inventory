@@ -606,18 +606,21 @@ export default {
     },
 
     editAssay (id) {
+      this.snackbar = false
       this.assayForm = 'Edit Assay'
       this.editedAssay = Object.assign({}, this.assayList.find(assay => assay.id === id))
       this.assayDialog = true
     },
 
     editVendor (id) {
+      this.snackbar = false
       this.vendorForm = 'Edit Vendor'
       this.editedVendor = Object.assign({}, this.vendorList.find(vendor => vendor.id === id))
       this.vendorDialog = true
     },
 
     editItem (item) {
+      this.snackbar = false
       this.currentItem = item
       this.editedIndex = this.supplies.indexOf(item)
       this.editedItem = Object.assign(this.editedItem, item)
@@ -632,6 +635,7 @@ export default {
       this.dialog = false
       this.deactivationDialog = false
       this.currentItem = {}
+      this.openSnack(`${item.name} deactivated`)
     },
 
     close () {
@@ -648,8 +652,6 @@ export default {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
         }, 300)
-      } else {
-        this.openSnack('Dialogues aren\'t closing. Tell the dev how you got here so it can be fixed ❤️')
       }
     },
 
