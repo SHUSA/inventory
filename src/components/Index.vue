@@ -62,8 +62,13 @@
       <tabs :list="list" :selection="selection" :orders="orders" :assays="assays" :vendors="vendors" :search="search"/>
     </v-flex>
     <v-fab-transition>
-      <v-btn v-scroll="onScroll" v-show="showButton" @click="goToTop" fixed bottom small right fab color="red">
+      <v-btn v-scroll="onScroll" v-show="goUp" @click="goToTop" fixed bottom small right fab color="blue">
         <v-icon color="white">keyboard_arrow_up</v-icon>
+      </v-btn>
+    </v-fab-transition>
+    <v-fab-transition>
+      <v-btn v-scroll="onScroll" v-show="goDown" @click="goToBottom" fixed bottom small right fab color="red">
+        <v-icon color="white">keyboard_arrow_down</v-icon>
       </v-btn>
     </v-fab-transition>
   </v-layout>
@@ -81,7 +86,8 @@ const moment = require('moment')
 export default {
   data () {
     return {
-      showButton: false,
+      goUp: false,
+      goDown: true,
       list: [],
       items: [],
       assays: [],
@@ -136,13 +142,23 @@ export default {
     time (order) {
       return moment(order).format('MMM-DD-YYYY')
     },
+
     onScroll () {
-      this.showButton = document.documentElement.scrollTop > 210
+      this.goUp = document.documentElement.scrollTop > 210
+      this.goDown = document.documentElement.scrollTop <= 210
     },
 
     goToTop () {
       window.scroll({
         top: 0,
+        left: 0,
+        behavior: 'smooth'
+      })
+    },
+
+    goToBottom () {
+      window.scroll({
+        top: document.body.scrollHeight,
         left: 0,
         behavior: 'smooth'
       })
