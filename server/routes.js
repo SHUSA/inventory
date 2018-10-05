@@ -46,5 +46,4 @@ module.exports = (app) => {
   app.get('/entries/:entryId', EntryController.show)
   app.post('/entries', EntryController.post)
   app.put('/entries/:entryId', EntryController.put)
-  app.delete('/entries/:entryId', EntryController.delete)
 }
