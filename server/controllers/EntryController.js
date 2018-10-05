@@ -20,7 +20,7 @@ module.exports = {
 
   async show (req, res) {
     try {
-      let entry = await Entry.findById(req.params.deptId)
+      let entry = await Entry.findById(req.params.entryId)
       res.send(entry)
     } catch (error) {
       console.log(error)
