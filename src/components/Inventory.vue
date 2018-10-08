@@ -236,6 +236,21 @@
       </v-flex>
     </v-snackbar>
 
+    <v-btn
+      href="javascript:void(0)"
+      id="csvbtn"
+      v-if="admin"
+      small
+      right
+      round
+      dark
+      absolute
+      @click="getCSV"
+    >
+      <v-icon small>arrow_downward</v-icon>
+      CSV
+    </v-btn>
+
     <v-data-table
       :headers="headers"
       :items="supplies"
@@ -311,6 +326,7 @@ import vendorService from '@/services/VendorService.js'
 import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
 const moment = require('moment')
+const Json2csvParser = require('json2csv').Parser
 document.getElementsByTagName('input').onwheel = () => false
 // Notes on number input type
 // -unable to block e, -, +
@@ -546,6 +562,17 @@ export default {
   },
 
   methods: {
+    getCSV () {
+      const csvbtn = document.getElementById('csvbtn')
+      const fields = ['vendor', 'catalogNumber', 'assay', 'name', 'currentStock', 'lastUpdate']
+      const json2csv = new Json2csvParser({fields})
+      const csv = json2csv.parse(this.supplies)
+      const blob = new Blob([csv], {type: 'text/csv'})
+
+      csvbtn.href = URL.createObjectURL(blob)
+      csvbtn.download = `${moment().format('YYYY-MM-DD')} Inventory.csv`
+    },
+
     time (item) {
       item.lastUpdate = moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
       return item.lastUpdate
