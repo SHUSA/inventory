@@ -2,7 +2,13 @@
   <v-card-text style="height: 300px;">
     <ul>
       <li>
-        2018.10.05 - v.1.7h, Tiny Improvements
+        2018.10.08 - v1.7i, CSV Export
+        <ul>
+          <li>Full active inventory can be exported as CSV</li>
+        </ul>
+      </li>
+      <li>
+        2018.10.05 - v1.7h, Tiny Improvements
         <ul>
           <li>Added Go to Bottom button to easier access table scrollbar</li>
           <li>Fixed a bug with notifications displaying at the wrong time and closes them when a new form is opened</li>
@@ -10,7 +16,7 @@
       </li>
       <br>
       <li>
-        2018.10.04 - v.1.7g, Helpful Things
+        2018.10.04 - v1.7g, Helpful Things
         <ul>
           <li>Go to Top button added when you scroll too far down</li>
           <li>Notifications added when things are saved, updated, or ordered</li>
