@@ -114,7 +114,22 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
       <v-spacer/>
+
+      <v-btn
+        href="javascript:void(0)"
+        id="csvbtn"
+        v-if="admin"
+        small
+        right
+        round
+        dark
+        @click="getCSV"
+      >
+        <v-icon small>arrow_downward</v-icon>
+        CSV
+      </v-btn>
       <v-text-field
         v-model="search"
         append-icon="search"
@@ -235,21 +250,6 @@
         {{snackText}}
       </v-flex>
     </v-snackbar>
-
-    <v-btn
-      href="javascript:void(0)"
-      id="csvbtn"
-      v-if="admin"
-      small
-      right
-      round
-      dark
-      absolute
-      @click="getCSV"
-    >
-      <v-icon small>arrow_downward</v-icon>
-      CSV
-    </v-btn>
 
     <v-data-table
       :headers="headers"
@@ -559,6 +559,12 @@ export default {
     }
     this.$store.dispatch('setTitle', 'Inventory')
     this.$store.dispatch('setDrawer', false)
+
+    // go to top
+    window.scroll({
+      top: 0,
+      left: 0
+    })
   },
 
   methods: {
@@ -608,8 +614,8 @@ export default {
       if (this.assayList.length === 0) {
         return null
       }
-      item.assay = this.assayList.find(assay => assay.id === item.AssayId).name
-      return item.assay
+      item.assay = this.assayList.find(assay => assay.id === item.AssayId)
+      return item.assay.name
     },
 
     getVendor (item) {
@@ -657,7 +663,7 @@ export default {
     async deactivateItem (item) {
       const index = this.supplies.indexOf(item)
       item.active = false
-      await itemService.put(item.id, item, null)
+      await itemService.put(item.id, item)
       this.supplies.splice(index, 1)
       this.dialog = false
       this.deactivationDialog = false
@@ -703,6 +709,26 @@ export default {
             assayInfo = this.assayList.find(assay => assay.id === edited.id)
             this.editedItem.AssayId = assayInfo.id
             Object.assign(assayInfo, response.data)
+            // update all items with edited assay
+            let itemList = []
+            this.supplies.map(item => {
+              if (item.AssayId === assayInfo.id) {
+                itemList.push(item)
+              }
+            })
+            let recalcOrder = await itemService.put(null, null, null, itemList)
+
+            if (this.checkErrorMessage(recalcOrder)) {
+              // do nothing
+            } else {
+              let index = 0
+              // reassign new values to supplies
+              recalcOrder.data.map(item => {
+                index = this.supplies.findIndex(x => x.id === item.id)
+                this.supplies.splice(index, 1)
+                this.supplies.push(item)
+              })
+            }
           }
         } else {
           // new assay
