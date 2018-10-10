@@ -1,12 +1,35 @@
 <template>
   <v-card>
     <v-card-title>
+      <v-speed-dial v-if="admin" v-model="fab" top direction="right">
+        <v-btn color="blue darken-2" dark class="mb-0" slot="activator" v-model="fab" small fab>
+          <v-icon>menu</v-icon>
+          <v-icon>close</v-icon>
+        </v-btn>
+        <v-btn
+          small
+          dark
+          @click="dialog = !dialog"
+        >
+          Add Item
+        </v-btn>
+        <v-btn
+          href="javascript:void(0)"
+          id="csvbtn"
+          small
+          dark
+          @click="getCSV"
+        >
+          <v-icon small>arrow_downward</v-icon>
+          CSV
+        </v-btn>
+      </v-speed-dial>
       <v-dialog
         v-model="dialog"
         max-width="500px"
         @keydown.enter="save(false)"
       >
-        <v-btn v-if="admin" slot="activator" color="primary" class="mb-0" dark>New Item</v-btn>
+        <!-- <v-btn v-if="admin" slot="activator" color="primary" class="mb-0" dark>New Item</v-btn> -->
         <v-card>
           <v-card-title>
             <span class="headline">{{formTitle}}</span>
@@ -117,19 +140,6 @@
 
       <v-spacer/>
 
-      <v-btn
-        href="javascript:void(0)"
-        id="csvbtn"
-        v-if="admin"
-        small
-        right
-        round
-        dark
-        @click="getCSV"
-      >
-        <v-icon small>arrow_downward</v-icon>
-        CSV
-      </v-btn>
       <v-text-field
         v-model="search"
         append-icon="search"
@@ -346,6 +356,7 @@ export default {
   data () {
     return {
       currentItem: {},
+      fab: false,
       dialog: false,
       assayDialog: false,
       vendorDialog: false,
