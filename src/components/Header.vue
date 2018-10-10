@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-build-1.7i
+      {{title}} v.b-1.7.10
       <v-dialog
         v-model="dialog"
         scrollable
