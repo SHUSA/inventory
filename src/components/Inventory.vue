@@ -570,7 +570,7 @@ export default {
   methods: {
     getCSV () {
       const csvbtn = document.getElementById('csvbtn')
-      const fields = ['vendor', 'catalogNumber', 'assay', 'name', 'currentStock', 'lastUpdate']
+      const fields = ['vendor', 'catalogNumber', 'assay.name', 'name', 'currentStock', 'lastUpdate']
       const json2csv = new Json2csvParser({fields})
       const csv = json2csv.parse(this.supplies)
       const blob = new Blob([csv], {type: 'text/csv'})
