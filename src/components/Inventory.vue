@@ -265,6 +265,7 @@
       :headers="headers"
       :items="supplies"
       :search="search"
+      hide-actions
     >
       <!-- item name -->
       <template slot="items" slot-scope="props">
