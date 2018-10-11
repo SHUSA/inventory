@@ -2,9 +2,10 @@
   <v-card-text style="height: 300px;">
     <ul>
       <li>
-        2018.10.11 - v1.7.11, Form Validation
+        2018.10.11 - v1.7.11, Validation and Errors
         <ul>
           <li>Updated form validation for items</li>
+          <li>Updated error message displays</li>
         </ul>
       </li>
       <li>
