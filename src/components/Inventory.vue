@@ -94,10 +94,10 @@
                     <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.wholeNumber]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.reorderPoint" validate-on-blur :rules="[rules.number]" ref="reorderPoint" label="Reorder Point"/>
+                    <v-text-field v-model="editedItem.reorderPoint" validate-on-blur :rules="[rules.number]" ref="reorderPoint" type="number" min=0 label="Reorder Point"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.reorderQuantity" validate-on-blur :rules="[rules.wholeNumber]" ref="reorderQuantity" label="Reorder Quantity"/>
+                    <v-text-field v-model="editedItem.reorderQuantity" validate-on-blur :rules="[rules.wholeNumber]" ref="reorderQuantity" type="number" min=0 label="Reorder Quantity"/>
                   </v-flex>
                 </template>
                 <template v-if="user">
@@ -338,7 +338,6 @@ import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
 const moment = require('moment')
 const Json2csvParser = require('json2csv').Parser
-document.getElementsByTagName('input').onwheel = () => false
 // Notes on number input type
 // -unable to block e, -, +
 // -unable to prevent mouse scroll
@@ -620,7 +619,7 @@ export default {
         // stop process and display error message
         this.loading = false
         this.alert = true
-        this.alertMessage = resp.data[0].message
+        this.alertMessage = Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
         return true
       } else {
         // no errors received
@@ -807,7 +806,7 @@ export default {
 
     async save (order) {
       const num = this.errors.num.length
-      this.alertMessage = 'Minimum information needed: Item Name, Assay, Vendor, Catalog Number'
+      this.alertMessage = 'Please fix errors'
 
       if (this.errors.item || num || this.errors.catalog) {
         this.alert = true
