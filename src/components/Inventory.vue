@@ -302,6 +302,7 @@
             {{props.item.currentStock}}
           </v-badge>
         </td>
+        <!-- inline edit for current stock -->
         <!-- reorder quantity -->
         <td>{{toOrder(props.item)}}</td>
         <!-- comment -->
@@ -448,7 +449,7 @@ export default {
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
         {text: 'Vendor', value: 'vendor'},
-        {text: 'Assay', value: 'assay'},
+        {text: 'Assay', value: 'assay.name'},
         {text: 'Catalog #', value: 'catalogNumber'},
         {text: 'Desc', value: 'itemDescription', width: '10%'},
         {text: 'Stock', value: 'currentStock'},
@@ -546,6 +547,7 @@ export default {
       }
     },
 
+    // messes up autocomplete on this file for some reason
     items () {
       this.supplies = this.items
       this.vendorList = this.vendors
@@ -564,6 +566,10 @@ export default {
     this.vendorList = (await vendorService.index(true)).data
     this.assayList = (await assayService.index(true)).data
     this.orderList = (await orderService.index()).data
+
+    console.log('inventory mount')
+    console.log(this.assayList)
+    console.log(this.vendorList)
 
     if (this.orderList.length === 0) {
       this.orderList = [{name: 'No orders to list', new: true}]

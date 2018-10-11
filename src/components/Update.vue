@@ -16,6 +16,7 @@
           <li>Full active inventory can be exported as CSV</li>
         </ul>
       </li>
+      <br>
       <li>
         2018.10.05 - v1.7h, Tiny Improvements
         <ul>
