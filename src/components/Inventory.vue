@@ -265,7 +265,6 @@
       :headers="headers"
       :items="supplies"
       :search="search"
-      hide-actions
     >
       <!-- item name -->
       <template slot="items" slot-scope="props">
@@ -566,10 +565,6 @@ export default {
     this.vendorList = (await vendorService.index(true)).data
     this.assayList = (await assayService.index(true)).data
     this.orderList = (await orderService.index()).data
-
-    console.log('inventory mount')
-    console.log(this.assayList)
-    console.log(this.vendorList)
 
     if (this.orderList.length === 0) {
       this.orderList = [{name: 'No orders to list', new: true}]
