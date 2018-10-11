@@ -2,7 +2,13 @@
   <v-card-text style="height: 300px;">
     <ul>
       <li>
-        2018.10.10 - v1.7.10 Updating Reorder Values
+        2018.10.11 - v1.7.11, Form Validation
+        <ul>
+          <li>Updated form validation for items</li>
+        </ul>
+      </li>
+      <li>
+        2018.10.10 - v1.7.10, Updating Reorder Values
         <ul>
           <li>Reorder quantities and points now update when Assay information changes, before only took effect when the item itself was updated</li>
           <li>Changed to numerical version numbers instead of letters</li>
