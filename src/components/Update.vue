@@ -2,6 +2,12 @@
   <v-card-text style="height: 300px;">
     <ul>
       <li>
+        2018.10.12 - v.1.7.12, Login
+        <ul>
+          <li>Header now shows who is logged in</li>
+        </ul>
+      </li>
+      <li>
         2018.10.11 - v1.7.11, Validation and Errors
         <ul>
           <li>Updated form validation for items</li>

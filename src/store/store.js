@@ -15,6 +15,7 @@ export default new Vuex.Store({
       user: true,
       admin: true
     },
+    welcome: '',
     pageTitle: '',
     drawer: true,
     token: null,
@@ -29,6 +30,7 @@ export default new Vuex.Store({
       for (let key in state.users) {
         if (key === type) {
           // always true for testing
+          state.welcome = `Hello ${type}!`
           state[key] = true
         } else {
           // set to true for testing
