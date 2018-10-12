@@ -22,8 +22,8 @@ module.exports = {
         'NODE_ENV': "'development'",
         SRL_INVENTORY_HOST: '10.212.148.45',
         SRL_INVENTORY_DB_PORT: 5432,
-        PORT: 4040,
-        SERVER_PORT: 4041,
+        PORT: 4041,
+        SERVER_PORT: 4040,
         HOST: "10.212.148.42",
         NEWDB: "'false'"
       },
