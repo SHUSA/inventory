@@ -24,6 +24,7 @@ app.get('*', function (req, res) {
 })
 
 // checking files
+console.log('check file')
 fs.stat('./', (err, stats) => {
   console.log(stats)
 
@@ -35,6 +36,7 @@ fs.stat('./', (err, stats) => {
 let port = config.port
 let host = config.host
 
+console.log('attempting to listen')
 if (process.env.NEWDB === 'true') {
   sequelize.sync({ force: true }).then(() => {
     app.listen(port, host)
