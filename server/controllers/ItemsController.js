@@ -75,39 +75,22 @@ module.exports = {
   },
 
   async put (req, res) {
-    const list = req.body.params.list
     let item = req.body.params.item
     const assay = req.body.params.assay
-    const singleItem = list.length === 0
 
     // calculate reorder point as long as item is active
-    // removed active condition, all items are active if passed through here
     // old condition: if (!item.order && !item.user && item.active)
-    if (singleItem) {
+    if (item.active) {
       item = calculateStockLevels(item, assay)
-    } else {
-      list.map(item => {
-        item = calculateStockLevels(item, item.assay)
-      })
     }
 
     try {
-      if (singleItem) {
-        await Item.update(item, {
-          where: {
-            id: item.id
-          }
-        })
-      } else {
-        await list.map(item => {
-          Item.update(item, {
-            where: {
-              id: item.id
-            }
-          })
-        })
-      }
-      res.send(item || list)
+      await Item.update(item, {
+        where: {
+          id: item.id
+        }
+      })
+      res.send(item)
     } catch (error) {
       console.log(error)
       res.status(500).send(error.errors)

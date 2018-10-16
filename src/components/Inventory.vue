@@ -1,35 +1,12 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-speed-dial v-if="admin" v-model="fab" top direction="right">
-        <v-btn color="blue darken-2" dark class="mb-0" slot="activator" v-model="fab" small fab>
-          <v-icon>menu</v-icon>
-          <v-icon>close</v-icon>
-        </v-btn>
-        <v-btn
-          small
-          dark
-          @click="dialog = !dialog"
-        >
-          Add Item
-        </v-btn>
-        <v-btn
-          href="javascript:void(0)"
-          id="csvbtn"
-          small
-          dark
-          @click="getCSV"
-        >
-          <v-icon small>arrow_downward</v-icon>
-          CSV
-        </v-btn>
-      </v-speed-dial>
       <v-dialog
         v-model="dialog"
         max-width="500px"
         @keydown.enter="save(false)"
       >
-        <!-- <v-btn v-if="admin" slot="activator" color="primary" class="mb-0" dark>New Item</v-btn> -->
+        <v-btn v-if="admin" slot="activator" color="primary" class="mb-0" dark>New Item</v-btn>
         <v-card>
           <v-card-title>
             <span class="headline">{{formTitle}}</span>
@@ -137,9 +114,7 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-
       <v-spacer/>
-
       <v-text-field
         v-model="search"
         append-icon="search"
@@ -261,10 +236,26 @@
       </v-flex>
     </v-snackbar>
 
+    <v-btn
+      href="javascript:void(0)"
+      id="csvbtn"
+      v-if="admin"
+      small
+      right
+      round
+      dark
+      absolute
+      @click="getCSV"
+    >
+      <v-icon small>arrow_downward</v-icon>
+      CSV
+    </v-btn>
+
     <v-data-table
       :headers="headers"
       :items="supplies"
       :search="search"
+      hide-actions
     >
       <!-- item name -->
       <template slot="items" slot-scope="props">
@@ -301,7 +292,6 @@
             {{props.item.currentStock}}
           </v-badge>
         </td>
-        <!-- inline edit for current stock -->
         <!-- reorder quantity -->
         <td>{{toOrder(props.item)}}</td>
         <!-- comment -->
@@ -356,7 +346,6 @@ export default {
   data () {
     return {
       currentItem: {},
-      fab: false,
       dialog: false,
       assayDialog: false,
       vendorDialog: false,
@@ -448,7 +437,7 @@ export default {
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
         {text: 'Vendor', value: 'vendor'},
-        {text: 'Assay', value: 'assay.name'},
+        {text: 'Assay', value: 'assay'},
         {text: 'Catalog #', value: 'catalogNumber'},
         {text: 'Desc', value: 'itemDescription', width: '10%'},
         {text: 'Stock', value: 'currentStock'},
@@ -546,7 +535,6 @@ export default {
       }
     },
 
-    // messes up autocomplete on this file for some reason
     items () {
       this.supplies = this.items
       this.vendorList = this.vendors
@@ -571,18 +559,12 @@ export default {
     }
     this.$store.dispatch('setTitle', 'Inventory')
     this.$store.dispatch('setDrawer', false)
-
-    // go to top
-    window.scroll({
-      top: 0,
-      left: 0
-    })
   },
 
   methods: {
     getCSV () {
       const csvbtn = document.getElementById('csvbtn')
-      const fields = ['vendor', 'catalogNumber', 'assay.name', 'name', 'currentStock', 'lastUpdate']
+      const fields = ['vendor', 'catalogNumber', 'assay', 'name', 'currentStock', 'lastUpdate']
       const json2csv = new Json2csvParser({fields})
       const csv = json2csv.parse(this.supplies)
       const blob = new Blob([csv], {type: 'text/csv'})
@@ -626,8 +608,8 @@ export default {
       if (this.assayList.length === 0) {
         return null
       }
-      item.assay = this.assayList.find(assay => assay.id === item.AssayId)
-      return item.assay.name
+      item.assay = this.assayList.find(assay => assay.id === item.AssayId).name
+      return item.assay
     },
 
     getVendor (item) {
@@ -675,7 +657,7 @@ export default {
     async deactivateItem (item) {
       const index = this.supplies.indexOf(item)
       item.active = false
-      await itemService.put(item.id, item)
+      await itemService.put(item.id, item, null)
       this.supplies.splice(index, 1)
       this.dialog = false
       this.deactivationDialog = false
@@ -721,26 +703,6 @@ export default {
             assayInfo = this.assayList.find(assay => assay.id === edited.id)
             this.editedItem.AssayId = assayInfo.id
             Object.assign(assayInfo, response.data)
-            // update all items with edited assay
-            let itemList = []
-            this.supplies.map(item => {
-              if (item.AssayId === assayInfo.id) {
-                itemList.push(item)
-              }
-            })
-            let recalcOrder = await itemService.put(null, null, null, itemList)
-
-            if (this.checkErrorMessage(recalcOrder)) {
-              // do nothing
-            } else {
-              let index = 0
-              // reassign new values to supplies
-              recalcOrder.data.map(item => {
-                index = this.supplies.findIndex(x => x.id === item.id)
-                this.supplies.splice(index, 1)
-                this.supplies.push(item)
-              })
-            }
           }
         } else {
           // new assay
