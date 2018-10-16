@@ -22,14 +22,6 @@ app.get('*', function (req, res) {
     res.sendFile(__dirname + '/dist/index.html')
 })
 
-console.log('reading files')
-const fs = require('fs')
-fs.readdir('./var/www/srl_inventory/source', (err, files) => {
-  files.forEach(file => {
-    console.log(file)
-  })
-})
-
 let port = config.port
 let host = config.host
 
