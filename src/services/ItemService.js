@@ -32,13 +32,11 @@ export default {
     )
   },
 
-  put (itemId, item, assay = null, list = []) {
-    // use list for multiple item updates
+  put (itemId, item, assay) {
     return API().put(`items/${itemId}`, {
       params: {
         item: item,
-        assay: assay,
-        list: list
+        assay: assay
       }
     }).catch(err =>
       JSON.parse(JSON.stringify(err)).response

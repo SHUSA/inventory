@@ -5,7 +5,7 @@
       <v-chip v-if="checkQuantity" color="red lighten-3" small>QTY: {{itemInfo.currentStock}}</v-chip>
       <v-chip v-else color="blue lighten-3" small>QTY: {{itemInfo.currentStock}}</v-chip>
     </v-card-title>
-    <v-subheader>{{itemInfo.assay.name}} - {{itemInfo.vendor}} - Catalog #{{itemInfo.catalogNumber}}</v-subheader>
+    <v-subheader>{{itemInfo.assay}} - {{itemInfo.vendor}} - Catalog #{{itemInfo.catalogNumber}}</v-subheader>
     <v-card-text>
       <v-container fill-height grid-list-md>
         <v-card flat color="transparent" class="box">
