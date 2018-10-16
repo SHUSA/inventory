@@ -2,11 +2,36 @@
   <v-card-text style="height: 300px;">
     <ul>
       <li>
+        2018.10.12 - v.1.7.12, Login
+        <ul>
+          <li>Header now shows who is logged in</li>
+        </ul>
+      </li>
+      <br>
+      <li>
+        2018.10.11 - v1.7.11, Validation and Errors
+        <ul>
+          <li>Updated form validation for items</li>
+          <li>Updated error message displays</li>
+        </ul>
+      </li>
+      <br>
+      <li>
+        2018.10.10 - v1.7.10, Updating Reorder Values
+        <ul>
+          <li>Reorder quantities and points now update when Assay information changes, before only took effect when the item itself was updated</li>
+          <li>Changed to numerical version numbers instead of letters</li>
+          <li>Consolidated New Item and CSV download to one button</li>
+        </ul>
+      </li>
+      <br>
+      <li>
         2018.10.08 - v1.7i, CSV Export
         <ul>
           <li>Full active inventory can be exported as CSV</li>
         </ul>
       </li>
+      <br>
       <li>
         2018.10.05 - v1.7h, Tiny Improvements
         <ul>

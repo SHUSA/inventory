@@ -5,7 +5,7 @@
       <v-chip v-if="checkQuantity" color="red lighten-3" small>QTY: {{itemInfo.currentStock}}</v-chip>
       <v-chip v-else color="blue lighten-3" small>QTY: {{itemInfo.currentStock}}</v-chip>
     </v-card-title>
-    <v-subheader>{{itemInfo.assay}} - {{itemInfo.vendor}} - Catalog #{{itemInfo.catalogNumber}}</v-subheader>
+    <v-subheader>{{itemInfo.assay.name}} - {{itemInfo.vendor}} - Catalog #{{itemInfo.catalogNumber}}</v-subheader>
     <v-card-text>
       <v-container fill-height grid-list-md>
         <v-card flat color="transparent" class="box">
@@ -49,6 +49,13 @@
           </v-flex>
           <v-flex class="dashed-border pa-2 text-xs-right" xs3>
             {{itemInfo.weeksOfReorder}}
+          </v-flex>
+
+          <v-flex xs3 fill-height justify-center>
+            <v-chip label color="light-blue lighten-1" class="label" small>Reorder Point</v-chip>
+          </v-flex>
+          <v-flex class="dashed-border pa-2 text-xs-right" xs3>
+            {{itemInfo.reorderPoint}}
           </v-flex>
 
           <v-flex xs3 fill-height justify-center>

@@ -1,12 +1,35 @@
 <template>
   <v-card>
     <v-card-title>
+      <v-speed-dial v-if="admin" v-model="fab" top direction="right">
+        <v-btn color="blue darken-2" dark class="mb-0" slot="activator" v-model="fab" small fab>
+          <v-icon>menu</v-icon>
+          <v-icon>close</v-icon>
+        </v-btn>
+        <v-btn
+          small
+          dark
+          @click="dialog = !dialog"
+        >
+          Add Item
+        </v-btn>
+        <v-btn
+          href="javascript:void(0)"
+          id="csvbtn"
+          small
+          dark
+          @click="getCSV"
+        >
+          <v-icon small>arrow_downward</v-icon>
+          CSV
+        </v-btn>
+      </v-speed-dial>
       <v-dialog
         v-model="dialog"
         max-width="500px"
         @keydown.enter="save(false)"
       >
-        <v-btn v-if="admin" slot="activator" color="primary" class="mb-0" dark>New Item</v-btn>
+        <!-- <v-btn v-if="admin" slot="activator" color="primary" class="mb-0" dark>New Item</v-btn> -->
         <v-card>
           <v-card-title>
             <span class="headline">{{formTitle}}</span>
@@ -62,19 +85,19 @@
                     <v-text-field disabled v-model="editedItem.safetyStock" label="Safety Stock"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
+                    <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.wholeNumber]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)"/>
+                    <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.wholeNumber]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
+                    <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.wholeNumber]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.reorderPoint" ref="reorderPoint" label="Reorder Point"/>
+                    <v-text-field v-model="editedItem.reorderPoint" validate-on-blur :rules="[rules.number]" ref="reorderPoint" type="number" min=0 label="Reorder Point"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.reorderQuantity" ref="reorderQuantity" label="Reorder Quantity"/>
+                    <v-text-field v-model="editedItem.reorderQuantity" validate-on-blur :rules="[rules.wholeNumber]" ref="reorderQuantity" type="number" min=0 label="Reorder Quantity"/>
                   </v-flex>
                 </template>
                 <template v-if="user">
@@ -114,7 +137,9 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
       <v-spacer/>
+
       <v-text-field
         v-model="search"
         append-icon="search"
@@ -140,19 +165,19 @@
                   <v-text-field v-model="editedAssay.name" :rules="[rules.assay]" label="Name" required/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.weeklyVolume" ref="weeklyVolume" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Weekly Volume"/>
+                  <v-text-field v-model="editedAssay.weeklyVolume" ref="weeklyVolume" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Weekly Volume"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.weeklyRuns" ref="weeklyRuns" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Runs per Week"/>
+                  <v-text-field v-model="editedAssay.weeklyRuns" ref="weeklyRuns" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Runs per Week"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.controlsPerRun" ref="controlsPerRun" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Controls per Run"/>
+                  <v-text-field v-model="editedAssay.controlsPerRun" ref="controlsPerRun" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Controls per Run"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.maxBatchSize" ref="maxBatchSize" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Max Batch Size"/>
+                  <v-text-field v-model="editedAssay.maxBatchSize" ref="maxBatchSize" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Max Batch Size"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.sampleReplicates" ref="sampleReplicates" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Sample Replicates"/>
+                  <v-text-field v-model="editedAssay.sampleReplicates" ref="sampleReplicates" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Sample Replicates"/>
                 </v-flex>
                 <v-flex xs12>
                   <v-alert
@@ -236,21 +261,6 @@
       </v-flex>
     </v-snackbar>
 
-    <v-btn
-      href="javascript:void(0)"
-      id="csvbtn"
-      v-if="admin"
-      small
-      right
-      round
-      dark
-      absolute
-      @click="getCSV"
-    >
-      <v-icon small>arrow_downward</v-icon>
-      CSV
-    </v-btn>
-
     <v-data-table
       :headers="headers"
       :items="supplies"
@@ -292,6 +302,7 @@
             {{props.item.currentStock}}
           </v-badge>
         </td>
+        <!-- inline edit for current stock -->
         <!-- reorder quantity -->
         <td>{{toOrder(props.item)}}</td>
         <!-- comment -->
@@ -327,7 +338,6 @@ import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
 const moment = require('moment')
 const Json2csvParser = require('json2csv').Parser
-document.getElementsByTagName('input').onwheel = () => false
 // Notes on number input type
 // -unable to block e, -, +
 // -unable to prevent mouse scroll
@@ -346,6 +356,7 @@ export default {
   data () {
     return {
       currentItem: {},
+      fab: false,
       dialog: false,
       assayDialog: false,
       vendorDialog: false,
@@ -376,6 +387,16 @@ export default {
           } else {
             this.errors.num.push('')
             return 'Please enter a valid number'
+          }
+        },
+        wholeNumber: (val) => {
+          const num = parseFloat(val)
+          if (!isNaN(num) && num >= 0 && Number.isInteger(num)) {
+            this.errors.num.pop()
+            return true
+          } else {
+            this.errors.num.push('')
+            return 'Please enter an integer'
           }
         },
         text: (v) => {
@@ -437,7 +458,7 @@ export default {
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
         {text: 'Vendor', value: 'vendor'},
-        {text: 'Assay', value: 'assay'},
+        {text: 'Assay', value: 'assay.name'},
         {text: 'Catalog #', value: 'catalogNumber'},
         {text: 'Desc', value: 'itemDescription', width: '10%'},
         {text: 'Stock', value: 'currentStock'},
@@ -514,7 +535,8 @@ export default {
     ...mapState([
       'pageTitle',
       'admin',
-      'user'
+      'user',
+      'selectedAssays'
     ])
   },
 
@@ -535,11 +557,12 @@ export default {
       }
     },
 
+    // messes up autocomplete on this file for some reason
     items () {
       this.supplies = this.items
       this.vendorList = this.vendors
       this.assayList = this.assays
-      this.orderList = this.orders
+      // this.orderList = this.orders
     },
 
     orderList () {
@@ -559,12 +582,18 @@ export default {
     }
     this.$store.dispatch('setTitle', 'Inventory')
     this.$store.dispatch('setDrawer', false)
+
+    // go to top
+    window.scroll({
+      top: 0,
+      left: 0
+    })
   },
 
   methods: {
     getCSV () {
       const csvbtn = document.getElementById('csvbtn')
-      const fields = ['vendor', 'catalogNumber', 'assay', 'name', 'currentStock', 'lastUpdate']
+      const fields = ['vendor', 'catalogNumber', 'assay.name', 'name', 'currentStock', 'lastUpdate']
       const json2csv = new Json2csvParser({fields})
       const csv = json2csv.parse(this.supplies)
       const blob = new Blob([csv], {type: 'text/csv'})
@@ -591,7 +620,7 @@ export default {
         // stop process and display error message
         this.loading = false
         this.alert = true
-        this.alertMessage = resp.data[0].message
+        this.alertMessage = Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
         return true
       } else {
         // no errors received
@@ -608,8 +637,8 @@ export default {
       if (this.assayList.length === 0) {
         return null
       }
-      item.assay = this.assayList.find(assay => assay.id === item.AssayId).name
-      return item.assay
+      item.assay = this.assayList.find(assay => assay.id === item.AssayId)
+      return item.assay.name
     },
 
     getVendor (item) {
@@ -657,7 +686,7 @@ export default {
     async deactivateItem (item) {
       const index = this.supplies.indexOf(item)
       item.active = false
-      await itemService.put(item.id, item, null)
+      await itemService.put(item.id, item)
       this.supplies.splice(index, 1)
       this.dialog = false
       this.deactivationDialog = false
@@ -703,6 +732,26 @@ export default {
             assayInfo = this.assayList.find(assay => assay.id === edited.id)
             this.editedItem.AssayId = assayInfo.id
             Object.assign(assayInfo, response.data)
+            // update all items with edited assay
+            let itemList = []
+            this.supplies.map(item => {
+              if (item.AssayId === assayInfo.id) {
+                itemList.push(item)
+              }
+            })
+            let recalcOrder = await itemService.put(null, null, null, itemList)
+
+            if (this.checkErrorMessage(recalcOrder)) {
+              // do nothing
+            } else {
+              let index = 0
+              // reassign new values to supplies
+              recalcOrder.data.map(item => {
+                index = this.supplies.findIndex(x => x.id === item.id)
+                this.supplies.splice(index, 1)
+                this.supplies.push(item)
+              })
+            }
           }
         } else {
           // new assay
@@ -758,7 +807,7 @@ export default {
 
     async save (order) {
       const num = this.errors.num.length
-      this.alertMessage = 'Minimum information needed: Item Name, Assay, Vendor, Catalog Number'
+      this.alertMessage = 'Please fix errors'
 
       if (this.errors.item || num || this.errors.catalog) {
         this.alert = true

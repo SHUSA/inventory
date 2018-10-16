@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-build-1.7i
+      {{title}} v.b-1.7.12
       <v-dialog
         v-model="dialog"
         scrollable
@@ -26,10 +26,11 @@
     </v-toolbar-items>
     <v-spacer/>
     <v-toolbar-items>
+      <v-btn flat disabled>{{welcome}}</v-btn>
       <v-btn flat @click="login">
         Login
       </v-btn>
-      <v-btn flat>
+      <v-btn flat disabled>
         {{time}}
       </v-btn>
     </v-toolbar-items>
@@ -53,7 +54,8 @@ export default {
     ...mapState([
       'pageTitle',
       'admin',
-      'user'
+      'user',
+      'welcome'
     ])
   },
   components: {
@@ -75,5 +77,8 @@ export default {
 </script>
 
 <style scoped>
+  .v-toolbar__items >>> .v-btn--disabled {
+    color: white!important;
+  }
 
 </style>
