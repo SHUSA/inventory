@@ -24,6 +24,7 @@ app.get('*', function (req, res) {
 
 // let port = config.port
 let host = config.host
+let server = http.createServer(app)
 
 if (process.env.NEWDB === 'true') {
   sequelize.sync({ force: true }).then(() => {
