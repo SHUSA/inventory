@@ -22,18 +22,18 @@ app.get('*', function (req, res) {
     res.sendFile(__dirname + '/dist/index.html')
 })
 
-let port = config.port
+// let port = config.port
 let host = config.host
 
 if (process.env.NEWDB === 'true') {
   sequelize.sync({ force: true }).then(() => {
-    app.listen(port, host)
+    app.listen(0, host)
     if (process.env.NEWDB) console.log('Tables have been formatted')
-    console.log(`Server started on port ${port}`)
+    console.log(`Server started on port ${server.address().port}`)
   })  
 }else{
-  app.listen(port, host, () => {
-    console.log(`Server started on port ${port}`)
+  app.listen(0, host, () => {
+    console.log(`Server started on port ${server.address().port}`)
   })
 }
 
