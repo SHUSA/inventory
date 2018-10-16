@@ -6,7 +6,6 @@ const cors = require('cors')
 const morgan = require('morgan')
 const { sequelize } = require('./server/models')
 const config = require('./server/config/config')
-const fs = require('fs')
 // create the express app
 const app = express()
 app.use(morgan('combined'))
@@ -23,20 +22,9 @@ app.get('*', function (req, res) {
     res.sendFile(__dirname + '/dist/index.html')
 })
 
-// checking files
-console.log('check file')
-fs.stat('./', (err, stats) => {
-  console.log(stats)
-
-  if (err) {
-    return console.error(err)
-  }
-})
-
 let port = config.port
 let host = config.host
 
-console.log('attempting to listen')
 if (process.env.NEWDB === 'true') {
   sequelize.sync({ force: true }).then(() => {
     app.listen(port, host)
