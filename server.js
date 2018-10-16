@@ -24,6 +24,7 @@ app.get('*', function (req, res) {
 
 // let port = config.port
 let host = config.host
+let http = require('http')
 let server = http.createServer(app)
 
 if (process.env.NEWDB === 'true') {
