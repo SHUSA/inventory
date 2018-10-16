@@ -24,7 +24,7 @@ app.get('*', function (req, res) {
 
 console.log('reading files')
 const fs = require('fs')
-fs.readdir('./', (err, files) => {
+fs.readdir('./var/www/srl_inventory/source', (err, files) => {
   files.forEach(file => {
     console.log(file)
   })
