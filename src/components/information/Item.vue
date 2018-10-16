@@ -52,13 +52,6 @@
           </v-flex>
 
           <v-flex xs3 fill-height justify-center>
-            <v-chip label color="light-blue lighten-1" class="label" small>Reorder Point</v-chip>
-          </v-flex>
-          <v-flex class="dashed-border pa-2 text-xs-right" xs3>
-            {{itemInfo.reorderPoint}}
-          </v-flex>
-
-          <v-flex xs3 fill-height justify-center>
             <v-chip label color="light-blue lighten-1" class="label" small>Reorder Quantity</v-chip>
           </v-flex>
           <v-flex class="dashed-border pa-2 text-xs-right" xs3>

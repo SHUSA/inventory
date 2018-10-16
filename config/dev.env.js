@@ -4,7 +4,6 @@ const prodEnv = require('./prod.env')
 
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
-  PORT: JSON.stringify(process.env.PORT),
-  SERVER_PORT: JSON.stringify(process.env.SERVER_PORT),
+  PORT: JSON.stringify(process.env.SERVER_PORT),
   HOST: JSON.stringify(process.env.HOST),
 })
