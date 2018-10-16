@@ -15,17 +15,17 @@ app.use(cors())
 require('./server/routes')(app)
 
 // create middleware to handle the serving the app
-app.use("/", serveStatic(path.join(__dirname, '/dist')))
+// for use with heroku
+// app.use("/", serveStatic(path.join(__dirname, '/dist')))
 
 // Catch all routes and redirect to the index file
-app.get('*', function (req, res) {
-    res.sendFile(__dirname + '/dist/index.html')
-})
+// for use with heroku
+// app.get('*', function (req, res) {
+//     res.sendFile(__dirname + '/dist/index.html')
+// })
 
 let port = config.port
 let host = config.host
-// let http = require('http')
-// let server = http.createServer(app)
 
 if (process.env.NEWDB === 'true') {
   sequelize.sync({ force: true }).then(() => {
@@ -33,7 +33,7 @@ if (process.env.NEWDB === 'true') {
     if (process.env.NEWDB) console.log('Tables have been formatted')
     console.log(`Server started on port ${port}`)
   })  
-}else{
+} else {
   app.listen(port, host, () => {
     console.log(`Server started on port ${port}`)
   })
