@@ -32,7 +32,7 @@
     "sequelize-cli": "^4.1.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
-    "vuetify": "^1.2.6",
+    "vuetify": "^1.2.8",
     "vuex": "^3.0.1",
     "vuex-persistedstate": "^2.5.2",
     "vuex-router-sync": "^5.0.0"

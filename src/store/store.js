@@ -15,6 +15,7 @@ export default new Vuex.Store({
       user: true,
       admin: true
     },
+    welcome: '',
     pageTitle: '',
     drawer: true,
     token: null,
@@ -22,13 +23,15 @@ export default new Vuex.Store({
     isUserLoggedIn: false,
     isAdminLoggedIn: false,
     itemInfo: {},
-    assayInfo: {}
+    assayInfo: {},
+    selectedAssays: []
   },
   mutations: {
     setUser (state, type) {
       for (let key in state.users) {
         if (key === type) {
           // always true for testing
+          state.welcome = `Hello ${type}!`
           state[key] = true
         } else {
           // set to true for testing
@@ -48,6 +51,9 @@ export default new Vuex.Store({
     },
     setAssayInfo (state, data) {
       state.assayInfo = data
+    },
+    setSelectedAssay (state, data) {
+      state.selectedAssays = data
     }
   },
   actions: {
@@ -65,6 +71,9 @@ export default new Vuex.Store({
     },
     setAssayInfo ({ commit }, data) {
       commit('setAssayInfo', data)
+    },
+    setSelectedAssay ({ commit }, data) {
+      commit('setSelectedAssay', data)
     }
   }
 })
