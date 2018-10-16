@@ -6,6 +6,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 const { sequelize } = require('./server/models')
 const config = require('./server/config/config')
+const fs = require('fs')
 // create the express app
 const app = express()
 app.use(morgan('combined'))
@@ -20,6 +21,15 @@ app.use("/", serveStatic(path.join(__dirname, '/dist')))
 // Catch all routes and redirect to the index file
 app.get('*', function (req, res) {
     res.sendFile(__dirname + '/dist/index.html')
+})
+
+// checking files
+fs.stat('./', (err, stats) => {
+  console.log(stats)
+
+  if (err) {
+    return console.error(err)
+  }
 })
 
 let port = config.port
