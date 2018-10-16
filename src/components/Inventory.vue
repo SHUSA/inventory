@@ -85,19 +85,19 @@
                     <v-text-field disabled v-model="editedItem.safetyStock" label="Safety Stock"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.wholeNumber]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
+                    <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.wholeNumber]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)"/>
+                    <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.wholeNumber]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
+                    <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.reorderPoint" validate-on-blur :rules="[rules.number]" ref="reorderPoint" type="number" min=0 label="Reorder Point"/>
+                    <v-text-field v-model="editedItem.reorderPoint" ref="reorderPoint" label="Reorder Point"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.reorderQuantity" validate-on-blur :rules="[rules.wholeNumber]" ref="reorderQuantity" type="number" min=0 label="Reorder Quantity"/>
+                    <v-text-field v-model="editedItem.reorderQuantity" ref="reorderQuantity" label="Reorder Quantity"/>
                   </v-flex>
                 </template>
                 <template v-if="user">
@@ -165,19 +165,19 @@
                   <v-text-field v-model="editedAssay.name" :rules="[rules.assay]" label="Name" required/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.weeklyVolume" ref="weeklyVolume" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Weekly Volume"/>
+                  <v-text-field v-model="editedAssay.weeklyVolume" ref="weeklyVolume" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Weekly Volume"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.weeklyRuns" ref="weeklyRuns" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Runs per Week"/>
+                  <v-text-field v-model="editedAssay.weeklyRuns" ref="weeklyRuns" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Runs per Week"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.controlsPerRun" ref="controlsPerRun" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Controls per Run"/>
+                  <v-text-field v-model="editedAssay.controlsPerRun" ref="controlsPerRun" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Controls per Run"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.maxBatchSize" ref="maxBatchSize" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Max Batch Size"/>
+                  <v-text-field v-model="editedAssay.maxBatchSize" ref="maxBatchSize" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Max Batch Size"/>
                 </v-flex>
                 <v-flex xs6>
-                  <v-text-field v-model="editedAssay.sampleReplicates" ref="sampleReplicates" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Sample Replicates"/>
+                  <v-text-field v-model="editedAssay.sampleReplicates" ref="sampleReplicates" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Sample Replicates"/>
                 </v-flex>
                 <v-flex xs12>
                   <v-alert
@@ -265,7 +265,6 @@
       :headers="headers"
       :items="supplies"
       :search="search"
-      hide-actions
     >
       <!-- item name -->
       <template slot="items" slot-scope="props">
@@ -338,6 +337,7 @@ import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
 const moment = require('moment')
 const Json2csvParser = require('json2csv').Parser
+document.getElementsByTagName('input').onwheel = () => false
 // Notes on number input type
 // -unable to block e, -, +
 // -unable to prevent mouse scroll
@@ -387,16 +387,6 @@ export default {
           } else {
             this.errors.num.push('')
             return 'Please enter a valid number'
-          }
-        },
-        wholeNumber: (val) => {
-          const num = parseFloat(val)
-          if (!isNaN(num) && num >= 0 && Number.isInteger(num)) {
-            this.errors.num.pop()
-            return true
-          } else {
-            this.errors.num.push('')
-            return 'Please enter an integer'
           }
         },
         text: (v) => {
@@ -619,7 +609,7 @@ export default {
         // stop process and display error message
         this.loading = false
         this.alert = true
-        this.alertMessage = Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
+        this.alertMessage = resp.data[0].message
         return true
       } else {
         // no errors received
@@ -806,7 +796,7 @@ export default {
 
     async save (order) {
       const num = this.errors.num.length
-      this.alertMessage = 'Please fix errors'
+      this.alertMessage = 'Minimum information needed: Item Name, Assay, Vendor, Catalog Number'
 
       if (this.errors.item || num || this.errors.catalog) {
         this.alert = true
