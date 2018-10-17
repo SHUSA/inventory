@@ -14,11 +14,11 @@ module.exports = {
     development : {
       user : 'rails',
       host : '10.212.148.42',
-      ref  : 'origin/beta',
+      ref  : 'origin/connection-test',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
       // 'post-deploy': 'git pull && npm install && npm run build && pm2 reload ecosystem.config.js --env development --update-env && pm2 list',
-      'post-deploy': 'git pull && pm2 start all',
+      'post-deploy': 'git pull && pm2 delete 0 && pm2 delete 1 && npm install && npm run build && pm2 reload ecosystem.config.js --env development --update-env && npm start',
       "env"  : {
         'NODE_ENV': "'development'",
         SRL_INVENTORY_HOST: '10.212.148.45',
