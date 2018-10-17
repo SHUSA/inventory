@@ -14,7 +14,7 @@ module.exports = {
     development : {
       user : 'rails',
       host : '10.212.148.42',
-      ref  : 'origin/connection\-test',
+      ref  : 'origin/connections',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
       // 'post-deploy': 'git pull && npm install && npm run build && pm2 reload ecosystem.config.js --env development --update-env && pm2 list',
