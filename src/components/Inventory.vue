@@ -1,29 +1,12 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-speed-dial v-if="admin" v-model="fab" top direction="right">
-        <v-btn color="blue darken-2" dark class="mb-0" slot="activator" v-model="fab" small fab>
-          <v-icon>menu</v-icon>
-          <v-icon>close</v-icon>
-        </v-btn>
-        <v-btn
-          small
-          dark
-          @click="dialog = !dialog"
-        >
-          Add Item
-        </v-btn>
-        <v-btn
-          href="javascript:void(0)"
-          id="csvbtn"
-          small
-          dark
-          @click="getCSV"
-        >
-          <v-icon small>arrow_downward</v-icon>
-          CSV
-        </v-btn>
-      </v-speed-dial>
+      <v-btn small dark color="primary" @click="dialog = !dialog" v-if="admin">
+        Add Item
+      </v-btn>
+      <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
+        <v-icon small>arrow_downward</v-icon>CSV
+      </v-btn>
       <v-dialog
         v-model="dialog"
         max-width="500px"
@@ -265,6 +248,7 @@
       :headers="headers"
       :items="supplies"
       :search="search"
+      must-sort
       hide-actions
     >
       <!-- item name -->
@@ -356,7 +340,6 @@ export default {
   data () {
     return {
       currentItem: {},
-      fab: false,
       dialog: false,
       assayDialog: false,
       vendorDialog: false,
