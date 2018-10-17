@@ -1,6 +1,15 @@
 <template>
   <v-card-text style="height: 300px;">
     <ul>
+      <!-- (li>{2018.10.DD - v1.7.xx}ul>li{update notes})+br -->
+      <li>
+        2018.10.DD - v1.7.13, Bugs and Fixes
+        <ul>
+          <li>Server connections straightened out</li>
+          <li>Add Item and Download CSV are removed from the speeddial for easier access</li>
+        </ul>
+      </li>
+      <br>
       <li>
         2018.10.12 - v.1.7.12, Login
         <ul>

@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-1.7.12
+      {{title}} v.b-1.7.13
       <v-dialog
         v-model="dialog"
         scrollable
@@ -77,7 +77,7 @@ export default {
 </script>
 
 <style scoped>
-  .v-toolbar__items >>> .v-btn--disabled {
+  .v-toolbar__items /deep/ .v-btn--disabled {
     color: white!important;
   }
 
