@@ -1,23 +1,11 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-btn
-        small
-        dark
-        @click="dialog = !dialog"
-        v-if="admin"
-      >
+      <v-btn small dark color="primary" @click="dialog = !dialog" v-if="admin">
         Add Item
       </v-btn>
-      <v-btn
-        href="javascript:void(0)"
-        id="csvbtn"
-        small
-        dark
-        @click="getCSV"
-      >
-        <v-icon small>arrow_downward</v-icon>
-        CSV
+      <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
+        <v-icon small>arrow_downward</v-icon>CSV
       </v-btn>
       <v-dialog
         v-model="dialog"
@@ -260,6 +248,7 @@
       :headers="headers"
       :items="supplies"
       :search="search"
+      must-sort
       hide-actions
     >
       <!-- item name -->
