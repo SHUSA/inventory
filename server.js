@@ -16,13 +16,13 @@ require('./server/routes')(app)
 
 // create middleware to handle the serving the app
 // for use with heroku
-app.use("/", serveStatic(path.join(__dirname, '/dist')))
+// app.use("/", serveStatic(path.join(__dirname, '/dist')))
 
 // Catch all routes and redirect to the index file
 // for use with heroku
-app.get('*', function (req, res) {
-    res.sendFile(__dirname + '/dist/index.html')
-})
+// app.get('*', function (req, res) {
+//     res.sendFile(__dirname + '/dist/index.html')
+// })
 
 let port = config.port
 let host = config.host
