@@ -5,7 +5,7 @@
       <li>
         2018.10.DD - v1.7.13, Bugs and Fixes
         <ul>
-          <li><strike>Server connections straightened out</strike> Currently at 4041. No success restoring original address</li>
+          <li><s>Server connections straightened out</s> Currently at 4041. No success restoring original address</li>
           <li>Add Item and Download CSV are removed from the speeddial for easier access</li>
         </ul>
       </li>
