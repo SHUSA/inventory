@@ -18,7 +18,7 @@
         :key="n"
       >
         <template v-if="n == 1">
-          <order v-if="search === 'order'" :order="list" :vendors="vendors"/>
+          <order v-if="search === 'order'" :order="list" :assays="assays" :vendors="vendors"/>
           <info-list v-else-if="search === 'info'" :list="list" :getInfo="getInfo"/>
           <inventory v-else :items="list" :assays="assays" :vendors="vendors" :orders="orders" :getInfo="getInfo"/>
         </template>
