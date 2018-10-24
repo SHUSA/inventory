@@ -6,8 +6,8 @@
         max-width="500px"
         @keydown.enter="changeStatus"
       >
-        <v-btn v-if="!thisOrder.completed && admin" slot="activator" color="primary" class="mb-0" dark>Complete Order</v-btn>
-        <v-btn v-if="thisOrder.completed && admin" slot="activator" color="error" class="mb-0" dark>Undo Complete</v-btn>
+        <v-btn v-if="!thisOrder.completed && admin" slot="activator" color="primary" class="mb-0" dark small>Complete Order</v-btn>
+        <v-btn v-if="thisOrder.completed && admin" slot="activator" color="error" class="mb-0" dark small>Undo Complete</v-btn>
         <v-card>
           <v-card-title>
             <span v-if="!thisOrder.completed" class="headline">Is the order complete?</span>
@@ -21,6 +21,10 @@
           </v-card-title>
         </v-card>
       </v-dialog>
+
+      <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
+        <v-icon small>arrow_downward</v-icon>CSV
+      </v-btn>
 
       <v-spacer/>
 
@@ -47,6 +51,7 @@
       <template slot="items" slot-scope="props">
         <td>{{props.item.name}}</td>
         <td>{{props.item.vendor}}</td>
+        <td>{{props.item.assay}}</td>
         <td>{{props.item.catalogNumber}}</td>
         <td>{{props.item.itemDescription}}</td>
         <td>
@@ -77,11 +82,13 @@ import { mapState } from 'vuex'
 import orderService from '@/services/OrderService.js'
 import itemService from '@/services/ItemService.js'
 const moment = require('moment')
+const Json2csvParser = require('json2csv').Parser
 
 export default {
   props: [
     'order',
-    'vendors'
+    'vendors',
+    'assays'
   ],
   data () {
     return {
@@ -96,6 +103,7 @@ export default {
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
         {text: 'Vendor', value: 'vendor'},
+        {text: 'Assay', value: 'assay'},
         {text: 'Catalog #', value: 'catalogNumber'},
         {text: 'Desc', value: 'itemDescription'},
         {text: 'Stock', value: 'currentStock'},
@@ -137,6 +145,7 @@ export default {
         // merge currentStock and comment from entries to items
         this.items.map(index => {
           this.getVendor(index)
+          this.getAssay(index)
           for (let i = 0; i < this.entries.length; i++) {
             let entry = this.entries[i]
             if (index.id === entry.ItemId) {
@@ -146,6 +155,19 @@ export default {
           }
         })
       }
+    },
+
+    getCSV () {
+      const csvbtn = document.getElementById('csvbtn')
+      const fields = ['vendor', 'catalogNumber', 'assay', 'name', 'currentStock', 'reorderQuantity', 'comment', 'updatedAt']
+      const json2csv = new Json2csvParser({fields})
+      // get csv for order; use filtered list if possible
+      const csv = json2csv.parse(this.items)
+      const blob = new Blob([csv], {type: 'text/csv'})
+      console.log(this.items)
+
+      csvbtn.href = URL.createObjectURL(blob)
+      csvbtn.download = `${moment().format('YYYY-MM-DD')} Inventory.csv`
     },
 
     time (time) {
@@ -158,6 +180,14 @@ export default {
       }
       item.vendor = this.vendors.find(vendor => vendor.id === item.VendorId).name
       return item.vendor
+    },
+
+    getAssay (item) {
+      if (this.assays.length === 0) {
+        return null
+      }
+      item.assay = this.assays.find(assay => assay.id === item.AssayId).name
+      return item.assay
     },
 
     checkQuantity (item) {
