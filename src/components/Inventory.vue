@@ -1,12 +1,6 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-btn small dark color="primary" @click="dialog = !dialog" v-if="admin">
-        Add Item
-      </v-btn>
-      <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
-        <v-icon small>arrow_downward</v-icon>CSV
-      </v-btn>
       <v-dialog
         v-model="dialog"
         max-width="500px"
@@ -121,17 +115,6 @@
         </v-card>
       </v-dialog>
 
-      <v-spacer/>
-
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Search"
-        clearable
-        single-line
-        hide-details
-      />
-
       <v-dialog
         v-model="assayDialog"
         max-width="500px"
@@ -232,6 +215,47 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-container>
+        <v-layout row wrap>
+          <v-btn small dark color="primary" @click="dialog = !dialog" v-if="admin">
+            Add Item
+          </v-btn>
+          <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
+            <v-icon small>arrow_downward</v-icon>CSV
+          </v-btn>
+
+          <v-spacer/>
+
+          <!-- multiple select -->
+          <!-- <v-select
+            :items="assayList"
+            item-text="name"
+            filter="customFilter"
+            v-model="selected"
+            label="Select your assay"
+            multiple
+            chips
+            hint="Currently selected assays"
+            persistent-hint
+          >
+          </v-select> -->
+
+          <v-spacer/>
+
+          <!-- all in one filter -->
+          <v-text-field
+            v-model="search"
+            append-icon="search"
+            label="Search"
+            hint="test"
+            persistent-hint
+            clearable
+            single-line
+            hide-details
+          />
+        </v-layout>
+      </v-container>
     </v-card-title>
 
     <v-snackbar
@@ -349,6 +373,7 @@ export default {
       alert: false,
       loading: false,
       search: '',
+      selected: [],
       alertMessage: '',
       assayForm: '',
       vendorForm: '',
@@ -614,6 +639,15 @@ export default {
     openSnack (text) {
       this.snackText = text
       this.snackbar = true
+    },
+
+    customFilter (item, queryText, itemText) {
+      console.log('customFilter')
+      console.log(`item ${item}`)
+      console.log(`queryText ${queryText}`)
+      console.log(`itemText ${itemText}`)
+
+      return null
     },
 
     getAssay (item) {
