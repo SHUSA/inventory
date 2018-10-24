@@ -3,7 +3,16 @@
     <ul>
       <!-- (li>{2018.10.DD - v1.7.xx}ul>li{update notes})+br -->
       <li>
-        2018.10.DD - v1.7.13, Bugs and Fixes
+        2018.10.24 - v1.7.14, Orders
+        <ul>
+          <li>Added csv download to Orders</li>
+          <li>Added assay name to Orders</li>
+          <li>Creates a new Order for the week if current week's Order has already been completed. (ex: May 15 week completed. New Item ordered during May 15 week when Order was completed. Create new Order.)</li>
+        </ul>
+      </li>
+      <br>
+      <li>
+        2018.10.17 - v1.7.13, Bugs and Fixes
         <ul>
           <li><s>Server connections straightened out</s> Currently at 4041. No success restoring original address</li>
           <li>Add Item and Download CSV are removed from the speeddial for easier access</li>
