@@ -879,8 +879,8 @@ export default {
             const lastSunday = moment().startOf('week').format()
             const recentOrder = this.orderList[0]
 
-            if (recentOrder.createdAt < lastSunday) {
-              // recent order too old, create new order and associate OrderId
+            if (recentOrder.createdAt < lastSunday || recentOrder.completed) {
+              // recent order too old or completed, create new order and associate OrderId
               const newOrder = (await orderService.post()).data
               this.orderList.splice(0, 0, newOrder)
               entry.OrderId = newOrder.id
