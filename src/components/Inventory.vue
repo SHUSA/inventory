@@ -274,7 +274,6 @@
       :items="supplies"
       :search="search"
       must-sort
-      hide-actions
     >
       <!-- item name -->
       <template slot="items" slot-scope="props">
