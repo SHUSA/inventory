@@ -274,7 +274,7 @@
       :items="supplies"
       :search="search"
       must-sort
-      :rows-per-page-items='[10, 25, {"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
+      :rows-per-page-items='[{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}, 10, 25]'
     >
       <!-- item name -->
       <template slot="items" slot-scope="props">
