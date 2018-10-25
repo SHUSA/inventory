@@ -8,7 +8,7 @@ module.exports = {
           active: req.query.status
         },
         order: [
-          ['name', 'DESC']
+          ['name', 'ASC']
         ]
       })
       res.send(vendors)

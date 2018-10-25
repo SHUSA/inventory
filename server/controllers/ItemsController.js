@@ -33,7 +33,7 @@ module.exports = {
       let items = await Item.findAll({
         where: search,
         order: [
-          ['name', 'DESC']
+          ['name', 'ASC']
         ]
       })
       res.send(items)
