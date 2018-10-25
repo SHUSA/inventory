@@ -737,7 +737,7 @@ export default {
 
     async saveAssay () {
       const num = this.errors.num.length
-      this.alertMessage = 'Please a valid name or fix form'
+      this.alertMessage = 'Please use a valid name or fix form'
 
       if (this.errors.assay || num) {
         this.alert = true
