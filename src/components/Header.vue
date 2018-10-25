@@ -77,7 +77,7 @@ export default {
 </script>
 
 <style scoped>
-  .v-toolbar__items /deep/ .display {
+  .v-toolbar__items >>> .display {
     color: white!important;
   }
 

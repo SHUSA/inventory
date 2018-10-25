@@ -8,6 +8,7 @@
           <li>Added csv download to Orders</li>
           <li>Added assay name to Orders</li>
           <li>Creates a new Order for the week if current week's Order has already been completed. (ex: May 15 week completed. New Item ordered during May 15 week when Order was completed. Create new Order.)</li>
+          <li>Item name currently being edited is visible</li>
         </ul>
       </li>
       <br>
