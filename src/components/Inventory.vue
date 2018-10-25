@@ -244,6 +244,7 @@
           <v-spacer/>
 
           <!-- all in one filter -->
+          <!-- change to menu? -->
           <v-text-field
             v-model="search"
             append-icon="search"
@@ -537,7 +538,7 @@ export default {
 
   computed: {
     formTitle () {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      return this.editedIndex === -1 ? 'New Item' : `Editing ${this.editedItem.name}`
     },
 
     ...mapState([
@@ -720,6 +721,12 @@ export default {
         this.editedVendor = Object.assign({}, this.defaultVendor)
       } else if (this.dialog && !this.assayDialog && !this.vendorDialog) {
         this.dialog = false
+        this.currentItem = {}
+        setTimeout(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        }, 300)
+      } else {
         this.currentItem = {}
         setTimeout(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
