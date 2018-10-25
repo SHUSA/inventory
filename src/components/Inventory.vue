@@ -248,7 +248,7 @@
           <v-text-field
             v-model="search"
             append-icon="search"
-            label="Search"
+            label="Search for item, assay, vendor, etc"
             hint="test"
             persistent-hint
             clearable
