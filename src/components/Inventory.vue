@@ -274,6 +274,7 @@
       :items="supplies"
       :search="search"
       must-sort
+      :pagination.sync="pagination"
       :rows-per-page-items='[{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}, 10, 25]'
     >
       <!-- item name -->
@@ -364,6 +365,7 @@ export default {
   ],
   data () {
     return {
+      pagination: {},
       currentItem: {},
       dialog: false,
       assayDialog: false,
@@ -439,6 +441,14 @@ export default {
           if (text.length === 0) {
             this.errors.assay = true
             return 'Please enter a valid name'
+          } else if (this.assayList.find(assay => assay.name.toUpperCase() === text.toUpperCase()) !== undefined) {
+            if (this.editedIndex > -1) {
+              this.errors.assay = false
+              return true
+            } else {
+              this.errors.assay = true
+              return 'Duplicate assay name found'
+            }
           } else {
             this.errors.assay = false
             return true
@@ -448,6 +458,14 @@ export default {
           if (text.length === 0) {
             this.errors.vendor = true
             return 'Please enter a valid name'
+          } else if (this.vendorList.find(vendor => vendor.name.toUpperCase() === text.toUpperCase()) !== undefined) {
+            if (this.editedIndex > -1) {
+              this.errors.vendor = false
+              return true
+            } else {
+              this.errors.vendor = true
+              return 'Duplicate vendor name found'
+            }
           } else {
             this.errors.vendor = false
             return true
@@ -600,6 +618,10 @@ export default {
   },
 
   methods: {
+    getSorted () {
+
+    },
+
     getCSV () {
       const csvbtn = document.getElementById('csvbtn')
       const fields = ['vendor', 'catalogNumber', 'assay.name', 'name', 'currentStock', 'lastUpdate']
