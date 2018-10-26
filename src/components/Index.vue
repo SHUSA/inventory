@@ -30,7 +30,9 @@
             <v-list-tile-title v-else>Week of {{time(order.createdAt)}}</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
-        <v-list-group>
+        <!-- to refactor as popup dialogs
+        to determine how to render comprehensive list for Item, Assay, and Vendor -->
+        <!-- <v-list-group>
           <v-list-tile slot="activator">
             <v-list-tile-title>Info</v-list-tile-title>
           </v-list-tile>
@@ -52,7 +54,7 @@
             </v-list-tile-action>
             <v-list-tile-title>Vendors</v-list-tile-title>
           </v-list-tile>
-        </v-list-group>
+        </v-list-group> -->
       </v-list>
     </v-navigation-drawer>
     <v-flex xs12 offset-xs3 v-if="drawer">
