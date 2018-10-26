@@ -270,6 +270,7 @@
     </v-snackbar>
 
     <v-data-table
+      ref="search"
       :headers="headers"
       :items="supplies"
       :search="search"
@@ -618,15 +619,12 @@ export default {
   },
 
   methods: {
-    getSorted () {
-
-    },
-
     getCSV () {
       const csvbtn = document.getElementById('csvbtn')
       const fields = ['vendor', 'catalogNumber', 'assay.name', 'name', 'currentStock', 'lastUpdate']
       const json2csv = new Json2csvParser({fields})
-      const csv = json2csv.parse(this.supplies)
+      const results = this.$refs.search.filteredItems
+      const csv = json2csv.parse(results)
       const blob = new Blob([csv], {type: 'text/csv'})
 
       csvbtn.href = URL.createObjectURL(blob)
