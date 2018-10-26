@@ -78,8 +78,37 @@
                   </v-flex>
                 </template>
                 <template v-if="user">
+                  <v-flex xs6 fill-height justify-center>
+                    <v-chip label color="light-blue lighten-1" class="label" small>Reactions per Item</v-chip>
+                  </v-flex>
+                  <v-flex class="dashed-border pa-2 text-xs-right" xs6>
+                    {{editedItem.reactionsPerItem}}
+                  </v-flex>
+
+                  <v-flex xs6 fill-height justify-center>
+                    <v-chip label color="light-blue lighten-1" class="label" small>Reorder Point</v-chip>
+                  </v-flex>
+                  <v-flex class="dashed-border pa-2 text-xs-right" xs6>
+                    {{editedItem.reorderPoint}}
+                  </v-flex>
+
+                  <v-flex xs6 fill-height justify-center>
+                    <v-chip label color="light-blue lighten-1" class="label" small>Reorder Quantity</v-chip>
+                  </v-flex>
+                  <v-flex class="dashed-border pa-2 text-xs-right" xs6>
+                    {{editedItem.reorderQuantity}}
+                  </v-flex>
+
                   <v-flex xs12>
-                    <v-text-field v-model="editedItem.currentStock" validate-on-blur :rules="[rules.number]" ref="currentStock" type="number" min=0 label="Current Stock"/>
+                    <v-text-field
+                      v-model="editedItem.currentStock"
+                      validate-on-blur :rules="[rules.number]"
+                      ref="currentStock"
+                      type="number"
+                      min=0
+                      label="Current Stock"
+                      persistent-hint
+                    />
                   </v-flex>
                   <v-flex xs12>
                     <v-textarea
@@ -961,6 +990,22 @@ export default {
       text-overflow: ellipsis;
     }
   } */
+
+  .box {
+    min-width: 25%;
+  }
+
+  .label {
+    width: 95%;
+  }
+
+  .dashed-border:after {
+    content: "";
+    display: block;
+    width: 105%;
+    float: right;
+    border-bottom: 1px dotted gray;
+  }
 
   .pointer {
     cursor: pointer;
