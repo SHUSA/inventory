@@ -285,6 +285,11 @@
             hide-details
           />
         </v-layout>
+        <v-layout row wrap>
+          <!-- displays each assay with outstanding orders -->
+          <v-card-text>Assays not updated since {{lastOrderPeriod}}:</v-card-text>
+          <v-chip color="red" dark v-for="(item, index) in outstandingAssays" :key="index">{{item}}</v-chip>
+        </v-layout>
       </v-container>
     </v-card-title>
 
@@ -349,15 +354,17 @@
         <td>{{props.item.comment}}</td>
         <!-- last update -->
         <td>{{time(props.item)}}</td>
+        <!-- recently updated -->
+        <td>{{props.item.recentlyUpdated}}</td>
         <!-- info icon -->
-        <td>
+        <!-- <td>
           <v-btn icon class="mx-0" @click="getInfo(props.item)">
             <v-tooltip top open-delay=50>
               <v-icon slot="activator" color="teal">info</v-icon>
               <span>Get {{props.item.name}} info</span>
             </v-tooltip>
           </v-btn>
-        </td>
+        </td> -->
       </template>
       <template slot="no-data">
         <v-alert color="error" icon="warning">Nothing here!</v-alert>
@@ -522,7 +529,7 @@ export default {
         {text: 'To Order', value: 'reorderQuantity'},
         {text: 'Comment', value: 'comment', width: '15%'},
         {text: 'Last Update', value: 'updatedAt'},
-        {text: '', value: 'name', sortable: false, width: '5%'}
+        {text: 'Recently Updated', value: 'recentlyUpdated', width: '5%'}
       ],
       supplies: [],
       assayList: [],
@@ -594,7 +601,25 @@ export default {
       'admin',
       'user',
       'selectedAssays'
-    ])
+    ]),
+
+    lastOrderPeriod () {
+      return moment().startOf('week').subtract(14, 'day').format('MMM DD, YYYY')
+    },
+
+    outstandingAssays () {
+      let arr = []
+      this.supplies.map(item => {
+        this.recentlyUpdated(item)
+        if (item.recentlyUpdated) {
+          this.getAssay(item)
+          // check if assay object is attached and make sure it's not a duplicate
+          if (item.assay && arr.indexOf(item.assay.name) === -1) arr.push(item.assay.name)
+        } // else do nothing
+      })
+
+      return arr
+    }
   },
 
   watch: {
@@ -663,6 +688,21 @@ export default {
     time (item) {
       item.lastUpdate = moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
       return item.lastUpdate
+    },
+
+    recentlyUpdated (item) {
+      let twoWeeksAgo = moment().startOf('week').subtract(14, 'day').format()
+
+      // checks to see if item was updated in the past 2 weeks, starting from Sunday
+      // does not account if user or admin did the update
+      // does not account if order was triggered
+      if (item.updatedAt < twoWeeksAgo) {
+        item.recentlyUpdated = false
+      } else {
+        item.recentlyUpdated = true
+      }
+
+      return item.recentlyUpdated
     },
 
     checkQuantity (item) {
