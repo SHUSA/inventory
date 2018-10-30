@@ -288,7 +288,10 @@
         <v-layout row wrap>
           <!-- displays each assay with outstanding orders -->
           <v-card-text>Assays not updated since {{lastOrderPeriod}}:</v-card-text>
-          <v-chip color="red" dark v-for="(item, index) in outstandingAssays" :key="index">{{item}}</v-chip>
+          <v-chip v-for="(value, assay, index) in outstandingAssays" :key="index">
+            <v-avatar v-if="value.count > 1" class="red lighten-1">{{value.count}}</v-avatar>
+            {{assay}}
+          </v-chip>
         </v-layout>
       </v-container>
     </v-card-title>
@@ -608,13 +611,21 @@ export default {
     },
 
     outstandingAssays () {
-      let arr = []
+      let arr = {}
       this.supplies.map(item => {
         this.recentlyUpdated(item)
         if (item.recentlyUpdated) {
           this.getAssay(item)
           // check if assay object is attached and make sure it's not a duplicate
-          if (item.assay && arr.indexOf(item.assay.name) === -1) arr.push(item.assay.name)
+          if (item.assay) {
+            let assay = item.assay
+            if (arr.hasOwnProperty(assay.name)) {
+              arr[assay.name].count += 1
+            } else {
+              arr[assay.name] = {}
+              arr[assay.name].count = 1
+            }
+          }
         } // else do nothing
       })
 
