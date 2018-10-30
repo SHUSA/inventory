@@ -288,7 +288,7 @@
         <v-layout row wrap>
           <!-- displays each assay with outstanding orders -->
           <v-card-text>Assays not updated since {{lastOrderPeriod}}:</v-card-text>
-          <v-chip v-for="(value, assay, index) in outstandingAssays" :key="index">
+          <v-chip v-for="(value, assay, index) in outstandingAssays" :key="index" @click="searchTerm(assay)">
             <v-avatar v-if="value.count > 1" class="red lighten-1">{{value.count}}</v-avatar>
             {{assay}}
           </v-chip>
@@ -714,6 +714,10 @@ export default {
       }
 
       return item.recentlyUpdated
+    },
+
+    searchTerm (term) {
+      this.search = term
     },
 
     checkQuantity (item) {

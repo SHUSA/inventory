@@ -12,6 +12,7 @@
               <li>Does not account if order was triggered</li>
               <li>Only accounts if item was simply updated</li>
               <li>Any item under an Assay that has not been updated in the past 2 weeks starting from the Sunday of the current week will trigger a flag for the Assay</li>
+              <li>Clicking on the assay name will filter the list for that assay</li>
             </ul>
           <li>Info button removed. Clicking on the item name will show item information</li>
         </ul>
