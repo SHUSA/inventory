@@ -3,6 +3,21 @@
     <ul>
       <!-- (li>{2018.10.DD - v1.7.xx}ul>li{update notes})+br -->
       <li>
+        2018.10.29 - v1.7.15, CSVs and Notices
+        <ul>
+          <li>CSV printouts now reflect what you see in the table in the same order</li>
+          <li>Dirty incomplete Orders are now visible</li>
+            <ul>
+              <li>Does not account if user or admin did the update</li>
+              <li>Does not account if order was triggered</li>
+              <li>Only accounts if item was simply updated</li>
+              <li>Any item under an Assay that has not been updated in the past 2 weeks starting from the Sunday of the current week will trigger a flag for the Assay</li>
+            </ul>
+          <li>Info button removed. Clicking on the item name will show item information</li>
+        </ul>
+      </li>
+      <br>
+      <li>
         2018.10.24 - v1.7.14, Orders
         <ul>
           <li>Added csv download to Orders</li>
