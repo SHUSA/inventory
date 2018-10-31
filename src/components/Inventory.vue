@@ -288,9 +288,9 @@
         <v-layout row wrap>
           <!-- displays each assay with outstanding orders -->
           <v-card-text>Assays not updated since {{lastOrderPeriod}}:</v-card-text>
-          <v-chip v-for="(value, assay, index) in outstandingAssays" :key="index" @click="searchTerm(assay)">
-            <v-avatar v-if="value.count > 1" class="red lighten-1">{{value.count}}</v-avatar>
-            {{assay}}
+          <v-chip v-for="(value, index) in outstandingAssays" :key="index" @click="searchTerm(value[0])">
+            <v-avatar v-if="value[1] > 1" class="red lighten-1">{{value[1]}}</v-avatar>
+            {{value[0]}}
           </v-chip>
         </v-layout>
       </v-container>
@@ -611,22 +611,30 @@ export default {
     },
 
     outstandingAssays () {
-      let arr = {}
+      let obj = {}
+      // to do: return obj in alphabetical order
+      // fix coding; clunky
       this.supplies.map(item => {
         this.recentlyUpdated(item)
-        if (item.recentlyUpdated) {
+        if (!item.recentlyUpdated) {
           this.getAssay(item)
           // check if assay object is attached and make sure it's not a duplicate
           if (item.assay) {
             let assay = item.assay
-            if (arr.hasOwnProperty(assay.name)) {
-              arr[assay.name].count += 1
+            if (obj.hasOwnProperty(assay.name)) {
+              obj[assay.name].count += 1
             } else {
-              arr[assay.name] = {}
-              arr[assay.name].count = 1
+              obj[assay.name] = {}
+              obj[assay.name].count = 1
             }
           }
         } // else do nothing
+      })
+
+      let arr = []
+      
+      Object.keys(obj).sort().forEach((key, i) => {
+        arr.push([key, obj[key].count])
       })
 
       return arr
