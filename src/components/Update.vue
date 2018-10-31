@@ -9,6 +9,7 @@
           <li>Outstanding assays will have a red number badge</li>
           <li>Show all assays for quick pick</li>
           <li>Adjusted Incomplete flag for items from 2 weeks to 1 week</li>
+          <li>Clicking on the Stock or Comment of an item in the table will bring up the Edit Item dialog for that item</li>
         </ul>
       </li>
       <br>
