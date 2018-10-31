@@ -105,12 +105,11 @@
                     <v-text-field
                       v-model="editedItem.currentStock"
                       validate-on-blur :rules="[rules.number]"
-                      ref="currentStock"
+                      ref="focus"
                       type="number"
                       min=0
                       label="Current Stock"
                       persistent-hint
-                      autofocus
                     />
                   </v-flex>
                   <v-flex xs12>
@@ -358,7 +357,7 @@
         <!-- item description -->
         <td>{{props.item.itemDescription}}</td>
         <!-- current stock -->
-        <td>
+        <td class="pointer" @click="editItem(props.item)">
           <v-badge color="red">
             <span slot="badge" v-if="checkQuantity(props.item)">!</span>
             {{props.item.currentStock}}
@@ -368,7 +367,7 @@
         <!-- reorder quantity -->
         <td>{{toOrder(props.item)}}</td>
         <!-- comment -->
-        <td>{{props.item.comment}}</td>
+        <td class="pointer" @click="editItem(props.item)">{{props.item.comment}}</td>
         <!-- last update -->
         <td>{{time(props.item)}}</td>
         <!-- recently updated -->
@@ -825,6 +824,9 @@ export default {
       this.editedIndex = this.supplies.indexOf(item)
       this.editedItem = Object.assign(this.editedItem, item)
       this.dialog = true
+      requestAnimationFrame(() => {
+        this.$refs.focus.focus()
+      })
     },
 
     async deactivateItem (item) {
