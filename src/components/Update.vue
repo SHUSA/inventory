@@ -5,8 +5,10 @@
       <li>
         2018.10.31 - v1.7.16, Quick Fix and Add All Assays
         <ul>
-          <li>Quick fix to order of outstanding assays to be A->Z</li>
+          <li>Quick fix to order of assays to be A->Z</li>
+          <li>Outstanding assays will have a red number badge</li>
           <li>Show all assays for quick pick</li>
+          <li>Adjusted Incomplete flag for items from 2 weeks to 1 week</li>
         </ul>
       </li>
       <br>
