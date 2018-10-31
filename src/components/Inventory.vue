@@ -14,6 +14,7 @@
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap>
+                <!-- admin input -->
                 <template v-if="admin">
                   <v-flex xs6>
                     <v-text-field v-model="editedItem.name" :rules="[rules.item]" label="Item Name" required/>
@@ -77,6 +78,7 @@
                     <v-text-field v-model="editedItem.reorderQuantity" validate-on-blur :rules="[rules.wholeNumber]" ref="reorderQuantity" type="number" min=0 label="Reorder Quantity"/>
                   </v-flex>
                 </template>
+                <!-- user input -->
                 <template v-if="user">
                   <v-flex xs6 fill-height justify-center>
                     <v-chip label color="light-blue lighten-1" class="label" small>Reactions per Item</v-chip>
@@ -108,6 +110,7 @@
                       min=0
                       label="Current Stock"
                       persistent-hint
+                      autofocus
                     />
                   </v-flex>
                   <v-flex xs12>
@@ -287,15 +290,22 @@
         </v-layout>
         <v-layout row wrap>
           <!-- displays each assay with outstanding orders -->
-          <v-card-text>Assays not updated since {{lastOrderPeriod}}:</v-card-text>
+          <v-card-text>
+            Assays not updated since {{lastOrderPeriod}} will look like so
+            <v-chip small>
+              <v-badge color="red" right>
+                <span slot="badge">EX</span>
+                <span>Example</span>
+              </v-badge>
+            </v-chip>
+          </v-card-text>
           <v-chip v-for="(value, index) in outstandingAssays" :key="index" @click="searchTerm(value[0])">
-            <v-avatar v-if="value[1] > 1" class="red lighten-1">{{value[1]}}</v-avatar>
-            {{value[0]}}
+            <v-badge color="red" right>
+              <span v-if="!value[2]" slot="badge">{{value[1]}}</span>
+              <span>{{value[0]}}</span>
+            </v-badge>
+            <!-- <v-avatar v-if="!value[2]" class="red lighten-1">{{value[1]}}</v-avatar> -->
           </v-chip>
-        </v-layout>
-        <v-layout row wrap>
-          <v-card-text>All Assays:</v-card-text>
-          <v-chip v-for="(value, index) in sortAssays" :key="index" @click="searchTerm(value)">{{value}}</v-chip>
         </v-layout>
       </v-container>
     </v-card-title>
@@ -611,7 +621,7 @@ export default {
     ]),
 
     lastOrderPeriod () {
-      return moment().startOf('week').subtract(14, 'day').format('MMM DD, YYYY')
+      return moment().startOf('week').subtract(7, 'day').format('MMM DD, YYYY')
     },
 
     outstandingAssays () {
@@ -620,38 +630,28 @@ export default {
       // fix coding; clunky
       this.supplies.map(item => {
         this.recentlyUpdated(item)
-        if (!item.recentlyUpdated) {
-          this.getAssay(item)
-          // check if assay object is attached and make sure it's not a duplicate
-          if (item.assay) {
-            let assay = item.assay
-            if (obj.hasOwnProperty(assay.name)) {
-              obj[assay.name].count += 1
-            } else {
-              obj[assay.name] = {}
-              obj[assay.name].count = 1
-            }
+        this.getAssay(item)
+        // check if assay object is attached and make sure it's not a duplicate
+        if (item.assay) {
+          let assay = item.assay
+          if (obj.hasOwnProperty(assay.name)) {
+            obj[assay.name].count += 1
+          } else {
+            obj[assay.name] = {}
+            obj[assay.name].count = 0
+            obj[assay.name].recentlyUpdated = item.recentlyUpdated
+            if (!item.recentlyUpdated) obj[assay.name].count += 1
           }
-        } // else do nothing
+        }
       })
 
       let arr = []
 
       Object.keys(obj).sort().forEach((key, i) => {
-        arr.push([key, obj[key].count])
+        arr.push([key, obj[key].count, obj[key].recentlyUpdated])
       })
 
       return arr
-    },
-
-    sortAssays () {
-      let arr = []
-
-      for (let obj in this.assayList) {
-        arr.push(this.assayList[obj].name)
-      }
-
-      return arr.sort()
     }
   },
 
@@ -724,12 +724,12 @@ export default {
     },
 
     recentlyUpdated (item) {
-      let twoWeeksAgo = moment().startOf('week').subtract(14, 'day').format()
+      let oneWeekAgo = moment().startOf('week').subtract(7, 'day').format()
 
       // checks to see if item was updated in the past 2 weeks, starting from Sunday
       // does not account if user or admin did the update
       // does not account if order was triggered
-      if (item.updatedAt < twoWeeksAgo) {
+      if (item.updatedAt < oneWeekAgo) {
         item.recentlyUpdated = false
       } else {
         item.recentlyUpdated = true
