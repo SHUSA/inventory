@@ -3,6 +3,14 @@
     <ul>
       <!-- (li>{2018.10.DD - v1.7.xx}ul>li{update notes})+br -->
       <li>
+        2018.10.31 - v1.7.16, Quick Fix and Add All Assays
+        <ul>
+          <li>Quick fix to order of outstanding assays to be A->Z</li>
+          <li>Show all assays for quick pick</li>
+        </ul>
+      </li>
+      <br>
+      <li>
         2018.10.29 - v1.7.15, CSVs and Notices
         <ul>
           <li>CSV printouts now reflect what you see in the table in the same order</li>
