@@ -293,6 +293,10 @@
             {{value[0]}}
           </v-chip>
         </v-layout>
+        <v-layout row wrap>
+          <v-card-text>All Assays:</v-card-text>
+          <v-chip v-for="(value, index) in sortAssays" :key="index" @click="searchTerm(value)">{{value}}</v-chip>
+        </v-layout>
       </v-container>
     </v-card-title>
 
@@ -632,12 +636,22 @@ export default {
       })
 
       let arr = []
-      
+
       Object.keys(obj).sort().forEach((key, i) => {
         arr.push([key, obj[key].count])
       })
 
       return arr
+    },
+
+    sortAssays () {
+      let arr = []
+
+      for (let obj in this.assayList) {
+        arr.push(this.assayList[obj].name)
+      }
+
+      return arr.sort()
     }
   },
 
