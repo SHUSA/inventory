@@ -26,11 +26,11 @@
     </v-toolbar-items>
     <v-spacer/>
     <v-toolbar-items>
-      <v-btn flat disabled class="display">{{welcome}}</v-btn>
+      <v-btn flat class="display">{{welcome}}</v-btn>
       <v-btn flat @click="login">
         Login
       </v-btn>
-      <v-btn flat disabled class="display">
+      <v-btn flat class="display">
         {{time}}
       </v-btn>
     </v-toolbar-items>
@@ -77,8 +77,5 @@ export default {
 </script>
 
 <style scoped>
-  .v-toolbar__items >>> .display {
-    color: white!important;
-  }
 
 </style>
