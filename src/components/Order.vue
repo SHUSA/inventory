@@ -28,24 +28,37 @@
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
             <v-icon small>arrow_downward</v-icon>CSV
           </v-btn>
+
+          <v-spacer/>
+
+          <v-text-field
+            v-model="search"
+            append-icon="search"
+            label="Search"
+            single-line
+            hide-details
+          />
+        </v-layout>
+        <v-layout row wrap>
+          <v-card-text>Vendors in this order:</v-card-text>
+          <v-chip v-for="(value, index) in listVendors" :key="index" @click="search = value">
+            {{value}}
+          </v-chip>
+        </v-layout>
+        <v-layout row wrap>
+          <v-card-text>Assays in this order:</v-card-text>
+          <v-chip v-for="(value, index) in listAssays" :key="index" @click="search = value">
+            {{value}}
+          </v-chip>
         </v-layout>
       </v-container>
-
-      <v-spacer/>
-
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Search"
-        single-line
-        hide-details
-      />
     </v-card-title>
     <v-card v-if="thisOrder.completed" class="ma-2">
       <v-card-text>Completed on {{time(thisOrder.completeDate)}}</v-card-text>
     </v-card>
 
     <v-data-table
+      ref="search"
       :headers="headers"
       :items="items"
       :search="search"
@@ -125,7 +138,29 @@ export default {
   computed: {
     ...mapState([
       'admin'
-    ])
+    ]),
+
+    listVendors () {
+      let arr = []
+      this.items.map(item => {
+        if (arr.indexOf(item.vendor) === -1) {
+          arr.push(item.vendor)
+        }
+      })
+
+      return arr.sort()
+    },
+
+    listAssays () {
+      let arr = []
+      this.items.map(item => {
+        if (arr.indexOf(item.assay) === -1) {
+          arr.push(item.assay)
+        }
+      })
+
+      return arr.sort()
+    }
   },
 
   mounted () {
@@ -166,8 +201,8 @@ export default {
       const csvbtn = document.getElementById('csvbtn')
       const fields = ['vendor', 'catalogNumber', 'assay', 'name', 'currentStock', 'reorderQuantity', 'comment', 'updatedAt']
       const json2csv = new Json2csvParser({fields})
-      // get csv for order; use filtered list if possible
-      const csv = json2csv.parse(this.items)
+      const results = this.$refs.search.filteredItems
+      const csv = json2csv.parse(results)
       const blob = new Blob([csv], {type: 'text/csv'})
       console.log(this.items)
 
