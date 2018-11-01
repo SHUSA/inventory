@@ -3,6 +3,7 @@
     <v-card-title>
       <v-dialog
         max-width="500px"
+        v-model="completedDialog"
         @keydown.enter="changeStatus"
       >
         <v-card>
@@ -21,8 +22,8 @@
 
       <v-container>
         <v-layout row wrap>
-          <v-btn v-if="!thisOrder.completed && admin" slot="activator" color="primary" class="mb-0" dark small @click="completedDialog">Complete Order</v-btn>
-          <v-btn v-if="thisOrder.completed && admin" slot="activator" color="error" class="mb-0" dark small @click="completedDialog">Undo Complete</v-btn>
+          <v-btn v-if="!thisOrder.completed && admin" slot="activator" color="primary" class="mb-0" dark small @click="completedDialog = !completedDialog">Complete Order</v-btn>
+          <v-btn v-if="thisOrder.completed && admin" slot="activator" color="error" class="mb-0" dark small @click="completedDialog = !completedDialog">Undo Complete</v-btn>
 
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
             <v-icon small>arrow_downward</v-icon>CSV
