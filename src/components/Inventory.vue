@@ -650,7 +650,7 @@ export default {
         arr.push([key, obj[key].count, obj[key].recentlyUpdated])
       })
 
-      return arr.sort((a, b) => a[0].toLowerCase().localeCompare(b[0].toLowerCase()))
+      return arr.sort((a, b) => a[0].localeCompare(b[0], 'en', {'sensitivity': 'base'}))
     }
   },
 
