@@ -646,11 +646,11 @@ export default {
 
       let arr = []
 
-      Object.keys(obj).sort().forEach((key, i) => {
+      Object.keys(obj).forEach((key, i) => {
         arr.push([key, obj[key].count, obj[key].recentlyUpdated])
       })
 
-      return arr
+      return arr.sort((a, b) => a[0].toLowerCase().localeCompare(b[0].toLowerCase()))
     }
   },
 
