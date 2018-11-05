@@ -565,7 +565,7 @@ export default {
         weeklyRuns: 0,
         controlsPerRun: 0,
         maxBatchSize: 0,
-        sampleReplicates: 0
+        sampleReplicates: 1
       },
       editedVendor: {
         name: ''
