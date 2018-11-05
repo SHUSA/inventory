@@ -148,7 +148,7 @@ export default {
         }
       })
 
-      return arr.sort()
+      return arr.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}))
     },
 
     listAssays () {
@@ -159,7 +159,7 @@ export default {
         }
       })
 
-      return arr.sort()
+      return arr.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}))
     }
   },
 
