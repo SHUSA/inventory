@@ -1,7 +1,14 @@
 <template>
   <v-card-text style="height: 300px;">
     <ul>
-      <!-- (li>{2018.10.DD - v1.7.xx}ul>li{update notes})+br -->
+      <!-- (li>{2018.11.DD - v1.7.xx}ul>li{update notes})+br -->
+      <li>
+        2018.11.DD - v1.7.17, Duplicates
+        <ul>
+          <li>Cleaned up duplicate Assay and Vendor validation when creating/editing Assays and Vendors</li>
+        </ul>
+      </li>
+      <br>
       <li>
         2018.10.31 - v1.7.16, Quick Fix and Add All Assays
         <ul>
