@@ -807,14 +807,24 @@ export default {
     editAssay (id) {
       this.snackbar = false
       this.assayForm = 'Edit Assay'
-      this.editedAssay = Object.assign({}, this.assayList.find(assay => assay.id === id))
+      this.editedAssay = Object.assign({}, this.assayList.find((assay, index) => {
+        if (assay.id === id) {
+          this.editedIndex = index
+          return assay
+        }
+      }))
       this.assayDialog = true
     },
 
     editVendor (id) {
       this.snackbar = false
       this.vendorForm = 'Edit Vendor'
-      this.editedVendor = Object.assign({}, this.vendorList.find(vendor => vendor.id === id))
+      this.editedVendor = Object.assign({}, this.vendorList.find((vendor, index) => {
+        if (vendor.id === id) {
+          this.editedIndex = index
+          return vendor
+        }
+      }))
       this.vendorDialog = true
     },
 
@@ -844,9 +854,11 @@ export default {
       if (this.assayDialog) {
         this.assayDialog = false
         this.editedAssay = Object.assign({}, this.defaultAssay)
+        if (!this.dialog) this.editedItem.AssayId = ''
       } else if (this.vendorDialog) {
         this.vendorDialog = false
         this.editedVendor = Object.assign({}, this.defaultVendor)
+        if (!this.dialog) this.editedItem.VendorId = ''
       } else if (this.dialog && !this.assayDialog && !this.vendorDialog) {
         this.dialog = false
         this.currentItem = {}
@@ -877,6 +889,7 @@ export default {
         if (this.assayForm === 'Edit Assay') {
           // existing assay
           let response = await assayService.put(edited)
+          this.editedIndex = -1
 
           if (this.checkErrorMessage(response)) {
             // do nothing
@@ -934,6 +947,7 @@ export default {
         if (this.vendorForm === 'Edit Vendor') {
           // existing vendor
           let response = await vendorService.put(edited)
+          this.editedIndex = -1
 
           if (this.checkErrorMessage(response)) {
             // do nothing
