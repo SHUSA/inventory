@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4
     },
     currentStock: DataTypes.REAL,
+    orderQuantity: DataTypes.REAL,
     comment: DataTypes.STRING
   })
 

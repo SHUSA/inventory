@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0
     },
     weeksOfSafetyStock: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.REAL,
       defaultValue: 0
     },
     safetyStock: {
@@ -32,11 +32,11 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0
     },
     leadTimeDays: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.REAL,
       defaultValue: 0
     },
     weeksOfReorder: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.REAL,
       defaultValue: 0
     },
     reorderPoint: {
