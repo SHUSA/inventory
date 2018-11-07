@@ -9,7 +9,9 @@ import 'vuetify/dist/vuetify.min.css'
 import store from '@/store/store'
 
 Vue.config.productionTip = false
-Vue.use(Veutify)
+Vue.use(Veutify, {
+  iconfont: 'fa'
+})
 
 sync(store, router)
 
