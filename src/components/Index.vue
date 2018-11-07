@@ -3,7 +3,7 @@
     <!-- insert components here -->
     <template v-if="pageTitle !== 'Menu'">
       <inventory v-if="pageTitle === 'inventory'"/>
-      <order v-if="pageTitle === 'order'"/>
+      <order v-if="pageTitle === 'orders'"/>
     </template>
     <update v-else/>
     <v-fab-transition>

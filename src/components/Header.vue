@@ -54,7 +54,7 @@ export default {
       time: moment().format('MMM DD, YYYY'),
       title: 'Molecular Inventory',
       dialog: false,
-      routes: ['Inventory', 'Order']
+      routes: ['Inventory', 'Orders']
     }
   },
   computed: {
