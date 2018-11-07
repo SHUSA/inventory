@@ -1014,6 +1014,7 @@ export default {
             ItemId: this.editedItem.id,
             updatedAt: this.editedItem.updatedAt,
             currentStock: this.editedItem.currentStock,
+            orderQuantity: this.editedItem.currentStock + this.editedItem.reorderQuantity,
             comment: this.editedItem.comment
           }
 
