@@ -26,7 +26,7 @@
                       item-text="name"
                       item-value="id"
                       v-model="editedItem.AssayId"
-                      append-icon="note_add"
+                      append-icon="fa-plus-circle "
                       @click:append="addAssay"
                       :rules="[rules.assay]"
                       dense
@@ -40,7 +40,7 @@
                       item-text="name"
                       item-value="id"
                       v-model="editedItem.VendorId"
-                      append-icon="note_add"
+                      append-icon="fa-plus-circle "
                       @click:append="addVendor"
                       :rules="[rules.vendor]"
                       dense
@@ -253,7 +253,7 @@
             Add Item
           </v-btn>
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
-            <v-icon small>fa-file-download</v-icon>CSV
+            <v-icon small class="pr-1">fa-file-download</v-icon>CSV
           </v-btn>
 
           <v-spacer/>
@@ -278,7 +278,7 @@
           <!-- change to menu? -->
           <v-text-field
             v-model="search"
-            append-icon="search"
+            append-icon="fa-search"
             label="Search for item, assay, vendor, etc"
             hint="test"
             persistent-hint
@@ -665,8 +665,6 @@ export default {
     if (this.orderList.length === 0) {
       this.orderList = [{name: 'No orders to list', new: true}]
     }
-    this.$store.dispatch('setTitle', 'Inventory')
-    this.$store.dispatch('setDrawer', false)
 
     // go to top
     window.scroll({
