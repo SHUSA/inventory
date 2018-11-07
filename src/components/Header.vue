@@ -8,19 +8,15 @@
         width="500"
       >
         <v-btn slot="activator" icon small class="mx-0">
-          <v-icon>announcement</v-icon>
+          <v-icon small>fa-scroll</v-icon>
         </v-btn>
-        <v-card>
-          <v-card-title class="headline">What's New!</v-card-title>
-          <v-divider/>
-          <update/>
-        </v-card>
+        <update/>
       </v-dialog>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items>
       <v-btn v-if="$route.name !== 'login'" flat @click.native="drawer">
-        <v-icon>menu</v-icon>
+        <v-icon small class="pr-1">fa-bars</v-icon>
         {{pageTitle}}
       </v-btn>
     </v-toolbar-items>

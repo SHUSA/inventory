@@ -253,7 +253,7 @@
             Add Item
           </v-btn>
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
-            <v-icon small>arrow_downward</v-icon>CSV
+            <v-icon small>fa-file-download</v-icon>CSV
           </v-btn>
 
           <v-spacer/>
@@ -372,15 +372,6 @@
         <td>{{time(props.item)}}</td>
         <!-- recently updated -->
         <td>{{props.item.recentlyUpdated}}</td>
-        <!-- info icon -->
-        <!-- <td>
-          <v-btn icon class="mx-0" @click="getInfo(props.item)">
-            <v-tooltip top open-delay=50>
-              <v-icon slot="activator" color="teal">info</v-icon>
-              <span>Get {{props.item.name}} info</span>
-            </v-tooltip>
-          </v-btn>
-        </td> -->
       </template>
       <template slot="no-data">
         <v-alert color="error" icon="warning">Nothing here!</v-alert>
@@ -409,13 +400,6 @@ const Json2csvParser = require('json2csv').Parser
 // in the meantime, treat as text and only allow real and positive numbers to pass through
 
 export default {
-  props: [
-    'items',
-    'vendors',
-    'assays',
-    'orders',
-    'getInfo'
-  ],
   data () {
     return {
       pagination: {},
@@ -669,18 +653,6 @@ export default {
       if (!val) {
         this.alert = false
       }
-    },
-
-    // messes up autocomplete on this file for some reason
-    items () {
-      this.supplies = this.items
-      this.vendorList = this.vendors
-      this.assayList = this.assays
-      // this.orderList = this.orders
-    },
-
-    orderList () {
-      this.orderList = this.orders
     }
   },
 

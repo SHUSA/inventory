@@ -26,7 +26,7 @@
           <v-btn v-if="thisOrder.completed && admin" slot="activator" color="error" class="mb-0" dark small @click="completedDialog = !completedDialog">Undo Complete</v-btn>
 
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
-            <v-icon small>arrow_downward</v-icon>CSV
+            <v-icon small>fa-file-download</v-icon>CSV
           </v-btn>
 
           <v-spacer/>
