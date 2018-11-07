@@ -17,14 +17,10 @@ export default new Vuex.Store({
     },
     welcome: '',
     pageTitle: '',
-    drawer: true,
     token: null,
     userId: null,
     isUserLoggedIn: false,
-    isAdminLoggedIn: false,
-    itemInfo: {},
-    assayInfo: {},
-    selectedAssays: []
+    isAdminLoggedIn: false
   },
   mutations: {
     setUser (state, type) {
@@ -41,19 +37,6 @@ export default new Vuex.Store({
     },
     setTitle (state, title) {
       state.pageTitle = title
-    },
-    setDrawer (state, open) {
-      // initialize drawer to close
-      state.drawer = open !== undefined ? open : !state.drawer
-    },
-    setItemInfo (state, data) {
-      state.itemInfo = data
-    },
-    setAssayInfo (state, data) {
-      state.assayInfo = data
-    },
-    setSelectedAssay (state, data) {
-      state.selectedAssays = data
     }
   },
   actions: {
@@ -62,18 +45,6 @@ export default new Vuex.Store({
     },
     setTitle ({ commit }, title) {
       commit('setTitle', title)
-    },
-    setDrawer ({ commit }, open) {
-      commit('setDrawer', open)
-    },
-    setItemInfo ({ commit }, data) {
-      commit('setItemInfo', data)
-    },
-    setAssayInfo ({ commit }, data) {
-      commit('setAssayInfo', data)
-    },
-    setSelectedAssay ({ commit }, data) {
-      commit('setSelectedAssay', data)
     }
   }
 })

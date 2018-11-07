@@ -599,8 +599,7 @@ export default {
     ...mapState([
       'pageTitle',
       'admin',
-      'user',
-      'selectedAssays'
+      'user'
     ]),
 
     lastOrderPeriod () {
