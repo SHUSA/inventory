@@ -2,6 +2,7 @@
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
       {{title}} v.b-1.7.17
+      <!-- recent updates button -->
       <v-dialog
         v-model="dialog"
         scrollable
@@ -13,8 +14,9 @@
         <update/>
       </v-dialog>
     </v-toolbar-title>
-    <v-spacer></v-spacer>
+    <v-spacer/>
     <v-toolbar-items>
+      <!-- menu routes -->
       <v-menu v-if="this.$route.name === 'index'">
         <v-btn slot="activator" flat>
           <v-icon small class="pr-1">fa-bars</v-icon>
@@ -32,6 +34,7 @@
     </v-toolbar-items>
     <v-spacer/>
     <v-toolbar-items>
+      <!-- login and other info -->
       <v-btn flat class="display">{{welcome}}</v-btn>
       <v-btn flat @click="login">
         Login
@@ -65,9 +68,11 @@ export default {
       'welcome'
     ])
   },
+
   components: {
     Update
   },
+
   methods: {
     login () {
       this.$router.push({

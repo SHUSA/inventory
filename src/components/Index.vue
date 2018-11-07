@@ -1,11 +1,12 @@
 <template>
   <v-layout>
-    <!-- insert components here -->
+    <!-- components -->
     <template v-if="pageTitle !== 'Menu'">
       <inventory v-if="pageTitle === 'inventory'"/>
       <order v-if="pageTitle === 'orders'"/>
     </template>
     <update v-else/>
+    <!-- fab button -->
     <v-fab-transition>
       <v-btn v-scroll="onScroll" v-show="goUp" @click="goToTop" fixed bottom small right fab color="blue">
         <v-icon color="white">fa-angle-double-up</v-icon>
