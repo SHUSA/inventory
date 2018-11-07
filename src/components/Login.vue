@@ -25,9 +25,6 @@ export default {
         name: 'index'
       })
     }
-  },
-  mounted () {
-    this.$store.dispatch('setTitle', '')
   }
 }
 </script>
