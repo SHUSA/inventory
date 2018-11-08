@@ -7,11 +7,13 @@ import Veutify from 'vuetify'
 import { sync } from 'vuex-router-sync'
 import 'vuetify/dist/vuetify.min.css'
 import store from '@/store/store'
+import moment from 'moment'
 
 Vue.config.productionTip = false
 Vue.use(Veutify, {
   iconfont: 'fa'
 })
+Object.defineProperty(Vue.prototype, '$moment', { value: moment })
 
 sync(store, router)
 
