@@ -3,7 +3,7 @@
     <!-- components -->
     <template v-if="pageTitle !== 'Menu'">
       <inventory v-if="pageTitle === 'inventory'"/>
-      <order v-if="pageTitle === 'orders'"/>
+      <order-index v-if="pageTitle === 'orders'"/>
     </template>
     <update v-else/>
     <!-- fab button -->
@@ -23,13 +23,13 @@
 <script>
 import { mapState } from 'vuex'
 import Inventory from './Inventory'
-import Order from './Order'
+import OrderIndex from './order/OrderIndex'
 import Update from './Update'
 
 export default {
   components: {
     Inventory,
-    Order,
+    OrderIndex,
     Update
   },
 
