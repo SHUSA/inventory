@@ -603,7 +603,7 @@ export default {
     ]),
 
     lastOrderPeriod () {
-      return moment().startOf('week').subtract(7, 'day').format('MMM DD, YYYY')
+      return this.$moment().startOf('week').subtract(7, 'day').format('MMM DD, YYYY')
     },
 
     outstandingAssays () {
@@ -683,16 +683,16 @@ export default {
       const blob = new Blob([csv], {type: 'text/csv'})
 
       csvbtn.href = URL.createObjectURL(blob)
-      csvbtn.download = `${moment().format('YYYY-MM-DD')} Inventory.csv`
+      csvbtn.download = `${this.$moment().format('YYYY-MM-DD')} Inventory.csv`
     },
 
     time (item) {
-      item.lastUpdate = moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
+      item.lastUpdate = this.$moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
       return item.lastUpdate
     },
 
     recentlyUpdated (item) {
-      let oneWeekAgo = moment().startOf('week').subtract(7, 'day').format()
+      let oneWeekAgo = this.$moment().startOf('week').subtract(7, 'day').format()
 
       // checks to see if item was updated in the past 2 weeks, starting from Sunday
       // does not account if user or admin did the update
@@ -995,7 +995,7 @@ export default {
             entry.OrderId = newOrder.id
             await entryService.post(entry)
           } else {
-            const lastSunday = moment().startOf('week').format()
+            const lastSunday = this.$moment().startOf('week').format()
             const recentOrder = this.orderList[0]
 
             if (recentOrder.createdAt < lastSunday || recentOrder.completed) {

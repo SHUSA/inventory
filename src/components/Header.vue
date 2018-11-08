@@ -49,12 +49,11 @@
 <script>
 import { mapState } from 'vuex'
 import Update from './Update'
-const moment = require('moment')
 
 export default {
   data () {
     return {
-      time: moment().format('MMM DD, YYYY'),
+      time: this.$moment().format('MMM DD, YYYY'),
       title: 'Molecular Inventory',
       dialog: false,
       routes: ['Inventory', 'Orders']
