@@ -99,15 +99,11 @@
 import { mapState } from 'vuex'
 import orderService from '@/services/OrderService.js'
 import itemService from '@/services/ItemService.js'
-const moment = require('moment')
+import vendorService from '@/services/VendorService.js'
+import assayService from '@/services/AssayService.js'
 const Json2csvParser = require('json2csv').Parser
 
 export default {
-  props: [
-    'order',
-    'vendors',
-    'assays'
-  ],
   data () {
     return {
       pagination: {
@@ -207,11 +203,11 @@ export default {
       console.log(this.items)
 
       csvbtn.href = URL.createObjectURL(blob)
-      csvbtn.download = `${moment().format('YYYY-MM-DD')} Inventory.csv`
+      csvbtn.download = `${this.$moment().format('YYYY-MM-DD')} Inventory.csv`
     },
 
     time (time) {
-      return moment(time).format('MMM-DD-YYYY HH:mm:ss')
+      return this.$moment(time).format('MMM-DD-YYYY HH:mm:ss')
     },
 
     getVendor (item) {
