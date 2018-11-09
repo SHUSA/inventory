@@ -64,7 +64,8 @@ export default {
       'pageTitle',
       'admin',
       'user',
-      'welcome'
+      'welcome',
+      'mode'
     ])
   },
 
@@ -81,6 +82,7 @@ export default {
 
     goTo (route) {
       this.$store.dispatch('setTitle', route.toLowerCase())
+      this.$store.dispatch('setMode', route.toLowerCase())
     }
   }
 }

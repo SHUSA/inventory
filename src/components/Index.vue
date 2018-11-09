@@ -1,9 +1,9 @@
 <template>
   <v-layout>
     <!-- components -->
-    <inventory v-if="pageTitle === 'inventory'"/>
-    <order-index v-else-if="pageTitle === 'orders'"/>
-    <update v-else-if="pageTitle === 'menu'"/>
+    <inventory v-if="mode === 'inventory'"/>
+    <order-index v-else-if="mode === 'orders'"/>
+    <update v-else-if="mode === 'menu'"/>
     <!-- fab button -->
     <v-fab-transition>
       <v-btn v-scroll="onScroll" v-show="goUp" @click="goToTop" fixed bottom small right fab color="blue">
@@ -39,14 +39,17 @@ export default {
   },
 
   mounted () {
-    this.$store.dispatch('setTitle', 'menu')
+    let initial = 'menu'
+    this.$store.dispatch('setTitle', initial)
+    this.$store.dispatch('setMode', initial)
   },
 
   computed: {
     ...mapState([
       'user',
       'admin',
-      'pageTitle'
+      'pageTitle',
+      'mode'
     ])
   },
 

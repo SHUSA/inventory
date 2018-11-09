@@ -17,6 +17,7 @@ export default new Vuex.Store({
     },
     welcome: '',
     pageTitle: '',
+    mode: '',
     token: null,
     userId: null,
     isUserLoggedIn: false,
@@ -37,6 +38,9 @@ export default new Vuex.Store({
     },
     setTitle (state, title) {
       state.pageTitle = title
+    },
+    setMode (state, mode) {
+      state.mode = mode
     }
   },
   actions: {
@@ -45,6 +49,9 @@ export default new Vuex.Store({
     },
     setTitle ({ commit }, title) {
       commit('setTitle', title)
+    },
+    setMode ({ commit }, mode) {
+      commit('setMode', mode)
     }
   }
 })
