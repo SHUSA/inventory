@@ -390,7 +390,6 @@ import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
 import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
-const moment = require('moment')
 const Json2csvParser = require('json2csv').Parser
 // Notes on number input type
 // -unable to block e, -, +
