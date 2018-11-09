@@ -1,11 +1,9 @@
 <template>
   <v-layout>
     <!-- components -->
-    <template v-if="pageTitle !== 'Menu'">
-      <inventory v-if="pageTitle === 'inventory'"/>
-      <order-index v-if="pageTitle === 'orders'"/>
-    </template>
-    <update v-else/>
+    <inventory v-if="pageTitle === 'inventory'"/>
+    <order-index v-else-if="pageTitle === 'orders'"/>
+    <update v-else-if="pageTitle === 'menu'"/>
     <!-- fab button -->
     <v-fab-transition>
       <v-btn v-scroll="onScroll" v-show="goUp" @click="goToTop" fixed bottom small right fab color="blue">
@@ -41,7 +39,7 @@ export default {
   },
 
   mounted () {
-    this.$store.dispatch('setTitle', 'Menu')
+    this.$store.dispatch('setTitle', 'menu')
   },
 
   computed: {
