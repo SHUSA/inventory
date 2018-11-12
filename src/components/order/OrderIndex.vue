@@ -13,7 +13,7 @@
         </v-list-tile>
       </v-list>
     </template>
-    <order v-else :orderId="orderId"/>
+    <order v-else-if="mode === 'orders' && pageTitle !== 'orders'" :order="order"/>
   </v-card>
 </template>
 
@@ -29,30 +29,45 @@ export default {
 
   data () {
     return {
+      order: {},
       orders: [],
       orderId: null
     }
   },
 
-  async mounted () {
-    this.orderId = null
-    this.orders = (await orderService.index()).data
-
-    // when no orders exist; initial db state
-    if (this.orders.length === 0) {
-      this.orders = [{name: 'No orders to list', new: true}]
+  watch: {
+    pageTitle (val) {
+      if (val === 'orders') {
+        this.initialize()
+      }
     }
+  },
+
+  mounted () {
+    console.log('order mount')
+    this.initialize()
   },
 
   computed: {
     ...mapState([
       'user',
       'admin',
-      'pageTitle'
+      'pageTitle',
+      'mode'
     ])
   },
 
   methods: {
+    async initialize () {
+      this.order = {}
+      this.orders = (await orderService.index()).data
+
+      // when no orders exist; initial db state
+      if (this.orders.length === 0) {
+        this.orders = [{name: 'No orders to list', new: true}]
+      }
+    },
+
     time (order) {
       return this.$moment(order).format('MMM-DD-YYYY')
     },
@@ -62,7 +77,7 @@ export default {
         this.$store.dispatch('setTitle', 'No Orders')
       } else {
         this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
-        this.orderId = this.orders[index].id
+        this.order = this.orders[index]
       }
     }
   }
