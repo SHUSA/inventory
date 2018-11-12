@@ -13,9 +13,7 @@
         </v-list-tile>
       </v-list>
     </template>
-    <template v-else>
-      <order :orderId="orderId"/>
-    </template>
+    <order v-else :orderId="orderId"/>
   </v-card>
 </template>
 
@@ -37,6 +35,7 @@ export default {
   },
 
   async mounted () {
+    this.orderId = null
     this.orders = (await orderService.index()).data
 
     // when no orders exist; initial db state
@@ -63,7 +62,7 @@ export default {
         this.$store.dispatch('setTitle', 'No Orders')
       } else {
         this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
-        this.orderId = this.order[index].id
+        this.orderId = this.orders[index].id
       }
     }
   }
