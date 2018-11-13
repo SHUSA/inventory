@@ -1,9 +1,11 @@
 <template>
   <v-layout>
     <!-- components -->
-    <inventory v-if="mode === 'inventory'"/>
-    <order-index v-else-if="mode === 'orders'"/>
-    <update v-else-if="mode === 'menu'"/>
+    <v-flex xs12 wrap>
+      <inventory v-if="mode === 'inventory'"/>
+      <order-index v-else-if="mode === 'orders'"/>
+      <update v-else-if="mode === 'menu'"/>
+    </v-flex>
     <!-- fab button -->
     <v-fab-transition>
       <v-btn v-scroll="onScroll" v-show="goUp" @click="goToTop" fixed bottom small right fab color="blue">
