@@ -390,6 +390,9 @@ import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
 import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
+import ItemDialog from '../dialogs/ItemDialog'
+import AssayDialog from '../dialogs/AssayDialog'
+import VendorDialog from '../dialogs/VendorDialog'
 const Json2csvParser = require('json2csv').Parser
 // Notes on number input type
 // -unable to block e, -, +
@@ -634,6 +637,12 @@ export default {
 
       return arr.sort((a, b) => a[0].localeCompare(b[0], 'en', {'sensitivity': 'base'}))
     }
+  },
+
+  components: {
+    ItemDialog,
+    AssayDialog,
+    VendorDialog
   },
 
   watch: {
