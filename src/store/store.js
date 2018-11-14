@@ -21,7 +21,13 @@ export default new Vuex.Store({
     token: null,
     userId: null,
     isUserLoggedIn: false,
-    isAdminLoggedIn: false
+    isAdminLoggedIn: false,
+    itemDialog: false,
+    assayDialog: false,
+    vendorDialog: false,
+    itemSave: false,
+    assaySave: false,
+    vendorSave: false
   },
   mutations: {
     setUser (state, type) {
@@ -41,6 +47,24 @@ export default new Vuex.Store({
     },
     setMode (state, mode) {
       state.mode = mode
+    },
+    setItemDialog (state, open) {
+      state.itemDialog = open
+    },
+    setAssayDialog (state, open) {
+      state.assayDialog = open
+    },
+    setVendorDialog (state, open) {
+      state.vendorDialog = open
+    },
+    setItemSave (state, saved) {
+      state.itemSave = saved
+    },
+    setAssaySave (state, saved) {
+      state.assaySave = saved
+    },
+    setVendorSave (state, saved) {
+      state.vendorSave = saved
     }
   },
   actions: {
@@ -52,6 +76,24 @@ export default new Vuex.Store({
     },
     setMode ({ commit }, mode) {
       commit('setMode', mode)
+    },
+    setItemDialog ({ commit }, open) {
+      commit('setItemDialog', open)
+    },
+    setAssayDialog ({ commit }, open) {
+      commit('setAssayDialog', open)
+    },
+    setVendorDialog ({ commit }, open) {
+      commit('setVendorDialog', open)
+    },
+    setItemSave ({ commit }, saved) {
+      commit('setItemSave', saved)
+    },
+    setAssaySave ({ commit }, saved) {
+      commit('setAssaySave', saved)
+    },
+    setVendorSave ({ commit }, saved) {
+      commit('setVendorSave', saved)
     }
   }
 })
