@@ -22,7 +22,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import Inventory from './Inventory'
+import Inventory from './inventory/Inventory'
 import OrderIndex from './order/OrderIndex'
 import Update from './Update'
 
