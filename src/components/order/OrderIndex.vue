@@ -44,7 +44,6 @@ export default {
   },
 
   mounted () {
-    console.log('order mount')
     this.initialize()
   },
 
