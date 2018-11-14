@@ -68,7 +68,7 @@ export default {
     },
 
     time (order) {
-      return this.$moment(order).format('MMM-DD-YYYY')
+      return this.$moment(order).startOf('week').format('MMM-DD-YYYY')
     },
 
     viewOrder (index) {
