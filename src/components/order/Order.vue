@@ -39,6 +39,11 @@
             hide-details
           />
         </v-layout>
+        <!-- completed message -->
+        <v-card v-if="thisOrder.completed" class="ma-2">
+          <v-card-text>Completed on {{time(thisOrder.completeDate)}}</v-card-text>
+        </v-card>
+        <!-- render assays and vendors in list -->
         <v-layout row wrap>
           <v-card-text>Vendors in this order:</v-card-text>
           <v-chip v-for="(value, index) in listVendors" :key="index" @click="search = value">
@@ -53,10 +58,7 @@
         </v-layout>
       </v-container>
     </v-card-title>
-    <v-card v-if="thisOrder.completed" class="ma-2">
-      <v-card-text>Completed on {{time(thisOrder.completeDate)}}</v-card-text>
-    </v-card>
-
+    <!-- data table -->
     <v-data-table
       ref="search"
       :headers="headers"
@@ -104,6 +106,10 @@ import assayService from '@/services/AssayService.js'
 const Json2csvParser = require('json2csv').Parser
 
 export default {
+  props: [
+    'order'
+  ],
+
   data () {
     return {
       pagination: {
@@ -127,6 +133,8 @@ export default {
       ],
       thisOrder: {},
       items: [],
+      vendors: [],
+      assays: [],
       entries: []
     }
   },
@@ -163,18 +171,14 @@ export default {
     this.initialize()
   },
 
-  watch: {
-    order () {
-      this.initialize()
-    }
-  },
-
   methods: {
     async initialize () {
       if (this.order.id) {
         this.thisOrder = this.order
         let itemIds = null
-        // get entries
+        // get information
+        this.vendors = (await vendorService.index(true)).data
+        this.assays = (await assayService.index(true)).data
         this.entries = (await orderService.show(this.order.id)).data.Entries
         itemIds = this.entries.map(x => x.ItemId)
         this.items = (await itemService.show(itemIds)).data
@@ -200,7 +204,6 @@ export default {
       const results = this.$refs.search.filteredItems
       const csv = json2csv.parse(results)
       const blob = new Blob([csv], {type: 'text/csv'})
-      console.log(this.items)
 
       csvbtn.href = URL.createObjectURL(blob)
       csvbtn.download = `${this.$moment().format('YYYY-MM-DD')} Inventory.csv`
@@ -238,10 +241,11 @@ export default {
       this.loading = true
       if (this.thisOrder.completed) {
         this.thisOrder.completeDate = null
+        this.thisOrder.completed = false
       } else {
         this.thisOrder.completeDate = Date.now()
+        this.thisOrder.completed = true
       }
-      this.thisOrder.completed = !this.thisOrder.completed
       await orderService.put(this.thisOrder)
       this.loading = false
       this.close()
