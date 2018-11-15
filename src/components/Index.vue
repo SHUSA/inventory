@@ -2,7 +2,7 @@
   <v-layout>
     <!-- components -->
     <v-flex xs12 wrap>
-      <inventory v-if="mode === 'inventory'"/>
+      <inventory-index v-if="mode === 'inventory'"/>
       <order-index v-else-if="mode === 'orders'"/>
       <update v-else-if="mode === 'menu'"/>
     </v-flex>
@@ -22,13 +22,13 @@
 
 <script>
 import { mapState } from 'vuex'
-import Inventory from './inventory/Inventory'
+import InventoryIndex from './inventory/InventoryIndex'
 import OrderIndex from './order/OrderIndex'
 import Update from './Update'
 
 export default {
   components: {
-    Inventory,
+    InventoryIndex,
     OrderIndex,
     Update
   },
