@@ -83,9 +83,9 @@ export default {
     goTo (route) {
       this.$store.dispatch('setTitle', route.toLowerCase())
       this.$store.dispatch('setMode', route.toLowerCase())
-      this.$router.push({
-        name: route.toLowerCase()
-      })
+      // this.$router.push({
+      //   name: route.toLowerCase()
+      // })
     }
   }
 }
