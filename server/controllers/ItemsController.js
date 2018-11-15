@@ -27,15 +27,23 @@ function calculateStockLevels (item, assay) {
 
 module.exports = {
   async index (req, res) {
-    let search = {}
-    search.active = req.query.status
     try {
-      let items = await Item.findAll({
-        where: search,
-        order: [
-          ['name', 'ASC']
-        ]
-      })
+      const search = req.query.search
+      let items = null
+      if (search) {
+        items = await Item.findAll({
+          where: {
+            $or: ['active'].map(key => ({
+              [key]: search
+            }))
+          },
+          order: [
+            ['name', 'ASC']
+          ]
+        })
+      } else {
+        items = await Item.findAll()
+      }
       res.send(items)
     } catch (error) {
       console.log(error)

@@ -4,14 +4,22 @@ const { Assay } = require('../models')
 module.exports = {
   async index (req, res) {
     try {
-      let assays = await Assay.findAll({
-        where: {
-          active: req.query.status
-        },
-        order: [
-          ['name', 'ASC']
-        ]
-      })
+      const search = req.query.search
+      let assays = null
+      if (search) {
+        assays = await Assay.findAll({
+          where: {
+            $or: ['active'].map(key => ({
+              [key]: search
+            }))
+          },
+          order: [
+            ['name', 'ASC']
+          ]
+        })
+      } else {
+        assays = await Assay.findAll()
+      }
       res.send(assays)
     } catch (error) {
       console.log(error)

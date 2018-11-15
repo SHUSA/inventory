@@ -1,10 +1,10 @@
 import API from './API'
 
 export default {
-  index (status) {
+  index (search) {
     return API().get('vendors', {
       params: {
-        status: status
+        search: search
       }
     }).catch(err =>
       JSON.parse(JSON.stringify(err)).response
