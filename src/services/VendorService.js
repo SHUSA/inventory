@@ -1,10 +1,11 @@
 import API from './API'
 
 export default {
-  index (search) {
+  index (search, attributes = []) {
     return API().get('vendors', {
       params: {
-        search: search
+        search: search,
+        attributes: attributes
       }
     }).catch(err =>
       JSON.parse(JSON.stringify(err)).response

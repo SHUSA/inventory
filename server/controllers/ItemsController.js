@@ -29,6 +29,7 @@ module.exports = {
   async index (req, res) {
     try {
       const search = req.query.search
+      const attributes = req.query.attributes
       let items = null
       if (search) {
         items = await Item.findAll({
@@ -39,7 +40,8 @@ module.exports = {
           },
           order: [
             ['name', 'ASC']
-          ]
+          ],
+          attributes: attributes
         })
       } else {
         items = await Item.findAll()

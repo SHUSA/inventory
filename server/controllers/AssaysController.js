@@ -1,10 +1,10 @@
 const { Assay } = require('../models')
-// const Issue = require('../models/Issues')
 
 module.exports = {
   async index (req, res) {
     try {
       const search = req.query.search
+      const attributes = req.query.attributes
       let assays = null
       if (search) {
         assays = await Assay.findAll({
@@ -15,7 +15,8 @@ module.exports = {
           },
           order: [
             ['name', 'ASC']
-          ]
+          ],
+          attributes: attributes
         })
       } else {
         assays = await Assay.findAll()

@@ -4,6 +4,7 @@ module.exports = {
   async index (req, res) {
     try {
       const search = req.query.search
+      const attributes = req.query.attributes
       let vendors = null
       if (search) {
         vendors = await Vendor.findAll({
@@ -14,7 +15,8 @@ module.exports = {
           },
           order: [
             ['name', 'ASC']
-          ]
+          ],
+          attributes: attributes
         })
       } else {
         vendors = await Vendor.findAll()
