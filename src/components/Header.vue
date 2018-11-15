@@ -17,7 +17,7 @@
     <v-spacer/>
     <v-toolbar-items>
       <!-- menu routes -->
-      <v-menu v-if="this.$route.name === 'index'">
+      <v-menu v-if="this.$route.name !== 'login'">
         <v-btn slot="activator" flat>
           <v-icon small class="pr-1">fa-bars</v-icon>
           {{pageTitle}}
@@ -83,6 +83,9 @@ export default {
     goTo (route) {
       this.$store.dispatch('setTitle', route.toLowerCase())
       this.$store.dispatch('setMode', route.toLowerCase())
+      this.$router.push({
+        name: route.toLowerCase()
+      })
     }
   }
 }
