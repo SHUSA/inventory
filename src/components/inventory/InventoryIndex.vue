@@ -3,12 +3,17 @@
     <!-- use this component to pre-select options before rendering table -->
     <!-- options: choose assays and/or vendors; some, one, or all -->
     <v-container fluid fill-height grid-list-md>
-      <v-layout row wrap>
-        <v-btn @click="populateList('assay')">Assays</v-btn>
-        <v-btn @click="populateList('vendor')">Vendors</v-btn>
+      <v-layout v-if="!submit" row wrap>
+        <v-card-text>Choose your filters</v-card-text>
+        <v-btn @click="populateList('assays')">Assays</v-btn>
+        <v-btn @click="populateList('vendors')">Vendors</v-btn>
         <v-flex xs12>
           <transition-group name="chips" tag="span">
-            <v-chip v-if="show" key="select-all">SELECT ALL</v-chip>
+            <v-chip v-if="show" key="select-all" @click="selectAll(list)" :color="allSelected ? 'red' : someSelected ? 'orange' : ''">
+              {{!allSelected ? 'SELECT ALL' : 'DESELECT ALL'}}
+            </v-chip>
+            <v-chip v-if="show" key="submit" @click="submit = true">Go!</v-chip>
+            <br key="break">
             <v-chip
               v-if="show"
               v-for="(item, index) in list"
@@ -21,6 +26,7 @@
           </transition-group>
         </v-flex>
       </v-layout>
+      <inventory v-else :selected="selected"/>
     </v-container>
   </v-card>
 </template>
@@ -42,12 +48,27 @@ export default {
       list: [],
       selected: [],
       show: false,
-      shown: null
+      shown: '',
+      submit: false
     }
   },
 
   mounted () {
     this.initialize()
+  },
+
+  computed: {
+    allSelected () {
+      if (this[this.shown]) {
+        return this.selected.length === this[this.shown].length
+      } else {
+        return false
+      }
+    },
+
+    someSelected () {
+      return this.selected.length > 0 && !this.allSelected
+    }
   },
 
   methods: {
@@ -57,19 +78,20 @@ export default {
     },
 
     populateList (type) {
+      // control chip visibility
+      if (this.show) {
+        if (this.shown === type) this.show = false
+      } else {
+        this.show = true
+      }
+
       // pass data to list
-      if (type === 'assay') {
+      if (type === 'assays') {
         this.list = this.assays
-      } else if (type === 'vendor') {
+      } else if (type === 'vendors') {
         this.list = this.vendors
       }
-      // control chip visibility
-      // fix this
-      if (this.shown === type) {
-        this.show = !this.show
-      } else {
-        this.shown = type
-      }
+      this.shown = type
     },
 
     add (item) {
@@ -85,12 +107,11 @@ export default {
       return this.selected.includes(item)
     },
 
-    selectAll () {
-      if (this.all) {
+    selectAll (list) {
+      if (this.selected.length === list.length) {
         this.selected = []
       } else {
-        this.selected = []
-        this.selected = this.assays.map(x => x.name)
+        this.selected = list.map(x => x.name)
       }
     }
   }
