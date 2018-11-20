@@ -105,7 +105,7 @@
                     <v-text-field
                       v-model="editedItem.currentStock"
                       validate-on-blur :rules="[rules.number]"
-                      ref="focus"
+                      autofocus
                       type="number"
                       min=0
                       label="Current Stock"
@@ -325,8 +325,7 @@
       :items="supplies"
       :search="search"
       must-sort
-      :pagination.sync="pagination"
-      :rows-per-page-items='[{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}, 10, 25]'
+      hide-actions
     >
       <!-- item name -->
       <template slot="items" slot-scope="props">
@@ -399,10 +398,16 @@ const Json2csvParser = require('json2csv').Parser
 // in the meantime, treat as text and only allow real and positive numbers to pass through
 
 export default {
+  props: [
+    'selected'
+  ],
+
   data () {
     return {
-      pagination: {},
       currentItem: {},
+      catalogNumbers: [],
+      vendorNames: [],
+      assayNames: [],
       dialog: false,
       assayDialog: false,
       vendorDialog: false,
@@ -412,7 +417,6 @@ export default {
       alert: false,
       loading: false,
       search: '',
-      selected: [],
       alertMessage: '',
       assayForm: '',
       vendorForm: '',
@@ -459,7 +463,7 @@ export default {
           if (text.length === 0) {
             this.errors.catalog = true
             return 'Please enter a unique catalog number'
-          } else if (this.supplies.find(item => item.catalogNumber === text.toUpperCase()) !== undefined) {
+          } else if (this.catalogNumbers.includes(text.toUpperCase())) {
             // fixes error throwing on existing items
             if (this.editedIndex > -1) {
               this.errors.catalog = false
@@ -477,7 +481,7 @@ export default {
           if (text.length === 0) {
             this.errors.assay = true
             return 'Please enter a valid name'
-          } else if (this.assayList.find(assay => assay.name.toUpperCase() === text.toUpperCase()) !== undefined) {
+          } else if (this.assayNames.includes(text.toUpperCase())) {
             if (this.editedIndex > -1) {
               this.errors.assay = false
               return true
@@ -494,7 +498,7 @@ export default {
           if (text.length === 0) {
             this.errors.vendor = true
             return 'Please enter a valid name'
-          } else if (this.vendorList.find(vendor => vendor.name.toUpperCase() === text.toUpperCase()) !== undefined) {
+          } else if (this.vendorNames.includes(text.toUpperCase())) {
             if (this.editedIndex > -1) {
               this.errors.vendor = false
               return true
@@ -656,9 +660,13 @@ export default {
 
   async mounted () {
     // initialize variables
-    this.supplies = (await itemService.index(true)).data
-    this.vendorList = (await vendorService.index(true)).data
-    this.assayList = (await assayService.index(true)).data
+    this.supplies = (await itemService.show(this.selected)).data
+    this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
+    console.log(this.catalogNumbers)
+    this.vendorList = (await vendorService.index()).data
+    this.vendorNames = this.vendorList.map(vendor => vendor.name.toUpperCase())
+    this.assayList = (await assayService.index()).data
+    this.assayNames = this.assayList.map(assay => assay.name.toUpperCase())
     this.orderList = (await orderService.index()).data
 
     if (this.orderList.length === 0) {
@@ -802,9 +810,6 @@ export default {
       this.editedIndex = this.supplies.indexOf(item)
       this.editedItem = Object.assign(this.editedItem, item)
       this.dialog = true
-      requestAnimationFrame(() => {
-        this.$refs.focus.focus()
-      })
     },
 
     async deactivateItem (item) {
