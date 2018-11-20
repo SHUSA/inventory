@@ -3,24 +3,17 @@ const { Vendor } = require('../models')
 module.exports = {
   async index (req, res) {
     try {
-      const search = req.query.search
+      const active = req.query.active
       const attributes = req.query.attributes
-      let vendors = null
-      if (search) {
-        vendors = await Vendor.findAll({
-          where: {
-            $or: ['active'].map(key => ({
-              [key]: search
-            }))
-          },
-          order: [
-            ['name', 'ASC']
-          ],
-          attributes: attributes
-        })
-      } else {
-        vendors = await Vendor.findAll()
-      }
+      let vendors = await Vendor.findAll({
+        where: {
+          active: active
+        },
+        order: [
+          ['name', 'ASC']
+        ],
+        attributes: attributes
+      })
       res.send(vendors)
     } catch (error) {
       res.status(500).send(error.errors)
