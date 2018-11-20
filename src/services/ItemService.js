@@ -1,21 +1,22 @@
 import API from './API'
 
 export default {
-  index (search, attributes = []) {
+  index (attributes = [], active = true) {
     return API().get('items', {
       params: {
-        search: search,
-        attributes: attributes
+        attributes: attributes,
+        active: active
       }
     }).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   },
 
-  show (itemIds) {
+  show (ids, active = true) {
     return API().get('items/list', {
       params: {
-        itemIds: itemIds
+        ids: ids,
+        active: active
       }
     }).catch(err =>
       JSON.parse(JSON.stringify(err)).response
