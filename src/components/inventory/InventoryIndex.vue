@@ -81,8 +81,8 @@ export default {
 
   methods: {
     async initialize () {
-      this.assays = (await assayService.index(true, ['name', 'id'])).data
-      this.vendors = (await vendorService.index(true, ['name', 'id'])).data
+      this.assays = (await assayService.index(['name', 'id'])).data
+      this.vendors = (await vendorService.index(['name', 'id'])).data
     },
 
     populateList (type) {
