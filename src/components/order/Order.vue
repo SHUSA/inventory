@@ -177,8 +177,8 @@ export default {
         this.thisOrder = this.order
         let itemIds = null
         // get information
-        this.vendors = (await vendorService.index(true)).data
-        this.assays = (await assayService.index(true)).data
+        this.vendors = (await vendorService.index()).data
+        this.assays = (await assayService.index()).data
         this.entries = (await orderService.show(this.order.id)).data.Entries
         itemIds = this.entries.map(x => x.ItemId)
         this.items = (await itemService.show(itemIds)).data

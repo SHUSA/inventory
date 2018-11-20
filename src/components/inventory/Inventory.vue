@@ -662,7 +662,6 @@ export default {
     // initialize variables
     this.supplies = (await itemService.show(this.selected)).data
     this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
-    console.log(this.catalogNumbers)
     this.vendorList = (await vendorService.index()).data
     this.vendorNames = this.vendorList.map(vendor => vendor.name.toUpperCase())
     this.assayList = (await assayService.index()).data
