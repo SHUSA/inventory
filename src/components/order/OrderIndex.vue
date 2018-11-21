@@ -25,8 +25,7 @@ export default {
   data () {
     return {
       order: {},
-      orders: [],
-      orderId: null
+      orders: []
     }
   },
 
