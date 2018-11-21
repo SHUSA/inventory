@@ -88,7 +88,7 @@
         <td>{{time(props.item.updatedAt)}}</td>
       </template>
       <template slot="no-data">
-        <v-alert color="error" icon="warning">Nothing here!</v-alert>
+        <v-alert :value="true" color="error" icon="fa-exclamation-triangle">Nothing here!</v-alert>
       </template>
       <v-alert slot="no-results" :value="true" color="error" icon="warning">
         No results for {{search}}.
@@ -106,10 +106,6 @@ import assayService from '@/services/AssayService.js'
 const Json2csvParser = require('json2csv').Parser
 
 export default {
-  props: [
-    'order'
-  ],
-
   data () {
     return {
       pagination: {
@@ -141,7 +137,8 @@ export default {
 
   computed: {
     ...mapState([
-      'admin'
+      'admin',
+      'storedOrder'
     ]),
 
     listVendors () {
@@ -168,33 +165,34 @@ export default {
   },
 
   mounted () {
-    this.initialize()
+    if (this.storedOrder) {
+      this.$store.dispatch('setTitle', `Week of ${this.weekOf(this.storedOrder.createdAt)}`)
+      this.initialize()
+    }
   },
 
   methods: {
     async initialize () {
-      if (this.order.id) {
-        this.thisOrder = this.order
-        let itemIds = null
-        // get information
-        this.vendors = (await vendorService.index()).data
-        this.assays = (await assayService.index()).data
-        this.entries = (await orderService.show(this.order.id)).data.Entries
-        itemIds = this.entries.map(x => x.ItemId)
-        this.items = (await itemService.show(itemIds)).data
-        // merge currentStock and comment from entries to items
-        this.items.map(index => {
-          this.getVendor(index)
-          this.getAssay(index)
-          for (let i = 0; i < this.entries.length; i++) {
-            let entry = this.entries[i]
-            if (index.id === entry.ItemId) {
-              index.currentStock = entry.currentStock
-              index.comment = entry.comment
-            }
+      this.thisOrder = this.storedOrder
+      let itemIds = null
+      // get information
+      this.vendors = (await vendorService.index()).data
+      this.assays = (await assayService.index()).data
+      this.entries = (await orderService.show(this.storedOrder.id)).data.Entries
+      itemIds = this.entries.map(x => x.ItemId)
+      this.items = (await itemService.show(itemIds)).data
+      // merge currentStock and comment from entries to items
+      this.items.map(index => {
+        this.getVendor(index)
+        this.getAssay(index)
+        for (let i = 0; i < this.entries.length; i++) {
+          let entry = this.entries[i]
+          if (index.id === entry.ItemId) {
+            index.currentStock = entry.currentStock
+            index.comment = entry.comment
           }
-        })
-      }
+        }
+      })
     },
 
     getCSV () {
@@ -211,6 +209,10 @@ export default {
 
     time (time) {
       return this.$moment(time).format('MMM-DD-YYYY HH:mm:ss')
+    },
+
+    weekOf (time) {
+      return this.$moment(time).startOf('week').format('MMM-DD-YYYY')
     },
 
     getVendor (item) {
