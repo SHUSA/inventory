@@ -17,7 +17,24 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
+  mounted () {
+    let initial = 'menu'
+    this.$store.dispatch('setTitle', initial)
+    this.$store.dispatch('setMode', initial)
+  },
+
+  computed: {
+    ...mapState([
+      'user',
+      'admin',
+      'pageTitle',
+      'mode'
+    ])
+  },
+
   methods: {
     login (type) {
       this.$store.dispatch('setUser', type)
