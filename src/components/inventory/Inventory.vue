@@ -373,7 +373,7 @@
         <td>{{props.item.recentlyUpdated}}</td>
       </template>
       <template slot="no-data">
-        <v-alert color="error" icon="warning">Nothing here!</v-alert>
+        <v-alert :value="true" color="error" icon="fa-exclamation-triangle">Nothing here!</v-alert>
       </template>
       <v-alert slot="no-results" :value="true" color="error" icon="warning">
         No results for {{search}}.
@@ -602,7 +602,8 @@ export default {
     ...mapState([
       'pageTitle',
       'admin',
-      'user'
+      'user',
+      'storedFilters'
     ]),
 
     lastOrderPeriod () {
@@ -611,7 +612,6 @@ export default {
 
     outstandingAssays () {
       let obj = {}
-      // to do: return obj in alphabetical order
       // fix coding; clunky
       this.supplies.map(item => {
         this.recentlyUpdated(item)
@@ -660,17 +660,13 @@ export default {
 
   async mounted () {
     // initialize variables
-    this.supplies = (await itemService.show(this.selected)).data
+    this.supplies = (await itemService.show(this.storedFilters)).data
     this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
     this.vendorList = (await vendorService.index()).data
     this.vendorNames = this.vendorList.map(vendor => vendor.name.toUpperCase())
     this.assayList = (await assayService.index()).data
     this.assayNames = this.assayList.map(assay => assay.name.toUpperCase())
     this.orderList = (await orderService.index()).data
-
-    if (this.orderList.length === 0) {
-      this.orderList = [{name: 'No orders to list', new: true}]
-    }
 
     // go to top
     window.scroll({
@@ -990,7 +986,7 @@ export default {
             comment: this.editedItem.comment
           }
 
-          if (this.orderList[0].new) {
+          if (this.orderList.length === 0) {
             // initial orders
             const newOrder = (await orderService.post()).data
             this.orderList.pop()
