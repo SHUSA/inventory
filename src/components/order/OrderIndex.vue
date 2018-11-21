@@ -11,9 +11,9 @@
           <v-list-tile-title v-if="order.new">{{order.name}}</v-list-tile-title>
           <v-list-tile-title v-else>Week of {{time(order.createdAt)}}</v-list-tile-title>
         </v-list-tile>
+        <v-alert :value="!orders" color="error" icon="fa-exclamation-triangle">No orders to display!</v-alert>
       </v-list>
     </template>
-    <order v-else-if="mode === 'orders' && pageTitle !== 'orders'" :order="order"/>
   </v-card>
 </template>
 
@@ -52,19 +52,18 @@ export default {
       'user',
       'admin',
       'pageTitle',
-      'mode'
+      'mode',
+      'route'
     ])
   },
 
   methods: {
     async initialize () {
+      this.$store.dispatch('setTitle', this.route.name)
+      this.$store.dispatch('setMode', this.route.name)
+
       this.order = {}
       this.orders = (await orderService.index()).data
-
-      // when no orders exist; initial db state
-      if (this.orders.length === 0) {
-        this.orders = [{name: 'No orders to list', new: true}]
-      }
     },
 
     time (order) {
@@ -72,12 +71,13 @@ export default {
     },
 
     viewOrder (index) {
-      if (this.orders[0].new) {
-        this.$store.dispatch('setTitle', 'No Orders')
-      } else {
-        this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
-        this.order = this.orders[index]
-      }
+      this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
+      this.order = this.orders[index]
+      // store selected order and push Order component
+      this.$store.dispatch('setOrder', this.order)
+      this.$router.push({
+        name: 'order'
+      })
     }
   }
 }
