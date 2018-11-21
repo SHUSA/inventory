@@ -3,7 +3,7 @@
     <!-- use this component to pre-select options before rendering table -->
     <!-- options: choose assays and/or vendors; some, one, or all -->
     <v-container fluid fill-height grid-list-md>
-      <v-layout v-if="!submit" row wrap>
+      <v-layout row wrap>
         <v-card-text>Choose your filters</v-card-text>
         <v-btn @click="populateList('assays')">Assays</v-btn>
         <v-btn @click="populateList('vendors')">Vendors</v-btn>
@@ -16,7 +16,7 @@
           </transition>
           <!-- submit -->
           <transition name="submit" mode="out-in">
-            <v-chip v-if="allSelected || someSelected" key="submit" @click="submit = true" color="green">Go!</v-chip>
+            <v-chip v-if="allSelected || someSelected" key="submit" @click="submit" color="green">Go!</v-chip>
           </transition>
           <br>
           <!-- filter chips -->
@@ -33,22 +33,16 @@
           </transition-group>
         </v-flex>
       </v-layout>
-      <!-- inventory -->
-      <inventory v-else :selected="selected"/>
     </v-container>
   </v-card>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
-import Inventory from './Inventory'
 
 export default {
-  components: {
-    Inventory
-  },
-
   data () {
     return {
       assays: [],
@@ -56,8 +50,7 @@ export default {
       list: [],
       selected: [],
       show: false,
-      shown: '',
-      submit: false
+      shown: ''
     }
   },
 
@@ -66,6 +59,14 @@ export default {
   },
 
   computed: {
+    ...mapState([
+      'user',
+      'admin',
+      'mode',
+      'route',
+      'storedFilters'
+    ]),
+
     allSelected () {
       if (this[this.shown]) {
         return this.selected.length === this[this.shown].length
@@ -81,6 +82,9 @@ export default {
 
   methods: {
     async initialize () {
+      this.$store.dispatch('setTitle', this.route.name)
+      this.$store.dispatch('setMode', this.route.name)
+
       this.assays = (await assayService.index(['name', 'id'])).data
       this.vendors = (await vendorService.index(['name', 'id'])).data
     },
@@ -125,6 +129,13 @@ export default {
       } else {
         this.selected = list.map(x => x.id)
       }
+    },
+
+    submit () {
+      this.$store.dispatch('setFilters', this.selected)
+      this.$router.push({
+        name: 'inventory-table'
+      })
     }
   }
 
