@@ -22,6 +22,7 @@ export default new Vuex.Store({
     userId: null,
     isUserLoggedIn: false,
     isAdminLoggedIn: false,
+    storedOrder: {},
     itemDialog: false,
     assayDialog: false,
     vendorDialog: false,
@@ -47,6 +48,9 @@ export default new Vuex.Store({
     },
     setMode (state, mode) {
       state.mode = mode
+    },
+    setOrder (state, data) {
+      state.storedOrder = data
     },
     setItemDialog (state, open) {
       state.itemDialog = open
@@ -76,6 +80,9 @@ export default new Vuex.Store({
     },
     setMode ({ commit }, mode) {
       commit('setMode', mode)
+    },
+    setOrder ({ commit }, data) {
+      commit('setOrder', data)
     },
     setItemDialog ({ commit }, open) {
       commit('setItemDialog', open)
