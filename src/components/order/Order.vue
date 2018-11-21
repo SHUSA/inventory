@@ -169,6 +169,12 @@ export default {
       this.$store.dispatch('setTitle', `Week of ${this.weekOf(this.storedOrder.createdAt)}`)
       this.initialize()
     }
+
+    // go to top
+    window.scroll({
+      top: 0,
+      left: 0
+    })
   },
 
   methods: {
