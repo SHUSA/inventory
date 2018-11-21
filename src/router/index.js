@@ -37,17 +37,16 @@ export default new Router({
     {
       path: '/orders/table',
       name: 'order',
-      props: true,
       component: Order
     },
     {
       path: '/inventory/table',
       name: 'inventory-table',
-      props: true,
       component: Inventory
     },
     {
       path: '*',
+      name: '404',
       component: NotFound
     }
   ]

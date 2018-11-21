@@ -9,7 +9,7 @@
       <ul>
         <!-- (li>{2018.11.DD - v1.7.xx}ul>li{update notes})+br -->
         <li>
-          2018.11.DD - v1.7.17, Duplicates
+          2018.11.05 - v1.7.17, Duplicates
           <ul>
             <li>Cleaned up duplicate Assay and Vendor validation when creating/editing Assays and Vendors</li>
           </ul>

@@ -11,7 +11,7 @@
           <v-list-tile-title v-if="order.new">{{order.name}}</v-list-tile-title>
           <v-list-tile-title v-else>Week of {{time(order.createdAt)}}</v-list-tile-title>
         </v-list-tile>
-        <v-alert :value="!orders" color="error" icon="fa-exclamation-triangle">No orders to display!</v-alert>
+        <v-alert :value="orders.length === 0" color="error" icon="fa-exclamation-triangle">No orders to display!</v-alert>
       </v-list>
     </template>
   </v-card>
@@ -20,13 +20,8 @@
 <script>
 import { mapState } from 'vuex'
 import orderService from '@/services/OrderService.js'
-import Order from './Order'
 
 export default {
-  components: {
-    Order
-  },
-
   data () {
     return {
       order: {},
