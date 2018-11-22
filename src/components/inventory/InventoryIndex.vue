@@ -87,6 +87,11 @@ export default {
 
       this.assays = (await assayService.index(['name', 'id'])).data
       this.vendors = (await vendorService.index(['name', 'id'])).data
+
+      // initial db state; no data
+      if (this.assays.length === 0 || this.vendors.length === 0) {
+        this.submit()
+      }
     },
 
     populateList (type) {
