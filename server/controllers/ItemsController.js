@@ -11,8 +11,10 @@ function calculateStockLevels (item, assay) {
     // console.log(`replicates ${assay.sampleReplicates}`)
     // console.log(`weekly runs ${assay.weeklyRuns}`)
     // console.log(`controlsPerRun ${assay.controlsPerRun}`)
-    weeklyUse = (assay.weeklyVolume * assay.sampleReplicates +
-      assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem
+    // to do: reevaluate sampleReplicates in formula
+    // weeklyUse = (assay.weeklyVolume * assay.sampleReplicates +
+    //   assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem
+    weeklyUse = (assay.weeklyVolume + assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem
     // console.log(`weeklyUse ${weeklyUse}`)
     baseStock = weeklyUse * 4
     // console.log(`baseStock ${baseStock}`)
