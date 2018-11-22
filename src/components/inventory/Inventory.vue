@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="loadComponent">
     <v-card-title>
       <v-dialog
         v-model="dialog"
@@ -416,6 +416,7 @@ export default {
       deactivationDialog: false,
       alert: false,
       loading: false,
+      loadComponent: false,
       search: '',
       alertMessage: '',
       assayForm: '',
@@ -660,6 +661,7 @@ export default {
 
   async mounted () {
     // initialize variables
+    this.loadComponent = false
     this.supplies = (await itemService.show(this.storedFilters)).data
     this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
     this.vendorList = (await vendorService.index()).data
@@ -673,6 +675,7 @@ export default {
       top: 0,
       left: 0
     })
+    this.loadComponent = true
   },
 
   methods: {

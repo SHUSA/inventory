@@ -1,5 +1,5 @@
 <template>
-  <v-card flat color="#fafafa">
+  <v-card v-if="loadComponent" flat color="#fafafa">
     <!-- use this component to pre-select options before rendering table -->
     <!-- options: choose assays and/or vendors; some, one, or all -->
     <v-container fluid fill-height grid-list-md>
@@ -50,11 +50,13 @@ export default {
       list: [],
       selected: [],
       show: false,
-      shown: ''
+      shown: '',
+      loadComponent: false
     }
   },
 
   mounted () {
+    this.loadComponent = false
     this.initialize()
   },
 
@@ -92,6 +94,7 @@ export default {
       if (this.assays.length === 0 || this.vendors.length === 0) {
         this.submit()
       }
+      this.loadComponent = true
     },
 
     populateList (type) {

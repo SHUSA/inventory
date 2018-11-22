@@ -1,6 +1,6 @@
 <template>
   <!-- list all orders and choose one to display -->
-  <v-card>
+  <v-card v-if="loadComponent">
     <template v-if="pageTitle === 'orders'">
       <v-list>
         <v-list-tile v-for="(order, index) in orders" :key="order.createdAt" @click="viewOrder(index)">
@@ -25,7 +25,8 @@ export default {
   data () {
     return {
       order: {},
-      orders: []
+      orders: [],
+      loadComponent: false
     }
   },
 
@@ -38,6 +39,7 @@ export default {
   },
 
   mounted () {
+    this.loadComponent = false
     this.initialize()
   },
 
@@ -58,6 +60,7 @@ export default {
 
       this.order = {}
       this.orders = (await orderService.index()).data
+      this.loadComponent = true
     },
 
     time (order) {

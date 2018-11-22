@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="loadComponent">
     <v-card-title>
       <v-dialog
         max-width="500px"
@@ -114,6 +114,7 @@ export default {
       },
       completedDialog: false,
       loading: false,
+      loadComponent: false,
       completed: false,
       search: '',
       headers: [
@@ -165,6 +166,7 @@ export default {
   },
 
   mounted () {
+    this.loadComponent = false
     if (this.storedOrder) {
       this.$store.dispatch('setTitle', `Week of ${this.weekOf(this.storedOrder.createdAt)}`)
       this.initialize()
@@ -199,6 +201,7 @@ export default {
           }
         }
       })
+      this.loadComponent = true
     },
 
     getCSV () {
