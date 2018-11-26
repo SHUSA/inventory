@@ -23,5 +23,11 @@ export default {
     return API().put(`entries/${entry.id}`, entry).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
+  },
+
+  delete (entry) {
+    return API().delete(`entries/${entry.id}`).catch(err =>
+      JSON.parse(JSON.stringify(err)).response
+    )
   }
 }

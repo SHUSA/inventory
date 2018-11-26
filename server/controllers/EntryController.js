@@ -50,5 +50,19 @@ module.exports = {
       console.log(error)
       res.status(500).send(error.errors)
     }
+  },
+
+  async remove (req, res) {
+    try {
+      await Entry.destroy({
+        where: {
+          id: req.params.entryId
+        }
+      })
+      res.send(req.body)
+    } catch (error) {
+      console.log(error)
+      res.status(500).send(error.errors)
+    }
   }
 }
