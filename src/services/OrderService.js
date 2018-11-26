@@ -23,11 +23,11 @@ export default {
     return API().put(`orders/${order.id}`, order).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
-  },
-
-  delete () {
-    return API().delete('orders').catch(err =>
-      JSON.parse(JSON.stringify(err)).response
-    )
   }
+
+  // delete () {
+  //   return API().delete('orders').catch(err =>
+  //     JSON.parse(JSON.stringify(err)).response
+  //   )
+  // }
 }
