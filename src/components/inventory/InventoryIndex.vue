@@ -7,6 +7,7 @@
         <v-card-text>Choose your filters</v-card-text>
         <v-btn @click="populateList('assays')">Assays</v-btn>
         <v-btn @click="populateList('vendors')">Vendors</v-btn>
+        <v-btn @click="submit(true)">Show All</v-btn>
         <v-flex xs12>
           <!-- select all -->
           <transition name="chips">
@@ -139,7 +140,10 @@ export default {
       }
     },
 
-    submit () {
+    submit (showAll = false) {
+      if (showAll) {
+        this.selected = this.assays.map(x => x.id)
+      }
       this.$store.dispatch('setFilters', this.selected)
       this.$router.push({
         name: 'inventory-table'
