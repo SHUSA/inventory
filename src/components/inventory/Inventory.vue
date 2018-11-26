@@ -719,6 +719,22 @@ export default {
       return item.currentStock <= item.reorderPoint
     },
 
+    checkPreviousOrder (recentOrder) {
+      const lastSunday = this.$moment().startOf('week').format()
+
+      return recentOrder.createdAt < lastSunday || recentOrder.completed
+    },
+
+    createEntry (editedItem) {
+      return {
+        ItemId: editedItem.id,
+        updatedAt: editedItem.updatedAt,
+        currentStock: editedItem.currentStock,
+        orderQuantity: editedItem.currentStock + editedItem.reorderQuantity,
+        comment: editedItem.comment
+      }
+    },
+
     toOrder (item) {
       return this.checkQuantity(item) ? item.reorderQuantity : 0
     },
@@ -981,14 +997,7 @@ export default {
 
         // add more robust conditions to ensure true orders go through
         if (order || (this.checkQuantity(this.editedItem) && this.user)) {
-          let entry = {
-            ItemId: this.editedItem.id,
-            updatedAt: this.editedItem.updatedAt,
-            currentStock: this.editedItem.currentStock,
-            orderQuantity: this.editedItem.currentStock + this.editedItem.reorderQuantity,
-            comment: this.editedItem.comment
-          }
-
+          let entry = this.createEntry(this.editedItem)
           if (this.orderList.length === 0) {
             // initial orders
             const newOrder = (await orderService.post()).data
@@ -997,10 +1006,9 @@ export default {
             entry.OrderId = newOrder.id
             await entryService.post(entry)
           } else {
-            const lastSunday = this.$moment().startOf('week').format()
             const recentOrder = this.orderList[0]
 
-            if (recentOrder.createdAt < lastSunday || recentOrder.completed) {
+            if (this.checkPreviousOrder(recentOrder)) {
               // recent order too old or completed, create new order and associate OrderId
               const newOrder = (await orderService.post()).data
               this.orderList.splice(0, 0, newOrder)
@@ -1013,15 +1021,27 @@ export default {
               matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
               // check if current entry's ItemId is in recentOrder, update if so
               if (matchedEntry === undefined) {
+                // ItemId not in Order Entries
                 entry.OrderId = recentOrder.id
                 await entryService.post(entry)
               } else {
+                // ItemId in Order Entries
                 Object.assign(matchedEntry, entry)
                 await entryService.put(matchedEntry)
               }
             }
           }
           this.snackText += ' and ordered'
+        } else if (!this.checkQuantity(this.editedItem) && this.user) {
+          // delete Entry if currentStock > reorderPoint AND user is logged in
+          let entry = this.createEntry(this.editedItem)
+          const recentOrder = this.orderList[0]
+          const orderEntries = (await orderService.show(recentOrder.id)).data
+          let matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
+          if (matchedEntry) {
+            await entryService.delete(matchedEntry)
+            this.snackText += ' and removed from current order'
+          }
         }
       }
 
