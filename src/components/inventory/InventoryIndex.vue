@@ -17,7 +17,7 @@
           </transition>
           <!-- submit -->
           <transition name="submit" mode="out-in">
-            <v-chip v-if="allSelected || someSelected" key="submit" @click="submit" color="green">Go!</v-chip>
+            <v-chip v-if="allSelected || someSelected" key="submit" @click="submit()" color="green">Go!</v-chip>
           </transition>
           <br>
           <!-- filter chips -->
