@@ -379,6 +379,7 @@
         No results for {{search}}.
       </v-alert>
     </v-data-table>
+    <scroll/>
   </v-card>
 </template>
 
