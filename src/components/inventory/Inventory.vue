@@ -63,13 +63,13 @@
                     <v-text-field disabled v-model="editedItem.safetyStock" label="Safety Stock"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.wholeNumber]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
+                    <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.wholeNumber]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)"/>
+                    <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.wholeNumber]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
+                    <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
                   </v-flex>
                   <v-flex xs6>
                     <v-text-field v-model="editedItem.reorderPoint" validate-on-blur :rules="[rules.number]" ref="reorderPoint" type="number" min=0 label="Reorder Point"/>
@@ -258,24 +258,9 @@
 
           <v-spacer/>
 
-          <!-- multiple select -->
-          <!-- <v-select
-            :items="assayList"
-            item-text="name"
-            filter="customFilter"
-            v-model="selected"
-            label="Select your assay"
-            multiple
-            chips
-            hint="Currently selected assays"
-            persistent-hint
-          >
-          </v-select> -->
-
           <v-spacer/>
 
           <!-- all in one filter -->
-          <!-- change to menu? -->
           <v-text-field
             v-model="search"
             append-icon="fa-search"
@@ -363,14 +348,29 @@
           </v-badge>
         </td>
         <!-- inline edit for current stock -->
+        <!-- <td>
+          <v-edit-dialog
+            :return-value.sync="props.item.currentStock"
+            lazy
+          > {{ props.item.currentStock }}
+            <v-text-field
+              slot="input"
+              v-model="props.item.currentStock"
+              :label="`${props.item.name} Stock`"
+              :hint="`${props.item.name} Stock`"
+              :rules="[rules.number]"
+              type="number"
+              persistent-hint
+              single-line
+            />
+          </v-edit-dialog>
+        </td> -->
         <!-- reorder quantity -->
         <td>{{toOrder(props.item)}}</td>
         <!-- comment -->
         <td class="pointer" @click="editItem(props.item)">{{props.item.comment}}</td>
         <!-- last update -->
         <td>{{time(props.item)}}</td>
-        <!-- recently updated -->
-        <td>{{props.item.recentlyUpdated}}</td>
       </template>
       <template slot="no-data">
         <v-alert :value="true" color="error" icon="fa-exclamation-triangle">Nothing here!</v-alert>
@@ -532,8 +532,7 @@ export default {
         {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'reorderQuantity'},
         {text: 'Comment', value: 'comment', width: '15%'},
-        {text: 'Last Update', value: 'updatedAt'},
-        {text: 'Recently Updated', value: 'recentlyUpdated', width: '5%'}
+        {text: 'Last Update', value: 'updatedAt'}
       ],
       supplies: [],
       assayList: [],
