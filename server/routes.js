@@ -40,7 +40,7 @@ module.exports = (app) => {
   app.get('/orders/:orderId', OrdersController.show)
   app.post('/orders', OrdersController.post)
   app.put('/orders/:orderId', OrdersController.put)
-  // app.delete('/orders', OrdersController.remove)
+  app.delete('/orders/:orderId', OrdersController.remove)
 
   app.get('/entries', EntryController.index)
   app.get('/entries/:entryId', EntryController.show)
