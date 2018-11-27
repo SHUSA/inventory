@@ -1039,7 +1039,11 @@ export default {
           const orderEntries = (await orderService.show(recentOrder.id)).data
           let matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
           if (matchedEntry) {
-            await entryService.delete(matchedEntry)
+            await entryService.delete(matchedEntry.id)
+            if (orderEntries.Entries.length === 1) {
+              // Entry deleted in previous promise
+              await orderService.delete(orderEntries.id)
+            }
             this.snackText += ' and removed from current order'
           }
         }
