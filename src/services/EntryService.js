@@ -25,8 +25,8 @@ export default {
     )
   },
 
-  delete (entry) {
-    return API().delete(`entries/${entry.id}`).catch(err =>
+  delete (entryId) {
+    return API().delete(`entries/${entryId}`).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   }
