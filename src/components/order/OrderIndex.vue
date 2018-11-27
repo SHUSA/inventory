@@ -41,6 +41,11 @@ export default {
   mounted () {
     this.loadComponent = false
     this.initialize()
+    // go to top
+    window.scroll({
+      top: 0,
+      left: 0
+    })
   },
 
   computed: {
