@@ -23,15 +23,13 @@ export default {
   mounted () {
     let initial = 'menu'
     this.$store.dispatch('setTitle', initial)
-    this.$store.dispatch('setMode', initial)
   },
 
   computed: {
     ...mapState([
       'user',
       'admin',
-      'pageTitle',
-      'mode'
+      'pageTitle'
     ])
   },
 

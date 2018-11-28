@@ -53,7 +53,6 @@ export default {
       'user',
       'admin',
       'pageTitle',
-      'mode',
       'route'
     ])
   },
@@ -61,7 +60,6 @@ export default {
   methods: {
     async initialize () {
       this.$store.dispatch('setTitle', this.route.name)
-      this.$store.dispatch('setMode', this.route.name)
 
       this.order = {}
       this.orders = (await orderService.index()).data

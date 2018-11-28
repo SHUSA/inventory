@@ -70,7 +70,6 @@ export default {
     ...mapState([
       'user',
       'admin',
-      'mode',
       'route',
       'storedFilters'
     ]),
@@ -91,7 +90,6 @@ export default {
   methods: {
     async initialize () {
       this.$store.dispatch('setTitle', this.route.name)
-      this.$store.dispatch('setMode', this.route.name)
 
       this.assays = (await assayService.index(['name', 'id'])).data
       this.vendors = (await vendorService.index(['name', 'id'])).data
