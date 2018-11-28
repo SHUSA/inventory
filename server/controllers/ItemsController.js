@@ -32,14 +32,7 @@ module.exports = {
     try {
       const active = req.query.active
       const attributes = req.query.attributes
-      let items = await Item.findAll({
-        where: {
-          active: true
-        },
-        order: [
-          ['name', 'ASC']
-        ]
-      })
+      let items = await Item.findAll()
       res.send(items)
     } catch (error) {
       console.log(error)
