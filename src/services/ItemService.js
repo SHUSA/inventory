@@ -1,8 +1,14 @@
 import API from './API'
 
 export default {
-  index (attributes = [], active = true) {
-    return API().get('items').catch(err =>
+  index (attributes = [], active = true, status) {
+    return API().get('items', {
+      params: {
+        attributes: attributes,
+        active: active,
+        status: status
+      }
+    }).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   },

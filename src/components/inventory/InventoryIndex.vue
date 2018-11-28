@@ -43,6 +43,7 @@ import { mapState } from 'vuex'
 import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
 import itemService from '@/services/ItemService.js'
+import entryService from '@/services/EntryService.js'
 
 export default {
   data () {
@@ -94,6 +95,11 @@ export default {
 
       this.assays = (await assayService.index(['name', 'id'])).data
       this.vendors = (await vendorService.index(['name', 'id'])).data
+
+      console.log('item inventory intialize')
+      console.log((await entryService.index()).data)
+      console.log((await itemService.index([], true, false)).data)
+      console.log((await itemService.index([], true, true)).data)
 
       // initial db state; no data
       if (this.assays.length === 0 || this.vendors.length === 0) {
