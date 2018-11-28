@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="loadComponent">
     <v-card-title>
       <v-dialog
         max-width="500px"
@@ -26,19 +26,24 @@
           <v-btn v-if="thisOrder.completed && admin" slot="activator" color="error" class="mb-0" dark small @click="completedDialog = !completedDialog">Undo Complete</v-btn>
 
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
-            <v-icon small>arrow_downward</v-icon>CSV
+            <v-icon small class="pr-1">fa-file-download</v-icon>CSV
           </v-btn>
 
           <v-spacer/>
 
           <v-text-field
             v-model="search"
-            append-icon="search"
+            append-icon="fa-search"
             label="Search"
             single-line
             hide-details
           />
         </v-layout>
+        <!-- completed message -->
+        <v-card v-if="thisOrder.completed" class="ma-2">
+          <v-card-text>Completed on {{time(thisOrder.completeDate)}}</v-card-text>
+        </v-card>
+        <!-- render assays and vendors in list -->
         <v-layout row wrap>
           <v-card-text>Vendors in this order:</v-card-text>
           <v-chip v-for="(value, index) in listVendors" :key="index" @click="search = value">
@@ -53,10 +58,7 @@
         </v-layout>
       </v-container>
     </v-card-title>
-    <v-card v-if="thisOrder.completed" class="ma-2">
-      <v-card-text>Completed on {{time(thisOrder.completeDate)}}</v-card-text>
-    </v-card>
-
+    <!-- data table -->
     <v-data-table
       ref="search"
       :headers="headers"
@@ -86,12 +88,13 @@
         <td>{{time(props.item.updatedAt)}}</td>
       </template>
       <template slot="no-data">
-        <v-alert color="error" icon="warning">Nothing here!</v-alert>
+        <v-alert :value="true" color="error" icon="fa-exclamation-triangle">Nothing here!</v-alert>
       </template>
       <v-alert slot="no-results" :value="true" color="error" icon="warning">
         No results for {{search}}.
       </v-alert>
     </v-data-table>
+    <scroll/>
   </v-card>
 </template>
 
@@ -99,15 +102,11 @@
 import { mapState } from 'vuex'
 import orderService from '@/services/OrderService.js'
 import itemService from '@/services/ItemService.js'
-const moment = require('moment')
+import vendorService from '@/services/VendorService.js'
+import assayService from '@/services/AssayService.js'
 const Json2csvParser = require('json2csv').Parser
 
 export default {
-  props: [
-    'order',
-    'vendors',
-    'assays'
-  ],
   data () {
     return {
       pagination: {
@@ -116,6 +115,7 @@ export default {
       },
       completedDialog: false,
       loading: false,
+      loadComponent: false,
       completed: false,
       search: '',
       headers: [
@@ -131,13 +131,16 @@ export default {
       ],
       thisOrder: {},
       items: [],
+      vendors: [],
+      assays: [],
       entries: []
     }
   },
 
   computed: {
     ...mapState([
-      'admin'
+      'admin',
+      'storedOrder'
     ]),
 
     listVendors () {
@@ -164,37 +167,42 @@ export default {
   },
 
   mounted () {
-    this.initialize()
-  },
-
-  watch: {
-    order () {
+    this.loadComponent = false
+    if (this.storedOrder) {
+      this.$store.dispatch('setTitle', `Week of ${this.weekOf(this.storedOrder.createdAt)}`)
       this.initialize()
     }
+
+    // go to top
+    window.scroll({
+      top: 0,
+      left: 0
+    })
   },
 
   methods: {
     async initialize () {
-      if (this.order.id) {
-        this.thisOrder = this.order
-        let itemIds = null
-        // get entries
-        this.entries = (await orderService.show(this.order.id)).data.Entries
-        itemIds = this.entries.map(x => x.ItemId)
-        this.items = (await itemService.show(itemIds)).data
-        // merge currentStock and comment from entries to items
-        this.items.map(index => {
-          this.getVendor(index)
-          this.getAssay(index)
-          for (let i = 0; i < this.entries.length; i++) {
-            let entry = this.entries[i]
-            if (index.id === entry.ItemId) {
-              index.currentStock = entry.currentStock
-              index.comment = entry.comment
-            }
+      this.thisOrder = this.storedOrder
+      let itemIds = null
+      // get information
+      this.vendors = (await vendorService.index()).data
+      this.assays = (await assayService.index()).data
+      this.entries = (await orderService.show(this.storedOrder.id)).data.Entries
+      itemIds = this.entries.map(x => x.ItemId)
+      this.items = (await itemService.show(itemIds)).data
+      // merge currentStock and comment from entries to items
+      this.items.map(index => {
+        this.getVendor(index)
+        this.getAssay(index)
+        for (let i = 0; i < this.entries.length; i++) {
+          let entry = this.entries[i]
+          if (index.id === entry.ItemId) {
+            index.currentStock = entry.currentStock
+            index.comment = entry.comment
           }
-        })
-      }
+        }
+      })
+      this.loadComponent = true
     },
 
     getCSV () {
@@ -204,14 +212,17 @@ export default {
       const results = this.$refs.search.filteredItems
       const csv = json2csv.parse(results)
       const blob = new Blob([csv], {type: 'text/csv'})
-      console.log(this.items)
 
       csvbtn.href = URL.createObjectURL(blob)
-      csvbtn.download = `${moment().format('YYYY-MM-DD')} Inventory.csv`
+      csvbtn.download = `${this.$moment().format('YYYY-MM-DD')} Inventory.csv`
     },
 
     time (time) {
-      return moment(time).format('MMM-DD-YYYY HH:mm:ss')
+      return this.$moment(time).format('MMM-DD-YYYY HH:mm:ss')
+    },
+
+    weekOf (time) {
+      return this.$moment(time).startOf('week').format('MMM-DD-YYYY')
     },
 
     getVendor (item) {
@@ -242,10 +253,11 @@ export default {
       this.loading = true
       if (this.thisOrder.completed) {
         this.thisOrder.completeDate = null
+        this.thisOrder.completed = false
       } else {
         this.thisOrder.completeDate = Date.now()
+        this.thisOrder.completed = true
       }
-      this.thisOrder.completed = !this.thisOrder.completed
       await orderService.put(this.thisOrder)
       this.loading = false
       this.close()

@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="loadComponent">
     <v-card-title>
       <v-dialog
         v-model="dialog"
@@ -26,7 +26,7 @@
                       item-text="name"
                       item-value="id"
                       v-model="editedItem.AssayId"
-                      append-icon="note_add"
+                      append-icon="fa-plus-circle "
                       @click:append="addAssay"
                       :rules="[rules.assay]"
                       dense
@@ -40,7 +40,7 @@
                       item-text="name"
                       item-value="id"
                       v-model="editedItem.VendorId"
-                      append-icon="note_add"
+                      append-icon="fa-plus-circle "
                       @click:append="addVendor"
                       :rules="[rules.vendor]"
                       dense
@@ -63,13 +63,13 @@
                     <v-text-field disabled v-model="editedItem.safetyStock" label="Safety Stock"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.wholeNumber]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
+                    <v-text-field v-model="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" ref="safetyStock" type="number" min=0 label="Safety Weeks"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.wholeNumber]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)"/>
+                    <v-text-field v-model="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)"/>
                   </v-flex>
                   <v-flex xs6>
-                    <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.wholeNumber]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
+                    <v-text-field v-model="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks"/>
                   </v-flex>
                   <v-flex xs6>
                     <v-text-field v-model="editedItem.reorderPoint" validate-on-blur :rules="[rules.number]" ref="reorderPoint" type="number" min=0 label="Reorder Point"/>
@@ -105,7 +105,7 @@
                     <v-text-field
                       v-model="editedItem.currentStock"
                       validate-on-blur :rules="[rules.number]"
-                      ref="focus"
+                      autofocus
                       type="number"
                       min=0
                       label="Current Stock"
@@ -253,32 +253,17 @@
             Add Item
           </v-btn>
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
-            <v-icon small>arrow_downward</v-icon>CSV
+            <v-icon small class="pr-1">fa-file-download</v-icon>CSV
           </v-btn>
 
           <v-spacer/>
 
-          <!-- multiple select -->
-          <!-- <v-select
-            :items="assayList"
-            item-text="name"
-            filter="customFilter"
-            v-model="selected"
-            label="Select your assay"
-            multiple
-            chips
-            hint="Currently selected assays"
-            persistent-hint
-          >
-          </v-select> -->
-
           <v-spacer/>
 
           <!-- all in one filter -->
-          <!-- change to menu? -->
           <v-text-field
             v-model="search"
-            append-icon="search"
+            append-icon="fa-search"
             label="Search for item, assay, vendor, etc"
             hint="test"
             persistent-hint
@@ -325,8 +310,7 @@
       :items="supplies"
       :search="search"
       must-sort
-      :pagination.sync="pagination"
-      :rows-per-page-items='[{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}, 10, 25]'
+      hide-actions
     >
       <!-- item name -->
       <template slot="items" slot-scope="props">
@@ -364,31 +348,38 @@
           </v-badge>
         </td>
         <!-- inline edit for current stock -->
+        <!-- <td>
+          <v-edit-dialog
+            :return-value.sync="props.item.currentStock"
+            lazy
+          > {{ props.item.currentStock }}
+            <v-text-field
+              slot="input"
+              v-model="props.item.currentStock"
+              :label="`${props.item.name} Stock`"
+              :hint="`${props.item.name} Stock`"
+              :rules="[rules.number]"
+              type="number"
+              persistent-hint
+              single-line
+            />
+          </v-edit-dialog>
+        </td> -->
         <!-- reorder quantity -->
         <td>{{toOrder(props.item)}}</td>
         <!-- comment -->
         <td class="pointer" @click="editItem(props.item)">{{props.item.comment}}</td>
         <!-- last update -->
         <td>{{time(props.item)}}</td>
-        <!-- recently updated -->
-        <td>{{props.item.recentlyUpdated}}</td>
-        <!-- info icon -->
-        <!-- <td>
-          <v-btn icon class="mx-0" @click="getInfo(props.item)">
-            <v-tooltip top open-delay=50>
-              <v-icon slot="activator" color="teal">info</v-icon>
-              <span>Get {{props.item.name}} info</span>
-            </v-tooltip>
-          </v-btn>
-        </td> -->
       </template>
       <template slot="no-data">
-        <v-alert color="error" icon="warning">Nothing here!</v-alert>
+        <v-alert :value="true" color="error" icon="fa-exclamation-triangle">Nothing here!</v-alert>
       </template>
       <v-alert slot="no-results" :value="true" color="error" icon="warning">
         No results for {{search}}.
       </v-alert>
     </v-data-table>
+    <scroll/>
   </v-card>
 </template>
 
@@ -399,7 +390,6 @@ import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
 import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
-const moment = require('moment')
 const Json2csvParser = require('json2csv').Parser
 // Notes on number input type
 // -unable to block e, -, +
@@ -409,17 +399,12 @@ const Json2csvParser = require('json2csv').Parser
 // in the meantime, treat as text and only allow real and positive numbers to pass through
 
 export default {
-  props: [
-    'items',
-    'vendors',
-    'assays',
-    'orders',
-    'getInfo'
-  ],
   data () {
     return {
-      pagination: {},
       currentItem: {},
+      catalogNumbers: [],
+      vendorNames: [],
+      assayNames: [],
       dialog: false,
       assayDialog: false,
       vendorDialog: false,
@@ -428,8 +413,8 @@ export default {
       deactivationDialog: false,
       alert: false,
       loading: false,
+      loadComponent: false,
       search: '',
-      selected: [],
       alertMessage: '',
       assayForm: '',
       vendorForm: '',
@@ -476,7 +461,7 @@ export default {
           if (text.length === 0) {
             this.errors.catalog = true
             return 'Please enter a unique catalog number'
-          } else if (this.supplies.find(item => item.catalogNumber === text.toUpperCase()) !== undefined) {
+          } else if (this.catalogNumbers.includes(text.toUpperCase())) {
             // fixes error throwing on existing items
             if (this.editedIndex > -1) {
               this.errors.catalog = false
@@ -494,7 +479,7 @@ export default {
           if (text.length === 0) {
             this.errors.assay = true
             return 'Please enter a valid name'
-          } else if (this.assayList.find(assay => assay.name.toUpperCase() === text.toUpperCase()) !== undefined) {
+          } else if (this.assayNames.includes(text.toUpperCase())) {
             if (this.editedIndex > -1) {
               this.errors.assay = false
               return true
@@ -511,7 +496,7 @@ export default {
           if (text.length === 0) {
             this.errors.vendor = true
             return 'Please enter a valid name'
-          } else if (this.vendorList.find(vendor => vendor.name.toUpperCase() === text.toUpperCase()) !== undefined) {
+          } else if (this.vendorNames.includes(text.toUpperCase())) {
             if (this.editedIndex > -1) {
               this.errors.vendor = false
               return true
@@ -544,8 +529,7 @@ export default {
         {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'reorderQuantity'},
         {text: 'Comment', value: 'comment', width: '15%'},
-        {text: 'Last Update', value: 'updatedAt'},
-        {text: 'Recently Updated', value: 'recentlyUpdated', width: '5%'}
+        {text: 'Last Update', value: 'updatedAt'}
       ],
       supplies: [],
       assayList: [],
@@ -616,16 +600,15 @@ export default {
       'pageTitle',
       'admin',
       'user',
-      'selectedAssays'
+      'storedFilters'
     ]),
 
     lastOrderPeriod () {
-      return moment().startOf('week').subtract(7, 'day').format('MMM DD, YYYY')
+      return this.$moment().startOf('week').subtract(7, 'day').format('MMM DD, YYYY')
     },
 
     outstandingAssays () {
       let obj = {}
-      // to do: return obj in alphabetical order
       // fix coding; clunky
       this.supplies.map(item => {
         this.recentlyUpdated(item)
@@ -669,39 +652,26 @@ export default {
       if (!val) {
         this.alert = false
       }
-    },
-
-    // messes up autocomplete on this file for some reason
-    items () {
-      this.supplies = this.items
-      this.vendorList = this.vendors
-      this.assayList = this.assays
-      // this.orderList = this.orders
-    },
-
-    orderList () {
-      this.orderList = this.orders
     }
   },
 
   async mounted () {
     // initialize variables
-    this.supplies = (await itemService.index(true)).data
-    this.vendorList = (await vendorService.index(true)).data
-    this.assayList = (await assayService.index(true)).data
+    this.loadComponent = false
+    this.supplies = (await itemService.show(this.storedFilters)).data
+    this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
+    this.vendorList = (await vendorService.index()).data
+    this.vendorNames = this.vendorList.map(vendor => vendor.name.toUpperCase())
+    this.assayList = (await assayService.index()).data
+    this.assayNames = this.assayList.map(assay => assay.name.toUpperCase())
     this.orderList = (await orderService.index()).data
-
-    if (this.orderList.length === 0) {
-      this.orderList = [{name: 'No orders to list', new: true}]
-    }
-    this.$store.dispatch('setTitle', 'Inventory')
-    this.$store.dispatch('setDrawer', false)
 
     // go to top
     window.scroll({
       top: 0,
       left: 0
     })
+    this.loadComponent = true
   },
 
   methods: {
@@ -714,16 +684,16 @@ export default {
       const blob = new Blob([csv], {type: 'text/csv'})
 
       csvbtn.href = URL.createObjectURL(blob)
-      csvbtn.download = `${moment().format('YYYY-MM-DD')} Inventory.csv`
+      csvbtn.download = `${this.$moment().format('YYYY-MM-DD')} Inventory.csv`
     },
 
     time (item) {
-      item.lastUpdate = moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
+      item.lastUpdate = this.$moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
       return item.lastUpdate
     },
 
     recentlyUpdated (item) {
-      let oneWeekAgo = moment().startOf('week').subtract(7, 'day').format()
+      let oneWeekAgo = this.$moment().startOf('week').subtract(7, 'day').format()
 
       // checks to see if item was updated in the past 2 weeks, starting from Sunday
       // does not account if user or admin did the update
@@ -743,6 +713,22 @@ export default {
 
     checkQuantity (item) {
       return item.currentStock <= item.reorderPoint
+    },
+
+    checkPreviousOrder (recentOrder) {
+      const lastSunday = this.$moment().startOf('week').format()
+
+      return recentOrder.createdAt < lastSunday || recentOrder.completed
+    },
+
+    createEntry (editedItem) {
+      return {
+        ItemId: editedItem.id,
+        updatedAt: editedItem.updatedAt,
+        currentStock: editedItem.currentStock,
+        orderQuantity: editedItem.currentStock + editedItem.reorderQuantity,
+        comment: editedItem.comment
+      }
     },
 
     toOrder (item) {
@@ -834,9 +820,6 @@ export default {
       this.editedIndex = this.supplies.indexOf(item)
       this.editedItem = Object.assign(this.editedItem, item)
       this.dialog = true
-      requestAnimationFrame(() => {
-        this.$refs.focus.focus()
-      })
     },
 
     async deactivateItem (item) {
@@ -1010,15 +993,8 @@ export default {
 
         // add more robust conditions to ensure true orders go through
         if (order || (this.checkQuantity(this.editedItem) && this.user)) {
-          let entry = {
-            ItemId: this.editedItem.id,
-            updatedAt: this.editedItem.updatedAt,
-            currentStock: this.editedItem.currentStock,
-            orderQuantity: this.editedItem.currentStock + this.editedItem.reorderQuantity,
-            comment: this.editedItem.comment
-          }
-
-          if (this.orderList[0].new) {
+          let entry = this.createEntry(this.editedItem)
+          if (this.orderList.length === 0) {
             // initial orders
             const newOrder = (await orderService.post()).data
             this.orderList.pop()
@@ -1026,10 +1002,9 @@ export default {
             entry.OrderId = newOrder.id
             await entryService.post(entry)
           } else {
-            const lastSunday = moment().startOf('week').format()
             const recentOrder = this.orderList[0]
 
-            if (recentOrder.createdAt < lastSunday || recentOrder.completed) {
+            if (this.checkPreviousOrder(recentOrder)) {
               // recent order too old or completed, create new order and associate OrderId
               const newOrder = (await orderService.post()).data
               this.orderList.splice(0, 0, newOrder)
@@ -1042,15 +1017,31 @@ export default {
               matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
               // check if current entry's ItemId is in recentOrder, update if so
               if (matchedEntry === undefined) {
+                // ItemId not in Order Entries
                 entry.OrderId = recentOrder.id
                 await entryService.post(entry)
               } else {
+                // ItemId in Order Entries
                 Object.assign(matchedEntry, entry)
                 await entryService.put(matchedEntry)
               }
             }
           }
           this.snackText += ' and ordered'
+        } else if (!this.checkQuantity(this.editedItem) && this.user) {
+          // delete Entry if currentStock > reorderPoint AND user is logged in
+          let entry = this.createEntry(this.editedItem)
+          const recentOrder = this.orderList[0]
+          const orderEntries = (await orderService.show(recentOrder.id)).data
+          let matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
+          if (matchedEntry) {
+            await entryService.delete(matchedEntry.id)
+            if (orderEntries.Entries.length === 1) {
+              // Entry deleted in previous promise
+              await orderService.delete(orderEntries.id)
+            }
+            this.snackText += ' and removed from current order'
+          }
         }
       }
 

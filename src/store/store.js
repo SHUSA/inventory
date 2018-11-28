@@ -17,14 +17,18 @@ export default new Vuex.Store({
     },
     welcome: '',
     pageTitle: '',
-    drawer: true,
     token: null,
     userId: null,
     isUserLoggedIn: false,
     isAdminLoggedIn: false,
-    itemInfo: {},
-    assayInfo: {},
-    selectedAssays: []
+    storedOrder: {},
+    storedFilters: [],
+    itemDialog: false,
+    assayDialog: false,
+    vendorDialog: false,
+    itemSave: false,
+    assaySave: false,
+    vendorSave: false
   },
   mutations: {
     setUser (state, type) {
@@ -42,19 +46,30 @@ export default new Vuex.Store({
     setTitle (state, title) {
       state.pageTitle = title
     },
-    setDrawer (state, open) {
-      // initialize drawer to close
-      state.drawer = open !== undefined ? open : !state.drawer
+    setOrder (state, data) {
+      state.storedOrder = data
     },
-    setItemInfo (state, data) {
-      state.itemInfo = data
-    },
-    setAssayInfo (state, data) {
-      state.assayInfo = data
-    },
-    setSelectedAssay (state, data) {
-      state.selectedAssays = data
+    setFilters (state, data) {
+      state.storedFilters = data
     }
+    // setItemDialog (state, open) {
+    //   state.itemDialog = open
+    // },
+    // setAssayDialog (state, open) {
+    //   state.assayDialog = open
+    // },
+    // setVendorDialog (state, open) {
+    //   state.vendorDialog = open
+    // },
+    // setItemSave (state, saved) {
+    //   state.itemSave = saved
+    // },
+    // setAssaySave (state, saved) {
+    //   state.assaySave = saved
+    // },
+    // setVendorSave (state, saved) {
+    //   state.vendorSave = saved
+    // }
   },
   actions: {
     setUser ({ commit }, type) {
@@ -63,17 +78,29 @@ export default new Vuex.Store({
     setTitle ({ commit }, title) {
       commit('setTitle', title)
     },
-    setDrawer ({ commit }, open) {
-      commit('setDrawer', open)
+    setOrder ({ commit }, data) {
+      commit('setOrder', data)
     },
-    setItemInfo ({ commit }, data) {
-      commit('setItemInfo', data)
-    },
-    setAssayInfo ({ commit }, data) {
-      commit('setAssayInfo', data)
-    },
-    setSelectedAssay ({ commit }, data) {
-      commit('setSelectedAssay', data)
+    setFilters ({ commit }, data) {
+      commit('setFilters', data)
     }
+    // setItemDialog ({ commit }, open) {
+    //   commit('setItemDialog', open)
+    // },
+    // setAssayDialog ({ commit }, open) {
+    //   commit('setAssayDialog', open)
+    // },
+    // setVendorDialog ({ commit }, open) {
+    //   commit('setVendorDialog', open)
+    // },
+    // setItemSave ({ commit }, saved) {
+    //   commit('setItemSave', saved)
+    // },
+    // setAssaySave ({ commit }, saved) {
+    //   commit('setAssaySave', saved)
+    // },
+    // setVendorSave ({ commit }, saved) {
+    //   commit('setVendorSave', saved)
+    // }
   }
 })

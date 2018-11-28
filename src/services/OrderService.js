@@ -25,8 +25,8 @@ export default {
     )
   },
 
-  delete () {
-    return API().delete('orders').catch(err =>
+  delete (orderId) {
+    return API().delete(`orders/${orderId}`).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   }

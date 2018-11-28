@@ -2,6 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/components/Index'
 import Login from '@/components/Login'
+import OrderIndex from '@/components/order/OrderIndex.vue'
+import InventoryIndex from '@/components/inventory/InventoryIndex.vue'
+import Order from '@/components/order/Order.vue'
+import Inventory from '@/components/inventory/Inventory.vue'
+import NotFound from '@/components/NotFound.vue'
 
 Vue.use(Router)
 
@@ -10,18 +15,39 @@ export default new Router({
   base: __dirname,
   routes: [
     {
-      path: '/index',
-      name: 'index',
-      component: Index
-    },
-    {
       path: '/',
       name: 'login',
       component: Login
     },
     {
+      path: '/index',
+      name: 'index',
+      component: Index
+    },
+    {
+      path: '/orders',
+      name: 'orders',
+      component: OrderIndex
+    },
+    {
+      path: '/inventory',
+      name: 'inventory',
+      component: InventoryIndex
+    },
+    {
+      path: '/orders/table',
+      name: 'order',
+      component: Order
+    },
+    {
+      path: '/inventory/table',
+      name: 'inventory-table',
+      component: Inventory
+    },
+    {
       path: '*',
-      redirect: '/'
+      name: '404',
+      component: NotFound
     }
   ]
 })

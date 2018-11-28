@@ -3,13 +3,16 @@ const { Vendor } = require('../models')
 module.exports = {
   async index (req, res) {
     try {
+      const active = req.query.active
+      const attributes = req.query.attributes
       let vendors = await Vendor.findAll({
         where: {
-          active: req.query.status
+          active: active
         },
         order: [
           ['name', 'ASC']
-        ]
+        ],
+        attributes: attributes
       })
       res.send(vendors)
     } catch (error) {

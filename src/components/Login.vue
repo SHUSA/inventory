@@ -17,7 +17,22 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
+  mounted () {
+    let initial = 'menu'
+    this.$store.dispatch('setTitle', initial)
+  },
+
+  computed: {
+    ...mapState([
+      'user',
+      'admin',
+      'pageTitle'
+    ])
+  },
+
   methods: {
     login (type) {
       this.$store.dispatch('setUser', type)
@@ -25,9 +40,6 @@ export default {
         name: 'index'
       })
     }
-  },
-  mounted () {
-    this.$store.dispatch('setTitle', '')
   }
 }
 </script>

@@ -1,31 +1,40 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-1.7.17
+      {{title}} v.b-2.0
+      <!-- recent updates button -->
       <v-dialog
         v-model="dialog"
         scrollable
         width="500"
       >
         <v-btn slot="activator" icon small class="mx-0">
-          <v-icon>announcement</v-icon>
+          <v-icon small>fa-scroll</v-icon>
         </v-btn>
-        <v-card>
-          <v-card-title class="headline">What's New!</v-card-title>
-          <v-divider/>
-          <update/>
-        </v-card>
+        <update/>
       </v-dialog>
     </v-toolbar-title>
-    <v-spacer></v-spacer>
+    <v-spacer/>
     <v-toolbar-items>
-      <v-btn v-if="$route.name !== 'login'" flat @click.native="drawer">
-        <v-icon>menu</v-icon>
-        {{pageTitle}}
-      </v-btn>
+      <!-- menu routes -->
+      <v-menu v-if="this.$route.name !== 'login'">
+        <v-btn slot="activator" flat>
+          <v-icon small class="pr-1">fa-bars</v-icon>
+          {{pageTitle}}
+        </v-btn>
+        <v-list>
+          <v-list-tile
+            v-for="(item, index) in routes" :key="index"
+            @click="goTo(item)"
+          >
+            <v-list-tile-title>{{item}}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
     </v-toolbar-items>
     <v-spacer/>
     <v-toolbar-items>
+      <!-- login and other info -->
       <v-btn flat class="display">{{welcome}}</v-btn>
       <v-btn flat @click="login">
         Login
@@ -40,14 +49,14 @@
 <script>
 import { mapState } from 'vuex'
 import Update from './Update'
-const moment = require('moment')
 
 export default {
   data () {
     return {
-      time: moment().format('MMM DD, YYYY'),
+      time: this.$moment().format('MMM DD, YYYY'),
       title: 'Molecular Inventory',
-      dialog: false
+      dialog: false,
+      routes: ['Inventory', 'Orders']
     }
   },
   computed: {
@@ -58,9 +67,11 @@ export default {
       'welcome'
     ])
   },
+
   components: {
     Update
   },
+
   methods: {
     login () {
       this.$router.push({
@@ -68,8 +79,10 @@ export default {
       })
     },
 
-    drawer () {
-      this.$store.dispatch('setDrawer')
+    goTo (route) {
+      this.$router.push({
+        name: route.toLowerCase()
+      })
     }
   }
 }

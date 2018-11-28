@@ -1,16 +1,18 @@
 const { Assay } = require('../models')
-// const Issue = require('../models/Issues')
 
 module.exports = {
   async index (req, res) {
     try {
+      const active = req.query.active
+      const attributes = req.query.attributes
       let assays = await Assay.findAll({
         where: {
-          active: req.query.status
+          active: active
         },
         order: [
           ['name', 'ASC']
-        ]
+        ],
+        attributes: attributes
       })
       res.send(assays)
     } catch (error) {

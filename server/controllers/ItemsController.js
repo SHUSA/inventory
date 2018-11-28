@@ -11,8 +11,10 @@ function calculateStockLevels (item, assay) {
     // console.log(`replicates ${assay.sampleReplicates}`)
     // console.log(`weekly runs ${assay.weeklyRuns}`)
     // console.log(`controlsPerRun ${assay.controlsPerRun}`)
-    weeklyUse = (assay.weeklyVolume * assay.sampleReplicates +
-      assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem
+    // to do: reevaluate sampleReplicates in formula
+    // weeklyUse = (assay.weeklyVolume * assay.sampleReplicates +
+    //   assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem
+    weeklyUse = (assay.weeklyVolume + assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem
     // console.log(`weeklyUse ${weeklyUse}`)
     baseStock = weeklyUse * 4
     // console.log(`baseStock ${baseStock}`)
@@ -27,14 +29,17 @@ function calculateStockLevels (item, assay) {
 
 module.exports = {
   async index (req, res) {
-    let search = {}
-    search.active = req.query.status
     try {
+      const active = req.query.active
+      const attributes = req.query.attributes
       let items = await Item.findAll({
-        where: search,
+        where: {
+          active: active
+        },
         order: [
           ['name', 'ASC']
-        ]
+        ],
+        attributes: attributes
       })
       res.send(items)
     } catch (error) {
@@ -47,7 +52,10 @@ module.exports = {
     try {
       let items = await Item.findAll({
         where: {
-          id: req.query.itemIds
+          $or: ['id', 'AssayId', 'VendorId'].map(key => ({
+            [key]: req.query.ids
+          })),
+          active: req.query.active
         },
         order: [
           ['VendorId', 'DESC']
