@@ -42,8 +42,6 @@
 import { mapState } from 'vuex'
 import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
-import itemService from '@/services/ItemService.js'
-import entryService from '@/services/EntryService.js'
 
 export default {
   data () {
