@@ -95,11 +95,6 @@ export default {
       this.assays = (await assayService.index(['name', 'id'])).data
       this.vendors = (await vendorService.index(['name', 'id'])).data
 
-      console.log('inventory index initialize')
-      console.log(this.assays)
-      console.log(this.vendors)
-      console.log(await itemService.index())
-
       // initial db state; no data
       if (this.assays.length === 0 || this.vendors.length === 0) {
         this.submit()

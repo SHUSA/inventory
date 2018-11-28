@@ -41,7 +41,7 @@ module.exports = {
         ],
         attributes: attributes
       })
-      console.log('item index')
+
       res.send(items)
     } catch (error) {
       console.log(error)
