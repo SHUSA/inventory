@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-1.7.17
+      {{title}} v.b-2.0
       <!-- recent updates button -->
       <v-dialog
         v-model="dialog"

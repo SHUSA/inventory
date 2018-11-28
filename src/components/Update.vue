@@ -9,6 +9,16 @@
       <ul>
         <!-- (li>{2018.11.DD - v1.7.xx}ul>li{update notes})+br -->
         <li>
+          2018.11.27 - v2.0
+          <ul>
+            <li>UI and workflow rework</li>
+            <li>Pre-filters added for Inventory</li>
+            <li>Site keeps page history and displays most recent filters for Inventory and Order</li>
+            <li>If accidentally ordered an item, can take back under certain conditions</li>
+          </ul>
+        </li>
+        <br>
+        <li>
           2018.11.05 - v1.7.17, Duplicates
           <ul>
             <li>Cleaned up duplicate Assay and Vendor validation when creating/editing Assays and Vendors</li>
