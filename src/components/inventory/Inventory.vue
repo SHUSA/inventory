@@ -399,10 +399,6 @@ const Json2csvParser = require('json2csv').Parser
 // in the meantime, treat as text and only allow real and positive numbers to pass through
 
 export default {
-  props: [
-    'selected'
-  ],
-
   data () {
     return {
       currentItem: {},
