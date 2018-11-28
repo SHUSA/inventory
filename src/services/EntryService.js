@@ -2,11 +2,7 @@ import API from './API'
 
 export default {
   index () {
-    return API().get('entries', {
-      params: {
-        status: true
-      }
-    }).catch(err =>
+    return API().get('entries').catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   },
