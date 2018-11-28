@@ -98,7 +98,7 @@ export default {
       console.log('inventory index initialize')
       console.log(this.assays)
       console.log(this.vendors)
-      console.log((await itemService.index()).data)
+      console.log(await itemService.index())
 
       // initial db state; no data
       if (this.assays.length === 0 || this.vendors.length === 0) {
