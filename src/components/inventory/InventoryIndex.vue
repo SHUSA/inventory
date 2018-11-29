@@ -5,8 +5,8 @@
     <v-container fluid fill-height grid-list-md>
       <v-layout row wrap>
         <v-card-text>Choose your filters</v-card-text>
-        <v-btn @click="populateList('assays')">Assays</v-btn>
-        <v-btn @click="populateList('vendors')">Vendors</v-btn>
+        <v-btn @click="populateList('assays')" :dark="shown === 'assays' && show ? true : false">Assays</v-btn>
+        <v-btn @click="populateList('vendors')" :dark="shown === 'vendors' && show ? true : false">Vendors</v-btn>
         <v-btn @click="submit(true)">Show All</v-btn>
         <v-flex xs12>
           <!-- select all -->
@@ -17,7 +17,7 @@
           </transition>
           <!-- submit -->
           <transition name="submit" mode="out-in">
-            <v-chip v-if="allSelected || someSelected" key="submit" @click="submit()" color="green">Go!</v-chip>
+            <v-chip v-if="(allSelected || someSelected) && show" key="submit" @click="submit()" color="green">Go!</v-chip>
           </transition>
           <br>
           <!-- filter chips -->
@@ -148,8 +148,9 @@ export default {
         this.selected = this.assays.map(x => x.id)
       }
       this.$store.dispatch('setFilters', this.selected)
+      let route = this.user ? 'inventory-user' : 'inventory-table'
       this.$router.push({
-        name: 'inventory-table'
+        name: route
       })
     }
   }
