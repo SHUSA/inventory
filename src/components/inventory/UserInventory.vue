@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid grid-list-md v-if="loadComponent">
+  <v-container fluid grid-list-xs v-if="loadComponent">
     <v-container>
       <v-layout row wrap>
         <v-btn small dark color="primary" @click="dialog = !dialog" v-if="admin">
@@ -8,22 +8,30 @@
         <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
           <v-icon small class="pr-1">fa-file-download</v-icon>CSV
         </v-btn>
-
         <v-spacer/>
-
-        <v-spacer/>
-
-        <!-- all in one filter -->
-        <v-text-field
-          v-model="search"
-          append-icon="fa-search"
-          label="Search for item, assay, vendor, etc"
-          hint="test"
-          persistent-hint
-          clearable
-          single-line
-          hide-details
-        />
+        <!-- category sort -->
+        <v-menu>
+          <v-btn slot="activator" small dark left>
+            <v-icon class="pr-1">far fa-folder</v-icon>
+            {{category}}
+          </v-btn>
+          <v-list>
+            <v-list-tile
+              v-for="(item, index) in categories"
+              :key="index"
+              @click="setSortCategory(item)"
+            >
+              <v-list-tile-title>{{item.name}}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+        <!-- ASC - DESC sort -->
+        <v-menu>
+          <v-btn slot="activator" small dark left @click="setSortType">
+            <v-icon class="pr-1">{{sortIcon}}</v-icon>
+            {{sortType}}
+          </v-btn>
+        </v-menu>
       </v-layout>
       <v-layout row wrap>
         <!-- displays each assay with outstanding orders -->
@@ -70,7 +78,10 @@
       >
         <!-- big card -->
         <v-card>
-          <v-card-title class="title py-1">{{props.item.name}}</v-card-title>
+          <v-card-title class="title py-1">
+              {{props.item.name}}
+              <v-icon small color="red" v-if="checkQuantity(props.item)">fa-exclamation-circle</v-icon>
+          </v-card-title>
           <v-card-text class="caption py-0">{{props.item.catalogNumber}} - {{getVendor(props.item)}} - {{getAssay(props.item)}}</v-card-text>
           <v-divider/>
           <v-card-text v-if="props.item.itemDescription" class="py-1">
@@ -133,6 +144,15 @@ export default {
       search: '',
       alertMessage: '',
       manualOrder: [],
+      sortType: 'DESC',
+      category: 'Category',
+      categories: [
+        {name: 'Assay', key: 'AssayId'},
+        {name: 'Vendor', key: 'VendorId'},
+        {name: 'Catalog#', key: 'catalogNumber'},
+        {name: 'Stock', key: 'currentStock'},
+        {name: 'Last Update', key: 'lastUpdate'}
+      ],
       editedItem: {
         name: '',
         AssayId: '',
@@ -176,6 +196,10 @@ export default {
 
     lastOrderPeriod () {
       return this.$moment().startOf('week').subtract(7, 'day').format('MMM DD, YYYY')
+    },
+
+    sortIcon () {
+      return this.sortType === 'DESC' ? 'fa-sort-amount-down' : 'fa-sort-amount-up'
     },
 
     outstandingAssays () {
@@ -232,6 +256,14 @@ export default {
   },
 
   methods: {
+    setSortCategory (catInfo) {
+      this.category = catInfo.name
+    },
+
+    setSortType () {
+      this.sortType = this.sortType === 'DESC' ? 'ASC' : 'DESC'
+    },
+
     getCSV () {
       const csvbtn = document.getElementById('csvbtn')
       const fields = ['vendor', 'catalogNumber', 'assay.name', 'name', 'currentStock', 'lastUpdate']
