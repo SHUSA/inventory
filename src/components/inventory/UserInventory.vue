@@ -13,7 +13,7 @@
         <v-menu>
           <v-btn slot="activator" small dark left>
             <v-icon class="pr-1">far fa-folder</v-icon>
-            {{category}}
+            Sort By {{category}}
           </v-btn>
           <v-list>
             <v-list-tile
@@ -144,14 +144,15 @@ export default {
       search: '',
       alertMessage: '',
       manualOrder: [],
-      sortType: 'DESC',
-      category: 'Category',
+      sortType: 'ASC',
+      category: 'Name',
       categories: [
+        {name: 'Name', key: 'name'},
         {name: 'Assay', key: 'AssayId'},
         {name: 'Vendor', key: 'VendorId'},
         {name: 'Catalog#', key: 'catalogNumber'},
         {name: 'Stock', key: 'currentStock'},
-        {name: 'Last Update', key: 'lastUpdate'}
+        {name: 'Last Update', key: 'updatedAt'}
       ],
       editedItem: {
         name: '',
@@ -199,7 +200,7 @@ export default {
     },
 
     sortIcon () {
-      return this.sortType === 'DESC' ? 'fa-sort-amount-down' : 'fa-sort-amount-up'
+      return this.sortType === 'DESC' ? 'fa-sort-alpha-up' : 'fa-sort-alpha-down'
     },
 
     outstandingAssays () {
