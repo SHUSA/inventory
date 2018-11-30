@@ -58,7 +58,7 @@ module.exports = {
           active: req.query.active
         },
         order: [
-          ['VendorId', 'DESC']
+          ['name', 'ASC']
         ]
       })
       res.send(items)
