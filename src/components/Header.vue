@@ -56,7 +56,7 @@ export default {
       time: this.$moment().format('MMM DD, YYYY'),
       title: 'Molecular Inventory',
       dialog: false,
-      routes: ['Inventory', 'Orders']
+      routes: ['Inventory', 'Orders', 'Inactive']
     }
   },
   computed: {
