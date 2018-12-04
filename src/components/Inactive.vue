@@ -128,8 +128,8 @@ export default {
         data.active = false
         this.activationText = 'Reactivate'
         this.snackText = `${Array.isArray(results.data) ? results.data[0].message : results.statusText}`
-        this.snackColor = 'warning'
-        this.snackIcon = 'fa-exclamation-triangle'
+        this.snackColor = 'error'
+        this.snackIcon = 'fa-skull-crossbones'
         this.snackbar = true
       } else {
         this.activationText = data.active ? 'Deactivate' : 'Reactivate'
