@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="headline">
-      <v-icon>fa-microphone-alt</v-icon>
+      <img width="32" :src="getImage()">
       What's New!
     </v-card-title>
     <v-divider/>
@@ -171,7 +171,13 @@
 
 <script>
 export default {
+  methods: {
+    getImage () {
+      let rand = '0' + Math.floor(Math.random() * 3)
 
+      return require(`../img/nyancat${rand}.gif`)
+    }
+  }
 }
 </script>
 
