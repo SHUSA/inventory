@@ -1,5 +1,13 @@
 <template>
   <v-card>
+    <v-snackbar
+      v-model="snackbar"
+      :color="snackColor"
+      bottom
+    >
+      <v-icon class="pr-0">{{snackIcon}}</v-icon>
+      {{snackText}}
+    </v-snackbar>
     <v-container>
       <v-layout row wrap v-for="(category, index) in categories" :key="index">
         <!-- loop through categories and get info from arrays -->
@@ -12,7 +20,7 @@
             v-for="data in getArray(category)" :key="data.id"
             offset-x
           >
-            <v-chip slot="activator" label>
+            <v-chip slot="activator" :color="data.active ? null : 'info'" :disabled="data.active">
               {{data.name}}
             </v-chip>
             <v-card v-if="category !== 'Vendors'">
@@ -24,6 +32,12 @@
                   <v-list-tile-title>Assay: {{getAssay(data)}}</v-list-tile-title>
                   <v-list-tile-title>Vendor: {{getVendor(data)}}</v-list-tile-title>
                 </v-list>
+                <v-card-actions>
+                  <v-spacer/>
+                  <v-btn :color="activationText === 'Reactivate' ? 'success' : 'warning'" flat @click="reactivate(data, category)">
+                    {{activationText}}
+                  </v-btn>
+                </v-card-actions>
               </v-container>
               <!-- info for assay -->
               <v-container v-if="category === 'Assays'">
@@ -53,7 +67,12 @@ export default {
       vendorList: [],
       assayList: [],
       categories: ['Items', 'Assays', 'Vendors'],
-      menu: {}
+      menu: {},
+      activationText: 'Reactivate',
+      snackbar: false,
+      snackText: '',
+      snackColor: 'info',
+      snackIcon: ''
     }
   },
 
@@ -102,6 +121,46 @@ export default {
     getVendor (data) {
       if (this.vendorList.length === 0) return null
       return this.vendorList.find(vendor => vendor.id === data.VendorId).name
+    },
+
+    checkStatus (results, data) {
+      if (!results.status === 200) {
+        data.active = false
+        this.activationText = 'Reactivate'
+        this.snackText = `${Array.isArray(results.data) ? results.data[0].message : results.statusText}`
+        this.snackColor = 'warning'
+        this.snackIcon = 'fa-exclamation-triangle'
+        this.snackbar = true
+      } else {
+        this.activationText = data.active ? 'Deactivate' : 'Reactivate'
+        this.snackText = `${data.name} has been ${data.active ? 'reactivated' : 'deactivated'}`
+        this.snackColor = data.active ? 'success' : 'warning'
+        this.snackIcon = data.active ? 'fa-check-circle' : 'fa-exclamation-triangle'
+        this.snackbar = true
+      }
+    },
+
+    async reactivate (data, category) {
+      let results = null
+      data.active = !data.active
+      this.snackbar = false
+
+      if (category === 'Items') {
+        results = await itemService.put(data.id, data)
+        this.checkStatus(results, data)
+      } else if (category === 'Assays') {
+        results = await assayService.put(data.id, data)
+        this.checkStatus(results, data)
+      } else if (category === 'Vendors') {
+        results = await vendorService.put(data.id, data)
+        this.checkStatus(results, data)
+      } else {
+        this.snackText = 'I dunno man. No CATs match.'
+        this.snackColor = 'warning'
+        this.snackIcon = 'fa-cat'
+        this.snackbar = true
+        return null
+      }
     }
   }
 }
