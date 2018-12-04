@@ -87,11 +87,12 @@ module.exports = {
     let item = req.body.params.item
     const assay = req.body.params.assay
     const singleItem = list.length === 0
+    // to do: clean up code to be more flexible
 
     // calculate reorder point as long as item is active
     // removed active condition, all items are active if passed through here
     // old condition: if (!item.order && !item.user && item.active)
-    if (singleItem) {
+    if (singleItem && assay) {
       item = calculateStockLevels(item, assay)
     } else {
       list.map(item => {
