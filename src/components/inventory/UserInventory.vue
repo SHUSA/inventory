@@ -84,40 +84,42 @@
         >
           <!-- to do: add transition on sort -->
           <!-- big card -->
-          <v-card>
-            <v-card-title class="title py-1">
-                {{props.item.name}}
-                <v-icon small color="red" v-if="checkQuantity(props.item)">fa-exclamation-circle</v-icon>
-            </v-card-title>
-            <v-card-text class="caption py-0">{{props.item.catalogNumber}} - {{getVendor(props.item)}} - {{getAssay(props.item)}}</v-card-text>
-            <v-divider/>
-            <v-card-text v-if="props.item.itemDescription" class="py-1">
-              <v-icon small>fa-info-circle</v-icon>
-              {{props.item.itemDescription}}
-            </v-card-text>
-            <v-card-text class="py-1" v-else>
-              <v-icon small>fa-times</v-icon>
-              No description
-            </v-card-text>
-            <v-divider/>
-            <v-container class="py-0">
-              <v-form>
-                <v-text-field label="Stock" type="number"
-                  persistent-hint :hint="`Reorder amount: ${props.item.reorderQuantity} Reorder point: ${props.item.reorderPoint}`"
-                  :value="props.item.currentStock"
-                >
-                </v-text-field>
-                <v-checkbox v-model="manualOrder" class="py-0" label="Manual Order" :value="props.item.id"/>
-                <v-textarea clearable no-resize rows="4" class="py-0" label="Comment" :value="props.item.comment"></v-textarea>
-              </v-form>
-            </v-container>
-            <v-divider/>
-            <v-footer class="caption" color="white">
-              <v-flex text-xs-center>
-                Last Updated: {{time(props.item)}}
-              </v-flex>
-            </v-footer>
-          </v-card>
+          <transition-group name="sort-card">
+            <v-card :key="props.item.id">
+              <v-card-title class="title py-1">
+                  {{props.item.name}}
+                  <v-icon small color="red" v-if="checkQuantity(props.item)">fa-exclamation-circle</v-icon>
+              </v-card-title>
+              <v-card-text class="caption py-0">{{props.item.catalogNumber}} - {{getVendor(props.item)}} - {{getAssay(props.item)}}</v-card-text>
+              <v-divider/>
+              <v-card-text v-if="props.item.itemDescription" class="py-1">
+                <v-icon small>fa-info-circle</v-icon>
+                {{props.item.itemDescription}}
+              </v-card-text>
+              <v-card-text class="py-1" v-else>
+                <v-icon small>fa-times</v-icon>
+                No description
+              </v-card-text>
+              <v-divider/>
+              <v-container class="py-0">
+                <v-form>
+                  <v-text-field label="Stock" type="number"
+                    persistent-hint :hint="`Reorder amount: ${props.item.reorderQuantity} Reorder point: ${props.item.reorderPoint}`"
+                    :value="props.item.currentStock"
+                  >
+                  </v-text-field>
+                  <v-checkbox v-model="manualOrder" class="py-0" label="Manual Order" :value="props.item.id"/>
+                  <v-textarea clearable no-resize rows="4" class="py-0" label="Comment" :value="props.item.comment"></v-textarea>
+                </v-form>
+              </v-container>
+              <v-divider/>
+              <v-footer class="caption" color="white">
+                <v-flex text-xs-center>
+                  Last Updated: {{time(props.item)}}
+                </v-flex>
+              </v-footer>
+            </v-card>
+          </transition-group>
         </v-flex>
       </v-data-iterator>
       <scroll/>
@@ -398,4 +400,21 @@ export default {
 </script>
 
 <style scoped>
+  /* doesn't work on data-iterator + cards */
+  /* .sort-card-move {
+    transition: transform 1s;
+  } */
+
+  .sort-card-item {
+    transition: all 3s;
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .sort-card-enter, .sort-card-leave-to {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  .sort-card-leave-active {
+    position: absolute;
+  }
 </style>
