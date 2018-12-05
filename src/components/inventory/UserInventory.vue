@@ -1,120 +1,128 @@
 <template>
-  <v-container fluid grid-list-xs v-if="loadComponent">
-    <v-container>
-      <v-layout row wrap>
-        <v-btn small dark color="primary" @click="dialog = !dialog" v-if="admin">
-          Add Item
-        </v-btn>
-        <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
-          <v-icon small class="pr-1">fa-file-download</v-icon>CSV
-        </v-btn>
-        <v-spacer/>
-        <!-- category sort -->
-        <v-menu>
-          <v-btn slot="activator" small dark left>
-            <v-icon class="pr-1">far fa-folder</v-icon>
-            Sort By {{category}}
+  <v-card>
+    <v-container fluid grid-list-xs v-if="loadComponent">
+      <v-container>
+        <v-layout row wrap>
+          <v-btn small dark color="primary" @click="dialog = !dialog" v-if="admin">
+            Add Item
           </v-btn>
-          <v-list>
-            <v-list-tile
-              v-for="(item, index) in categories"
-              :key="index"
-              @click="setSortCategory(item)"
-            >
-              <v-list-tile-title>{{item.name}}</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
-        <!-- ASC - DESC sort -->
-        <v-menu>
-          <v-btn slot="activator" small dark left @click="setSortType">
-            <v-icon class="pr-1">{{sortIcon}}</v-icon>
-            {{sortType}}
+          <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
+            <!-- to do: add transition showing download initiating -->
+            <v-icon small class="pr-1">fa-file-download</v-icon>CSV
           </v-btn>
-        </v-menu>
-      </v-layout>
-      <v-layout row wrap>
-        <!-- displays each assay with outstanding orders -->
-        <v-card-text>
-          Assays not updated since {{lastOrderPeriod}} will look like so
-          <v-chip small>
+          <!-- to do: add help button somewhere here? -->
+          <v-spacer/>
+          <!-- category sort -->
+          <v-menu>
+            <v-btn slot="activator" small dark left>
+              <v-icon class="pr-1">far fa-folder</v-icon>
+              <!-- to do: add transition -->
+              Sort By {{category.name}}
+            </v-btn>
+            <v-list>
+              <v-list-tile
+                v-for="(item, index) in categories"
+                :key="index"
+                @click="category = item"
+              >
+                <v-list-tile-title>{{item.name}}</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
+          <!-- ASC - DESC sort -->
+          <v-menu>
+            <v-btn slot="activator" small dark left @click="sortType = sortType === 'DESC' ? 'ASC' : 'DESC'">
+              <v-icon class="pr-1">{{sortIcon}}</v-icon>
+              <!-- to do: add transition to cards -->
+            </v-btn>
+          </v-menu>
+        </v-layout>
+
+        <v-layout row wrap>
+          <!-- displays each assay with outstanding orders -->
+          <v-card-text>
+            Assays not updated since {{lastOrderPeriod}} will look like so
+            <v-chip small>
+              <v-badge color="red" right>
+                <span slot="badge">EX</span>
+                <span>Example</span>
+              </v-badge>
+            </v-chip>
+          </v-card-text>
+          <v-chip v-for="(value, index) in outstandingAssays" :key="index" @click="searchTerm(value[0])">
             <v-badge color="red" right>
-              <span slot="badge">EX</span>
-              <span>Example</span>
+              <span v-if="!value[2]" slot="badge">{{value[1]}}</span>
+              <span>{{value[0]}}</span>
             </v-badge>
           </v-chip>
-        </v-card-text>
-        <v-chip v-for="(value, index) in outstandingAssays" :key="index" @click="searchTerm(value[0])">
-          <v-badge color="red" right>
-            <span v-if="!value[2]" slot="badge">{{value[1]}}</span>
-            <span>{{value[0]}}</span>
-          </v-badge>
-        </v-chip>
-      </v-layout>
-    </v-container>
+        </v-layout>
+      </v-container>
 
-    <v-snackbar
-      v-model="snackbar"
-      color="primary"
-      bottom
-    >
-      <v-flex class="text-xs-center">
-        {{snackText}}
-      </v-flex>
-    </v-snackbar>
-
-    <v-data-iterator
-      :items="supplies"
-      ref="search"
-      content-tag="v-layout"
-      row
-      wrap
-      hide-actions
-    >
-      <v-flex
-        slot="item"
-        slot-scope="props"
-        xs2
+      <v-snackbar
+        v-model="snackbar"
+        color="primary"
+        bottom
       >
-        <!-- big card -->
-        <v-card>
-          <v-card-title class="title py-1">
-              {{props.item.name}}
-              <v-icon small color="red" v-if="checkQuantity(props.item)">fa-exclamation-circle</v-icon>
-          </v-card-title>
-          <v-card-text class="caption py-0">{{props.item.catalogNumber}} - {{getVendor(props.item)}} - {{getAssay(props.item)}}</v-card-text>
-          <v-divider/>
-          <v-card-text v-if="props.item.itemDescription" class="py-1">
-            <v-icon small>fa-info-circle</v-icon>
-            {{props.item.itemDescription}}
-          </v-card-text>
-          <v-card-text class="py-1" v-else>
-            <v-icon small>fa-times</v-icon>
-            No description
-          </v-card-text>
-          <v-divider/>
-          <v-container class="py-0">
-            <v-form>
-              <v-text-field label="Stock" type="number"
-                persistent-hint :hint="`Reorder amount: ${props.item.reorderQuantity} Reorder point: ${props.item.reorderPoint}`"
-                :value="props.item.currentStock"
-              >
-              </v-text-field>
-              <v-checkbox v-model="manualOrder" class="py-0" label="Manual Order" :value="props.item.id"/>
-              <v-textarea clearable no-resize rows="4" class="py-0" label="Comment" :value="props.item.comment"></v-textarea>
-            </v-form>
-          </v-container>
-          <v-divider/>
-          <v-footer class="caption" color="white">
-            <v-flex text-xs-center>
-              Last Updated: {{time(props.item)}}
-            </v-flex>
-          </v-footer>
-        </v-card>
-      </v-flex>
-    </v-data-iterator>
-    <scroll/>
-  </v-container>
+      <!-- to do: add snack color, icon, etc; see Inactive for hints -->
+        <v-flex class="text-xs-center">
+          {{snackText}}
+        </v-flex>
+      </v-snackbar>
+
+      <v-data-iterator
+        :items="supplies"
+        ref="search"
+        content-tag="v-layout"
+        row
+        wrap
+        hide-actions
+      >
+        <v-flex
+          slot="item"
+          slot-scope="props"
+          xs6 sm4 md3 lg2 xl1
+        >
+          <!-- to do: add transition on sort -->
+          <!-- big card -->
+          <v-card>
+            <v-card-title class="title py-1">
+                {{props.item.name}}
+                <v-icon small color="red" v-if="checkQuantity(props.item)">fa-exclamation-circle</v-icon>
+            </v-card-title>
+            <v-card-text class="caption py-0">{{props.item.catalogNumber}} - {{getVendor(props.item)}} - {{getAssay(props.item)}}</v-card-text>
+            <v-divider/>
+            <v-card-text v-if="props.item.itemDescription" class="py-1">
+              <v-icon small>fa-info-circle</v-icon>
+              {{props.item.itemDescription}}
+            </v-card-text>
+            <v-card-text class="py-1" v-else>
+              <v-icon small>fa-times</v-icon>
+              No description
+            </v-card-text>
+            <v-divider/>
+            <v-container class="py-0">
+              <v-form>
+                <v-text-field label="Stock" type="number"
+                  persistent-hint :hint="`Reorder amount: ${props.item.reorderQuantity} Reorder point: ${props.item.reorderPoint}`"
+                  :value="props.item.currentStock"
+                >
+                </v-text-field>
+                <v-checkbox v-model="manualOrder" class="py-0" label="Manual Order" :value="props.item.id"/>
+                <v-textarea clearable no-resize rows="4" class="py-0" label="Comment" :value="props.item.comment"></v-textarea>
+              </v-form>
+            </v-container>
+            <v-divider/>
+            <v-footer class="caption" color="white">
+              <v-flex text-xs-center>
+                Last Updated: {{time(props.item)}}
+              </v-flex>
+            </v-footer>
+          </v-card>
+        </v-flex>
+      </v-data-iterator>
+      <scroll/>
+    </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -144,12 +152,12 @@ export default {
       search: '',
       alertMessage: '',
       manualOrder: [],
-      sortType: 'ASC',
-      category: 'Name',
+      sortType: 'DESC',
+      category: {name: 'Name', key: 'name'},
       categories: [
         {name: 'Name', key: 'name'},
-        {name: 'Assay', key: 'AssayId'},
-        {name: 'Vendor', key: 'VendorId'},
+        {name: 'Assay', key: 'assay'},
+        {name: 'Vendor', key: 'vendor'},
         {name: 'Catalog#', key: 'catalogNumber'},
         {name: 'Stock', key: 'currentStock'},
         {name: 'Last Update', key: 'updatedAt'}
@@ -200,18 +208,24 @@ export default {
     },
 
     sortIcon () {
-      return this.sortType === 'DESC' ? 'fa-sort-alpha-up' : 'fa-sort-alpha-down'
+      if (this.category.key === 'currentStock' || this.category.key === 'lastUpdate') {
+        return this.sortType === 'DESC' ? 'fa-sort-numeric-up' : 'fa-sort-numeric-down'
+      } else {
+        return this.sortType === 'DESC' ? 'fa-sort-alpha-down' : 'fa-sort-alpha-up'
+      }
     },
 
     outstandingAssays () {
       let obj = {}
       // fix coding; clunky
+      // to do: refactor to object
       this.supplies.map(item => {
         this.recentlyUpdated(item)
         this.getAssay(item)
         // check if assay object is attached and make sure it's not a duplicate
         if (item.assay) {
           let assay = item.assay
+          // count number of outstanding assays with same assay name
           if (obj.hasOwnProperty(assay.name)) {
             obj[assay.name].count += 1
           } else {
@@ -235,6 +249,13 @@ export default {
 
   watch: {
     // dialogs go here
+    category () {
+      this.sortItems()
+    },
+
+    sortType () {
+      this.sortItems()
+    }
   },
 
   async mounted () {
@@ -253,16 +274,24 @@ export default {
       top: 0,
       left: 0
     })
+    this.sortItems()
     this.loadComponent = true
   },
 
   methods: {
-    setSortCategory (catInfo) {
-      this.category = catInfo.name
-    },
-
-    setSortType () {
-      this.sortType = this.sortType === 'DESC' ? 'ASC' : 'DESC'
+    sortItems () {
+      let key = this.category.key
+      if (key === 'currentStock') {
+        this.supplies.sort((a, b) => {
+          return this.sortType === 'DESC' ? b[key] - a[key] : a[key] - b[key]
+        })
+      } else if (key === 'assay') {
+        this.supplies.sort((a, b) => a[key].name.localeCompare(b[key].name, 'en', {'sensitivity': 'base'}))
+        if (this.sortType === 'ASC') this.supplies.reverse()
+      } else {
+        this.supplies.sort((a, b) => a[key].localeCompare(b[key], 'en', {'sensitivity': 'base'}))
+        if (this.sortType === 'ASC') this.supplies.reverse()
+      }
     },
 
     getCSV () {
@@ -340,6 +369,7 @@ export default {
     },
 
     customFilter (item, queryText, itemText) {
+      // to do: review filtering
       console.log('customFilter')
       console.log(`item ${item}`)
       console.log(`queryText ${queryText}`)
@@ -368,5 +398,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
