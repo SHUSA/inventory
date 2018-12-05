@@ -4,7 +4,7 @@
       {{title}} v.b-2.0
       <!-- recent updates button -->
       <v-dialog
-        v-model="dialog"
+        v-model="updates"
         scrollable
         width="500"
       >
@@ -13,10 +13,22 @@
         </v-btn>
         <update/>
       </v-dialog>
+      <!-- help -->
+      <v-dialog
+        v-model="help"
+        scrollable
+        width="500"
+      >
+        <v-btn slot="activator" icon small class="mx-0">
+          <v-icon small>fa-question-circle</v-icon>
+        </v-btn>
+        <help/>
+      </v-dialog>
     </v-toolbar-title>
     <v-spacer/>
     <v-toolbar-items>
       <!-- menu routes -->
+      <!-- to do: add icons; book, elementor, triangle !, etc -->
       <v-menu v-if="this.$route.name !== 'login'">
         <v-btn slot="activator" flat>
           <v-icon small class="pr-1">fa-bars</v-icon>
@@ -48,14 +60,16 @@
 
 <script>
 import { mapState } from 'vuex'
-import Update from './Update'
+import Update from './information/Update'
+import Help from './information/Help'
 
 export default {
   data () {
     return {
       time: this.$moment().format('MMM DD, YYYY'),
       title: 'Molecular Inventory',
-      dialog: false,
+      updates: false,
+      help: false,
       routes: ['Inventory', 'Orders', 'Inactive']
     }
   },
@@ -69,7 +83,8 @@ export default {
   },
 
   components: {
-    Update
+    Update,
+    Help
   },
 
   methods: {
