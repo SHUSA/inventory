@@ -11,7 +11,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import Update from './Update'
+import Update from './information/Update'
 
 export default {
   components: {
