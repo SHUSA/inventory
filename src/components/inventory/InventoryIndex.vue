@@ -11,6 +11,7 @@
         <v-flex xs12>
           <!-- select all -->
           <transition name="chips">
+            <!-- to do: fix colors; use info, success, warning, error, etc -->
             <v-chip v-if="show"  @click="selectAll(list)" :color="allSelected ? 'red' : someSelected ? 'orange' : ''">
               {{!allSelected ? 'SELECT ALL' : 'DESELECT ALL'}}
             </v-chip>
@@ -148,7 +149,8 @@ export default {
         this.selected = this.assays.map(x => x.id)
       }
       this.$store.dispatch('setFilters', this.selected)
-      let route = this.user ? 'inventory-user' : 'inventory-table'
+      // let route = this.user ? 'inventory-user' : 'inventory-table'
+      let route = 'inventory-table'
       this.$router.push({
         name: route
       })
