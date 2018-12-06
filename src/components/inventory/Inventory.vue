@@ -864,6 +864,9 @@ export default {
       this.alertMessage = 'Please use a valid name or fix form'
 
       if (this.errors.assay || num) {
+        console.log('assay error')
+        console.log(this.errors.assay)
+        console.log(num)
         this.alert = true
       } else {
         let assayInfo = {}
