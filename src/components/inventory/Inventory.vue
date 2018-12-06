@@ -823,6 +823,7 @@ export default {
     },
 
     async deactivateItem (item) {
+      // to do: deactivate all associated items if Assay is deactivated
       const index = this.supplies.indexOf(item)
       item.active = false
       await itemService.put(item.id, item)
@@ -872,7 +873,6 @@ export default {
         if (this.assayForm === 'Edit Assay') {
           // existing assay
           let response = await assayService.put(edited)
-          this.editedIndex = -1
 
           if (this.checkErrorMessage(response)) {
             // do nothing
@@ -912,6 +912,7 @@ export default {
       if (!this.alert) {
         this.loading = false
         this.openSnack('Assay saved')
+        this.editedIndex = -1
         this.close()
       }
     },
@@ -930,7 +931,6 @@ export default {
         if (this.vendorForm === 'Edit Vendor') {
           // existing vendor
           let response = await vendorService.put(edited)
-          this.editedIndex = -1
 
           if (this.checkErrorMessage(response)) {
             // do nothing
@@ -950,6 +950,7 @@ export default {
       if (!this.alert) {
         this.loading = false
         this.openSnack('Vendor saved')
+        this.editedIndex = -1
         this.close()
       }
     },
