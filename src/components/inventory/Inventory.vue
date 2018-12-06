@@ -283,7 +283,7 @@
               </v-badge>
             </v-chip>
           </v-card-text>
-          <v-chip v-for="(value, index) in outstandingAssays" :key="index">
+          <v-chip v-for="(value, index) in outstandingAssays" :key="index" @click="searchTerm(value.name)">
             <v-badge color="red" right>
               <span v-if="value.count > 0" slot="badge">{{value.count}}</span>
               <span>{{value.name}}</span>
