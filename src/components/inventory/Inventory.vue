@@ -283,12 +283,11 @@
               </v-badge>
             </v-chip>
           </v-card-text>
-          <v-chip v-for="(value, index) in outstandingAssays" :key="index" @click="searchTerm(value[0])">
+          <v-chip v-for="(value, index) in outstandingAssays" :key="index">
             <v-badge color="red" right>
-              <span v-if="!value[2]" slot="badge">{{value[1]}}</span>
-              <span>{{value[0]}}</span>
+              <span v-if="value.count > 0" slot="badge">{{value.count}}</span>
+              <span>{{value.name}}</span>
             </v-badge>
-            <!-- <v-avatar v-if="!value[2]" class="red lighten-1">{{value[1]}}</v-avatar> -->
           </v-chip>
         </v-layout>
       </v-container>
@@ -628,12 +627,15 @@ export default {
       })
 
       let arr = []
-
       Object.keys(obj).forEach((key, i) => {
-        arr.push([key, obj[key].count, obj[key].recentlyUpdated])
+        arr.push({
+          name: key,
+          count: obj[key].count,
+          recentlyUpdated: obj[key].recentlyUpdated
+        })
       })
 
-      return arr.sort((a, b) => a[0].localeCompare(b[0], 'en', {'sensitivity': 'base'}))
+      return arr.sort((a, b) => a.name.localeCompare(b.name, 'en', {'sensitivity': 'base'}))
     }
   },
 
