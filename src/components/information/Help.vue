@@ -4,6 +4,10 @@
     <v-divider/>
     <v-expansion-panel>
       <v-expansion-panel-content>
+        <div slot="header">Updates</div>
+        <update/>
+      </v-expansion-panel-content>
+      <v-expansion-panel-content>
         <div slot="header">Formula</div>
         <v-card color="grey lighten-3">
           <v-card-text>
@@ -21,8 +25,12 @@
 </template>
 
 <script>
-export default {
+import Update from './Update'
 
+export default {
+  components: {
+    Update
+  }
 }
 </script>
 
