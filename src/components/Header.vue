@@ -1,18 +1,7 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-2.0
-      <!-- recent updates button -->
-      <v-dialog
-        v-model="updates"
-        scrollable
-        width="500"
-      >
-        <v-btn slot="activator" icon small class="mx-0">
-          <v-icon small>fa-scroll</v-icon>
-        </v-btn>
-        <update/>
-      </v-dialog>
+      {{title}} v.b-2.05
       <!-- help -->
       <v-dialog
         v-model="help"
@@ -60,7 +49,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import Update from './information/Update'
 import Help from './information/Help'
 
 export default {
@@ -68,7 +56,6 @@ export default {
     return {
       time: this.$moment().format('MMM DD, YYYY'),
       title: 'Molecular Inventory',
-      updates: false,
       help: false,
       routes: ['Inventory', 'Orders', 'Inactive']
     }
@@ -83,7 +70,6 @@ export default {
   },
 
   components: {
-    Update,
     Help
   },
 
