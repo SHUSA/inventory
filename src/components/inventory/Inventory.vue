@@ -477,12 +477,16 @@ export default {
         assay: (text) => {
           if (text.length === 0) {
             this.errors.assay = true
+            console.log('no name')
+            console.log(text)
+            console.log(text.length)
             return 'Please enter a valid name'
           } else if (this.assayNames.includes(text.toUpperCase())) {
             if (this.editedIndex > -1) {
               this.errors.assay = false
               return true
             } else {
+              console.log('dupe assay name')
               this.errors.assay = true
               return 'Duplicate assay name found'
             }

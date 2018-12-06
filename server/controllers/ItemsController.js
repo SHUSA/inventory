@@ -8,15 +8,16 @@ function calculateStockLevels (item, assay) {
   // otherwise, reorder points will be user defined
   if (parseInt(assay.weeklyVolume) !== 0 && parseFloat(item.reactionsPerItem) !== 0) {
     console.log(`weeklyVolume ${assay.weeklyVolume}`)
-    // console.log(`replicates ${assay.sampleReplicates}`)
     console.log(`weekly runs ${assay.weeklyRuns}`)
     console.log(`controlsPerRun ${assay.controlsPerRun}`)
     console.log(`reactionsPerItem ${item.reactionsPerItem}`)
-    console.log(`controlsPerRun ${assay.controlsPerRun}`)
     // to do: reevaluate sampleReplicates in formula
     // weeklyUse = (assay.weeklyVolume * assay.sampleReplicates +
     //   assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem
     weeklyUse = (assay.weeklyVolume + assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem
+    console.log('weeklyUse = (assay.weeklyVolume + assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem')
+    console.log(`assay.weeklyRuns * assay.controlsPerRun ${assay.weeklyRuns * assay.controlsPerRun}`)
+    console.log(`(assay.weeklyVolume + assay.weeklyRuns * assay.controlsPerRun) ${(assay.weeklyVolume + assay.weeklyRuns * assay.controlsPerRun)}`)
     console.log(`weeklyUse ${weeklyUse}`)
     baseStock = weeklyUse * 4
     console.log(`baseStock ${baseStock}`)
