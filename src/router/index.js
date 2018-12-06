@@ -6,7 +6,9 @@ import OrderIndex from '@/components/order/OrderIndex.vue'
 import InventoryIndex from '@/components/inventory/InventoryIndex.vue'
 import Order from '@/components/order/Order.vue'
 import Inventory from '@/components/inventory/Inventory.vue'
+import UserInventory from '@/components/inventory/UserInventory.vue'
 import NotFound from '@/components/NotFound.vue'
+import Inactive from '@/components/Inactive.vue'
 
 Vue.use(Router)
 
@@ -43,6 +45,16 @@ export default new Router({
       path: '/inventory/table',
       name: 'inventory-table',
       component: Inventory
+    },
+    {
+      path: '/inventory/user',
+      name: 'inventory-user',
+      component: UserInventory
+    },
+    {
+      path: '/inactive',
+      name: 'inactive',
+      component: Inactive
     },
     {
       path: '*',

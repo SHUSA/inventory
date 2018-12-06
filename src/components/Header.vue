@@ -1,22 +1,23 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-2.0
-      <!-- recent updates button -->
+      {{title}} v.b-2.05
+      <!-- help -->
       <v-dialog
-        v-model="dialog"
+        v-model="help"
         scrollable
         width="500"
       >
         <v-btn slot="activator" icon small class="mx-0">
-          <v-icon small>fa-scroll</v-icon>
+          <v-icon small>fa-question-circle</v-icon>
         </v-btn>
-        <update/>
+        <help/>
       </v-dialog>
     </v-toolbar-title>
     <v-spacer/>
     <v-toolbar-items>
       <!-- menu routes -->
+      <!-- to do: add icons; book, elementor, triangle !, etc -->
       <v-menu v-if="this.$route.name !== 'login'">
         <v-btn slot="activator" flat>
           <v-icon small class="pr-1">fa-bars</v-icon>
@@ -48,15 +49,15 @@
 
 <script>
 import { mapState } from 'vuex'
-import Update from './Update'
+import Help from './information/Help'
 
 export default {
   data () {
     return {
       time: this.$moment().format('MMM DD, YYYY'),
       title: 'Molecular Inventory',
-      dialog: false,
-      routes: ['Inventory', 'Orders']
+      help: false,
+      routes: ['Inventory', 'Orders', 'Inactive']
     }
   },
   computed: {
@@ -69,7 +70,7 @@ export default {
   },
 
   components: {
-    Update
+    Help
   },
 
   methods: {

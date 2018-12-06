@@ -1,15 +1,27 @@
 <template>
   <v-card>
     <v-card-title class="headline">
-      <v-icon>fa-microphone-alt</v-icon>
+      <img width="32" :src="getImage()">
       What's New!
     </v-card-title>
     <v-divider/>
     <v-card-text>
       <ul>
-        <!-- (li>{2018.11.DD - v1.7.xx}ul>li{update notes})+br -->
+        <!-- (li>{2018.12.DD - v2.xx}ul>li{update notes})+br -->
         <li>
-          2018.11.27 - v2.0
+          2018.12.06 - v2.05, Quick Fix
+          <ul>
+            <!-- <li>UI change for User</li> -->
+            <!-- <li>Activation/deactivation of items, assay, vendors available</li> -->
+            <li>Activation/deactivation of items</li>
+            <li>Inactive items, assay, vendors visible</li>
+            <li>Calculation formula added to Help in Header</li>
+            <li>Fixed an issue where Assay or Vendor would not save despite no errors</li>
+          </ul>
+        </li>
+        <br>
+        <li>
+          2018.11.27 - v2.0, Workflow
           <ul>
             <li>UI and workflow rework</li>
             <li>Pre-filters added for Inventory</li>
@@ -171,7 +183,13 @@
 
 <script>
 export default {
+  methods: {
+    getImage () {
+      let rand = '0' + Math.floor(Math.random() * 3)
 
+      return require(`../../img/nyancat${rand}.gif`)
+    }
+  }
 }
 </script>
 

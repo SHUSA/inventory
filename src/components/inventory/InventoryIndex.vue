@@ -5,19 +5,20 @@
     <v-container fluid fill-height grid-list-md>
       <v-layout row wrap>
         <v-card-text>Choose your filters</v-card-text>
-        <v-btn @click="populateList('assays')">Assays</v-btn>
-        <v-btn @click="populateList('vendors')">Vendors</v-btn>
+        <v-btn @click="populateList('assays')" :dark="shown === 'assays' && show ? true : false">Assays</v-btn>
+        <v-btn @click="populateList('vendors')" :dark="shown === 'vendors' && show ? true : false">Vendors</v-btn>
         <v-btn @click="submit(true)">Show All</v-btn>
         <v-flex xs12>
           <!-- select all -->
           <transition name="chips">
+            <!-- to do: fix colors; use info, success, warning, error, etc -->
             <v-chip v-if="show"  @click="selectAll(list)" :color="allSelected ? 'red' : someSelected ? 'orange' : ''">
               {{!allSelected ? 'SELECT ALL' : 'DESELECT ALL'}}
             </v-chip>
           </transition>
           <!-- submit -->
           <transition name="submit" mode="out-in">
-            <v-chip v-if="allSelected || someSelected" key="submit" @click="submit()" color="green">Go!</v-chip>
+            <v-chip v-if="(allSelected || someSelected) && show" key="submit" @click="submit()" color="green">Go!</v-chip>
           </transition>
           <br>
           <!-- filter chips -->
@@ -148,8 +149,10 @@ export default {
         this.selected = this.assays.map(x => x.id)
       }
       this.$store.dispatch('setFilters', this.selected)
+      // let route = this.user ? 'inventory-user' : 'inventory-table'
+      let route = 'inventory-table'
       this.$router.push({
-        name: 'inventory-table'
+        name: route
       })
     }
   }
