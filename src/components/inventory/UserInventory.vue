@@ -3,20 +3,15 @@
     <v-container fluid grid-list-xs v-if="loadComponent">
       <v-container>
         <v-layout row wrap>
-          <v-btn small dark color="primary" @click="dialog = !dialog" v-if="admin">
-            Add Item
-          </v-btn>
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
             <!-- to do: add transition showing download initiating -->
             <v-icon small class="pr-1">fa-file-download</v-icon>CSV
           </v-btn>
-          <!-- to do: add help button somewhere here? -->
           <v-spacer/>
           <!-- category sort -->
           <v-menu>
             <v-btn slot="activator" small dark left>
               <v-icon class="pr-1">far fa-folder</v-icon>
-              <!-- to do: add transition -->
               Sort By {{category.name}}
             </v-btn>
             <v-list>
@@ -32,14 +27,15 @@
           <!-- ASC - DESC sort -->
           <v-menu>
             <v-btn slot="activator" small dark left @click="sortType = sortType === 'DESC' ? 'ASC' : 'DESC'">
-              <v-icon class="pr-1">{{sortIcon}}</v-icon>
-              <!-- to do: add transition to cards -->
+              <v-icon>{{sortIcon}}</v-icon>
+              <v-icon class="pl-1">fa-sort</v-icon>
             </v-btn>
           </v-menu>
         </v-layout>
 
         <v-layout row wrap>
           <!-- displays each assay with outstanding orders -->
+          <!-- to do: decide how to display; from button? on screen? search on button press? -->
           <v-card-text>
             Assays not updated since {{lastOrderPeriod}} will look like so
             <v-chip small>
@@ -49,12 +45,19 @@
               </v-badge>
             </v-chip>
           </v-card-text>
-          <v-chip v-for="(value, index) in outstandingAssays" :key="index" @click="searchTerm(value[0])">
+          <v-chip v-for="(value, index) in outstandingAssays" :key="index">
             <v-badge color="red" right>
-              <span v-if="!value[2]" slot="badge">{{value[1]}}</span>
-              <span>{{value[0]}}</span>
+              <span v-if="value.count > 0" slot="badge">{{value.count}}</span>
+              <span>{{value.name}}</span>
             </v-badge>
           </v-chip>
+        </v-layout>
+
+        <v-layout row wrap>
+          <v-spacer/>
+          <!-- update button -->
+          <!-- to do: decide button placement -->
+          <v-btn small dark>Submit Changes</v-btn>
         </v-layout>
       </v-container>
 
@@ -69,32 +72,20 @@
         </v-flex>
       </v-snackbar>
 
-      <v-data-iterator
-        :items="supplies"
-        ref="search"
-        content-tag="v-layout"
-        row
-        wrap
-        hide-actions
-      >
-        <v-flex
-          slot="item"
-          slot-scope="props"
-          xs6 sm4 md3 lg2 xl1
-        >
-          <!-- to do: add transition on sort -->
+      <transition-group name="sort-card" tag="v-layout" class="manual-v-layout">
+        <v-flex xs6 sm4 md3 lg2 v-for="item in supplies"
+          :key="item.id">
           <!-- big card -->
-          <transition-group name="sort-card">
-            <v-card :key="props.item.id">
+            <v-card>
               <v-card-title class="title py-1">
-                  {{props.item.name}}
-                  <v-icon small color="red" v-if="checkQuantity(props.item)">fa-exclamation-circle</v-icon>
+                  {{item.name}}
+                  <v-icon small color="red" v-if="checkQuantity(item)">fa-exclamation-circle</v-icon>
               </v-card-title>
-              <v-card-text class="caption py-0">{{props.item.catalogNumber}} - {{getVendor(props.item)}} - {{getAssay(props.item)}}</v-card-text>
+              <v-card-text class="caption py-0">{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
               <v-divider/>
-              <v-card-text v-if="props.item.itemDescription" class="py-1">
+              <v-card-text v-if="item.itemDescription" class="py-1">
                 <v-icon small>fa-info-circle</v-icon>
-                {{props.item.itemDescription}}
+                {{item.itemDescription}}
               </v-card-text>
               <v-card-text class="py-1" v-else>
                 <v-icon small>fa-times</v-icon>
@@ -104,24 +95,23 @@
               <v-container class="py-0">
                 <v-form>
                   <v-text-field label="Stock" type="number"
-                    persistent-hint :hint="`Reorder amount: ${props.item.reorderQuantity} Reorder point: ${props.item.reorderPoint}`"
-                    :value="props.item.currentStock"
+                    persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
+                    :value="item.currentStock"
                   >
                   </v-text-field>
-                  <v-checkbox v-model="manualOrder" class="py-0" label="Manual Order" :value="props.item.id"/>
-                  <v-textarea clearable no-resize rows="4" class="py-0" label="Comment" :value="props.item.comment"></v-textarea>
+                  <v-checkbox v-model="manualOrder" class="py-0" label="Manual Order" :value="item.id"/>
+                  <v-textarea clearable no-resize rows="4" class="py-0" label="Comment" :value="item.comment"></v-textarea>
                 </v-form>
               </v-container>
               <v-divider/>
               <v-footer class="caption" color="white">
                 <v-flex text-xs-center>
-                  Last Updated: {{time(props.item)}}
+                  Last Updated: {{time(item)}}
                 </v-flex>
               </v-footer>
             </v-card>
-          </transition-group>
         </v-flex>
-      </v-data-iterator>
+      </transition-group>
       <scroll/>
     </v-container>
   </v-card>
@@ -240,12 +230,15 @@ export default {
       })
 
       let arr = []
-
       Object.keys(obj).forEach((key, i) => {
-        arr.push([key, obj[key].count, obj[key].recentlyUpdated])
+        arr.push({
+          name: key,
+          count: obj[key].count,
+          recentlyUpdated: obj[key].recentlyUpdated
+        })
       })
 
-      return arr.sort((a, b) => a[0].localeCompare(b[0], 'en', {'sensitivity': 'base'}))
+      return arr.sort((a, b) => a.name.localeCompare(b.name, 'en', {'sensitivity': 'base'}))
     }
   },
 
@@ -300,8 +293,7 @@ export default {
       const csvbtn = document.getElementById('csvbtn')
       const fields = ['vendor', 'catalogNumber', 'assay.name', 'name', 'currentStock', 'lastUpdate']
       const json2csv = new Json2csvParser({fields})
-      const results = this.$refs.search.filteredItems
-      const csv = json2csv.parse(results)
+      const csv = json2csv.parse(this.supplies)
       const blob = new Blob([csv], {type: 'text/csv'})
 
       csvbtn.href = URL.createObjectURL(blob)
@@ -401,11 +393,28 @@ export default {
 
 <style scoped>
   /* doesn't work on data-iterator + cards */
-  /* .sort-card-move {
+  .sort-card-move {
     transition: transform 1s;
-  } */
+  }
 
-  .sort-card-item {
+  .manual-v-layout {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    padding-bottom: 8px !important;
+    padding-top: 8px !important;
+  }
+
+  /* .sort-card-item {
     transition: all 3s;
     display: inline-block;
     margin-right: 10px;
@@ -416,5 +425,5 @@ export default {
   }
   .sort-card-leave-active {
     position: absolute;
-  }
+  } */
 </style>
