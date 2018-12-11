@@ -30,7 +30,8 @@ module.exports = {
 
   async post (req, res) {
     try {
-      const entry = await Entry.create(req.body)
+      let entry = []
+      entry = await req.body.forEach(newEntry => Entry.create(newEntry))
       res.send(entry)
     } catch (error) {
       console.log(error)
@@ -40,10 +41,18 @@ module.exports = {
 
   async put (req, res) {
     try {
-      await Entry.update(req.body, {
-        where: {
-          id: req.body.id
-        }
+      // update each entry
+      await req.body.forEach(entry => {
+        Entry.update(entry, {
+          where: {
+            id: entry.id
+          }
+        }).then(foundItem => {
+          // create entry if does not exist
+          if (foundItem[0] === 0) {
+            Entry.create(entry)
+          }
+        })
       })
       res.send(req.body)
     } catch (error) {
@@ -56,7 +65,7 @@ module.exports = {
     try {
       await Entry.destroy({
         where: {
-          id: req.params.entryId
+          id: req.query.entries
         }
       })
       res.send(req.body)
