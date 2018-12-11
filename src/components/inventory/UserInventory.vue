@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card flat color="#fafafa">
     <v-container fluid grid-list-xs v-if="loadComponent">
       <v-container>
         <v-layout row wrap>
@@ -45,7 +45,12 @@
               </v-badge>
             </v-chip>
           </v-card-text>
-          <v-chip v-for="(value, index) in outstandingAssays" :key="index">
+          <v-chip
+            v-for="(value, index) in outstandingAssays"
+            :key="index"
+            :color="isSelected(value.name) ? 'blue lighten-2' : ''"
+            @click="search(value.name)"
+          >
             <v-badge color="red" right>
               <span v-if="value.count > 0" slot="badge">{{value.count}}</span>
               <span>{{value.name}}</span>
@@ -204,13 +209,13 @@ export default {
       assayList: [],
       orderList: [],
       filteredList: [],
+      selected: '',
       loading: false,
       resultsDialog: false,
       resultsList: {ordered: [], updated: [], retracted: []},
       loadComponent: false,
       snackbar: false,
       snackText: '',
-      search: '',
       alertMessage: '',
       sortType: 'DESC',
       category: {name: 'Name', key: 'name'},
@@ -342,6 +347,20 @@ export default {
   },
 
   methods: {
+    search (name) {
+      if (this.isSelected(name)) {
+        // reset filter if same name clicked
+        this.filteredList = this.supplies
+      } else {
+        // find items with matching assay name
+        this.filteredList = this.supplies.filter(item => item.assay.name === name)
+      }
+    },
+
+    isSelected (name) {
+      return this.filteredList[0].assay.name === name && this.filteredList.length !== this.supplies.length
+    },
+
     sortItems () {
       let key = this.category.key
       if (key === 'currentStock') {
@@ -574,12 +593,15 @@ export default {
     transition: all 3s;
     display: inline-block;
     margin-right: 10px;
-  }
-  .sort-card-enter, .sort-card-leave-to {
+  } */
+  .sort-card-enter, .sort-card-leave {
     opacity: 0;
     transform: translateX(50px);
   }
   .sort-card-leave-active {
     position: absolute;
-  } */
+  }
+  .sort-card-enter-active {
+    position: absolute;
+  }
 </style>
