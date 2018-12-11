@@ -57,7 +57,7 @@
           <v-spacer/>
           <!-- update button -->
           <!-- to do: decide button placement -->
-          <v-btn small dark>Submit Changes</v-btn>
+          <v-btn small dark @click="saveAll()">Submit Changes</v-btn>
         </v-layout>
       </v-container>
 
@@ -73,8 +73,11 @@
       </v-snackbar>
 
       <transition-group name="sort-card" tag="v-layout" class="manual-v-layout">
-        <v-flex xs6 sm4 md3 lg2 v-for="item in supplies"
-          :key="item.id">
+        <v-flex
+          xs6 sm4 md3 lg2
+          v-for="item in filteredList"
+          :key="item.id"
+        >
           <!-- big card -->
             <v-card>
               <v-card-title class="title py-1">
@@ -97,10 +100,17 @@
                   <v-text-field label="Stock" type="number"
                     persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
                     :value="item.currentStock"
+                    v-model="item.currentStock"
                   >
                   </v-text-field>
-                  <v-checkbox v-model="manualOrder" class="py-0" label="Manual Order" :value="item.id"/>
-                  <v-textarea clearable no-resize rows="4" class="py-0" label="Comment" :value="item.comment"></v-textarea>
+                  <v-checkbox v-model="item.order" class="py-0" label="Manual Order"/>
+                  <v-textarea
+                    clearable no-resize
+                    rows="4" class="py-0"
+                    label="Comment"
+                    :value="item.comment"
+                    v-model="item.comment"
+                  ></v-textarea>
                 </v-form>
               </v-container>
               <v-divider/>
@@ -122,9 +132,14 @@ import { mapState } from 'vuex'
 import itemService from '@/services/ItemService.js'
 import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
-// import entryService from '@/services/EntryService.js'
+import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
 const Json2csvParser = require('json2csv').Parser
+
+// to do: ask user to save before closing or reloading IF data changed
+// window.onbeforeunload = () => {
+//   return 'Do you really want to leave our brilliant application?'
+// }
 
 export default {
   data () {
@@ -137,13 +152,13 @@ export default {
       vendorList: [],
       assayList: [],
       orderList: [],
+      filteredList: [],
       loading: false,
       loadComponent: false,
       snackbar: false,
       snackText: '',
       search: '',
       alertMessage: '',
-      manualOrder: [],
       sortType: 'DESC',
       category: {name: 'Name', key: 'name'},
       categories: [
@@ -287,13 +302,15 @@ export default {
         this.supplies.sort((a, b) => a[key].localeCompare(b[key], 'en', {'sensitivity': 'base'}))
         if (this.sortType === 'ASC') this.supplies.reverse()
       }
+
+      this.filteredList = this.supplies
     },
 
     getCSV () {
       const csvbtn = document.getElementById('csvbtn')
       const fields = ['vendor', 'catalogNumber', 'assay.name', 'name', 'currentStock', 'lastUpdate']
       const json2csv = new Json2csvParser({fields})
-      const csv = json2csv.parse(this.supplies)
+      const csv = json2csv.parse(this.filteredList)
       const blob = new Blob([csv], {type: 'text/csv'})
 
       csvbtn.href = URL.createObjectURL(blob)
@@ -330,13 +347,13 @@ export default {
       return recentOrder.createdAt < lastSunday || recentOrder.completed
     },
 
-    createEntry (editedItem) {
+    createEntry (item) {
       return {
-        ItemId: editedItem.id,
-        updatedAt: editedItem.updatedAt,
-        currentStock: editedItem.currentStock,
-        orderQuantity: editedItem.currentStock + editedItem.reorderQuantity,
-        comment: editedItem.comment
+        ItemId: item.id,
+        updatedAt: item.updatedAt,
+        currentStock: item.currentStock,
+        orderQuantity: item.currentStock + item.reorderQuantity,
+        comment: item.comment
       }
     },
 
@@ -362,14 +379,8 @@ export default {
       this.snackbar = true
     },
 
-    customFilter (item, queryText, itemText) {
-      // to do: review filtering
-      console.log('customFilter')
-      console.log(`item ${item}`)
-      console.log(`queryText ${queryText}`)
-      console.log(`itemText ${itemText}`)
-
-      return null
+    closeSnack () {
+      // to do: functions when snack is closed
     },
 
     getAssay (item) {
@@ -386,6 +397,82 @@ export default {
       }
       item.vendor = this.vendorList.find(vendor => vendor.id === item.VendorId).name
       return item.vendor
+    },
+
+    async saveAll () {
+      await itemService.put(null, null, null, this.filteredList)
+      this.openSnack('Items Saved')
+      // to do: pop up dialog of items ordered
+      this.order()
+    },
+
+    async order () {
+      // check through filteredList and see if order exists or if currentStock <= reorderPoint
+      // and add to itemsToOrder
+      let itemsToOrder = []
+      let doNotOrder = []
+      let entry = {}
+      let matchedEntry = null
+      // most recent Order or create new Order if none exist
+      const recentOrder = this.orderList.length === 0 ? (await orderService.post()).data : this.orderList[0]
+
+      // check through filteredList and see if order exists or if currentStock <= reorderPoint
+      this.filteredList.map(item => {
+        entry = this.createEntry(item)
+        // add to itemsToOrder if reorderPoint triggered or has a manual order and is a user
+        if ((item.order || this.checkQuantity(item)) && this.user) {
+          itemsToOrder.push(entry)
+        // add to doNotOrder if reorderPoint not triggered and is user
+        } else if (!this.checkQuantity(item) && this.user) {
+          doNotOrder.push(entry)
+        }
+      })
+
+      // ordering
+      if (itemsToOrder.length > 0) {
+        if (this.checkPreviousOrder(recentOrder)) {
+          // recent order too old or completed, create new order and associate OrderId
+          const newOrder = (await orderService.post()).data
+          this.orderList.splice(0, 0, newOrder)
+          itemsToOrder.map(entry => {
+            entry.OrderId = newOrder.id
+          })
+          await entryService.post(itemsToOrder)
+        } else {
+          // add current OrderId to entry
+          const orderEntries = (await orderService.show(recentOrder.id)).data
+          let orderedItems = itemsToOrder.map(entry => {
+            matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
+            if (matchedEntry === undefined) {
+              // ItemId not in Order Entries
+              entry.OrderId = recentOrder.id
+            } else {
+              // ItemId in Order Entries
+              entry = Object.assign(matchedEntry, entry)
+            }
+            return entry
+          })
+          await entryService.put(orderedItems)
+        }
+      }
+      
+      // retracting
+      if (doNotOrder.length > 0) {
+        const orderEntries = (await orderService.show(recentOrder.id)).data
+        let toDelete = []
+        doNotOrder.map(entry => {
+          matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
+          // add to delete list if entry exists in recentOrder
+          if (matchedEntry) {
+            toDelete.push(matchedEntry.id)
+          }
+        })
+        let results = await entryService.delete(toDelete)
+        // if all entries deleted
+        if (orderEntries.Entries.length === toDelete.length && results.status === 200) {
+          await orderService.delete(orderEntries.id)
+        }
+      }
     }
   }
 }
