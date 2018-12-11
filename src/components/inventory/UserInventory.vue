@@ -4,7 +4,7 @@
       <v-container>
         <v-layout row wrap>
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
-            <!-- to do: add transition showing download initiating -->
+            <!-- to do: add transition (bouncing) showing download initiating -->
             <v-icon small class="pr-1">fa-file-download</v-icon>CSV
           </v-btn>
           <v-spacer/>
@@ -72,6 +72,56 @@
         </v-flex>
       </v-snackbar>
 
+      <v-dialog
+        v-model="resultsDialog"
+        max-width="800"
+      >
+        <v-card>
+          <v-card-title class="title blue lighten-2 font-weight-bold">Save Results</v-card-title>
+          <v-divider/>
+          <v-container align-justify-center>
+            <v-layout row wrap>
+              <v-flex xs4>
+                <v-list dense>
+                  <v-list-tile-title class="subheading"><u>Ordered Items</u></v-list-tile-title>
+                  <template v-if="resultsList.ordered.length > 0">
+                    <v-list-tile v-for="item in resultsList.ordered" :key="item">
+                      <v-icon small color="success" class="pr-1">fa-check</v-icon>
+                      {{item}}
+                    </v-list-tile>
+                  </template>
+                  <v-list-tile v-else>None</v-list-tile>
+                </v-list>
+              </v-flex>
+              <v-flex xs4>
+                <v-list dense>
+                  <v-list-tile-title class="subheading"><u>Updated Orders</u></v-list-tile-title>
+                  <template v-if="resultsList.updated.length > 0">
+                    <v-list-tile v-for="item in resultsList.updated" :key="item">
+                      <v-icon small color="info" class="pr-1">fa-check</v-icon>
+                      {{item}}
+                    </v-list-tile>
+                  </template>
+                  <v-list-tile v-else>None</v-list-tile>
+                </v-list>
+              </v-flex>
+              <v-flex xs4>
+                <v-list dense>
+                  <v-list-tile-title class="subheading"><u>Retracted Orders</u></v-list-tile-title>
+                  <template v-if="resultsList.retracted.length > 0">
+                    <v-list-tile v-for="item in resultsList.retracted" :key="item">
+                      <v-icon small color="error" class="pr-1">fa-check</v-icon>
+                      {{item}}
+                    </v-list-tile>
+                  </template>
+                  <v-list-tile v-else>None</v-list-tile>
+                </v-list>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card>
+      </v-dialog>
+
       <transition-group name="sort-card" tag="v-layout" class="manual-v-layout">
         <v-flex
           xs6 sm4 md3 lg2
@@ -82,6 +132,7 @@
             <v-card>
               <v-card-title class="title py-1">
                   {{item.name}}
+                  <!-- to do: add transition (bouncing) -->
                   <v-icon small color="red" v-if="checkQuantity(item)">fa-exclamation-circle</v-icon>
               </v-card-title>
               <v-card-text class="caption py-0">{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
@@ -154,6 +205,8 @@ export default {
       orderList: [],
       filteredList: [],
       loading: false,
+      resultsDialog: false,
+      resultsList: {ordered: [], updated: [], retracted: []},
       loadComponent: false,
       snackbar: false,
       snackText: '',
@@ -341,10 +394,10 @@ export default {
       return item.currentStock <= item.reorderPoint
     },
 
-    checkPreviousOrder (recentOrder) {
+    orderIsRecent (lastOrder) {
       const lastSunday = this.$moment().startOf('week').format()
 
-      return recentOrder.createdAt < lastSunday || recentOrder.completed
+      return lastOrder.createdAt < lastSunday || lastOrder.completed
     },
 
     createEntry (item) {
@@ -383,6 +436,11 @@ export default {
       // to do: functions when snack is closed
     },
 
+    getItemName (itemId) {
+      let item = this.supplies.find(item => item.id === itemId)
+      return item.name
+    },
+
     getAssay (item) {
       if (this.assayList.length === 0) {
         return null
@@ -414,7 +472,8 @@ export default {
       let entry = {}
       let matchedEntry = null
       // most recent Order or create new Order if none exist
-      const recentOrder = this.orderList.length === 0 ? (await orderService.post()).data : this.orderList[0]
+      let lastOrder = this.orderList.length === 0 ? (await orderService.post()).data : this.orderList[0]
+      this.resultsList = {ordered: [], updated: [], retracted: []}
 
       // check through filteredList and see if order exists or if currentStock <= reorderPoint
       this.filteredList.map(item => {
@@ -430,48 +489,58 @@ export default {
 
       // ordering
       if (itemsToOrder.length > 0) {
-        if (this.checkPreviousOrder(recentOrder)) {
+        if (this.orderIsRecent(lastOrder)) {
           // recent order too old or completed, create new order and associate OrderId
-          const newOrder = (await orderService.post()).data
-          this.orderList.splice(0, 0, newOrder)
+          lastOrder = (await orderService.post()).data
+          this.orderList.splice(0, 0, lastOrder)
           itemsToOrder.map(entry => {
-            entry.OrderId = newOrder.id
+            entry.OrderId = lastOrder.id
           })
           await entryService.post(itemsToOrder)
+          this.resultsList.ordered = itemsToOrder.map(entry => this.getItemName(entry.ItemId))
         } else {
           // add current OrderId to entry
-          const orderEntries = (await orderService.show(recentOrder.id)).data
+          const orderEntries = (await orderService.show(lastOrder.id)).data
           let orderedItems = itemsToOrder.map(entry => {
             matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
             if (matchedEntry === undefined) {
               // ItemId not in Order Entries
-              entry.OrderId = recentOrder.id
+              entry.OrderId = lastOrder.id
+              this.resultsList.ordered.push(this.getItemName(entry.ItemId))
             } else {
               // ItemId in Order Entries
               entry = Object.assign(matchedEntry, entry)
+              this.resultsList.updated.push(this.getItemName(entry.ItemId))
             }
             return entry
           })
           await entryService.put(orderedItems)
         }
       }
-      
+
       // retracting
-      if (doNotOrder.length > 0) {
-        const orderEntries = (await orderService.show(recentOrder.id)).data
+      // do not run if order is NOT recent
+      if (doNotOrder.length > 0 && !this.orderIsRecent(lastOrder)) {
+        const orderEntries = (await orderService.show(lastOrder.id)).data
         let toDelete = []
         doNotOrder.map(entry => {
           matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
-          // add to delete list if entry exists in recentOrder
+          // add to delete list if entry exists in lastOrder
           if (matchedEntry) {
             toDelete.push(matchedEntry.id)
+            this.resultsList.retracted.push(this.getItemName(entry.ItemId))
           }
         })
         let results = await entryService.delete(toDelete)
         // if all entries deleted
         if (orderEntries.Entries.length === toDelete.length && results.status === 200) {
           await orderService.delete(orderEntries.id)
+          this.orderList.splice(0, 1)
         }
+      }
+      // display results if order is recent
+      if (!this.orderIsRecent(lastOrder)) {
+        this.resultsDialog = true
       }
     }
   }
