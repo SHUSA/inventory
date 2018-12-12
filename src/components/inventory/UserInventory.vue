@@ -1,6 +1,6 @@
 <template>
   <v-card flat color="#fafafa">
-    <v-container fluid grid-list-xs v-if="loadComponent">
+    <v-container fluid grid-list-md v-if="loadComponent">
       <v-container>
         <v-layout row wrap>
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
