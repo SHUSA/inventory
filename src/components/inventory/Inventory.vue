@@ -477,16 +477,12 @@ export default {
         assay: (text) => {
           if (text.length === 0) {
             this.errors.assay = true
-            console.log('no name')
-            console.log(text)
-            console.log(text.length)
             return 'Please enter a valid name'
           } else if (this.assayNames.includes(text.toUpperCase())) {
             if (this.editedIndex > -1) {
               this.errors.assay = false
               return true
             } else {
-              console.log('dupe assay name')
               this.errors.assay = true
               return 'Duplicate assay name found'
             }
@@ -612,21 +608,20 @@ export default {
 
     outstandingAssays () {
       let obj = {}
-      // fix coding; clunky
       this.supplies.map(item => {
         this.recentlyUpdated(item)
         this.getAssay(item)
         // check if assay object is attached and make sure it's not a duplicate
         if (item.assay) {
-          let assay = item.assay
-          if (obj.hasOwnProperty(assay.name)) {
-            obj[assay.name].count += 1
-          } else {
-            obj[assay.name] = {}
-            obj[assay.name].count = 0
-            obj[assay.name].recentlyUpdated = item.recentlyUpdated
-            if (!item.recentlyUpdated) obj[assay.name].count += 1
+          let assayName = item.assay.name
+          // create object for each assay in supplies
+          if (!obj.hasOwnProperty(assayName)) {
+            obj[assayName] = {}
+            obj[assayName].count = 0
+            obj[assayName].recentlyUpdated = item.recentlyUpdated
           }
+          // count number of outstanding items with same assay name
+          if (!item.recentlyUpdated) obj[assayName].count += 1
         }
       })
 
@@ -870,9 +865,6 @@ export default {
       this.alertMessage = 'Please use a valid name or fix form'
 
       if (this.errors.assay || num) {
-        console.log('assay error')
-        console.log(this.errors.assay)
-        console.log(num)
         this.alert = true
       } else {
         let assayInfo = {}
@@ -1010,7 +1002,7 @@ export default {
             this.orderList.pop()
             this.orderList.push(newOrder)
             entry.OrderId = newOrder.id
-            await entryService.post(entry)
+            await entryService.post([entry])
           } else {
             const recentOrder = this.orderList[0]
 
@@ -1019,7 +1011,7 @@ export default {
               const newOrder = (await orderService.post()).data
               this.orderList.splice(0, 0, newOrder)
               entry.OrderId = newOrder.id
-              await entryService.post(entry)
+              await entryService.post([entry])
             } else {
               // add current OrderId to entry
               let matchedEntry = null
@@ -1029,11 +1021,11 @@ export default {
               if (matchedEntry === undefined) {
                 // ItemId not in Order Entries
                 entry.OrderId = recentOrder.id
-                await entryService.post(entry)
+                await entryService.post([entry])
               } else {
                 // ItemId in Order Entries
                 Object.assign(matchedEntry, entry)
-                await entryService.put(matchedEntry)
+                await entryService.put([matchedEntry])
               }
             }
           }
