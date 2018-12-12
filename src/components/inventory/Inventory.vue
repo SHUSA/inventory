@@ -255,6 +255,9 @@
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
             <v-icon small class="pr-1">fa-file-download</v-icon>CSV
           </v-btn>
+          <v-btn href="javascript:void(0)" id="backup" small dark @click="getBackup">
+            <v-icon small class="pr-1">fa-file-download</v-icon>Backup Parameters
+          </v-btn>
 
           <v-spacer/>
 
@@ -389,6 +392,8 @@ import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
 import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
+import saveAs from 'file-saver'
+import JSZip from 'jszip'
 const Json2csvParser = require('json2csv').Parser
 // Notes on number input type
 // -unable to block e, -, +
@@ -686,6 +691,28 @@ export default {
 
       csvbtn.href = URL.createObjectURL(blob)
       csvbtn.download = `${this.$moment().format('YYYY-MM-DD')} Inventory.csv`
+    },
+
+    getBackup () {
+      const json2csv = new Json2csvParser()
+      const json2csv2 = new Json2csvParser()
+      const json2csv3 = new Json2csvParser()
+      const zip = new JSZip()
+      const csv = json2csv.parse(this.assayList)
+      const blob = new Blob([csv], {type: 'text/csv'})
+      const csv2 = json2csv2.parse(this.supplies)
+      const blob2 = new Blob([csv2], {type: 'text/csv'})
+      const csv3 = json2csv2.parse(this.vendorList)
+      const blob3 = new Blob([csv3], {type: 'text/csv'})
+
+      zip.file(`${this.$moment().format('YYYY-MM-DD')} Assay Backup.csv`, blob)
+      zip.file(`${this.$moment().format('YYYY-MM-DD')} Item Backup.csv`, blob2)
+      zip.file(`${this.$moment().format('YYYY-MM-DD')} Vendor Backup.csv`, blob3)
+
+      zip.generateAsync({type: 'blob'})
+        .then(content => {
+          saveAs(content, `${this.$moment().format('YYYY-MM-DD')} Inventory Backup.zip`)
+        })
     },
 
     time (item) {
