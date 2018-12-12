@@ -702,7 +702,7 @@ export default {
       const blob = new Blob([csv], {type: 'text/csv'})
       const csv2 = json2csv2.parse(this.supplies)
       const blob2 = new Blob([csv2], {type: 'text/csv'})
-      const csv3 = json2csv2.parse(this.vendorList)
+      const csv3 = json2csv3.parse(this.vendorList)
       const blob3 = new Blob([csv3], {type: 'text/csv'})
 
       zip.file(`${this.$moment().format('YYYY-MM-DD')} Assay Backup.csv`, blob)
