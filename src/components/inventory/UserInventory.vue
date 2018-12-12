@@ -63,9 +63,7 @@
           <v-spacer/>
           <!-- update button -->
           <!-- to do: decide button placement -->
-          <transition name="submit-btn">
-            <v-btn v-if="dataHasChanged" small dark @click="saveAll()">Submit Changes</v-btn>
-          </transition>
+          <v-btn :color="dataHasChanged ? 'primary' : ''" small dark @click="saveAll()">Submit Form</v-btn>
         </v-layout>
       </v-container>
 
@@ -159,22 +157,21 @@
               </v-card-text>
               <v-divider/>
               <v-container class="py-0">
-                <v-form>
-                  <v-text-field label="Stock" type="number"
-                    persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
-                    :value="item.currentStock"
-                    v-model="item.currentStock"
-                  >
-                  </v-text-field>
-                  <v-checkbox v-model="item.order" class="py-0" label="Manual Order"/>
-                  <v-textarea
-                    clearable no-resize
-                    rows="4" class="py-0"
-                    label="Comment"
-                    :value="item.comment"
-                    v-model="item.comment"
-                  ></v-textarea>
-                </v-form>
+                <v-text-field label="Stock" type="number"
+                  persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
+                  :value="item.currentStock"
+                  v-model="item.currentStock"
+                >
+                </v-text-field>
+                <v-checkbox v-model="item.order" class="py-0" label="Manual Order"/>
+                {{item.order}}
+                <v-textarea
+                  clearable no-resize
+                  rows="4" class="py-0"
+                  label="Comment"
+                  :value="item.comment"
+                  v-model="item.comment"
+                ></v-textarea>
               </v-container>
               <v-divider/>
               <v-footer class="caption" color="white">
@@ -212,6 +209,7 @@ window.onbeforeunload = () => {
 export default {
   data () {
     return {
+      test: false,
       show: false,
       suppliesCopy: {},
       vendorNames: [],
@@ -365,6 +363,8 @@ export default {
     // initialize variables
     this.loadComponent = false
     this.supplies = (await itemService.show(this.storedFilters)).data
+    this.supplies.forEach(item => { item.order = false })
+    this.filteredList = this.supplies
     this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
     this.vendorList = (await vendorService.index()).data
     this.vendorNames = this.vendorList.map(vendor => vendor.name.toUpperCase())
@@ -410,18 +410,16 @@ export default {
     sortItems () {
       let key = this.category.key
       if (key === 'currentStock') {
-        this.supplies.sort((a, b) => {
+        this.filteredList.sort((a, b) => {
           return this.sortType === 'DESC' ? b[key] - a[key] : a[key] - b[key]
         })
       } else if (key === 'assay') {
-        this.supplies.sort((a, b) => a[key].name.localeCompare(b[key].name, 'en', {'sensitivity': 'base'}))
-        if (this.sortType === 'ASC') this.supplies.reverse()
+        this.filteredList.sort((a, b) => a[key].name.localeCompare(b[key].name, 'en', {'sensitivity': 'base'}))
+        if (this.sortType === 'ASC') this.filteredList.reverse()
       } else {
-        this.supplies.sort((a, b) => a[key].localeCompare(b[key], 'en', {'sensitivity': 'base'}))
-        if (this.sortType === 'ASC') this.supplies.reverse()
+        this.filteredList.sort((a, b) => a[key].localeCompare(b[key], 'en', {'sensitivity': 'base'}))
+        if (this.sortType === 'ASC') this.filteredList.reverse()
       }
-
-      this.filteredList = this.supplies
     },
 
     getCSV () {
@@ -630,7 +628,7 @@ export default {
     padding-top: 8px !important;
   }
 
-  .submit-btn-enter-active {
+  /* .submit-btn-enter-active {
     animation: bounce-in .5s;
   }
   .submit-btn-leave-active {
@@ -646,7 +644,7 @@ export default {
     100% {
       transform: scale(1);
     }
-  }
+  } */
 
   /* doesn't work on data-iterator + cards */
   .all-cards-move, .searched-cards-move {
