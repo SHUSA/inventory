@@ -59,10 +59,13 @@
         </v-layout>
 
         <v-layout row wrap>
+          <v-btn value="false" flat disabled></v-btn>
           <v-spacer/>
           <!-- update button -->
           <!-- to do: decide button placement -->
-          <v-btn small dark @click="saveAll()">Submit Changes</v-btn>
+          <transition name="submit-btn">
+            <v-btn v-if="dataHasChanged" small dark @click="saveAll()">Submit Changes</v-btn>
+          </transition>
         </v-layout>
       </v-container>
 
@@ -195,17 +198,22 @@ import vendorService from '@/services/VendorService.js'
 import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
 const Json2csvParser = require('json2csv').Parser
+let unsavedData = false
 
 // to do: ask user to save before closing or reloading IF data changed
-// window.onbeforeunload = () => {
-//   return 'Do you really want to leave our brilliant application?'
-// }
+window.onbeforeunload = () => {
+  if (unsavedData) {
+    return 'You have unsaved data. Do you want to save?'
+  } else {
+    return null
+  }
+}
 
 export default {
   data () {
     return {
       show: false,
-      currentItem: {},
+      suppliesCopy: {},
       vendorNames: [],
       assayNames: [],
       supplies: [],
@@ -284,6 +292,32 @@ export default {
       }
     },
 
+    dataHasChanged () {
+      for (let i = 0; i < this.filteredList.length; i++) {
+        let item = this.filteredList[i]
+        let initialState = this.suppliesCopy[item.name]
+        for (let key in initialState) {
+          // convert string to number
+          if (key === 'currentStock') {
+            item[key] = parseFloat(item[key])
+          }
+          // compare original and current values
+          if (initialState[key] === item[key]) {
+            unsavedData = false
+          } else {
+            unsavedData = true
+            break
+          }
+        }
+        // break loop if there is unsaved data
+        if (unsavedData) {
+          return true
+        }
+      }
+      // all data is same
+      return false
+    },
+
     outstandingAssays () {
       let obj = {}
       this.supplies.map(item => {
@@ -344,10 +378,21 @@ export default {
       left: 0
     })
     this.sortItems()
+    // create copy of supplies to check if values have been changed
+    this.createCopy()
     this.loadComponent = true
   },
 
   methods: {
+    createCopy () {
+      this.supplies.forEach(item => {
+        this.suppliesCopy[item.name] = {}
+        this.suppliesCopy[item.name].currentStock = item.currentStock
+        this.suppliesCopy[item.name].comment = item.comment
+        this.suppliesCopy[item.name].id = item.id
+      })
+    },
+
     search (name) {
       if (this.isSelected(name)) {
         // reset filter if same name clicked
@@ -583,6 +628,24 @@ export default {
     flex-direction: row;
     padding-bottom: 8px !important;
     padding-top: 8px !important;
+  }
+
+  .submit-btn-enter-active {
+    animation: bounce-in .5s;
+  }
+  .submit-btn-leave-active {
+    animation: bounce-in .5s reverse;
+  }
+  @keyframes bounce-in {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   /* doesn't work on data-iterator + cards */
