@@ -80,6 +80,7 @@
       <v-dialog
         v-model="resultsDialog"
         max-width="800"
+        @keydown.esc="resultsDialog = !resultsDialog"
       >
         <v-card>
           <v-card-title class="title blue lighten-2 font-weight-bold">Save Results</v-card-title>
@@ -134,6 +135,7 @@
       >
         <v-flex
           xs6 sm4 md3 lg2
+          @keydown.enter="saveAll()"
           v-for="item in filteredList"
           :key="item.id"
         >
