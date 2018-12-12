@@ -149,8 +149,7 @@ export default {
         this.selected = this.assays.map(x => x.id)
       }
       this.$store.dispatch('setFilters', this.selected)
-      // let route = this.user ? 'inventory-user' : 'inventory-table'
-      let route = 'inventory-table'
+      let route = this.user ? 'inventory-user' : 'inventory-table'
       this.$router.push({
         name: route
       })
