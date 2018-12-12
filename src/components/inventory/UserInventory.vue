@@ -37,7 +37,7 @@
           <!-- displays each assay with outstanding orders -->
           <!-- to do: decide how to display; from button? on screen? search on button press? -->
           <v-card-text>
-            Assays not updated since {{lastOrderPeriod}} will look like so
+            Assays not updated since {{lastOrderPeriod}}
             <v-chip small>
               <v-badge color="red" right>
                 <span slot="badge">EX</span>
@@ -286,24 +286,20 @@ export default {
 
     outstandingAssays () {
       let obj = {}
-      // fix coding; clunky
-      // to do: refactor to object
-      // to do: double check recentlyUpdated is accurate
       this.supplies.map(item => {
         this.recentlyUpdated(item)
         this.getAssay(item)
         // check if assay object is attached and make sure it's not a duplicate
         if (item.assay) {
-          let assay = item.assay
-          // count number of outstanding assays with same assay name
-          if (obj.hasOwnProperty(assay.name)) {
-            obj[assay.name].count += 1
-          } else {
-            obj[assay.name] = {}
-            obj[assay.name].count = 0
-            obj[assay.name].recentlyUpdated = item.recentlyUpdated
-            if (!item.recentlyUpdated) obj[assay.name].count += 1
+          let assayName = item.assay.name
+          // create object for each assay in supplies
+          if (!obj.hasOwnProperty(assayName)) {
+            obj[assayName] = {}
+            obj[assayName].count = 0
+            obj[assayName].recentlyUpdated = item.recentlyUpdated
           }
+          // count number of outstanding items with same assay name
+          if (!item.recentlyUpdated) obj[assayName].count += 1
         }
       })
 
