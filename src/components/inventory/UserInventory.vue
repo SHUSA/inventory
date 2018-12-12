@@ -127,7 +127,11 @@
         </v-card>
       </v-dialog>
 
-      <transition-group name="sort-card" tag="v-layout" class="manual-v-layout">
+      <transition-group
+        :name="filteredList.length === supplies.length ? 'all-cards' : 'searched-cards'"
+        tag="v-layout"
+        class="manual-v-layout"
+      >
         <v-flex
           xs6 sm4 md3 lg2
           v-for="item in filteredList"
@@ -284,6 +288,7 @@ export default {
       let obj = {}
       // fix coding; clunky
       // to do: refactor to object
+      // to do: double check recentlyUpdated is accurate
       this.supplies.map(item => {
         this.recentlyUpdated(item)
         this.getAssay(item)
@@ -567,11 +572,6 @@ export default {
 </script>
 
 <style scoped>
-  /* doesn't work on data-iterator + cards */
-  .sort-card-move {
-    transition: transform 1s;
-  }
-
   .manual-v-layout {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -589,19 +589,24 @@ export default {
     padding-top: 8px !important;
   }
 
-  /* .sort-card-item {
-    transition: all 3s;
-    display: inline-block;
-    margin-right: 10px;
-  } */
-  .sort-card-enter, .sort-card-leave {
+  /* doesn't work on data-iterator + cards */
+  .all-cards-move, .searched-cards-move {
+    transition: transform 1s;
+  }
+  .all-cards-enter, .all-cards-leave-to, .searched-cards-enter, .searched-cards-leave-to {
     opacity: 0;
     transform: translateX(50px);
   }
-  .sort-card-leave-active {
+  .all-cards-leave-active, .searched-cards-leave-active {
     position: absolute;
+    transition: all 1s ease;
   }
-  .sort-card-enter-active {
+  .all-cards-enter-active {
     position: absolute;
+    transition: all 1s ease;
+  }
+  .searched-cards-enter-active {
+    position: relative;
+    transition: all 1s ease;
   }
 </style>
