@@ -9,6 +9,22 @@
       <ul>
         <!-- (li>{2018.12.DD - v2.xx}ul>li{update notes})+br -->
         <li>
+          2018.12.12 - v2.1, User UI Update <v-icon small>far fa-smile-beam</v-icon>
+          <ul>
+            <li>User UI heavily overhauled</li>
+            <ul>
+              <li>Table changed to cards to display more information in a smaller space</li>
+              <li>Batch update and order</li>
+              <li>Will show results of update when information is submitted</li>
+              <li>Warns user of unsaved data if navigating away from page</li>
+              <li>Manual orders are now a radio button</li>
+              <li>Filters and sorting</li>
+            </ul>
+            <li>Added dirty backup of database information for admin</li>
+          </ul>
+        </li>
+        <br>
+        <li>
           2018.12.06 - v2.05, Quick Fix
           <ul>
             <!-- <li>UI change for User</li> -->
@@ -16,7 +32,7 @@
             <li>Activation/deactivation of items</li>
             <li>Inactive items, assay, vendors visible</li>
             <li>Calculation formula added to Help in Header</li>
-            <li>Fixed an issue where Assay or Vendor would not save despite no errors</li>
+            <li><s>Fixed an issue where Assay or Vendor would not save despite no errors</s> Still under investigation</li>
           </ul>
         </li>
         <br>

@@ -255,6 +255,9 @@
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
             <v-icon small class="pr-1">fa-file-download</v-icon>CSV
           </v-btn>
+          <v-btn href="javascript:void(0)" id="backup" small dark @click="getBackup">
+            <v-icon small class="pr-1">fa-file-download</v-icon>Backup Parameters
+          </v-btn>
 
           <v-spacer/>
 
@@ -389,6 +392,8 @@ import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
 import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
+import saveAs from 'file-saver'
+import JSZip from 'jszip'
 const Json2csvParser = require('json2csv').Parser
 // Notes on number input type
 // -unable to block e, -, +
@@ -477,16 +482,12 @@ export default {
         assay: (text) => {
           if (text.length === 0) {
             this.errors.assay = true
-            console.log('no name')
-            console.log(text)
-            console.log(text.length)
             return 'Please enter a valid name'
           } else if (this.assayNames.includes(text.toUpperCase())) {
             if (this.editedIndex > -1) {
               this.errors.assay = false
               return true
             } else {
-              console.log('dupe assay name')
               this.errors.assay = true
               return 'Duplicate assay name found'
             }
@@ -612,21 +613,20 @@ export default {
 
     outstandingAssays () {
       let obj = {}
-      // fix coding; clunky
       this.supplies.map(item => {
         this.recentlyUpdated(item)
         this.getAssay(item)
         // check if assay object is attached and make sure it's not a duplicate
         if (item.assay) {
-          let assay = item.assay
-          if (obj.hasOwnProperty(assay.name)) {
-            obj[assay.name].count += 1
-          } else {
-            obj[assay.name] = {}
-            obj[assay.name].count = 0
-            obj[assay.name].recentlyUpdated = item.recentlyUpdated
-            if (!item.recentlyUpdated) obj[assay.name].count += 1
+          let assayName = item.assay.name
+          // create object for each assay in supplies
+          if (!obj.hasOwnProperty(assayName)) {
+            obj[assayName] = {}
+            obj[assayName].count = 0
+            obj[assayName].recentlyUpdated = item.recentlyUpdated
           }
+          // count number of outstanding items with same assay name
+          if (!item.recentlyUpdated) obj[assayName].count += 1
         }
       })
 
@@ -691,6 +691,28 @@ export default {
 
       csvbtn.href = URL.createObjectURL(blob)
       csvbtn.download = `${this.$moment().format('YYYY-MM-DD')} Inventory.csv`
+    },
+
+    getBackup () {
+      const json2csv = new Json2csvParser()
+      const json2csv2 = new Json2csvParser()
+      const json2csv3 = new Json2csvParser()
+      const zip = new JSZip()
+      const csv = json2csv.parse(this.assayList)
+      const blob = new Blob([csv], {type: 'text/csv'})
+      const csv2 = json2csv2.parse(this.supplies)
+      const blob2 = new Blob([csv2], {type: 'text/csv'})
+      const csv3 = json2csv2.parse(this.vendorList)
+      const blob3 = new Blob([csv3], {type: 'text/csv'})
+
+      zip.file(`${this.$moment().format('YYYY-MM-DD')} Assay Backup.csv`, blob)
+      zip.file(`${this.$moment().format('YYYY-MM-DD')} Item Backup.csv`, blob2)
+      zip.file(`${this.$moment().format('YYYY-MM-DD')} Vendor Backup.csv`, blob3)
+
+      zip.generateAsync({type: 'blob'})
+        .then(content => {
+          saveAs(content, `${this.$moment().format('YYYY-MM-DD')} Inventory Backup.zip`)
+        })
     },
 
     time (item) {
@@ -870,9 +892,6 @@ export default {
       this.alertMessage = 'Please use a valid name or fix form'
 
       if (this.errors.assay || num) {
-        console.log('assay error')
-        console.log(this.errors.assay)
-        console.log(num)
         this.alert = true
       } else {
         let assayInfo = {}
@@ -1010,7 +1029,7 @@ export default {
             this.orderList.pop()
             this.orderList.push(newOrder)
             entry.OrderId = newOrder.id
-            await entryService.post(entry)
+            await entryService.post([entry])
           } else {
             const recentOrder = this.orderList[0]
 
@@ -1019,7 +1038,7 @@ export default {
               const newOrder = (await orderService.post()).data
               this.orderList.splice(0, 0, newOrder)
               entry.OrderId = newOrder.id
-              await entryService.post(entry)
+              await entryService.post([entry])
             } else {
               // add current OrderId to entry
               let matchedEntry = null
@@ -1029,11 +1048,11 @@ export default {
               if (matchedEntry === undefined) {
                 // ItemId not in Order Entries
                 entry.OrderId = recentOrder.id
-                await entryService.post(entry)
+                await entryService.post([entry])
               } else {
                 // ItemId in Order Entries
                 Object.assign(matchedEntry, entry)
-                await entryService.put(matchedEntry)
+                await entryService.put([matchedEntry])
               }
             }
           }

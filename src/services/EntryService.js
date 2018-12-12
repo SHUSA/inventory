@@ -13,20 +13,24 @@ export default {
     )
   },
 
-  post (entry) {
-    return API().post('entries', entry).catch(err =>
+  post (entries = []) {
+    return API().post('entries', entries).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   },
 
-  put (entry) {
-    return API().put(`entries/${entry.id}`, entry).catch(err =>
+  put (entries = []) {
+    return API().put(`entries`, entries).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   },
 
-  delete (entryId) {
-    return API().delete(`entries/${entryId}`).catch(err =>
+  delete (entries = []) {
+    return API().delete(`entries`, {
+      params: {
+        entries: entries
+      }
+    }).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
   }
