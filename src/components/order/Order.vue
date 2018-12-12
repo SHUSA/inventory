@@ -182,7 +182,11 @@ export default {
 
   methods: {
     async initialize () {
-      this.thisOrder = this.storedOrder
+      // create independent copy of storedOrder
+      const order = this.storedOrder
+      for (let key in order) {
+        this.thisOrder[key] = order[key]
+      }
       let itemIds = null
       // get information
       this.vendors = (await vendorService.index()).data
