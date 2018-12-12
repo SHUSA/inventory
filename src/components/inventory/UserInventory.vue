@@ -62,7 +62,6 @@
           <v-btn value="false" flat disabled></v-btn>
           <v-spacer/>
           <!-- update button -->
-          <!-- to do: decide button placement -->
           <v-btn :color="dataHasChanged ? 'primary' : ''" small dark @click="saveAll()">Submit Form</v-btn>
         </v-layout>
       </v-container>
@@ -145,7 +144,7 @@
                   <!-- to do: add transition (bouncing) -->
                   <v-icon small color="red" v-if="checkQuantity(item)">fa-exclamation-circle</v-icon>
               </v-card-title>
-              <v-card-text class="caption py-0">{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
+              <v-card-text class="caption py-0">#{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
               <v-divider/>
               <v-card-text v-if="item.itemDescription" class="py-1">
                 <v-icon small>fa-info-circle</v-icon>
@@ -199,7 +198,7 @@ import orderService from '@/services/OrderService.js'
 const Json2csvParser = require('json2csv').Parser
 let unsavedData = false
 
-// to do: ask user to save before closing or reloading IF data changed
+// ask user to save before closing or reloading IF data changed
 window.onbeforeunload = () => {
   if (unsavedData) {
     return 'You have unsaved data. Do you want to save?'
@@ -392,6 +391,8 @@ export default {
     this.createCopy()
     this.loadComponent = true
   },
+
+  // to do: add navigation guard for unsaved data
 
   methods: {
     createCopy () {
