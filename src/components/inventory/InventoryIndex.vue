@@ -4,10 +4,17 @@
     <!-- options: choose assays and/or vendors; some, one, or all -->
     <v-container fluid fill-height grid-list-md>
       <v-layout row wrap>
-        <v-card-text>Choose your filters</v-card-text>
-        <v-btn @click="populateList('assays')" :dark="shown === 'assays' && show ? true : false">Assays</v-btn>
-        <v-btn @click="populateList('vendors')" :dark="shown === 'vendors' && show ? true : false">Vendors</v-btn>
-        <v-btn @click="submit(true)">Show All</v-btn>
+        <v-flex xs12>
+          <v-card-text>Choose your filters</v-card-text>
+        </v-flex>
+        <v-flex xs4>
+          <v-card-text class="warning">Warning: Displaying too much data can cause slow processing</v-card-text>
+        </v-flex>
+        <v-flex xs12>
+          <v-btn @click="populateList('assays')" :dark="shown === 'assays' && show ? true : false">Assays</v-btn>
+          <v-btn @click="populateList('vendors')" :dark="shown === 'vendors' && show ? true : false">Vendors</v-btn>
+          <v-btn @click="submit(true)">Show All</v-btn>
+        </v-flex>
         <v-flex xs12>
           <!-- select all -->
           <transition name="chips">
