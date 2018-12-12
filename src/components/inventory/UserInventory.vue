@@ -157,14 +157,16 @@
               </v-card-text>
               <v-divider/>
               <v-container class="py-0">
+                <!-- current stock -->
                 <v-text-field label="Stock" type="number"
                   persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
                   :value="item.currentStock"
                   v-model="item.currentStock"
                 >
                 </v-text-field>
+                <!-- manual order -->
                 <v-checkbox v-model="item.order" class="py-0" label="Manual Order"/>
-                {{item.order}}
+                <!-- comment -->
                 <v-textarea
                   clearable no-resize
                   rows="4" class="py-0"
@@ -209,7 +211,6 @@ window.onbeforeunload = () => {
 export default {
   data () {
     return {
-      test: false,
       show: false,
       suppliesCopy: {},
       vendorNames: [],
@@ -295,9 +296,17 @@ export default {
         let item = this.filteredList[i]
         let initialState = this.suppliesCopy[item.name]
         for (let key in initialState) {
+          // ignore id
+          if (key === 'id') continue
           // convert string to number
           if (key === 'currentStock') {
             item[key] = parseFloat(item[key])
+          }
+          // standardize comment comparison
+          if (key === 'comment') {
+            if (item[key] === null) {
+              item[key] = ''
+            }
           }
           // compare original and current values
           if (initialState[key] === item[key]) {
@@ -306,6 +315,8 @@ export default {
             unsavedData = true
             break
           }
+          // checkes for item order
+          unsavedData = item.order
         }
         // break loop if there is unsaved data
         if (unsavedData) {
@@ -363,7 +374,6 @@ export default {
     // initialize variables
     this.loadComponent = false
     this.supplies = (await itemService.show(this.storedFilters)).data
-    this.supplies.forEach(item => { item.order = false })
     this.filteredList = this.supplies
     this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
     this.vendorList = (await vendorService.index()).data
