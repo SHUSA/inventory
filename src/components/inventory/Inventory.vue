@@ -693,16 +693,16 @@ export default {
       csvbtn.download = `${this.$moment().format('YYYY-MM-DD')} Inventory.csv`
     },
 
-    getBackup () {
+    async getBackup () {
       const json2csv = new Json2csvParser()
       const json2csv2 = new Json2csvParser()
       const json2csv3 = new Json2csvParser()
       const zip = new JSZip()
-      const csv = json2csv.parse(this.assayList)
+      const csv = json2csv.parse((await assayService.index()).data)
       const blob = new Blob([csv], {type: 'text/csv'})
-      const csv2 = json2csv2.parse(this.supplies)
+      const csv2 = json2csv2.parse((await itemService.index()).data)
       const blob2 = new Blob([csv2], {type: 'text/csv'})
-      const csv3 = json2csv3.parse(this.vendorList)
+      const csv3 = json2csv3.parse((await vendorService.index()).data)
       const blob3 = new Blob([csv3], {type: 'text/csv'})
 
       zip.file(`${this.$moment().format('YYYY-MM-DD')} Assay Backup.csv`, blob)
