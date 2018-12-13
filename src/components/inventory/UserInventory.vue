@@ -1,6 +1,6 @@
 <template>
   <v-card flat color="#fafafa">
-    <v-container fluid grid-list-xs v-if="loadComponent">
+    <v-container fluid grid-list-md v-if="loadComponent">
       <v-container>
         <v-layout row wrap>
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
@@ -80,6 +80,7 @@
       <v-dialog
         v-model="resultsDialog"
         max-width="800"
+        @keydown.esc="resultsDialog = !resultsDialog"
       >
         <v-card>
           <v-card-title class="title blue lighten-2 font-weight-bold">Save Results</v-card-title>
@@ -134,6 +135,7 @@
       >
         <v-flex
           xs6 sm4 md3 lg2
+          @keydown.enter="saveAll()"
           v-for="item in filteredList"
           :key="item.id"
         >
@@ -217,7 +219,6 @@ export default {
       supplies: [],
       vendorList: [],
       assayList: [],
-      orderList: [],
       filteredList: [],
       selected: '',
       loading: false,
@@ -379,7 +380,6 @@ export default {
     this.vendorNames = this.vendorList.map(vendor => vendor.name.toUpperCase())
     this.assayList = (await assayService.index()).data
     this.assayNames = this.assayList.map(assay => assay.name.toUpperCase())
-    this.orderList = (await orderService.index()).data
 
     // go to top
     window.scroll({
@@ -545,8 +545,9 @@ export default {
       let doNotOrder = []
       let entry = {}
       let matchedEntry = null
+      let orderList = (await orderService.index()).data
       // most recent Order or create new Order if none exist
-      let lastOrder = this.orderList.length === 0 ? (await orderService.post()).data : this.orderList[0]
+      let lastOrder = orderList.length === 0 ? (await orderService.post()).data : orderList[0]
       this.resultsList = {ordered: [], updated: [], retracted: []}
 
       // check through filteredList and see if order exists or if currentStock <= reorderPoint
@@ -566,7 +567,6 @@ export default {
         if (this.orderIsRecent(lastOrder)) {
           // recent order too old or completed, create new order and associate OrderId
           lastOrder = (await orderService.post()).data
-          this.orderList.splice(0, 0, lastOrder)
           itemsToOrder.map(entry => {
             entry.OrderId = lastOrder.id
           })
@@ -609,7 +609,6 @@ export default {
         // if all entries deleted
         if (orderEntries.Entries.length === toDelete.length && results.status === 200) {
           await orderService.delete(orderEntries.id)
-          this.orderList.splice(0, 1)
         }
       }
       // display results if order is recent

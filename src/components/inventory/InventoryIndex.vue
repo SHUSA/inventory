@@ -8,7 +8,7 @@
           <v-card-text>Choose your filters</v-card-text>
         </v-flex>
         <v-flex xs4>
-          <v-card-text class="warning">Warning: Displaying too much data can cause slow processing</v-card-text>
+          <v-card-text class="warning">Warning: Displaying too much data can slow processing</v-card-text>
         </v-flex>
         <v-flex xs12>
           <v-btn @click="populateList('assays')" :dark="shown === 'assays' && show ? true : false">Assays</v-btn>
