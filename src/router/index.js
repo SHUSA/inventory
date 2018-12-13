@@ -27,7 +27,7 @@ export default new Router({
       component: Index
     },
     {
-      path: '/orderInfo',
+      path: '/orderinfo',
       name: 'orders',
       component: OrderIndex
     },
@@ -37,7 +37,7 @@ export default new Router({
       component: InventoryIndex
     },
     {
-      path: '/orderInfo/table',
+      path: '/orderinfo/table',
       name: 'order',
       component: Order
     },
