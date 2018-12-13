@@ -669,7 +669,7 @@ export default {
     transition: all 1s ease;
   }
   .all-cards-enter-active {
-    position: absolute;
+    /* position: absolute; */
     transition: all 1s ease;
   }
   .searched-cards-enter-active {
