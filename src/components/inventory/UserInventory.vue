@@ -38,7 +38,7 @@
           <!-- to do: decide how to display; from button? on screen? search on button press? -->
           <v-card-text>
             Assays not updated since {{lastOrderPeriod}}
-            <v-chip small>
+            <v-chip disabled small>
               <v-badge color="red" right>
                 <span slot="badge">EX</span>
                 <span>Example</span>
@@ -276,7 +276,8 @@ export default {
       'pageTitle',
       'admin',
       'user',
-      'storedFilters'
+      'storedFilters',
+      'route'
     ]),
 
     lastOrderPeriod () {
@@ -390,6 +391,10 @@ export default {
     // create copy of supplies to check if values have been changed
     this.createCopy()
     this.loadComponent = true
+  },
+
+  beforeDestroy () {
+    unsavedData = false
   },
 
   // to do: add navigation guard for unsaved data
