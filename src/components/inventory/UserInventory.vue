@@ -8,6 +8,7 @@
             <v-icon small class="pr-1">fa-file-download</v-icon>CSV
           </v-btn>
           <v-spacer/>
+          <v-progress-circular v-if="loading" indeterminate color="primary"/>
           <!-- category sort -->
           <v-menu>
             <v-btn slot="activator" small dark left>
@@ -237,37 +238,7 @@ export default {
         {name: 'Catalog#', key: 'catalogNumber'},
         {name: 'Stock', key: 'currentStock'},
         {name: 'Last Update', key: 'updatedAt'}
-      ],
-      editedItem: {
-        name: '',
-        AssayId: '',
-        VendorId: '',
-        catalogNumber: '',
-        itemDescription: '',
-        reactionsPerItem: 0,
-        currentStock: 0,
-        weeksOfSafetyStock: 2,
-        leadTimeDays: 7,
-        weeksOfReorder: 8,
-        reorderPoint: 0,
-        reorderQuantity: 0,
-        comment: ''
-      },
-      defaultItem: {
-        name: '',
-        AssayId: '',
-        VendorId: '',
-        catalogNumber: '',
-        itemDescription: '',
-        reactionsPerItem: 0,
-        currentStock: 0,
-        weeksOfSafetyStock: 2,
-        leadTimeDays: 7,
-        weeksOfReorder: 8,
-        reorderPoint: 0,
-        reorderQuantity: 0,
-        comment: ''
-      }
+      ]
     }
   },
 
@@ -276,8 +247,7 @@ export default {
       'pageTitle',
       'admin',
       'user',
-      'storedFilters',
-      'route'
+      'storedFilters'
     ]),
 
     lastOrderPeriod () {
@@ -425,6 +395,7 @@ export default {
 
     sortItems () {
       let key = this.category.key
+      this.loading = true
       if (key === 'currentStock') {
         this.filteredList.sort((a, b) => {
           return this.sortType === 'DESC' ? b[key] - a[key] : a[key] - b[key]
@@ -436,6 +407,7 @@ export default {
         this.filteredList.sort((a, b) => a[key].localeCompare(b[key], 'en', {'sensitivity': 'base'}))
         if (this.sortType === 'ASC') this.filteredList.reverse()
       }
+      this.loading = false
     },
 
     getCSV () {
@@ -493,18 +465,18 @@ export default {
       return this.checkQuantity(item) ? item.reorderQuantity : 0
     },
 
-    checkErrorMessage (resp) {
-      if (resp.status !== 200) {
-        // stop process and display error message
-        this.loading = false
-        this.alert = true
-        this.alertMessage = Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
-        return true
-      } else {
-        // no errors received
-        return false
-      }
-    },
+    // checkErrorMessage (resp) {
+    //   if (resp.status !== 200) {
+    //     // stop process and display error message
+    //     this.loading = false
+    //     this.alert = true
+    //     this.alertMessage = Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
+    //     return true
+    //   } else {
+    //     // no errors received
+    //     return false
+    //   }
+    // },
 
     openSnack (text) {
       this.snackText = text
