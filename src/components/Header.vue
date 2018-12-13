@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-2.1
+      {{title}} v.b-2.11
       <!-- help -->
       <v-dialog
         v-model="help"
