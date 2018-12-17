@@ -50,7 +50,7 @@
             v-for="(value, index) in outstandingAssays"
             :key="index"
             :color="isSelected(value.name) ? 'blue lighten-2' : ''"
-            @click="search(value.name)"
+            @click="filter(value.name)"
           >
             <v-badge color="red" right>
               <span v-if="value.count > 0" slot="badge">{{value.count}}</span>
@@ -60,7 +60,15 @@
         </v-layout>
 
         <v-layout row wrap>
-          <v-btn value="false" flat disabled></v-btn>
+          <v-text-field
+            v-model="searchTerm"
+            append-icon="fa-search"
+            label="Search for item, assay, vendor, or cat#"
+            hint="Type 2 characters to start"
+            persistent-hint
+            clearable
+            single-line
+          />
           <v-spacer/>
           <!-- update button -->
           <v-btn :color="dataHasChanged ? 'primary' : ''" small dark @click="save()">Submit All</v-btn>
@@ -218,7 +226,7 @@ window.onbeforeunload = () => {
 export default {
   data () {
     return {
-      show: false,
+      searchTerm: '',
       suppliesCopy: {},
       vendorNames: [],
       assayNames: [],
@@ -343,6 +351,18 @@ export default {
 
     sortType () {
       this.sortItems()
+    },
+
+    searchTerm (val) {
+      if (val !== null) {
+        if (val.length > 1) {
+          this.termSearch(val)
+        } else {
+          this.filteredList = this.supplies
+        }
+      } else {
+        this.filteredList = this.supplies
+      }
     }
   },
 
@@ -384,18 +404,53 @@ export default {
       })
     },
 
-    search (name) {
+    termSearch (val) {
+      // search bar query
+      let found = []
+      let query = val.toLowerCase()
+      found = this.supplies.filter(item => {
+        if (item.name.toLowerCase().includes(query) ||
+          item.assay.name.toLowerCase().includes(query) ||
+          item.catalogNumber.toLowerCase().includes(query) ||
+          item.vendor.toLowerCase().includes(query)
+        ) {
+          return item
+        }
+      })
+
+      this.filteredList = found
+    },
+
+    filter (name) {
+      // button filter
       if (this.isSelected(name)) {
-        // reset filter if same name clicked
-        this.filteredList = this.supplies
+        let keep = []
+        // reomve clicked filter
+        keep = this.filteredList.filter(item => item.assay.name !== name)
+        if (keep.length === 0) {
+          // if keeping nothing, display all items
+          this.filteredList = this.supplies
+        } else {
+          // otherwise display remaining items
+          this.filteredList = keep
+        }
       } else {
         // find items with matching assay name
-        this.filteredList = this.supplies.filter(item => item.assay.name === name)
+        if (this.filteredList.length === this.supplies.length) {
+          // if all items are displayed, reset filteredList and assign clicked filter
+          this.filteredList = []
+          this.filteredList = this.supplies.filter(item => item.assay.name === name)
+        } else {
+          // if some items are displayed and filter is not selected, add to filteredList
+          this.filteredList = this.filteredList.concat(this.supplies.filter(item => item.assay.name === name))
+        }
       }
     },
 
     isSelected (name) {
-      return this.filteredList[0].assay.name === name && this.filteredList.length !== this.supplies.length
+      return this.filteredList.find(item => {
+        return item.assay.name === name && this.filteredList.length !== this.supplies.length
+      })
     },
 
     sortItems () {
