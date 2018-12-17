@@ -63,7 +63,7 @@
           <v-btn value="false" flat disabled></v-btn>
           <v-spacer/>
           <!-- update button -->
-          <v-btn :color="dataHasChanged ? 'primary' : ''" small dark @click="saveAll()">Submit Form</v-btn>
+          <v-btn :color="dataHasChanged ? 'primary' : ''" small dark @click="save()">Submit All</v-btn>
         </v-layout>
       </v-container>
 
@@ -136,7 +136,6 @@
       >
         <v-flex
           xs6 sm4 md3 lg2
-          @keydown.enter="saveAll()"
           v-for="item in filteredList"
           :key="item.id"
         >
@@ -159,23 +158,29 @@
               </v-card-text>
               <v-divider/>
               <v-container class="py-0">
-                <!-- current stock -->
-                <v-text-field label="Stock" type="number"
-                  persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
-                  :value="item.currentStock"
-                  v-model="item.currentStock"
-                >
-                </v-text-field>
-                <!-- manual order -->
-                <v-checkbox v-model="item.order" class="py-0" label="Manual Order"/>
-                <!-- comment -->
-                <v-textarea
-                  clearable no-resize
-                  rows="4" class="py-0"
-                  label="Comment"
-                  :value="item.comment"
-                  v-model="item.comment"
-                ></v-textarea>
+                  <!-- current stock -->
+                  <v-text-field
+                    @keydown.enter="save(item)"
+                    label="Stock" type="number"
+                    persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
+                    :value="item.currentStock"
+                    v-model="item.currentStock"
+                  >
+                  </v-text-field>
+                  <!-- manual order -->
+                  <v-checkbox v-model="item.order" class="py-0" label="Manual Order"/>
+                  <!-- comment -->
+                  <v-textarea
+                    @keydown.enter="save(item)"
+                    clearable no-resize
+                    rows="4" class="py-0"
+                    label="Comment"
+                    :value="item.comment"
+                    v-model="item.comment"
+                  ></v-textarea>
+                  <div class="text-xs-center">
+                    <v-btn @click="save(item)" color="primary" small>Save Item</v-btn>
+                  </div>
               </v-container>
               <v-divider/>
               <v-footer class="caption" color="white">
@@ -508,14 +513,15 @@ export default {
       return item.vendor
     },
 
-    async saveAll () {
-      await itemService.put(null, null, null, this.filteredList)
+    async save (item = null) {
+      let itemArr = item ? [item] : this.filteredList
+      await itemService.put(null, null, null, itemArr)
       this.openSnack('Items Saved')
       // to do: pop up dialog of items ordered
-      this.order()
+      this.order(itemArr)
     },
 
-    async order () {
+    async order (itemArr) {
       // check through filteredList and see if order exists or if currentStock <= reorderPoint
       // and add to itemsToOrder
       let itemsToOrder = []
@@ -528,7 +534,7 @@ export default {
       this.resultsList = {ordered: [], updated: [], retracted: []}
 
       // check through filteredList and see if order exists or if currentStock <= reorderPoint
-      this.filteredList.map(item => {
+      itemArr.map(item => {
         entry = this.createEntry(item)
         // add to itemsToOrder if reorderPoint triggered or has a manual order and is a user
         if ((item.order || this.checkQuantity(item)) && this.user) {
