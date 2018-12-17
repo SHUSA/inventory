@@ -9,6 +9,16 @@
       <ul>
         <!-- (li>{2018.12.DD - v2.xx}ul>li{update notes})+br -->
         <li>
+          2018.12.DD - v2.1, Bug Fixes
+          <ul>
+            <li>Changed Order url path to prevent conflicts from a running process</li>
+            <li>UserInventory card transitions smoothened out</li>
+            <li>Unsaved data flag turned off when navigating away from user inventory</li>
+            <li>Admin can backup all data regardless of current inventory filters</li>
+          </ul>
+        </li>
+        <br>
+        <li>
           2018.12.12 - v2.1, User UI Update <v-icon small>far fa-smile-beam</v-icon>
           <ul>
             <li>User UI heavily overhauled</li>
