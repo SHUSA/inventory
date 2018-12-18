@@ -517,7 +517,7 @@ export default {
         ItemId: item.id,
         updatedAt: item.updatedAt,
         currentStock: item.currentStock,
-        orderQuantity: item.reorderQuantity,
+        orderAmount: item.reorderQuantity,
         comment: item.comment
       }
     },
