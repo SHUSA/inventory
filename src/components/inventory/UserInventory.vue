@@ -64,7 +64,7 @@
             v-model="searchTerm"
             append-icon="fa-search"
             label="Type 2 characters to start searching"
-            hint="Search for item, assay, vendor, or cat#"
+            hint="Search for item, assay, vendor, cat#, or description"
             persistent-hint
             clearable
             single-line
@@ -356,7 +356,7 @@ export default {
     searchTerm (val) {
       if (val !== null) {
         if (val.length > 1) {
-          this.termSearch(val)
+          this.termSearch(val.trim())
         } else {
           this.filteredList = this.supplies
         }
@@ -412,7 +412,8 @@ export default {
         if (item.name.toLowerCase().includes(query) ||
           item.assay.name.toLowerCase().includes(query) ||
           item.catalogNumber.toLowerCase().includes(query) ||
-          item.vendor.toLowerCase().includes(query)
+          item.vendor.toLowerCase().includes(query) ||
+          item.itemDescription.toLowerCase().includes(query)
         ) {
           return item
         }
