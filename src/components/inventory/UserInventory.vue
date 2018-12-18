@@ -63,8 +63,8 @@
           <v-text-field
             v-model="searchTerm"
             append-icon="fa-search"
-            label="Search for item, assay, vendor, or cat#"
-            hint="Type 2 characters to start"
+            label="Type 2 characters to start searching"
+            hint="Search for item, assay, vendor, or cat#"
             persistent-hint
             clearable
             single-line
@@ -299,7 +299,7 @@ export default {
             unsavedData = true
             break
           }
-          // checkes for item order
+          // checks for item order
           unsavedData = item.order
         }
         // break loop if there is unsaved data
