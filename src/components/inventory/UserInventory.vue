@@ -644,7 +644,9 @@ export default {
             this.resultsList.retracted.push(this.getItemName(entry.ItemId))
           }
         })
-        let results = await entryService.delete(toDelete)
+        if (toDelete.length > 0) {
+          let results = await entryService.delete(toDelete)
+        }
         // if all entries deleted
         if (orderEntries.Entries.length === toDelete.length && results.status === 200) {
           await orderService.delete(orderEntries.id)
