@@ -20,6 +20,52 @@
         </v-card>
       </v-dialog>
 
+      <v-dialog
+        max-width="500px"
+        v-model="editEntryDialog"
+        @keydown.enter="saveEntry()"
+      >
+        <v-card>
+          <v-card-title>
+            <span class="headline">Editing {{editedEntry.name}}</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout row wrap>
+                <v-flex xs5>
+                  <v-text-field
+                    clearable
+                    label="Stock" type="number"
+                    v-model="editedEntry.currentStock"
+                  />
+                </v-flex>
+                <v-flex xs2></v-flex> <!-- spacer -->
+                <v-flex xs5>
+                  <v-text-field
+                    :clearable="admin"
+                    label="Order Amount" type="number"
+                    v-model="editedEntry.orderAmount"
+                    :disabled="!admin"
+                  />
+                </v-flex>
+                <v-flex xs12>
+                  <v-textarea
+                    label="Comment"
+                    clearable no-resize
+                    v-model="editedEntry.comment"
+                  />
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn color="error" @click="closeEditEntry()">Cancel</v-btn>
+            <v-btn color="primary" @click="saveEntry()">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <v-container>
         <v-layout row wrap>
           <v-btn v-if="!thisOrder.completed && admin" slot="activator" color="primary" class="mb-0" dark small @click="completedDialog = !completedDialog">Complete Order</v-btn>
@@ -59,6 +105,18 @@
         </v-layout>
       </v-container>
     </v-card-title>
+
+    <v-snackbar
+        v-model="snackbar"
+        :color="snackColor"
+        bottom
+      >
+    <!-- to do: add snack color, icon, etc; see Inactive for hints -->
+      <v-flex class="text-xs-center">
+        {{snackText}}
+      </v-flex>
+    </v-snackbar>
+
     <!-- data table -->
     <v-data-table
       ref="search"
@@ -81,7 +139,7 @@
         <!-- item description -->
         <td>{{props.item.itemDescription}}</td>
         <!-- entry current stock -->
-        <td>
+        <td class="pointer" @click="editEntry(props.item)">
           <v-tooltip top open-delay=50 :disabled="!checkQuantity(props.item)">
             <v-badge slot="activator" color="orange">
               <span slot="badge" v-if="checkQuantity(props.item)">?</span>
@@ -89,11 +147,12 @@
             </v-badge>
             <span>Manually ordered</span>
           </v-tooltip>
-        </td>        <!-- entry order amount -->
-        <td>{{props.item.orderAmount}}</td>
+        </td>
+        <!-- entry order amount -->
+        <td class="pointer" @click="editEntry(props.item)">{{props.item.orderAmount}}</td>
         <!-- entry comment -->
-        <td>{{props.item.comment}}</td>
-        <!-- <td>{{time(props.item.updatedAt)}}</td> -->
+        <td class="pointer" @click="editEntry(props.item)">{{props.item.comment}}</td>
+        <td>{{time(props.item.updatedAt)}}</td>
       </template>
       <template slot="no-data">
         <v-alert :value="true" color="error" icon="fa-exclamation-triangle">Nothing here!</v-alert>
@@ -112,6 +171,7 @@ import orderService from '@/services/OrderService.js'
 import itemService from '@/services/ItemService.js'
 import vendorService from '@/services/VendorService.js'
 import assayService from '@/services/AssayService.js'
+import entryService from '@/services/EntryService.js'
 const Json2csvParser = require('json2csv').Parser
 
 export default {
@@ -122,10 +182,13 @@ export default {
         descending: false
       },
       completedDialog: false,
+      editEntryDialog: false,
       loading: false,
       loadComponent: false,
-      completed: false,
       search: '',
+      snackbar: false,
+      snackText: '',
+      snackColor: 'primary',
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
         {text: 'Vendor', value: 'vendor'},
@@ -133,14 +196,28 @@ export default {
         {text: 'Catalog #', value: 'catalogNumber'},
         {text: 'Desc', value: 'itemDescription'},
         {text: 'Stock', value: 'currentStock'},
-        {text: 'To Order', value: 'reorderQuantity'},
-        {text: 'Comment', value: 'comment', width: '15%'}
+        {text: 'Order Amount', value: 'orderAmount'},
+        {text: 'Comment', value: 'comment', width: '15%'},
+        {text: 'Last Update', value: 'updatedAt'}
       ],
       thisOrder: {},
       items: [],
       vendors: [],
       assays: [],
-      entries: []
+      entries: [],
+      editedIndex: -1,
+      editedEntry: {
+        name: '',
+        orderedAmount: '',
+        currentStock: '',
+        comment: ''
+      },
+      defaultEntry: {
+        name: '',
+        orderedAmount: '',
+        currentStock: '',
+        comment: ''
+      }
     }
   },
 
@@ -173,6 +250,12 @@ export default {
     }
   },
 
+  watch: {
+    editEntryDialog (val) {
+      val || this.closeEditEntry()
+    }
+  },
+
   mounted () {
     this.loadComponent = false
     if (this.storedOrder) {
@@ -190,15 +273,12 @@ export default {
   methods: {
     async initialize () {
       // create independent copy of storedOrder
-      const order = this.storedOrder
-      for (let key in order) {
-        this.thisOrder[key] = order[key]
-      }
       let itemIds = null
       // get information
       this.vendors = (await vendorService.index()).data
       this.assays = (await assayService.index()).data
-      this.entries = (await orderService.show(this.storedOrder.id)).data.Entries
+      this.thisOrder = (await orderService.show(this.storedOrder)).data
+      this.entries = this.thisOrder.Entries
       itemIds = this.entries.map(x => x.ItemId)
       this.items = (await itemService.show(itemIds)).data
       // merge currentStock and comment from entries to items
@@ -258,8 +338,39 @@ export default {
       return item.currentStock > item.reorderPoint
     },
 
+    openSnack (text) {
+      this.snackText = text
+      this.snackbar = true
+    },
+
+    closeSnack () {
+      // to do: functions when snack is closed
+      this.snackbar = false
+      this.snackColor = 'primary'
+    },
+
+    editEntry (entry) {
+      if (this.thisOrder.completed) {
+        this.closeSnack()
+        this.snackColor = 'error'
+        this.openSnack('Order closed. Unable to edit.')
+      } else {
+        this.editedIndex = this.items.indexOf(entry)
+        this.editedEntry = Object.assign({}, entry)
+        this.editEntryDialog = true
+      }
+    },
+
     close () {
       this.completedDialog = false
+    },
+
+    closeEditEntry () {
+      this.editEntryDialog = false
+      setTimeout(() => {
+        this.editedEntry = Object.assign({}, this.defaultEntry)
+        this.editedIndex = -1
+      }, 300)
     },
 
     async changeStatus () {
@@ -274,11 +385,17 @@ export default {
       await orderService.put(this.thisOrder)
       this.loading = false
       this.close()
+    },
+
+    saveEntry () {
+
     }
   }
 }
 </script>
 
 <style scoped>
-
+  .pointer {
+    cursor: pointer;
+  }
 </style>
