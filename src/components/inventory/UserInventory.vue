@@ -636,6 +636,7 @@ export default {
       if (doNotOrder.length > 0 && !this.orderIsRecent(lastOrder)) {
         const orderEntries = (await orderService.show(lastOrder.id)).data
         let toDelete = []
+        let results = []
         doNotOrder.map(entry => {
           matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
           // add to delete list if entry exists in lastOrder
@@ -645,7 +646,7 @@ export default {
           }
         })
         if (toDelete.length > 0) {
-          let results = await entryService.delete(toDelete)
+          results = await entryService.delete(toDelete)
         }
         // if all entries deleted
         if (orderEntries.Entries.length === toDelete.length && results.status === 200) {
