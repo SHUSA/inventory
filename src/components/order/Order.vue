@@ -35,6 +35,7 @@
             v-model="search"
             append-icon="fa-search"
             label="Search"
+            clearable
             single-line
             hide-details
           />
@@ -69,23 +70,30 @@
       hide-actions
     >
       <template slot="items" slot-scope="props">
+        <!-- item name -->
         <td>{{props.item.name}}</td>
+        <!-- vendor name -->
         <td>{{props.item.vendor}}</td>
+        <!-- assay name -->
         <td>{{props.item.assay}}</td>
+        <!-- item catalog -->
         <td>{{props.item.catalogNumber}}</td>
+        <!-- item description -->
         <td>{{props.item.itemDescription}}</td>
+        <!-- entry current stock -->
         <td>
-          <v-tooltip top open-delay=50>
+          <v-tooltip top open-delay=50 :disabled="!checkQuantity(props.item)">
             <v-badge slot="activator" color="orange">
               <span slot="badge" v-if="checkQuantity(props.item)">?</span>
               {{props.item.currentStock}}
             </v-badge>
             <span>Manually ordered</span>
           </v-tooltip>
-        </td>
-        <td>{{props.item.reorderQuantity}}</td>
+        </td>        <!-- entry order amount -->
+        <td>{{props.item.orderAmount}}</td>
+        <!-- entry comment -->
         <td>{{props.item.comment}}</td>
-        <td>{{time(props.item.updatedAt)}}</td>
+        <!-- <td>{{time(props.item.updatedAt)}}</td> -->
       </template>
       <template slot="no-data">
         <v-alert :value="true" color="error" icon="fa-exclamation-triangle">Nothing here!</v-alert>
@@ -126,8 +134,7 @@ export default {
         {text: 'Desc', value: 'itemDescription'},
         {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'reorderQuantity'},
-        {text: 'Comment', value: 'comment', width: '15%'},
-        {text: 'Last Update', value: 'updatedAt'}
+        {text: 'Comment', value: 'comment', width: '15%'}
       ],
       thisOrder: {},
       items: [],
@@ -203,6 +210,8 @@ export default {
           if (index.id === entry.ItemId) {
             index.currentStock = entry.currentStock
             index.comment = entry.comment
+            index.orderAmount = entry.orderAmount
+            index.updatedAt = entry.updatedAt
           }
         }
       })
