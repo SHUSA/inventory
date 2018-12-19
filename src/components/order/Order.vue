@@ -59,9 +59,10 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
+            <v-btn color="error" @click="deleteEntry()">Delete</v-btn>
             <v-spacer/>
-            <v-btn color="error" @click="closeEditEntry()">Cancel</v-btn>
-            <v-btn color="primary" @click="saveEntry()">Save</v-btn>
+            <v-btn color="error" flat @click="closeEditEntry()">Cancel</v-btn>
+            <v-btn color="primary" flat @click="saveEntry()">Save</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -388,7 +389,11 @@ export default {
     },
 
     saveEntry () {
+      this.openSnack(`${this.editedEntry.name} saved`)
+    },
 
+    deleteEntry () {
+      this.openSnack(`${this.editedEntry.name} deleted`)
     }
   }
 }
