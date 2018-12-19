@@ -169,6 +169,7 @@
                   <!-- current stock -->
                   <v-text-field
                     @keydown.enter="save(item)"
+                    clearable
                     label="Stock" type="number"
                     persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
                     :value="item.currentStock"
