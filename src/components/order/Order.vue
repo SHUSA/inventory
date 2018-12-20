@@ -97,7 +97,7 @@
           <v-card-actions>
             <v-spacer/>
             <v-btn color="blue darken-1" flat @click="deactivationDialog = false">No</v-btn>
-            <v-btn color="red darken-1" flat @click="deleteEntry(currentItem)">Yes</v-btn>
+            <v-btn color="red darken-1" flat @click="deleteEntry(currentItem.entry)">Yes</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -414,23 +414,29 @@ export default {
       }
     },
 
+    isOrderComplete (order) {
+      if (order.completed) {
+        this.closeSnack()
+        this.snackColor = 'error'
+        this.openSnack('Order closed. Unable to edit.')
+      } else {
+        return false
+      }
+    },
+
     openSnack (text) {
       this.snackText = text
       this.snackbar = true
     },
 
     closeSnack () {
-      // to do: functions when snack is closed
       this.snackbar = false
       this.snackColor = 'primary'
     },
 
     editEntry (item) {
-      if (this.thisOrder.completed) {
-        this.closeSnack()
-        this.snackColor = 'error'
-        this.openSnack('Order closed. Unable to edit.')
-      } else {
+      // continue only if order is not complete
+      if (!this.isOrderComplete(this.thisOrder)) {
         this.editedIndex = this.items.indexOf(item)
         this.editedEntry = Object.assign({}, item.entry)
         this.currentItem = item
@@ -469,7 +475,6 @@ export default {
 
     async saveEntry (entry) {
       let response = null
-      // to do: add rules for number fields, save entry, and save comments from entry into matching item
       if (this.errors.currentStock || this.errors.orderAmount) {
         this.alertMessage = 'Please fix the issues above'
         this.alert = true
@@ -494,12 +499,21 @@ export default {
 
     async deleteEntry (entry) {
       // to do: confirm delete before actually deleting
-      this.loading = true
-      this.snackColor = 'error'
-      this.openSnack(`${this.currentItem.name} deleted`)
-      this.loading = false
-      this.deactivationDialog = false
-      this.closeEditEntry()
+      // continue only if order is not complete
+      if (!this.isOrderComplete(this.thisOrder)) {
+        let response = null
+        this.loading = true
+        response = await entryService.delete([entry.id])
+        if (!this.checkErrorMessage(response)) {
+          // close procedure if no error message
+          this.items.splice(this.editedIndex, 1)
+          this.snackColor = 'error'
+          this.openSnack(`${this.currentItem.name} deleted`)
+          this.loading = false
+          this.deactivationDialog = false
+          this.closeEditEntry()
+        }
+      }
     }
   }
 }
