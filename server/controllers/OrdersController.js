@@ -1,5 +1,6 @@
 const { Order } = require('../models')
 const { Entry } = require('../models')
+const moment = require('moment')
 
 module.exports = {
   async index (req, res) {
@@ -45,13 +46,18 @@ module.exports = {
   },
 
   async put (req, res) {
+    const order = req.body
+    const oneMonthAgo = moment().subtract(30, 'days').format()
+    if (order.createdAt < oneMonthAgo && order.completed) {
+      res.status(500).send([{ message: 'Order is completed and older than one month. Unable to delete.' }])
+    }
     try {
-      await Order.update(req.body, {
+      await Order.update(order, {
         where: {
           id: req.params.orderId
         }
       })
-      res.send(req.body)
+      res.send(order)
     } catch (error) {
       res.status(500).send(error.errors)
     }
