@@ -9,7 +9,6 @@
       >
         <v-card>
           <v-card-title>
-            <!-- to do: add delete order button here -->
             <span v-if="!thisOrder.completed" class="headline">Is the order complete?</span>
             <span v-else class="headline">Undo completed status?</span>
           </v-card-title>

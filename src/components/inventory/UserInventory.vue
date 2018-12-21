@@ -574,7 +574,6 @@ export default {
       let itemArr = item ? [item] : this.filteredList
       await itemService.put(null, null, null, itemArr)
       this.openSnack('Items Saved')
-      // to do: pop up dialog of items ordered
       this.order(itemArr)
     },
 
