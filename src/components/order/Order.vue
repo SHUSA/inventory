@@ -102,7 +102,7 @@
       >
         <v-card>
           <v-card-title>
-            <span class="headline">Deactivate {{currentItem.name}}?</span>
+            <span class="headline">Delete {{currentItem.name}} from the order?</span>
           </v-card-title>
           <v-card-actions>
             <v-spacer/>
