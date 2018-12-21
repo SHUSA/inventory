@@ -461,6 +461,7 @@ export default {
         this.closeSnack()
         this.snackColor = 'error'
         this.openSnack('Order closed. Unable to edit.')
+        return true
       } else {
         return false
       }
