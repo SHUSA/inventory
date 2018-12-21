@@ -9,6 +9,31 @@
       <ul>
         <!-- (li>{2018.12.DD - v2.xx}ul>li{update notes})+br -->
         <li>
+          2018.12.21 - v2.12; User Search, Single Item Edits, Order Edit
+          <ul>
+            <li>User Inventory</li>
+            <ul>
+              <li>Added search by item name, assay, vendor, catalog number, and description on User side</li>
+              <li>Added single item update to User Inventory</li>
+              <li>Added multi-assay filter to User Inventory</li>
+            </ul>
+            <li>Orders</li>
+            <ul>
+              <li>Able to edit current stock, order amount (admin only), and comments directly in Order</li>
+              <li>Comments in Order and Inventory are linked until Order is completed</li>
+              <li>Individual order entries can be removed (admin only)</li>
+              <li>All edits and removals can only be done if Order has not yet been completed</li>
+              <li>Order can be removed/deleted under certain condition (admin only)</li>
+            </ul>
+            <li>Others</li>
+            <ul>
+              <li>Improved backend code to batch updating Order Entries</li>
+              <li>Improved backend code to updating Items</li>
+            </ul>
+          </ul>
+        </li>
+        <br>
+        <li>
           2018.12.DD - v2.1, Bug Fixes
           <ul>
             <li>Changed Order url path to prevent conflicts from a running process</li>
