@@ -9,15 +9,26 @@
       >
         <v-card>
           <v-card-title>
+            <!-- to do: add delete order button here -->
             <span v-if="!thisOrder.completed" class="headline">Is the order complete?</span>
             <span v-else class="headline">Undo completed status?</span>
-            <v-card-actions>
-              <v-spacer/>
-              <v-progress-circular indeterminate color="primary" v-if="loading"/>
-              <v-btn color="error" @click.native="close">No</v-btn>
-              <v-btn color="primary" @click.native="changeStatus">Yes</v-btn>
-            </v-card-actions>
           </v-card-title>
+          <v-card-text>
+            <p>Completing the order will close out any edits to the order including adding new items, removing items, and editing existing items.</p>
+            <p>An order can be unlocked at a later date if any edits need to be made.
+              Items however cannot be removed or added if the order form is older than the current Sunday week.</p>
+            <p v-if="!thisOrder.completed">Deleting an order will remove the entire order form from view.
+              Please only do this if an order form has been accidentally made.
+              Alternatively, delete all items from the order form if you wish for this action to be permanent.
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn v-if="!thisOrder.completed" color="error" small @click="deleteOrderDialog = true">Delete Order</v-btn>
+            <v-spacer/>
+            <v-progress-circular indeterminate color="primary" v-if="loading"/>
+            <v-btn color="error" flat @click.native="close">No</v-btn>
+            <v-btn color="primary" flat @click.native="changeStatus">Yes</v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
 
@@ -66,7 +77,7 @@
                 <v-flex xs12>
                 <v-alert
                   :value="alert"
-                  type="error"
+                  :type="alertType"
                 >
                   {{alertMessage}}
                 </v-alert>
@@ -75,7 +86,7 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-btn v-if="admin" color="error" @click="deactivationDialog = true">Delete</v-btn>
+            <v-btn v-if="admin" color="error" @click="deactivationDialog = true" small>Delete</v-btn>
             <v-spacer/>
             <v-progress-circular indeterminate color="primary" v-if="loading"/>
             <v-btn color="error" flat @click="closeEditEntry()">Cancel</v-btn>
@@ -84,8 +95,7 @@
         </v-card>
       </v-dialog>
 
-      <!-- deactivation -->
-      <!-- to do: fix for order entry -->
+      <!-- entry deactivation -->
       <v-dialog
         v-model="deactivationDialog"
         max-width="500px"
@@ -98,6 +108,35 @@
             <v-spacer/>
             <v-btn color="blue darken-1" flat @click="deactivationDialog = false">No</v-btn>
             <v-btn color="red darken-1" flat @click="deleteEntry(currentItem.entry)">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- order deactivation -->
+      <v-dialog
+        v-model="deleteOrderDialog"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title>
+            <span class="headline">Delete the current order form?</span>
+          </v-card-title>
+          <v-container>
+            <v-layout>
+              <v-flex xs12>
+                <v-alert
+                  :value="alert"
+                  :type="alertType"
+                >
+                  {{alertMessage}}
+                </v-alert>
+              </v-flex>
+            </v-layout>
+          </v-container>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn color="blue darken-1" flat @click="deleteOrderDialog = false">No</v-btn>
+            <v-btn color="red darken-1" flat @click="deleteOrder()">Yes</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -224,6 +263,7 @@ export default {
       deactivationDialog: false,
       completedDialog: false,
       editEntryDialog: false,
+      deleteOrderDialog: false,
       loading: false,
       loadComponent: false,
       search: '',
@@ -231,6 +271,7 @@ export default {
       snackText: '',
       snackColor: 'primary',
       alert: false,
+      alertType: 'info',
       alertMessage: '',
       rules: {
         number: (val) => {
@@ -405,6 +446,7 @@ export default {
       if (resp.status !== 200) {
         // stop process and display error message
         this.loading = false
+        this.alertType = 'error'
         this.alert = true
         this.alertMessage = Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
         return true
@@ -498,7 +540,6 @@ export default {
     },
 
     async deleteEntry (entry) {
-      // to do: confirm delete before actually deleting
       // continue only if order is not complete
       if (!this.isOrderComplete(this.thisOrder)) {
         let response = null
@@ -507,11 +548,43 @@ export default {
         if (!this.checkErrorMessage(response)) {
           // close procedure if no error message
           this.items.splice(this.editedIndex, 1)
+          // check if items is empty and delete Order if it is and exit to Order Index
+          if (this.items.length === 0) {
+            await orderService.delete(this.thisOrder.id)
+            this.$router.push({name: 'orders'})
+          }
           this.snackColor = 'error'
           this.openSnack(`${this.currentItem.name} deleted`)
           this.loading = false
           this.deactivationDialog = false
           this.closeEditEntry()
+        }
+      }
+    },
+
+    async deleteOrder () {
+      let response = null
+      let entries = []
+      this.loading = true
+      // prepare order and existing entries to be set to inactive
+      this.thisOrder.active = false
+      this.items.forEach(item => {
+        item.entry.active = false
+        entries.push(item.entry)
+      })
+      response = await orderService.put(this.thisOrder)
+      if (!this.checkErrorMessage(response)) {
+        // continue if no errors
+        response = await entryService.put(entries)
+        if (!this.checkErrorMessage(response)) {
+          // close out order form and redirect to index
+          this.snackColor = 'primary'
+          this.openSnack('Order has been removed. Redirecting momentarily.')
+          this.deleteOrderDialog = false
+          this.close()
+          setTimeout(() => {
+            this.$router.push({name: 'orders'})
+          }, 3000)
         }
       }
     }
