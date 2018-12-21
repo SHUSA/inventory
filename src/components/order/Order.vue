@@ -1,6 +1,7 @@
 <template>
   <v-card v-if="loadComponent">
     <v-card-title>
+      <!-- complete order -->
       <v-dialog
         max-width="500px"
         v-model="completedDialog"
@@ -8,19 +9,140 @@
       >
         <v-card>
           <v-card-title>
+            <!-- to do: add delete order button here -->
             <span v-if="!thisOrder.completed" class="headline">Is the order complete?</span>
             <span v-else class="headline">Undo completed status?</span>
-            <v-card-actions>
-              <v-spacer/>
-              <v-progress-circular indeterminate color="primary" v-if="loading"/>
-              <v-btn color="error" @click.native="close">No</v-btn>
-              <v-btn color="primary" @click.native="changeStatus">Yes</v-btn>
-            </v-card-actions>
           </v-card-title>
+          <v-card-text>
+            <p>Completing the order will close out any edits to the order including adding new items, removing items, and editing existing items.</p>
+            <p>An order can be unlocked at a later date if any edits need to be made.
+              Items however cannot be removed or added if the order form is older than the current Sunday week.</p>
+            <p v-if="!thisOrder.completed">Deleting an order will remove the entire order form from view.
+              Please only do this if an order form has been accidentally made.
+              Alternatively, delete all items from the order form if you wish for this action to be permanent.
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn v-if="!thisOrder.completed" color="error" small @click="deleteOrderDialog = true">Delete Order</v-btn>
+            <v-spacer/>
+            <v-progress-circular indeterminate color="primary" v-if="loading"/>
+            <v-btn color="error" flat @click.native="close">No</v-btn>
+            <v-btn color="primary" flat @click.native="changeStatus">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- edit entry -->
+      <v-dialog
+        max-width="500px"
+        v-model="editEntryDialog"
+        @keydown.enter="saveEntry(editedEntry)"
+      >
+        <v-card>
+          <v-card-title>
+            <span class="headline">Editing {{currentItem.name}}</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout row wrap>
+                <v-flex xs5>
+                  <v-text-field
+                    ref="currentStock"
+                    clearable
+                    label="Stock" type="number"
+                    v-model="editedEntry.currentStock"
+                    validate-on-blur
+                    :rules="[rules.number]"
+                  />
+                </v-flex>
+                <v-flex xs2></v-flex> <!-- spacer -->
+                <v-flex xs5>
+                  <v-text-field
+                    ref="orderAmount"
+                    :clearable="admin"
+                    label="Order Amount" type="number"
+                    v-model="editedEntry.orderAmount"
+                    :disabled="!admin"
+                    validate-on-blur
+                    :rules="[rules.number]"
+                  />
+                </v-flex>
+                <v-flex xs12>
+                  <v-textarea
+                    label="Comment"
+                    clearable no-resize
+                    v-model="editedEntry.comment"
+                  />
+                </v-flex>
+                <v-flex xs12>
+                <v-alert
+                  :value="alert"
+                  :type="alertType"
+                >
+                  {{alertMessage}}
+                </v-alert>
+              </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn v-if="admin" color="error" @click="deactivationDialog = true" small>Delete</v-btn>
+            <v-spacer/>
+            <v-progress-circular indeterminate color="primary" v-if="loading"/>
+            <v-btn color="error" flat @click="closeEditEntry()">Cancel</v-btn>
+            <v-btn color="primary" flat @click="saveEntry(editedEntry)">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- entry deactivation -->
+      <v-dialog
+        v-model="deactivationDialog"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title>
+            <span class="headline">Deactivate {{currentItem.name}}?</span>
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn color="blue darken-1" flat @click="deactivationDialog = false">No</v-btn>
+            <v-btn color="red darken-1" flat @click="deleteEntry(currentItem.entry)">Yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- order deactivation -->
+      <v-dialog
+        v-model="deleteOrderDialog"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title>
+            <span class="headline">Delete the current order form?</span>
+          </v-card-title>
+          <v-container>
+            <v-layout>
+              <v-flex xs12>
+                <v-alert
+                  :value="alert"
+                  :type="alertType"
+                >
+                  {{alertMessage}}
+                </v-alert>
+              </v-flex>
+            </v-layout>
+          </v-container>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn color="blue darken-1" flat @click="deleteOrderDialog = false">No</v-btn>
+            <v-btn color="red darken-1" flat @click="deleteOrder()">Yes</v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
 
       <v-container>
+        <!-- control area -->
         <v-layout row wrap>
           <v-btn v-if="!thisOrder.completed && admin" slot="activator" color="primary" class="mb-0" dark small @click="completedDialog = !completedDialog">Complete Order</v-btn>
           <v-btn v-if="thisOrder.completed && admin" slot="activator" color="error" class="mb-0" dark small @click="completedDialog = !completedDialog">Undo Complete</v-btn>
@@ -35,11 +157,13 @@
             v-model="search"
             append-icon="fa-search"
             label="Search"
+            clearable
             single-line
             hide-details
           />
         </v-layout>
         <!-- completed message -->
+        <!-- to do: place in a better spot -->
         <v-card v-if="thisOrder.completed" class="ma-2">
           <v-card-text>Completed on {{time(thisOrder.completeDate)}}</v-card-text>
         </v-card>
@@ -58,6 +182,18 @@
         </v-layout>
       </v-container>
     </v-card-title>
+
+    <v-snackbar
+        v-model="snackbar"
+        :color="snackColor"
+        bottom
+      >
+    <!-- to do: add snack color, icon, etc; see Inactive for hints -->
+      <v-flex class="text-xs-center">
+        {{snackText}}
+      </v-flex>
+    </v-snackbar>
+
     <!-- data table -->
     <v-data-table
       ref="search"
@@ -69,23 +205,31 @@
       hide-actions
     >
       <template slot="items" slot-scope="props">
+        <!-- item name -->
         <td>{{props.item.name}}</td>
+        <!-- vendor name -->
         <td>{{props.item.vendor}}</td>
+        <!-- assay name -->
         <td>{{props.item.assay}}</td>
+        <!-- item catalog -->
         <td>{{props.item.catalogNumber}}</td>
+        <!-- item description -->
         <td>{{props.item.itemDescription}}</td>
-        <td>
-          <v-tooltip top open-delay=50>
+        <!-- entry current stock -->
+        <td class="pointer" @click="editEntry(props.item)">
+          <v-tooltip top open-delay=50 :disabled="!checkQuantity(props.item)">
             <v-badge slot="activator" color="orange">
               <span slot="badge" v-if="checkQuantity(props.item)">?</span>
-              {{props.item.currentStock}}
+              {{props.item.entry.currentStock}}
             </v-badge>
             <span>Manually ordered</span>
           </v-tooltip>
         </td>
-        <td>{{props.item.reorderQuantity}}</td>
-        <td>{{props.item.comment}}</td>
-        <td>{{time(props.item.updatedAt)}}</td>
+        <!-- entry order amount -->
+        <td class="pointer" @click="editEntry(props.item)">{{props.item.entry.orderAmount}}</td>
+        <!-- entry comment -->
+        <td class="pointer" @click="editEntry(props.item)">{{props.item.entry.comment}}</td>
+        <td>{{time(props.item.entry.updatedAt)}}</td>
       </template>
       <template slot="no-data">
         <v-alert :value="true" color="error" icon="fa-exclamation-triangle">Nothing here!</v-alert>
@@ -104,6 +248,7 @@ import orderService from '@/services/OrderService.js'
 import itemService from '@/services/ItemService.js'
 import vendorService from '@/services/VendorService.js'
 import assayService from '@/services/AssayService.js'
+import entryService from '@/services/EntryService.js'
 const Json2csvParser = require('json2csv').Parser
 
 export default {
@@ -113,11 +258,44 @@ export default {
         sortBy: 'vendor',
         descending: false
       },
+      currentItem: {},
+      errors: {},
+      deactivationDialog: false,
       completedDialog: false,
+      editEntryDialog: false,
+      deleteOrderDialog: false,
       loading: false,
       loadComponent: false,
-      completed: false,
       search: '',
+      snackbar: false,
+      snackText: '',
+      snackColor: 'primary',
+      alert: false,
+      alertType: 'info',
+      alertMessage: '',
+      rules: {
+        number: (val) => {
+          let currentStock = this.$refs.currentStock
+          let orderAmount = this.$refs.orderAmount
+          const num = parseFloat(val)
+          // check if input is valid
+          if (currentStock && orderAmount) { // beforeMount check; console errors out otherwise
+            if (!isNaN(num) && num >= 0) {
+              // valid input
+              this.errors.currentStock = currentStock.value === val ? false : this.errors.currentStock
+              this.errors.orderAmount = orderAmount.value === val ? false : this.errors.orderAmount
+              return true
+            } else {
+              // invalid input
+              this.errors.currentStock = currentStock.value === val ? true : this.errors.currentStock
+              this.errors.orderAmount = orderAmount.value === val ? true : this.errors.orderAmount
+              return 'Please enter a valid number'
+            }
+          } else {
+            return true
+          }
+        }
+      },
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
         {text: 'Vendor', value: 'vendor'},
@@ -125,7 +303,7 @@ export default {
         {text: 'Catalog #', value: 'catalogNumber'},
         {text: 'Desc', value: 'itemDescription'},
         {text: 'Stock', value: 'currentStock'},
-        {text: 'To Order', value: 'reorderQuantity'},
+        {text: 'Order Amount', value: 'orderAmount'},
         {text: 'Comment', value: 'comment', width: '15%'},
         {text: 'Last Update', value: 'updatedAt'}
       ],
@@ -133,7 +311,20 @@ export default {
       items: [],
       vendors: [],
       assays: [],
-      entries: []
+      entries: [],
+      editedIndex: -1,
+      editedEntry: {
+        name: '',
+        orderAmount: 0,
+        currentStock: 0,
+        comment: ''
+      },
+      defaultEntry: {
+        name: '',
+        orderAmount: 0,
+        currentStock: 0,
+        comment: ''
+      }
     }
   },
 
@@ -166,6 +357,12 @@ export default {
     }
   },
 
+  watch: {
+    editEntryDialog (val) {
+      val || this.closeEditEntry()
+    }
+  },
+
   mounted () {
     this.loadComponent = false
     if (this.storedOrder) {
@@ -183,15 +380,12 @@ export default {
   methods: {
     async initialize () {
       // create independent copy of storedOrder
-      const order = this.storedOrder
-      for (let key in order) {
-        this.thisOrder[key] = order[key]
-      }
       let itemIds = null
       // get information
       this.vendors = (await vendorService.index()).data
       this.assays = (await assayService.index()).data
-      this.entries = (await orderService.show(this.storedOrder.id)).data.Entries
+      this.thisOrder = (await orderService.show(this.storedOrder)).data
+      this.entries = this.thisOrder.Entries
       itemIds = this.entries.map(x => x.ItemId)
       this.items = (await itemService.show(itemIds)).data
       // merge currentStock and comment from entries to items
@@ -201,8 +395,7 @@ export default {
         for (let i = 0; i < this.entries.length; i++) {
           let entry = this.entries[i]
           if (index.id === entry.ItemId) {
-            index.currentStock = entry.currentStock
-            index.comment = entry.comment
+            index.entry = entry
           }
         }
       })
@@ -246,11 +439,66 @@ export default {
     },
 
     checkQuantity (item) {
-      return item.currentStock > item.reorderPoint
+      return item.entry.currentStock > item.reorderPoint
+    },
+
+    checkErrorMessage (resp) {
+      if (resp.status !== 200) {
+        // stop process and display error message
+        this.loading = false
+        this.alertType = 'error'
+        this.alert = true
+        this.alertMessage = Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
+        return true
+      } else {
+        // no errors received
+        return false
+      }
+    },
+
+    isOrderComplete (order) {
+      if (order.completed) {
+        this.closeSnack()
+        this.snackColor = 'error'
+        this.openSnack('Order closed. Unable to edit.')
+      } else {
+        return false
+      }
+    },
+
+    openSnack (text) {
+      this.snackText = text
+      this.snackbar = true
+    },
+
+    closeSnack () {
+      this.snackbar = false
+      this.snackColor = 'primary'
+    },
+
+    editEntry (item) {
+      // continue only if order is not complete
+      if (!this.isOrderComplete(this.thisOrder)) {
+        this.editedIndex = this.items.indexOf(item)
+        this.editedEntry = Object.assign({}, item.entry)
+        this.currentItem = item
+        this.editEntryDialog = true
+      }
     },
 
     close () {
       this.completedDialog = false
+    },
+
+    closeEditEntry () {
+      this.editEntryDialog = false
+      this.alert = false
+      this.errors = {}
+      setTimeout(() => {
+        this.editedEntry = Object.assign({}, this.defaultEntry)
+        this.currentItem = {}
+        this.editedIndex = -1
+      }, 300)
     },
 
     async changeStatus () {
@@ -265,11 +513,87 @@ export default {
       await orderService.put(this.thisOrder)
       this.loading = false
       this.close()
+    },
+
+    async saveEntry (entry) {
+      let response = null
+      if (this.errors.currentStock || this.errors.orderAmount) {
+        this.alertMessage = 'Please fix the issues above'
+        this.alert = true
+      } else {
+        this.alert = false
+        // update entry
+        response = await (entryService.put([entry]))
+        if (!this.checkErrorMessage(response)) {
+          // update item comment and table data
+          Object.assign(this.items[this.editedIndex].entry, response.data[0])
+          response = await (itemService.put(entry.ItemId, {comment: entry.comment}))
+          if (!this.checkErrorMessage(response)) {
+            // close procedure
+            this.loading = true
+            this.openSnack(`${this.currentItem.name} updated`)
+            this.loading = false
+            this.closeEditEntry()
+          }
+        }
+      }
+    },
+
+    async deleteEntry (entry) {
+      // continue only if order is not complete
+      if (!this.isOrderComplete(this.thisOrder)) {
+        let response = null
+        this.loading = true
+        response = await entryService.delete([entry.id])
+        if (!this.checkErrorMessage(response)) {
+          // close procedure if no error message
+          this.items.splice(this.editedIndex, 1)
+          // check if items is empty and delete Order if it is and exit to Order Index
+          if (this.items.length === 0) {
+            await orderService.delete(this.thisOrder.id)
+            this.$router.push({name: 'orders'})
+          }
+          this.snackColor = 'error'
+          this.openSnack(`${this.currentItem.name} deleted`)
+          this.loading = false
+          this.deactivationDialog = false
+          this.closeEditEntry()
+        }
+      }
+    },
+
+    async deleteOrder () {
+      let response = null
+      let entries = []
+      this.loading = true
+      // prepare order and existing entries to be set to inactive
+      this.thisOrder.active = false
+      this.items.forEach(item => {
+        item.entry.active = false
+        entries.push(item.entry)
+      })
+      response = await orderService.put(this.thisOrder)
+      if (!this.checkErrorMessage(response)) {
+        // continue if no errors
+        response = await entryService.put(entries)
+        if (!this.checkErrorMessage(response)) {
+          // close out order form and redirect to index
+          this.snackColor = 'primary'
+          this.openSnack('Order has been removed. Redirecting momentarily.')
+          this.deleteOrderDialog = false
+          this.close()
+          setTimeout(() => {
+            this.$router.push({name: 'orders'})
+          }, 3000)
+        }
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-
+  .pointer {
+    cursor: pointer;
+  }
 </style>

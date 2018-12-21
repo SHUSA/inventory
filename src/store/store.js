@@ -21,7 +21,7 @@ export default new Vuex.Store({
     userId: null,
     isUserLoggedIn: false,
     isAdminLoggedIn: false,
-    storedOrder: {},
+    storedOrder: '',
     storedFilters: [],
     itemDialog: false,
     assayDialog: false,

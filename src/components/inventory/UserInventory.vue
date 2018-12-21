@@ -50,7 +50,7 @@
             v-for="(value, index) in outstandingAssays"
             :key="index"
             :color="isSelected(value.name) ? 'blue lighten-2' : ''"
-            @click="search(value.name)"
+            @click="filter(value.name)"
           >
             <v-badge color="red" right>
               <span v-if="value.count > 0" slot="badge">{{value.count}}</span>
@@ -60,10 +60,18 @@
         </v-layout>
 
         <v-layout row wrap>
-          <v-btn value="false" flat disabled></v-btn>
+          <v-text-field
+            v-model="searchTerm"
+            append-icon="fa-search"
+            label="Type 2 characters to start searching"
+            hint="Search for item, assay, vendor, cat#, or description"
+            persistent-hint
+            clearable
+            single-line
+          />
           <v-spacer/>
           <!-- update button -->
-          <v-btn :color="dataHasChanged ? 'primary' : ''" small dark @click="saveAll()">Submit Form</v-btn>
+          <v-btn :color="dataHasChanged ? 'primary' : ''" small dark @click="save()">Submit All</v-btn>
         </v-layout>
       </v-container>
 
@@ -136,7 +144,6 @@
       >
         <v-flex
           xs6 sm4 md3 lg2
-          @keydown.enter="saveAll()"
           v-for="item in filteredList"
           :key="item.id"
         >
@@ -159,23 +166,30 @@
               </v-card-text>
               <v-divider/>
               <v-container class="py-0">
-                <!-- current stock -->
-                <v-text-field label="Stock" type="number"
-                  persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
-                  :value="item.currentStock"
-                  v-model="item.currentStock"
-                >
-                </v-text-field>
-                <!-- manual order -->
-                <v-checkbox v-model="item.order" class="py-0" label="Manual Order"/>
-                <!-- comment -->
-                <v-textarea
-                  clearable no-resize
-                  rows="4" class="py-0"
-                  label="Comment"
-                  :value="item.comment"
-                  v-model="item.comment"
-                ></v-textarea>
+                  <!-- current stock -->
+                  <v-text-field
+                    @keydown.enter="save(item)"
+                    clearable
+                    label="Stock" type="number"
+                    persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
+                    :value="item.currentStock"
+                    v-model="item.currentStock"
+                  >
+                  </v-text-field>
+                  <!-- manual order -->
+                  <v-checkbox v-model="item.order" class="py-0" label="Manual Order"/>
+                  <!-- comment -->
+                  <v-textarea
+                    @keydown.enter="save(item)"
+                    clearable no-resize
+                    rows="4" class="py-0"
+                    label="Comment"
+                    :value="item.comment"
+                    v-model="item.comment"
+                  ></v-textarea>
+                  <div class="text-xs-center">
+                    <v-btn @click="save(item)" color="primary" small>Save Item</v-btn>
+                  </div>
               </v-container>
               <v-divider/>
               <v-footer class="caption" color="white">
@@ -213,7 +227,7 @@ window.onbeforeunload = () => {
 export default {
   data () {
     return {
-      show: false,
+      searchTerm: '',
       suppliesCopy: {},
       vendorNames: [],
       assayNames: [],
@@ -286,7 +300,7 @@ export default {
             unsavedData = true
             break
           }
-          // checkes for item order
+          // checks for item order
           unsavedData = item.order
         }
         // break loop if there is unsaved data
@@ -338,6 +352,18 @@ export default {
 
     sortType () {
       this.sortItems()
+    },
+
+    searchTerm (val) {
+      if (val !== null) {
+        if (val.length > 1) {
+          this.termSearch(val.trim())
+        } else {
+          this.filteredList = this.supplies
+        }
+      } else {
+        this.filteredList = this.supplies
+      }
     }
   },
 
@@ -379,18 +405,54 @@ export default {
       })
     },
 
-    search (name) {
+    termSearch (val) {
+      // search bar query
+      let found = []
+      let query = val.toLowerCase()
+      found = this.supplies.filter(item => {
+        if (item.name.toLowerCase().includes(query) ||
+          item.assay.name.toLowerCase().includes(query) ||
+          item.catalogNumber.toLowerCase().includes(query) ||
+          item.vendor.toLowerCase().includes(query) ||
+          item.itemDescription.toLowerCase().includes(query)
+        ) {
+          return item
+        }
+      })
+
+      this.filteredList = found
+    },
+
+    filter (name) {
+      // button filter
       if (this.isSelected(name)) {
-        // reset filter if same name clicked
-        this.filteredList = this.supplies
+        let keep = []
+        // reomve clicked filter
+        keep = this.filteredList.filter(item => item.assay.name !== name)
+        if (keep.length === 0) {
+          // if keeping nothing, display all items
+          this.filteredList = this.supplies
+        } else {
+          // otherwise display remaining items
+          this.filteredList = keep
+        }
       } else {
         // find items with matching assay name
-        this.filteredList = this.supplies.filter(item => item.assay.name === name)
+        if (this.filteredList.length === this.supplies.length) {
+          // if all items are displayed, reset filteredList and assign clicked filter
+          this.filteredList = []
+          this.filteredList = this.supplies.filter(item => item.assay.name === name)
+        } else {
+          // if some items are displayed and filter is not selected, add to filteredList
+          this.filteredList = this.filteredList.concat(this.supplies.filter(item => item.assay.name === name))
+        }
       }
     },
 
     isSelected (name) {
-      return this.filteredList[0].assay.name === name && this.filteredList.length !== this.supplies.length
+      return this.filteredList.find(item => {
+        return item.assay.name === name && this.filteredList.length !== this.supplies.length
+      })
     },
 
     sortItems () {
@@ -456,7 +518,7 @@ export default {
         ItemId: item.id,
         updatedAt: item.updatedAt,
         currentStock: item.currentStock,
-        orderQuantity: item.currentStock + item.reorderQuantity,
+        orderAmount: item.reorderQuantity,
         comment: item.comment
       }
     },
@@ -508,14 +570,15 @@ export default {
       return item.vendor
     },
 
-    async saveAll () {
-      await itemService.put(null, null, null, this.filteredList)
+    async save (item = null) {
+      let itemArr = item ? [item] : this.filteredList
+      await itemService.put(null, null, null, itemArr)
       this.openSnack('Items Saved')
       // to do: pop up dialog of items ordered
-      this.order()
+      this.order(itemArr)
     },
 
-    async order () {
+    async order (itemArr) {
       // check through filteredList and see if order exists or if currentStock <= reorderPoint
       // and add to itemsToOrder
       let itemsToOrder = []
@@ -528,7 +591,7 @@ export default {
       this.resultsList = {ordered: [], updated: [], retracted: []}
 
       // check through filteredList and see if order exists or if currentStock <= reorderPoint
-      this.filteredList.map(item => {
+      itemArr.map(item => {
         entry = this.createEntry(item)
         // add to itemsToOrder if reorderPoint triggered or has a manual order and is a user
         if ((item.order || this.checkQuantity(item)) && this.user) {
@@ -574,6 +637,7 @@ export default {
       if (doNotOrder.length > 0 && !this.orderIsRecent(lastOrder)) {
         const orderEntries = (await orderService.show(lastOrder.id)).data
         let toDelete = []
+        let results = []
         doNotOrder.map(entry => {
           matchedEntry = orderEntries.Entries.find(orderEntry => orderEntry.ItemId === entry.ItemId)
           // add to delete list if entry exists in lastOrder
@@ -582,7 +646,9 @@ export default {
             this.resultsList.retracted.push(this.getItemName(entry.ItemId))
           }
         })
-        let results = await entryService.delete(toDelete)
+        if (toDelete.length > 0) {
+          results = await entryService.delete(toDelete)
+        }
         // if all entries deleted
         if (orderEntries.Entries.length === toDelete.length && results.status === 200) {
           await orderService.delete(orderEntries.id)

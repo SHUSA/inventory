@@ -74,7 +74,7 @@ export default {
       this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
       this.order = this.orders[index]
       // store selected order and push Order component
-      this.$store.dispatch('setOrder', this.order)
+      this.$store.dispatch('setOrder', this.order.id)
       this.$router.push({
         name: 'order'
       })

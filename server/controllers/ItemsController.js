@@ -92,6 +92,7 @@ module.exports = {
     let item = req.body.params.item
     const assay = req.body.params.assay
     const singleItem = list.length === 0
+    const itemId = req.params.itemId
     // to do: clean up code to be more flexible
 
     // calculate reorder point as long as item is active
@@ -101,7 +102,9 @@ module.exports = {
       item = calculateStockLevels(item, assay)
     } else {
       list.map(item => {
-        item = calculateStockLevels(item, item.assay)
+        if (item.assay) {
+          item = calculateStockLevels(item, item.assay)
+        }
       })
     }
 
@@ -109,17 +112,17 @@ module.exports = {
       if (singleItem) {
         await Item.update(item, {
           where: {
-            id: item.id
+            id: itemId
           }
         })
       } else {
-        await list.map(item => {
-          Item.update(item, {
+        for (let i = 0; i < list.length; i++) {
+          await Item.update(item[i], {
             where: {
-              id: item.id
+              id: item[i].id
             }
           })
-        })
+        }
       }
       res.send(item || list)
     } catch (error) {

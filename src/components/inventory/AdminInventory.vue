@@ -136,8 +136,8 @@
           </v-card-text>
           <v-card-actions>
             <!-- to do: enable deactivation button once reactivation is complete -->
-            <v-btn color="red darken-1" @click.native="deactivationDialog = !deactivationDialog" v-if="currentItem.name && admin">Deactivate</v-btn>
-            <v-btn color="orange" small @click.native="save(true)" v-if="user">Manual Order</v-btn>
+            <v-btn v-if="currentItem.name && admin" color="error" @click.native="deactivationDialog = !deactivationDialog" small>Deactivate</v-btn>
+            <v-btn v-if="user" color="orange" small @click.native="save(true)">Manual Order</v-btn>
             <v-spacer/>
             <v-progress-circular indeterminate color="primary" v-if="loading"/>
             <v-btn color="red darken-1" flat @click.native="close">Cancel</v-btn>
