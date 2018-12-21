@@ -3,7 +3,11 @@ const { Entry } = require('../models')
 module.exports = {
   async index (req, res) {
     try {
-      let entries = await Entry.findAll()
+      let entries = await Entry.findAll({
+        where: {
+          active: req.query.active
+        }
+      })
       res.send(entries)
     } catch (error) {
       console.log(error)

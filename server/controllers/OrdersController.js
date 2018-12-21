@@ -5,6 +5,9 @@ module.exports = {
   async index (req, res) {
     try {
       let orders = await Order.findAll({
+        where: {
+          active: req.query.active
+        },
         order: [
           ['createdAt', 'DESC']
         ]
