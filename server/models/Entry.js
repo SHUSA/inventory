@@ -7,7 +7,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     currentStock: DataTypes.REAL,
     orderAmount: DataTypes.INTEGER,
-    comment: DataTypes.STRING
+    comment: DataTypes.STRING,
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
+    }
   })
 
   Entry.associate = function (models) {
