@@ -9,7 +9,6 @@
       >
         <v-card>
           <v-card-title>
-            <!-- to do: add delete order button here -->
             <span v-if="!thisOrder.completed" class="headline">Is the order complete?</span>
             <span v-else class="headline">Undo completed status?</span>
           </v-card-title>
@@ -528,7 +527,7 @@ export default {
         if (!this.checkErrorMessage(response)) {
           // update item comment and table data
           Object.assign(this.items[this.editedIndex].entry, response.data[0])
-          response = await (itemService.put(entry.ItemId, {comment: entry.comment}))
+          response = await (itemService.put(entry.ItemId, {currentStock: entry.currentStock, comment: entry.comment}))
           if (!this.checkErrorMessage(response)) {
             // close procedure
             this.loading = true
