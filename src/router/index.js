@@ -10,6 +10,7 @@ import UserInventory from '@/components/inventory/UserInventory.vue'
 import AdminInventory from '@/components/inventory/AdminInventory.vue'
 import NotFound from '@/components/NotFound.vue'
 import Inactive from '@/components/Inactive.vue'
+import Catalog from '../components/information/Catalog.vue'
 
 Vue.use(Router)
 
@@ -56,6 +57,11 @@ export default new Router({
       path: '/inventory/admin',
       name: 'inventory-admin',
       component: AdminInventory
+    },
+    {
+      path: '/catalog',
+      name: 'catalog',
+      component: Catalog
     },
     {
       path: '/inactive',
