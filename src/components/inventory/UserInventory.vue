@@ -1,5 +1,5 @@
 <template>
-  <v-card flat color="#fafafa">
+  <v-card flat color="transparent">
     <v-container fluid grid-list-md v-if="loadComponent">
       <v-container>
         <v-layout row wrap>
