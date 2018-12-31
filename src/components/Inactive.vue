@@ -102,7 +102,9 @@ export default {
       this.vendors = (await vendorService.index([], false)).data
 
       this.assayList = (await assayService.index(['name', 'id'])).data
+      this.assayList = this.assayList.concat(this.assays)
       this.vendorList = (await vendorService.index(['name', 'id'])).data
+      this.vendorList = this.vendorList.concat(this.vendors)
     },
 
     hasData (key) {
