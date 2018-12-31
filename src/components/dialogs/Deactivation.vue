@@ -9,7 +9,7 @@
         <v-card-title class="title red lighten-2 font-weight-bold">
           <span>Deactivate {{selection.name}}?</span>
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="subheading">
           <p>Note: Any items associated with an assay or vendor will also be deactivated.</p>
         </v-card-text>
         <v-card-actions>
