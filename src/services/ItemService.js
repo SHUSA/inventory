@@ -45,5 +45,14 @@ export default {
     }).catch(err =>
       JSON.parse(JSON.stringify(err)).response
     )
+  },
+
+  deactivate (id) {
+    // send either AssayId or VendorId
+    return API().put('items', {
+      params: {
+        id: id
+      }
+    })
   }
 }

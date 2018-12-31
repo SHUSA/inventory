@@ -30,6 +30,7 @@ module.exports = (app) => {
   app.get('/items/list', ItemsController.show)
   app.post('/items', ItemsController.post)
   app.put('/items/:itemId', ItemsController.put)
+  app.put('/items', ItemsController.deactivate)
 
   app.get('/assays', AssaysController.index)
   app.get('/assays/:assayId', AssaysController.show)

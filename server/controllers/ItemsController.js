@@ -128,5 +128,25 @@ module.exports = {
       console.log(error)
       res.status(500).send(error.errors)
     }
+  },
+
+  async deactivate (req, res) {
+    const id = req.body.params.id
+    let results = null
+
+    try {
+      results = await Item.update({active: false}, {
+        where: {
+          $or: [
+            {AssayId: id},
+            {VendorId: id}
+          ]
+        }
+      })
+      res.send(results)
+    } catch (error) {
+      console.log(error)
+      res.status(500).send(error.errors)
+    }
   }
 }
