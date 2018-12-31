@@ -1,19 +1,41 @@
 <template>
-  <v-dialog
-    v-model="deactivationDialog"
-    max-width="500px"
-  >
-    <v-card>
-      <v-card-title>
-        <span class="headline">Deactivate {{selection.name}}?</span>
-      </v-card-title>
-      <v-card-actions>
-        <v-spacer/>
-        <v-btn color="blue darken-1" flat @click.stop="deactivationDialog = false">No</v-btn>
-        <v-btn color="red darken-1" flat @click="deactivateItem(selection)">Yes</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+  <div>
+    <!-- main deactivation dialog -->
+    <v-dialog
+      v-model="deactivationDialog"
+      max-width="500px"
+    >
+      <v-card>
+        <v-card-title class="title red lighten-2 font-weight-bold">
+          <span>Deactivate {{selection.name}}?</span>
+        </v-card-title>
+        <v-card-text>
+          <p>Note: Any items associated with an assay or vendor will also be deactivated.</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer/>
+          <v-btn color="blue darken-1" flat @click.stop="deactivationDialog = false">No</v-btn>
+          <v-btn color="red darken-1" flat @click="deactivate(selection)">Yes</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- results dialog -->
+    <v-dialog
+      v-model="resultsDialog"
+      max-width="500px"
+    >
+      <v-card>
+        <v-card-title class="title blue lighten-2 font-weight-bold">
+          <span>Results</span>
+        </v-card-title>
+        <v-card-text class="subheading">
+          <p>{{selection.name}} deactivated</p>
+          <p>{{itemsDeleted}} deactivated</p>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -30,6 +52,16 @@ export default {
 
   data () {
     return {
+      resultsDialog: false,
+      itemsDeleted: 0
+    }
+  },
+
+  watch: {
+    resultsDialog (val) {
+      if (!val) {
+        this.deactivationDialog = false
+      }
     }
   },
 
@@ -53,8 +85,23 @@ export default {
   },
 
   methods: {
-    deactivateItem (item) {
-      alert('test')
+    async deactivate (item) {
+      // conditional branching to determine which service to use
+      // if selected has catalogNumber -> item, if has weeklyVolume -> assay, else vendor
+      if (item.hasOwnProperty('catalogNumber')) {
+        await itemService.put(item.id, {active: !this.selection.active})
+      } else if (item.hasOwnProperty('weeklyVolume')) {
+        item.active = false
+        await assayService.put(item)
+        // deactivate items with matching AssayId
+        this.itemsDeleted = (await itemService.deactivate(item.id)).data[0]
+      } else {
+        item.active = false
+        await vendorService.put(item)
+        // deactivate items with matching VendorId
+        this.itemsDeleted = (await itemService.deactivate(item.id)).data[0]
+      }
+      this.resultsDialog = true
     }
   }
 }
