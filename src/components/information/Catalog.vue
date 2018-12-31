@@ -5,7 +5,7 @@
       <v-layout row wrap>
         <v-flex xs12 class="caption">
           Note: Highlighted Assays and Vendors have items assigned to them.
-          <v-chip color="info">Example</v-chip>
+          <v-chip color="info" small>Example</v-chip>
         </v-flex>
         <v-flex xs4 v-for="(list, index) in lists" :key="index">
           <v-list dense class="transparent">
@@ -17,6 +17,19 @@
         </v-flex>
       </v-layout>
     </v-container>
+
+    <!-- snack to deny entry -->
+    <v-snackbar
+      v-model="snackbar"
+      color="warning"
+      bottom
+    >
+      <v-icon class="pr-0">fa-exclamation-triangle</v-icon>
+      <v-flex class="text-xs-center">
+        <!-- to do: display item info on a card overlay -->
+        Information not yet available
+      </v-flex>
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -36,6 +49,7 @@ export default {
       loadComponent: false,
       selectedChip: {},
       dialog: false,
+      snackbar: false,
       lists: ['Items', 'Assays', 'Vendors']
     }
   },
@@ -85,8 +99,12 @@ export default {
     },
 
     select (obj) {
-      this.selectedChip = obj
-      this.dialog = true
+      if (this.admin) {
+        this.selectedChip = obj
+        this.dialog = true
+      } else {
+        this.snackbar = true
+      }
     }
   }
 }
