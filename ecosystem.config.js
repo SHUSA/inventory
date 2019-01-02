@@ -18,6 +18,7 @@ module.exports = {
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
       // 'post-deploy': 'git pull && pm2 list && pm2 expose',
+      // 'post-deploy': 'git pull && pm2 delete 0 && pm2 delete 1 && pm2 start',
       'post-deploy': 'git pull && npm install && node_modules/.bin/sequelize db:migrate && npm run build && pm2 reload ecosystem.config.js --env development --update-env && pm2 list && pm2 logs',
       "env"  : {
         'NODE_ENV': "'development'",

@@ -45,6 +45,7 @@ module.exports = {
         ],
         attributes: attributes
       })
+
       res.send(items)
     } catch (error) {
       console.log(error)
@@ -116,9 +117,9 @@ module.exports = {
         })
       } else {
         for (let i = 0; i < list.length; i++) {
-          await Item.update(item[i], {
+          await Item.update(list[i], {
             where: {
-              id: item[i].id
+              id: list[i].id
             }
           })
         }
