@@ -141,9 +141,11 @@ module.exports = {
           $or: [
             {AssayId: id},
             {VendorId: id}
-          ]
+          ],
+          active: true
         }
       })
+      console.log(results)
       res.send(results)
     } catch (error) {
       console.log(error)
