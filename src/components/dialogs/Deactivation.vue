@@ -7,7 +7,7 @@
     >
       <v-card>
         <v-card-title class="title red lighten-2 font-weight-bold">
-          <span>Deactivate {{selection.name}}?</span>
+          <span>Deactivate {{selectedItem.name}}?</span>
         </v-card-title>
         <v-card-text class="subheading">
           <p>Note: Any items associated with an assay or vendor will also be deactivated.</p>
@@ -15,7 +15,7 @@
         <v-card-actions>
           <v-spacer/>
           <v-btn color="blue darken-1" flat @click.stop="deactivationDialog = false">No</v-btn>
-          <v-btn color="red darken-1" flat @click="deactivate(selection)">Yes</v-btn>
+          <v-btn color="red darken-1" flat @click="deactivate(selectedItem)">Yes</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -30,8 +30,8 @@
           <span>Results</span>
         </v-card-title>
         <v-card-text class="subheading">
-          <p>{{selection.name}} deactivated</p>
-          <p>{{itemsDeleted}} deactivated</p>
+          <p>{{selectedItem.name}} deactivated</p>
+          <p v-if="!isItem(selectedItem)">{{itemsDeleted}} items deactivated</p>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -81,15 +81,28 @@ export default {
           this.$emit('update:dialog', false)
         }
       }
+    },
+
+    selectedItem: {
+      get () {
+        return this.selection
+      },
+      set (value) {
+        this.$emit('update:selection', value)
+      }
     }
   },
 
   methods: {
+    isItem (item) {
+      return item.hasOwnProperty('catalogNumber')
+    },
+
     async deactivate (item) {
       // conditional branching to determine which service to use
       // if selected has catalogNumber -> item, if has weeklyVolume -> assay, else vendor
-      if (item.hasOwnProperty('catalogNumber')) {
-        await itemService.put(item.id, {active: !this.selection.active})
+      if (this.isItem(item)) {
+        await itemService.put(item.id, {active: !this.selectedItem.active})
       } else if (item.hasOwnProperty('weeklyVolume')) {
         item.active = false
         await assayService.put(item)
