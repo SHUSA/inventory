@@ -23,25 +23,34 @@
             <v-chip slot="activator" :color="data.active ? null : 'info'" :disabled="data.active">
               {{data.name}}
             </v-chip>
-            <v-card v-if="category !== 'Vendors'">
-              <!-- info for item -->
-              <v-container v-if="category === 'Items'">
+            <v-card max-width="250px">
+              <v-container>
+                <!-- info for item -->
                 <v-list>
-                  <v-list-tile-title>Name: {{data.name}}</v-list-tile-title>
-                  <v-list-tile-title>Catalog: {{data.catalogNumber}}</v-list-tile-title>
-                  <v-list-tile-title>Assay: {{getAssay(data)}}</v-list-tile-title>
-                  <v-list-tile-title>Vendor: {{getVendor(data)}}</v-list-tile-title>
+                  <template v-if="category === 'Items'">
+                    <v-list-tile-title class="subheading">Name: {{data.name}}</v-list-tile-title>
+                    <v-list-tile-title class="subheading">Catalog: {{data.catalogNumber}}</v-list-tile-title>
+                    <v-list-tile-title class="subheading">Assay: {{getAssay(data)}}</v-list-tile-title>
+                    <v-list-tile-title class="subheading">Vendor: {{getVendor(data)}}</v-list-tile-title>
+                    <v-card-text v-if="!data.active">
+                      Note: Associated assays and vendors will also be reactivated.
+                    </v-card-text>
+                  </template>
+                  <!-- info for assay/vendor -->
+                  <template v-else>
+                    <v-list-tile-title class="subheading">Name: {{data.name}}</v-list-tile-title>
+                    <v-card-text v-if="!data.active">
+                      Note: Any previously associated items must be reactivated individually.
+                    </v-card-text>
+                  </template>
                 </v-list>
                 <v-card-actions>
                   <v-spacer/>
                   <v-btn :color="activationText === 'Reactivate' ? 'success' : 'warning'" flat @click="reactivate(data, category)">
                     {{activationText}}
                   </v-btn>
+                  <v-spacer/>
                 </v-card-actions>
-              </v-container>
-              <!-- info for assay -->
-              <v-container v-if="category === 'Assays'">
-                {{data}}
               </v-container>
             </v-card>
           </v-menu>
@@ -68,7 +77,7 @@ export default {
       assayList: [],
       categories: ['Items', 'Assays', 'Vendors'],
       menu: {},
-      activationText: 'Reactivate',
+      activationText: 'reactivate',
       snackbar: false,
       snackText: '',
       snackColor: 'info',
@@ -85,6 +94,12 @@ export default {
   },
 
   mounted () {
+    // redirect if user
+    if (this.user) {
+      this.$router.push({
+        name: 'index'
+      })
+    }
     this.initialize()
     // go to top
     window.scroll({
@@ -101,9 +116,9 @@ export default {
       this.assays = (await assayService.index([], false)).data
       this.vendors = (await vendorService.index([], false)).data
 
-      this.assayList = (await assayService.index(['name', 'id'])).data
+      this.assayList = (await assayService.index(['name', 'id', 'active'])).data
       this.assayList = this.assayList.concat(this.assays)
-      this.vendorList = (await vendorService.index(['name', 'id'])).data
+      this.vendorList = (await vendorService.index(['name', 'id', 'active'])).data
       this.vendorList = this.vendorList.concat(this.vendors)
     },
 
@@ -117,24 +132,27 @@ export default {
 
     getAssay (data) {
       if (this.assayList.length === 0) return null
-      return this.assayList.find(assay => assay.id === data.AssayId).name
+      data.assay = this.assayList.find(assay => assay.id === data.AssayId)
+      return data.assay.name
     },
 
     getVendor (data) {
       if (this.vendorList.length === 0) return null
-      return this.vendorList.find(vendor => vendor.id === data.VendorId).name
+      data.vendor = this.vendorList.find(vendor => vendor.id === data.VendorId)
+      return data.vendor.name
     },
 
     checkStatus (results, data) {
       if (!results.status === 200) {
         data.active = false
+        this.snackbar = false // close previous snack if called consecutively
         this.activationText = 'Reactivate'
         this.snackText = `${Array.isArray(results.data) ? results.data[0].message : results.statusText}`
         this.snackColor = 'error'
         this.snackIcon = 'fa-skull-crossbones'
         this.snackbar = true
       } else {
-        this.activationText = data.active ? 'Deactivate' : 'Reactivate'
+        this.activationText = data.active ? 'deactivate' : 'reactivate'
         this.snackText = `${data.name} has been ${data.active ? 'reactivated' : 'deactivated'}`
         this.snackColor = data.active ? 'success' : 'warning'
         this.snackIcon = data.active ? 'fa-check-circle' : 'fa-exclamation-triangle'
@@ -148,16 +166,49 @@ export default {
       this.snackbar = false
 
       if (category === 'Items') {
+        // item reactivation
         results = await itemService.put(data.id, data)
         this.checkStatus(results, data)
+        // assay reactivation
+        if (!data.assay.active) {
+          // do not process if assay is active
+          data.assay.active = !data.assay.active
+          results = await assayService.put(data.assay)
+          this.checkStatus(results, data)
+        }
+        // vendor reactivation
+        if (!data.vendor.active) {
+          // do not process if vendor is active
+          data.vendor.active = !data.vendor.active
+          results = await assayService.put(data.vendor)
+          this.checkStatus(results, data)
+        }
       } else if (category === 'Assays') {
-        results = await assayService.put(data.id, data)
+        results = await assayService.put(data)
         this.checkStatus(results, data)
+        if (data.active) {
+          // do not process if assay is inactive
+          results = await itemService.deactivate(data.id)
+          this.items.forEach(item => {
+            if (item.AssayId === data.id) {
+              item.active = false
+            }
+          })
+        }
       } else if (category === 'Vendors') {
-        results = await vendorService.put(data.id, data)
+        results = await vendorService.put(data)
         this.checkStatus(results, data)
+        if (data.active) {
+          // do not process if vendor is inactive
+          results = await itemService.deactivate(data.id)
+          this.items.forEach(item => {
+            if (item.VendorId === data.id) {
+              item.active = false
+            }
+          })
+        }
       } else {
-        this.snackText = 'I dunno man. No CATs match.'
+        this.snackText = 'I dunno man. Something is wrong.'
         this.snackColor = 'warning'
         this.snackIcon = 'fa-cat'
         this.snackbar = true
