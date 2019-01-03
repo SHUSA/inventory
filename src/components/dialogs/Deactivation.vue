@@ -102,6 +102,7 @@ export default {
       // conditional branching to determine which service to use
       // if selected has catalogNumber -> item, if has weeklyVolume -> assay, else vendor
       if (this.isItem(item)) {
+        item.active = false
         await itemService.put(item.id, {active: !this.selectedItem.active})
       } else if (item.hasOwnProperty('weeklyVolume')) {
         item.active = false
