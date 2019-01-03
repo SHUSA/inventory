@@ -1,6 +1,6 @@
 <template>
   <v-card v-if="loadComponent" flat color="transparent">
-    <deactivation :selection="selectedChip" :dialog.sync="dialog"/>
+    <deactivation :selection.sync="selectedChip" :dialog.sync="dialog"/>
     <v-container fill-height grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 class="caption">
@@ -10,7 +10,7 @@
         <v-flex xs4 v-for="(list, index) in lists" :key="index">
           <v-list dense class="transparent">
             <v-list-tile-title class="title">{{list}}</v-list-tile-title>
-            <v-chip v-for="item in getArray(list)" :key="item.id" :color="item.hasItem ? 'info' : ''" @click="select(item)">
+            <v-chip v-if="item.active" v-for="item in getArray(list)" :key="item.id" :color="item.hasItem ? 'info' : ''" @click="select(item)">
               {{item.name}}
             </v-chip>
           </v-list>
