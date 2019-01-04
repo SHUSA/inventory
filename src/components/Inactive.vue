@@ -180,7 +180,7 @@ export default {
         if (!data.vendor.active) {
           // do not process if vendor is active
           data.vendor.active = !data.vendor.active
-          results = await assayService.put(data.vendor)
+          results = await vendorService.put(data.vendor)
           this.checkStatus(results, data)
         }
       } else if (category === 'Assays') {
