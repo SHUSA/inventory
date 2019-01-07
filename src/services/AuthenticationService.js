@@ -1,21 +1,22 @@
 import API from './API'
+import checkResponse from './checkResponse'
 
 export default {
   register (credentials) {
     return API().get('register', credentials).catch(err =>
-      JSON.stringify(JSON.parse(JSON.stringify(err)).response)
+      checkResponse(err)
     )
   },
 
   login (credentials) {
     return API().get('login', credentials).catch(err =>
-      JSON.stringify(JSON.parse(JSON.stringify(err)).response)
+      checkResponse(err)
     )
   },
 
   userupdate (user) {
     return API().post('userupdate', user).catch(err =>
-      JSON.stringify(JSON.parse(JSON.stringify(err)).response)
+      checkResponse(err)
     )
   }
 }

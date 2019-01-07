@@ -1,21 +1,22 @@
 import API from './API'
+import checkResponse from './checkResponse'
 
 export default {
   index () {
     return API().get('departments').catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   },
 
   show (departmentId) {
     return API().get(`departments/${departmentId}`).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   },
 
   post () {
     return API().post('departments').catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   },
 
@@ -25,7 +26,7 @@ export default {
         department: department
       }
     }).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   }
 }

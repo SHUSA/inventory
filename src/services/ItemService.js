@@ -1,4 +1,5 @@
 import API from './API'
+import checkResponse from './checkResponse'
 
 export default {
   index (attributes = [], active = true) {
@@ -8,7 +9,7 @@ export default {
         active: active
       }
     }).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   },
 
@@ -19,7 +20,7 @@ export default {
         active: active
       }
     }).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   },
 
@@ -30,7 +31,7 @@ export default {
         assay: assay
       }
     }).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   },
 
@@ -43,7 +44,7 @@ export default {
         list: list
       }
     }).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   },
 
@@ -53,6 +54,8 @@ export default {
       params: {
         id: id
       }
-    })
+    }).catch(err =>
+      checkResponse(err)
+    )
   }
 }

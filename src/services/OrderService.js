@@ -1,4 +1,5 @@
 import API from './API'
+import checkResponse from './checkResponse'
 
 export default {
   index (active = true) {
@@ -7,31 +8,31 @@ export default {
         active: active
       }
     }).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   },
 
   show (orderId) {
     return API().get(`orders/${orderId}`).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   },
 
   post () {
     return API().post('orders').catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   },
 
   put (order) {
     return API().put(`orders/${order.id}`, order).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   },
 
   delete (orderId) {
     return API().delete(`orders/${orderId}`).catch(err =>
-      JSON.parse(JSON.stringify(err)).response
+      checkResponse(err)
     )
   }
 }
