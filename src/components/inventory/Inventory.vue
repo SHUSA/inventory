@@ -1,5 +1,6 @@
 <template>
   <v-card v-if="loadComponent">
+    <error :response="response"/>
     <v-card-title>
       <v-dialog
         v-model="dialog"
@@ -405,6 +406,7 @@ const Json2csvParser = require('json2csv').Parser
 export default {
   data () {
     return {
+      response: '',
       currentItem: {},
       catalogNumbers: [],
       vendorNames: [],
@@ -664,19 +666,23 @@ export default {
   async mounted () {
     // initialize variables
     this.loadComponent = false
-    this.supplies = (await itemService.show(this.storedFilters)).data
-    this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
-    this.vendorList = (await vendorService.index()).data
-    this.vendorNames = this.vendorList.map(vendor => vendor.name.toUpperCase())
-    this.assayList = (await assayService.index()).data
-    this.assayNames = this.assayList.map(assay => assay.name.toUpperCase())
-    this.orderList = (await orderService.index()).data
+    this.response = (await itemService.show(this.storedFilters))
 
-    // go to top
-    window.scroll({
-      top: 0,
-      left: 0
-    })
+    if (this.response.status === 200) {
+      this.supplies = this.response.data
+      this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
+      this.vendorList = (await vendorService.index()).data
+      this.vendorNames = this.vendorList.map(vendor => vendor.name.toUpperCase())
+      this.assayList = (await assayService.index()).data
+      this.assayNames = this.assayList.map(assay => assay.name.toUpperCase())
+      this.orderList = (await orderService.index()).data
+
+      // go to top
+      window.scroll({
+        top: 0,
+        left: 0
+      })
+    }
     this.loadComponent = true
   },
 

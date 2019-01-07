@@ -1,6 +1,7 @@
 <template>
   <!-- list all orders and choose one to display -->
   <v-card v-if="loadComponent">
+    <error :response="response"/>
     <template v-if="pageTitle === 'orders'">
       <v-list>
         <v-list-tile v-for="(order, index) in orders" :key="order.createdAt" @click="viewOrder(index)">
@@ -26,6 +27,7 @@ export default {
     return {
       order: {},
       orders: [],
+      response: '',
       loadComponent: false
     }
   },
@@ -62,7 +64,11 @@ export default {
       this.$store.dispatch('setTitle', this.route.name)
 
       this.order = {}
-      this.orders = (await orderService.index()).data
+      this.response = (await orderService.index())
+
+      if (this.response.status === 200) {
+        this.orders = this.response.data
+      }
       this.loadComponent = true
     },
 

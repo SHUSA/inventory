@@ -1,6 +1,7 @@
 <template>
   <v-card v-if="loadComponent" flat color="transparent">
     <deactivation :selection.sync="selectedChip" :dialog.sync="dialog"/>
+    <error :response="response"/>
     <v-container fill-height grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 class="caption">
@@ -46,6 +47,7 @@ export default {
       items: [],
       assays: [],
       vendors: [],
+      response: '',
       loadComponent: false,
       selectedChip: {},
       dialog: false,
@@ -76,22 +78,27 @@ export default {
       let itemAssayIds = {}
       let itemVendorIds = {}
       this.$store.dispatch('setTitle', 'Catalog')
-      this.items = (await itemService.index()).data
-      this.assays = (await assayService.index()).data
-      this.vendors = (await vendorService.index()).data
-      // to do: find if assay has an assigned item
-      // store assay and vendor ids from each item
-      this.items.forEach(item => {
-        itemAssayIds[item.AssayId] = true
-        itemVendorIds[item.VendorId] = true
-      })
-      // loop through assays and vendors and check if id is in the object ids
-      this.assays.forEach(assay => {
-        assay.hasItem = itemAssayIds.hasOwnProperty(assay.id)
-      })
-      this.vendors.forEach(vendor => {
-        vendor.hasItem = itemVendorIds.hasOwnProperty(vendor.id)
-      })
+      this.response = (await itemService.index())
+
+      // check if server is connected before continuing
+      if (this.response.status === 200) {
+        this.items = this.response.data
+        this.assays = (await assayService.index()).data
+        this.vendors = (await vendorService.index()).data
+        // to do: find if assay has an assigned item
+        // store assay and vendor ids from each item
+        this.items.forEach(item => {
+          itemAssayIds[item.AssayId] = true
+          itemVendorIds[item.VendorId] = true
+        })
+        // loop through assays and vendors and check if id is in the object ids
+        this.assays.forEach(assay => {
+          assay.hasItem = itemAssayIds.hasOwnProperty(assay.id)
+        })
+        this.vendors.forEach(vendor => {
+          vendor.hasItem = itemVendorIds.hasOwnProperty(vendor.id)
+        })
+      }
     },
 
     getArray (list) {

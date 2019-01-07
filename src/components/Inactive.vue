@@ -1,5 +1,6 @@
 <template>
   <v-card>
+    <error :response="response"/>
     <v-snackbar
       v-model="snackbar"
       :color="snackColor"
@@ -75,6 +76,7 @@ export default {
       assays: [],
       vendorList: [],
       assayList: [],
+      response: '',
       categories: ['Items', 'Assays', 'Vendors'],
       menu: {},
       activationText: 'reactivate',
@@ -111,15 +113,18 @@ export default {
   methods: {
     async initialize () {
       this.$store.dispatch('setTitle', this.route.name)
+      this.response = (await itemService.index([], false))
 
-      this.items = (await itemService.index([], false)).data
-      this.assays = (await assayService.index([], false)).data
-      this.vendors = (await vendorService.index([], false)).data
+      if (this.response.status === 200) {
+        this.items = this.response.data
+        this.assays = (await assayService.index([], false)).data
+        this.vendors = (await vendorService.index([], false)).data
 
-      this.assayList = (await assayService.index(['name', 'id', 'active'])).data
-      this.assayList = this.assayList.concat(this.assays)
-      this.vendorList = (await vendorService.index(['name', 'id', 'active'])).data
-      this.vendorList = this.vendorList.concat(this.vendors)
+        this.assayList = (await assayService.index(['name', 'id', 'active'])).data
+        this.assayList = this.assayList.concat(this.assays)
+        this.vendorList = (await vendorService.index(['name', 'id', 'active'])).data
+        this.vendorList = this.vendorList.concat(this.vendors)
+      }
     },
 
     hasData (key) {

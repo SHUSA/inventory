@@ -1,5 +1,6 @@
 <template>
   <v-card flat color="transparent">
+    <error :response="response"/>
     <v-container fluid grid-list-md v-if="loadComponent">
       <v-container>
         <v-layout row wrap>
@@ -227,6 +228,7 @@ window.onbeforeunload = () => {
 export default {
   data () {
     return {
+      response: '',
       searchTerm: '',
       suppliesCopy: {},
       vendorNames: [],
@@ -370,22 +372,26 @@ export default {
   async mounted () {
     // initialize variables
     this.loadComponent = false
-    this.supplies = (await itemService.show(this.storedFilters)).data
-    this.filteredList = this.supplies
-    this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
-    this.vendorList = (await vendorService.index()).data
-    this.vendorNames = this.vendorList.map(vendor => vendor.name.toUpperCase())
-    this.assayList = (await assayService.index()).data
-    this.assayNames = this.assayList.map(assay => assay.name.toUpperCase())
+    this.response = (await itemService.show(this.storedFilters))
 
-    // go to top
-    window.scroll({
-      top: 0,
-      left: 0
-    })
-    this.sortItems()
-    // create copy of supplies to check if values have been changed
-    this.createCopy()
+    if (this.response.status === 200) {
+      this.supplies = this.response.data
+      this.filteredList = this.supplies
+      this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
+      this.vendorList = (await vendorService.index()).data
+      this.vendorNames = this.vendorList.map(vendor => vendor.name.toUpperCase())
+      this.assayList = (await assayService.index()).data
+      this.assayNames = this.assayList.map(assay => assay.name.toUpperCase())
+
+      // go to top
+      window.scroll({
+        top: 0,
+        left: 0
+      })
+      this.sortItems()
+      // create copy of supplies to check if values have been changed
+      this.createCopy()
+    }
     this.loadComponent = true
   },
 
