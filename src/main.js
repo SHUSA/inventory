@@ -9,6 +9,7 @@ import 'vuetify/dist/vuetify.min.css'
 import store from '@/store/store'
 import moment from 'moment'
 import Scroll from '@/components/globals/Scroll.vue'
+import Error from '@/components/globals/Error.vue'
 
 Vue.config.productionTip = false
 Vue.use(Veutify, {
@@ -17,6 +18,7 @@ Vue.use(Veutify, {
 Object.defineProperty(Vue.prototype, '$moment', { value: moment })
 
 Vue.component('scroll', Scroll)
+Vue.component('error', Error)
 
 sync(store, router)
 
