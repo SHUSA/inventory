@@ -145,7 +145,26 @@ module.exports = {
           active: true
         }
       })
-      console.log(results)
+      res.send(results)
+    } catch (error) {
+      console.log(error)
+      res.status(500).send(error.errors)
+    }
+  },
+
+  async reassign (req, res) {
+    const oldId = req.body.params.oldId
+    const newId = req.body.params.newId
+    const key = req.body.params.type
+    let results = null
+
+    try {
+      results = await Item.update({[key]: newId}, {
+        where: {
+          [key]: oldId
+        }
+      })
+
       res.send(results)
     } catch (error) {
       console.log(error)

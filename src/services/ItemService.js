@@ -50,9 +50,22 @@ export default {
 
   deactivate (id) {
     // send either AssayId or VendorId
-    return API().put('items', {
+    return API().put('deactivate-items', {
       params: {
         id: id
+      }
+    }).catch(err =>
+      checkResponse(err)
+    )
+  },
+
+  reassign (oldId, newId, type) {
+    // send either AssayId or VendorId
+    return API().put('reassign-items', {
+      params: {
+        oldId: oldId,
+        newId: newId,
+        type: type
       }
     }).catch(err =>
       checkResponse(err)

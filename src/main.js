@@ -15,6 +15,7 @@ Vue.config.productionTip = false
 Vue.use(Veutify, {
   iconfont: 'fa'
 })
+
 Object.defineProperty(Vue.prototype, '$moment', { value: moment })
 
 Vue.component('scroll', Scroll)
