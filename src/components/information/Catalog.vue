@@ -1,6 +1,6 @@
 <template>
   <v-card v-if="loadComponent" flat color="transparent">
-    <deactivation :selection.sync="selectedChip" :dialog.sync="dialog"/>
+    <deactivation :selection.sync="selectedChip" :dialog.sync="dialog" :assays="assays" :vendors="vendors"/>
     <error :response="response"/>
     <v-container fill-height grid-list-md>
       <v-layout row wrap>
