@@ -6,7 +6,8 @@
         <v-layout row wrap>
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
             <!-- to do: add transition (bouncing) showing download initiating -->
-            <v-icon small class="pr-1">fa-file-download</v-icon>CSV
+            <v-icon small class="pr-1">fa-file-download</v-icon>
+            Inventory CSV
           </v-btn>
           <v-spacer/>
           <v-progress-circular v-if="loading" indeterminate color="primary"/>

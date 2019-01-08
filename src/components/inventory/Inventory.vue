@@ -254,7 +254,8 @@
             Add Item
           </v-btn>
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
-            <v-icon small class="pr-1">fa-file-download</v-icon>CSV
+            <v-icon small class="pr-1">fa-file-download</v-icon>
+            Inventory CSV
           </v-btn>
           <v-btn href="javascript:void(0)" id="backup" small dark @click="getBackup">
             <v-icon small class="pr-1">fa-file-download</v-icon>Backup Parameters
