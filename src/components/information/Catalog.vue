@@ -1,6 +1,6 @@
 <template>
   <v-card v-if="loadComponent" flat color="transparent">
-    <deactivation :selection.sync="selectedChip" :dialog.sync="dialog" :assays="assays" :vendors="vendors"/>
+    <deactivation :selection.sync="selectedChip" :dialog.sync="dialog" :reassigned.sync="reassigned" :assays="assays" :vendors="vendors"/>
     <error :response="response"/>
     <v-container fill-height grid-list-md>
       <v-layout row wrap>
@@ -47,6 +47,7 @@ export default {
       items: [],
       assays: [],
       vendors: [],
+      reassigned: {},
       response: '',
       loadComponent: false,
       selectedChip: {},
@@ -62,6 +63,24 @@ export default {
       'admin',
       'user'
     ])
+  },
+
+  watch: {
+    reassigned (val) {
+      if (val.hasOwnProperty('weeklyVolume')) {
+        this.assays.find(assay => {
+          if (assay.id === val.id) {
+            assay.hasItem = val.hasItem
+          }
+        })
+      } else {
+        this.vendors.find(vendor => {
+          if (vendor.id === val.id) {
+            vendor.hasItem = val.hasItem
+          }
+        })
+      }
+    }
   },
 
   components: {
