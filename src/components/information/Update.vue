@@ -7,7 +7,30 @@
     <v-divider/>
     <v-card-text>
       <ul>
-        <!-- (li>{2018.12.DD - v2.xx}ul>li{update notes})+br -->
+        <!-- (li>{2019.01.DD - v2.xx}ul>li{update notes})+br -->
+        <li>
+          2019.01.DD - v2.13; Catalog and Inactive, Error Handling
+          <ul>
+            <li>Catalog</li>
+            <ul>
+              <li>Show all active Items, Assays, and Vendors</li>
+              <li>Admin can deactivate and reassign assay/vendors from here</li>
+              <!-- <li>Allows access to details for items, assays, and vendors</li> -->
+              <!-- <li>Admin will be able to edit information</li> -->
+            </ul>
+            <li>Inactive</li>
+            <ul>
+              <li>Only visible to admin</li>
+              <li>Admin can reactivate data</li>
+              <!-- <li>Admin can reactivate inactive data to be reused or repurposed for something else</li> -->
+            </ul>
+            <li>Others</li>
+            <ul>
+              <li>Added error handling for when server cannot be detected</li>
+            </ul>
+          </ul>
+        </li>
+        <br>
         <li>
           2018.12.21 - v2.12; User Search, Single Item Edits, Order Edit
           <ul>

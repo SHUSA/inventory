@@ -1,7 +1,7 @@
 <template>
   <v-toolbar app clipped-left flat dark>
     <v-toolbar-title>
-      {{title}} v.b-2.12
+      {{title}} v.b-2.13
       <!-- help -->
       <v-dialog
         v-model="help"
@@ -27,6 +27,7 @@
           <v-list-tile
             v-for="(item, index) in routes" :key="index"
             @click="goTo(item)"
+            v-if="checkUser(item)"
           >
             <v-list-tile-title>{{item}}</v-list-tile-title>
           </v-list-tile>
@@ -36,7 +37,7 @@
     <v-spacer/>
     <v-toolbar-items>
       <!-- login and other info -->
-      <v-btn flat class="display">{{welcome}}</v-btn>
+      <v-btn flat disabled class="display"><span class="white--text">{{welcome}}</span></v-btn>
       <v-btn flat @click="login">
         Login
       </v-btn>
@@ -84,6 +85,14 @@ export default {
       this.$router.push({
         name: route.toLowerCase()
       })
+    },
+
+    checkUser (item) {
+      if (item === 'Inactive' && this.user) {
+        return false
+      } else {
+        return true
+      }
     }
   }
 }
