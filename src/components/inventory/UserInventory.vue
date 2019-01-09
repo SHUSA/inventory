@@ -526,7 +526,11 @@ export default {
         updatedAt: item.updatedAt,
         currentStock: item.currentStock,
         orderAmount: item.reorderQuantity,
-        comment: item.comment
+        comment: item.comment,
+        itemName: item.name,
+        catalogNumber: item.catalogNumber,
+        vendorName: item.vendor,
+        assayName: item.assay.name
       }
     },
 
