@@ -11,7 +11,7 @@
         <v-flex xs4 v-for="(list, index) in lists" :key="index">
           <v-list dense class="transparent">
             <v-list-tile-title class="title">{{list}}</v-list-tile-title>
-            <v-chip v-if="item.active" v-for="item in getArray(list)" :key="item.id" :color="item.hasItem ? 'info' : ''" @click="select(item)">
+            <v-chip v-if="item.active" class="truncate" v-for="item in getArray(list)" :key="item.id" :color="item.hasItem ? 'info' : ''" @click="select(item)">
               {{item.name}}
             </v-chip>
           </v-list>
@@ -142,5 +142,10 @@ export default {
 </script>
 
 <style scoped>
-
+  .truncate {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 </style>
