@@ -530,7 +530,8 @@ export default {
         itemName: item.name,
         catalogNumber: item.catalogNumber,
         vendorName: item.vendor,
-        assayName: item.assay.name
+        assayName: item.assay.name,
+        manualOrder: item.order
       }
     },
 

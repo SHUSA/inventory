@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     currentStock: DataTypes.REAL,
     orderAmount: DataTypes.INTEGER,
     comment: DataTypes.STRING,
+    manualOrder: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true

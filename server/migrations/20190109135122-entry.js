@@ -42,6 +42,11 @@ module.exports = {
       type: Sequelize.STRING
     })
 
+    queryInterface.addColumn('Entries', 'manualOrder', {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
+    })
+
     let itemArr = await itemIndex()
     let assayArr = await assayIndex()
     let vendorArr = await vendorIndex()
@@ -54,6 +59,7 @@ module.exports = {
         if (tempItem.id === tempEntry.ItemId) {
           tempEntry.itemName = tempItem.name
           tempEntry.catalogNumber = tempItem.catalogNumber
+          tempEntry.manualOrder = tempEntry.currentStock > tempItem.reorderPoint
 
           assayArr.find(assay => {
             let tempAssay = assay.dataValues
