@@ -118,6 +118,11 @@ export default {
           vendor.hasItem = itemVendorIds.hasOwnProperty(vendor.id)
         })
       }
+      // go to top
+      window.scroll({
+        top: 0,
+        left: 0
+      })
     },
 
     getArray (list) {
