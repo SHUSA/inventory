@@ -39,7 +39,7 @@
       >
         <v-card>
           <v-card-title>
-            <span class="headline">Editing {{currentItem.name}}</span>
+            <span class="headline">Editing {{currentItem.itemName}}</span>
           </v-card-title>
           <v-card-text>
             <v-container grid-list-md>
@@ -101,12 +101,12 @@
       >
         <v-card>
           <v-card-title>
-            <span class="headline">Delete {{currentItem.name}} from the order?</span>
+            <span class="headline">Delete {{currentItem.itemName}} from the order?</span>
           </v-card-title>
           <v-card-actions>
             <v-spacer/>
             <v-btn color="blue darken-1" flat @click="deactivationDialog = false">No</v-btn>
-            <v-btn color="red darken-1" flat @click="deleteEntry(currentItem.entry)">Yes</v-btn>
+            <v-btn color="red darken-1" flat @click="deleteEntry(currentItem)">Yes</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -198,7 +198,7 @@
     <v-data-table
       ref="search"
       :headers="headers"
-      :items="items"
+      :items="entries"
       :search="search"
       :pagination.sync="pagination"
       :rows-per-page-items="[-1]"
@@ -206,30 +206,28 @@
     >
       <template slot="items" slot-scope="props">
         <!-- item name -->
-        <td>{{props.item.name}}</td>
+        <td>{{props.item.itemName}}</td>
         <!-- vendor name -->
-        <td>{{props.item.vendor}}</td>
+        <td>{{props.item.vendorName}}</td>
         <!-- assay name -->
-        <td>{{props.item.assay}}</td>
+        <td>{{props.item.assayName}}</td>
         <!-- item catalog -->
         <td>{{props.item.catalogNumber}}</td>
-        <!-- item description -->
-        <td>{{props.item.itemDescription}}</td>
         <!-- entry current stock -->
         <td class="pointer" @click="editEntry(props.item)">
-          <v-tooltip top open-delay=50 :disabled="!checkQuantity(props.item)">
+          <v-tooltip top open-delay=50 :disabled="!props.item.manualOrder">
             <v-badge slot="activator" color="orange">
-              <span slot="badge" v-if="checkQuantity(props.item)">?</span>
-              {{props.item.entry.currentStock}}
+              <span slot="badge" v-if="props.item.manualOrder">?</span>
+              {{props.item.currentStock}}
             </v-badge>
             <span>Manually ordered</span>
           </v-tooltip>
         </td>
         <!-- entry order amount -->
-        <td class="pointer" @click="editEntry(props.item)">{{props.item.entry.orderAmount}}</td>
+        <td class="pointer" @click="editEntry(props.item)">{{props.item.orderAmount}}</td>
         <!-- entry comment -->
-        <td class="pointer" @click="editEntry(props.item)">{{props.item.entry.comment}}</td>
-        <td>{{time(props.item.entry.updatedAt)}}</td>
+        <td class="pointer" @click="editEntry(props.item)">{{props.item.comment}}</td>
+        <td>{{time(props.item.updatedAt)}}</td>
       </template>
       <template slot="no-data">
         <v-alert :value="true" color="error" icon="fa-exclamation-triangle">Nothing here!</v-alert>
@@ -246,8 +244,6 @@
 import { mapState } from 'vuex'
 import orderService from '@/services/OrderService.js'
 import itemService from '@/services/ItemService.js'
-import vendorService from '@/services/VendorService.js'
-import assayService from '@/services/AssayService.js'
 import entryService from '@/services/EntryService.js'
 const Json2csvParser = require('json2csv').Parser
 
@@ -297,18 +293,16 @@ export default {
         }
       },
       headers: [
-        {text: 'Item', value: 'name', width: '15%'},
-        {text: 'Vendor', value: 'vendor'},
-        {text: 'Assay', value: 'assay'},
+        {text: 'Item', value: 'itemName', width: '15%'},
+        {text: 'Vendor', value: 'vendorName'},
+        {text: 'Assay', value: 'assayName'},
         {text: 'Catalog #', value: 'catalogNumber'},
-        {text: 'Desc', value: 'itemDescription'},
         {text: 'Stock', value: 'currentStock'},
         {text: 'Order Amount', value: 'orderAmount'},
         {text: 'Comment', value: 'comment', width: '15%'},
         {text: 'Last Update', value: 'updatedAt'}
       ],
       thisOrder: {},
-      items: [],
       vendors: [],
       assays: [],
       entries: [],
@@ -336,9 +330,9 @@ export default {
 
     listVendors () {
       let arr = []
-      this.items.map(item => {
-        if (arr.indexOf(item.vendor) === -1) {
-          arr.push(item.vendor)
+      this.entries.map(entry => {
+        if (arr.indexOf(entry.vendorName) === -1) {
+          arr.push(entry.vendorName)
         }
       })
 
@@ -347,9 +341,9 @@ export default {
 
     listAssays () {
       let arr = []
-      this.items.map(item => {
-        if (arr.indexOf(item.assay) === -1) {
-          arr.push(item.assay)
+      this.entries.map(entry => {
+        if (arr.indexOf(entry.assayName) === -1) {
+          arr.push(entry.assayName)
         }
       })
 
@@ -379,32 +373,15 @@ export default {
 
   methods: {
     async initialize () {
-      // create independent copy of storedOrder
-      let itemIds = null
       // get information
-      this.vendors = (await vendorService.index()).data
-      this.assays = (await assayService.index()).data
       this.thisOrder = (await orderService.show(this.storedOrder)).data
       this.entries = this.thisOrder.Entries
-      itemIds = this.entries.map(x => x.ItemId)
-      this.items = (await itemService.show(itemIds)).data
-      // merge currentStock and comment from entries to items
-      this.items.map(index => {
-        this.getVendor(index)
-        this.getAssay(index)
-        for (let i = 0; i < this.entries.length; i++) {
-          let entry = this.entries[i]
-          if (index.id === entry.ItemId) {
-            index.entry = entry
-          }
-        }
-      })
       this.loadComponent = true
     },
 
     getCSV () {
       const csvbtn = document.getElementById('csvbtn')
-      const fields = ['vendor', 'catalogNumber', 'assay', 'name', 'currentStock', 'reorderQuantity', 'comment', 'updatedAt']
+      const fields = ['vendorName', 'catalogNumber', 'assayName', 'itemName', 'currentStock', 'reorderQuantity', 'comment', 'updatedAt']
       const json2csv = new Json2csvParser({fields})
       const results = this.$refs.search.filteredItems
       const csv = json2csv.parse(results)
@@ -420,26 +397,6 @@ export default {
 
     weekOf (time) {
       return this.$moment(time).startOf('week').format('MMM-DD-YYYY')
-    },
-
-    getVendor (item) {
-      if (this.vendors.length === 0) {
-        return null
-      }
-      item.vendor = this.vendors.find(vendor => vendor.id === item.VendorId).name
-      return item.vendor
-    },
-
-    getAssay (item) {
-      if (this.assays.length === 0) {
-        return null
-      }
-      item.assay = this.assays.find(assay => assay.id === item.AssayId).name
-      return item.assay
-    },
-
-    checkQuantity (item) {
-      return item.entry.currentStock > item.reorderPoint
     },
 
     checkErrorMessage (resp) {
@@ -477,12 +434,12 @@ export default {
       this.snackColor = 'primary'
     },
 
-    editEntry (item) {
+    editEntry (entry) {
       // continue only if order is not complete
       if (!this.isOrderComplete(this.thisOrder)) {
-        this.editedIndex = this.items.indexOf(item)
-        this.editedEntry = Object.assign({}, item.entry)
-        this.currentItem = item
+        this.editedIndex = this.entries.indexOf(entry)
+        this.editedEntry = Object.assign({}, entry)
+        this.currentItem = entry
         this.editEntryDialog = true
       }
     },
@@ -527,12 +484,12 @@ export default {
         response = await (entryService.put([entry]))
         if (!this.checkErrorMessage(response)) {
           // update item comment and table data
-          Object.assign(this.items[this.editedIndex].entry, response.data[0])
+          Object.assign(this.entries[this.editedIndex], response.data[0])
           response = await (itemService.put(entry.ItemId, {currentStock: entry.currentStock, comment: entry.comment}))
           if (!this.checkErrorMessage(response)) {
             // close procedure
             this.loading = true
-            this.openSnack(`${this.currentItem.name} updated`)
+            this.openSnack(`${this.currentItem.itemName} updated`)
             this.loading = false
             this.closeEditEntry()
           }
@@ -548,14 +505,14 @@ export default {
         response = await entryService.delete([entry.id])
         if (!this.checkErrorMessage(response)) {
           // close procedure if no error message
-          this.items.splice(this.editedIndex, 1)
+          this.entries.splice(this.editedIndex, 1)
           // check if items is empty and delete Order if it is and exit to Order Index
-          if (this.items.length === 0) {
+          if (this.entries.length === 0) {
             await orderService.delete(this.thisOrder.id)
             this.$router.push({name: 'orders'})
           }
           this.snackColor = 'error'
-          this.openSnack(`${this.currentItem.name} deleted`)
+          this.openSnack(`${this.currentItem.itemName} deleted`)
           this.loading = false
           this.deactivationDialog = false
           this.closeEditEntry()
@@ -569,9 +526,9 @@ export default {
       this.loading = true
       // prepare order and existing entries to be set to inactive
       this.thisOrder.active = false
-      this.items.forEach(item => {
-        item.entry.active = false
-        entries.push(item.entry)
+      this.entries.forEach(entry => {
+        entry.active = false
+        entries.push(entry)
       })
       response = await orderService.put(this.thisOrder)
       if (!this.checkErrorMessage(response)) {
