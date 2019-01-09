@@ -1,13 +1,13 @@
 const { Item } = require('../models')
 const { Entry } = require('../models')
 
-async function itemIndex() {
+async function itemIndex () {
   // get ALL items
   let items = await Item.findAll()
   return items
 }
 
-async function entryIndex() {
+async function entryIndex () {
   let entries = await Entry.findAll()
   return entries
 }

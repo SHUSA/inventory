@@ -5,6 +5,10 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
     },
+    itemName: DataTypes.STRING,
+    assayName: DataTypes.STRING,
+    vendorName: DataTypes.STRING,
+    catalogNumber: DataTypes.STRING,
     currentStock: DataTypes.REAL,
     orderAmount: DataTypes.INTEGER,
     comment: DataTypes.STRING,
