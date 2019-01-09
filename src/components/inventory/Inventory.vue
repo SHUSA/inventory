@@ -705,11 +705,19 @@ export default {
       const json2csv2 = new Json2csvParser()
       const json2csv3 = new Json2csvParser()
       const zip = new JSZip()
-      const csv = json2csv.parse((await assayService.index()).data)
+      let items = []
+
+      items = (await itemService.index()).data
+      items.forEach(item => {
+        item.assay = this.getAssay(item)
+        item.vendor = this.getVendor(item)
+      })
+
+      const csv = json2csv.parse(this.assayList)
       const blob = new Blob([csv], {type: 'text/csv'})
-      const csv2 = json2csv2.parse((await itemService.index()).data)
+      const csv2 = json2csv2.parse(items)
       const blob2 = new Blob([csv2], {type: 'text/csv'})
-      const csv3 = json2csv3.parse((await vendorService.index()).data)
+      const csv3 = json2csv3.parse(this.vendorList)
       const blob3 = new Blob([csv3], {type: 'text/csv'})
 
       zip.file(`${this.$moment().format('YYYY-MM-DD')} Assay Backup.csv`, blob)

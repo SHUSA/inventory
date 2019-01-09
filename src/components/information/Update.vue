@@ -27,6 +27,7 @@
             <li>Others</li>
             <ul>
               <li>Added error handling for when server cannot be detected</li>
+              <li>Item CSV back up for parameters now includes assay and vendor names</li>
             </ul>
           </ul>
         </li>
