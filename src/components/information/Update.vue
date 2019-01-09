@@ -9,7 +9,7 @@
       <ul>
         <!-- (li>{2019.01.DD - v2.xx}ul>li{update notes})+br -->
         <li>
-          2019.01.DD - v2.13; Catalog and Inactive, Error Handling
+          2019.01.09 - v2.13; Catalog and Inactive, Error Handling
           <ul>
             <li>Catalog</li>
             <ul>
