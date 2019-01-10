@@ -1,6 +1,7 @@
 <template>
   <v-card v-if="loadComponent" flat color="transparent">
     <deactivation :selection.sync="selectedChip" :dialog.sync="dialog" :reassigned.sync="reassigned" :assays="assays" :vendors="vendors"/>
+    <item-info v-if="itemInfoDialog" :item.sync="selectedChip" :dialog.sync="itemInfoDialog" :assays="assays" :vendors="vendors"/>
     <error :response="response"/>
     <v-container fill-height grid-list-md>
       <v-layout row wrap>
@@ -40,6 +41,7 @@ import itemService from '@/services/ItemService.js'
 import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
 import Deactivation from '../dialogs/Deactivation'
+import ItemInfo from '../information/ItemInfo'
 
 export default {
   data () {
@@ -52,6 +54,7 @@ export default {
       loadComponent: false,
       selectedChip: {},
       dialog: false,
+      itemInfoDialog: false,
       snackbar: false,
       lists: ['Items', 'Assays', 'Vendors']
     }
@@ -84,7 +87,8 @@ export default {
   },
 
   components: {
-    Deactivation
+    Deactivation,
+    ItemInfo
   },
 
   mounted () {
@@ -130,8 +134,12 @@ export default {
     },
 
     select (obj) {
-      if (this.admin) {
-        this.selectedChip = obj
+      this.selectedChip = obj
+
+      if (obj.hasOwnProperty('catalogNumber')) {
+        this.itemInfoDialog = true
+      } else if (this.admin) {
+        // deactivation dialog
         this.dialog = true
       } else {
         this.snackbar = true
