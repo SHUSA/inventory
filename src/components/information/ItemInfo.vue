@@ -12,11 +12,28 @@
             <br>
         </v-card-title>
         <v-card-text class="caption py-0">
-          Reactions/Item <v-icon small>fa-caret-right</v-icon> {{item.reactionsPerItem}}
+          <!-- Reactions/Item <v-icon small>fa-caret-right</v-icon> {{item.reactionsPerItem}} -->
+          <v-tooltip left>
+            <v-icon slot="activator" small>fa-vial</v-icon>
+            <span>Reactions per Item</span>
+          </v-tooltip>
+          {{item.reactionsPerItem}}
           <br>
-          <v-icon small class="pr-1">fa-hashtag</v-icon>{{item.catalogNumber}}
-          <v-icon small class="pr-1 pl-2">{{assayIcon}}</v-icon>{{getAssay(item)}}
-          <v-icon small class="pr-1 pl-2">fa-store</v-icon>{{getVendor(item)}}
+          <v-tooltip left>
+            <v-icon slot="activator" small class="pr-0">fa-hashtag</v-icon>
+            <span>Catalog Number</span>
+          </v-tooltip>
+          {{item.catalogNumber}}
+          <v-tooltip top>
+            <v-icon slot="activator" small class="pr-0 pl-2">{{assayIcon}}</v-icon>
+            <span>Assay</span>
+          </v-tooltip>
+          {{getAssay(item)}}
+          <v-tooltip top>
+            <v-icon slot="activator" small class="pr-0 pl-2">fa-store</v-icon>
+            <span>Vendor</span>
+          </v-tooltip>
+          {{getVendor(item)}}
         </v-card-text>
         <v-divider/>
         <v-card-text class="py-1">
@@ -27,7 +44,10 @@
         <v-card-text class="py-1">
           <v-layout row wrap>
             <v-flex xs6 v-for="(info, index) in info" :key="index">
-              <v-icon small>{{info.icon}}</v-icon>
+              <v-tooltip left>
+                <v-icon slot="activator" small>{{info.icon}}</v-icon>
+                <span>{{info.tooltip}}</span>
+              </v-tooltip>
               <span v-if="info.text">{{info.text}}
                 <v-icon small>fa-caret-right</v-icon>
                 {{info.call}}
@@ -67,44 +87,47 @@ export default {
     return {
       info: [
         {
-          icon: 'fa-tag',
+          icon: 'fa-cube',
           text: 'Current',
+          tooltip: 'Current Stock',
           call: this.item.currentStock
         },
         {
-          icon: 'fa-tags',
+          icon: 'fa-cube',
           text: 'Safety',
+          tooltip: 'Safety Stock',
           call: this.item.safetyStock
         },
+
         {
-          icon: 'fa-calendar-week',
-          text: 'Reorder Weeks',
-          call: this.item.weeksOfReorder
-        },
-        {
-          icon: 'fa-calendar-week',
-          text: 'Safety Weeks',
-          call: this.item.weeksOfSafetyStock
-        },
-        {
-          icon: 'fa-clock',
-          text: 'Lead Days',
-          call: this.item.leadTimeDays
-        },
-        { // empty column
-          icon: null,
-          text: null,
-          call: null
-        },
-        {
-          icon: 'fa-bell',
+          icon: 'fa-less-than-equal',
           text: 'Reorder',
+          tooltip: 'Reorder Point',
           call: this.item.reorderPoint
         },
         {
           icon: 'fa-shopping-cart',
           text: 'Reorder',
+          tooltip: 'Reorder Quantity',
           call: this.item.reorderQuantity
+        },
+        {
+          icon: 'fa-calendar-week',
+          text: 'Reorder Weeks',
+          tooltip: 'Reorder Weeks',
+          call: this.item.weeksOfReorder
+        },
+        {
+          icon: 'fa-calendar-week',
+          text: 'Safety Weeks',
+          tooltip: 'Safety Weeks',
+          call: this.item.weeksOfSafetyStock
+        },
+        {
+          icon: 'fa-clock',
+          text: 'Lead Days',
+          tooltip: 'Lead Time Days',
+          call: this.item.leadTimeDays
         }
       ]
     }
