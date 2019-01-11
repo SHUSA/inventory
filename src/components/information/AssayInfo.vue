@@ -9,9 +9,13 @@
           {{assay.name}}
         </v-card-title>
         <v-divider/>
-        <v-card-text>
+        <v-card-text class="py-1">
           <v-layout row wrap>
             <v-flex xs6 v-for="(info, index) in info" :key="index">
+              <v-tooltip left>
+                <v-icon slot="activator" small>{{info.icon}}</v-icon>
+                <span>{{info.tooltip}}</span>
+              </v-tooltip>
               <span v-if="info.text">
                 {{info.text}}
                 <v-icon small>fa-caret-right</v-icon>
@@ -43,8 +47,9 @@ export default {
     return {
       info: [
         {
-          icon: null,
-          text: 'Weekly Volume',
+          icon: 'fa-calendar-week',
+          text: 'Volume',
+          tooltip: 'Weekly Volume',
           call: this.assay.weeklyVolume
         },
         {
@@ -53,23 +58,27 @@ export default {
           call: null
         },
         {
-          icon: null,
-          text: 'Runs per Week',
+          icon: 'fa-running',
+          text: 'Week',
+          tooltip: 'Runs per Week',
           call: this.assay.weeklyRuns
         },
         {
-          icon: null,
-          text: 'Controls per Run',
+          icon: 'fab fa-nintendo-switch',
+          text: 'per Run',
+          tooltip: 'Controls per Run',
           call: this.assay.controlsPerRun
         },
         {
-          icon: null,
-          text: 'Max Batch Size',
+          icon: 'fa-boxes',
+          text: 'Max Size',
+          tooltip: 'Max Batch Size',
           call: this.assay.maxBatchSize
         },
         {
-          icon: null,
-          text: 'Sample Replicates',
+          icon: 'fa-vials',
+          text: 'Replicates',
+          tooltip: 'Sample Replicates',
           call: this.assay.sampleReplicates
         }
       ]
