@@ -5,7 +5,7 @@
       max-width="400px"
     >
       <v-card>
-        <v-card-title class="title py-1">
+        <v-card-title class="title pb-1">
             {{item.name}}
             <!-- to do: add transition (bouncing) -->
             <v-icon small color="red" v-if="checkQuantity">fa-exclamation-circle</v-icon>
@@ -48,7 +48,8 @@
                 <v-icon slot="activator" small>{{info.icon}}</v-icon>
                 <span>{{info.tooltip}}</span>
               </v-tooltip>
-              <span v-if="info.text">{{info.text}}
+              <span v-if="info.text">
+                {{info.text}}
                 <v-icon small>fa-caret-right</v-icon>
                 {{info.call}}
               </span>
