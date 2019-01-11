@@ -4,44 +4,24 @@
       v-model="assayInfoDialog"
       max-width="400px"
     >
-      <v-card>
-        <v-card-title class="title pb-1">
-          {{assay.name}}
-        </v-card-title>
-        <v-divider/>
-        <v-card-text class="py-1">
-          <v-layout row wrap>
-            <v-flex xs6 v-for="(info, index) in info" :key="index">
-              <v-tooltip left>
-                <v-icon slot="activator" small>{{info.icon}}</v-icon>
-                <span>{{info.tooltip}}</span>
-              </v-tooltip>
-              <span v-if="info.text">
-                {{info.text}}
-                <v-icon small>fa-caret-right</v-icon>
-                {{info.call}}
-              </span>
-            </v-flex>
-          </v-layout>
-        </v-card-text>
-        <v-divider/>
-        <v-footer>
-          <v-flex text-xs-center>
-            Last Updated: {{time(assay)}}
-          </v-flex>
-        </v-footer>
-      </v-card>
+      <info-card :data="assay" :info="info">
+      </info-card>
     </v-dialog>
   </div>
 </template>
 
 <script>
+import InfoCard from './InfoCard'
 
 export default {
   props: [
     'assay',
     'dialog'
   ],
+
+  components: {
+    InfoCard
+  },
 
   data () {
     return {
@@ -59,13 +39,13 @@ export default {
         },
         {
           icon: 'fa-running',
-          text: 'Week',
+          text: '/ Week',
           tooltip: 'Runs per Week',
           call: this.assay.weeklyRuns
         },
         {
           icon: 'fab fa-nintendo-switch',
-          text: 'per Run',
+          text: '/ Run',
           tooltip: 'Controls per Run',
           call: this.assay.controlsPerRun
         },
@@ -96,12 +76,6 @@ export default {
           this.$emit('update:dialog', false)
         }
       }
-    }
-  },
-
-  methods: {
-    time (assay) {
-      return this.$moment(assay.updatedAt).format('MMM-DD-YYYY')
     }
   }
 }
