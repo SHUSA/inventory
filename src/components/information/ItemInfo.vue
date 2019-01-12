@@ -8,22 +8,22 @@
         <template slot="subinfo">
           <v-card-text class="caption py-1">
             <v-tooltip left>
-              <v-icon slot="activator" small>fa-vial</v-icon>
+              <v-icon slot="activator" small class="pr-0">fa-hashtag</v-icon>
+              <span>Catalog Number</span>
+            </v-tooltip>
+            {{item.catalogNumber}}
+            <v-tooltip left>
+              <v-icon slot="activator" small class="pr-0 pl-2">fa-vial</v-icon>
               <span>Reactions per Item</span>
             </v-tooltip>
             {{item.reactionsPerItem}}
             <br>
             <v-tooltip left>
-              <v-icon slot="activator" small class="pr-0">fa-hashtag</v-icon>
-              <span>Catalog Number</span>
-            </v-tooltip>
-            {{item.catalogNumber}}
-            <v-tooltip top>
-              <v-icon slot="activator" small class="pr-0 pl-2">{{assayIcon}}</v-icon>
+              <v-icon slot="activator" small class="pr-0">{{assayIcon}}</v-icon>
               <span>Assay</span>
             </v-tooltip>
             {{getAssay(item)}}
-            <v-tooltip top>
+            <v-tooltip left>
               <v-icon slot="activator" small class="pr-0 pl-2">fa-store</v-icon>
               <span>Vendor</span>
             </v-tooltip>
