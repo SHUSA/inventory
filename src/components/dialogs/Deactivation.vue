@@ -167,7 +167,7 @@ export default {
       // if selected has catalogNumber -> item, if has weeklyVolume -> assay, else vendor
       if (this.isItem()) {
         item.active = false
-        await itemService.put(item.id, {active: !this.selectedItem.active})
+        await itemService.put(item.id, {active: false})
       } else if (this.isAssay()) {
         item.active = false
         await assayService.put(item)
@@ -179,6 +179,8 @@ export default {
         // deactivate items with matching VendorId
         this.numItems = (await itemService.deactivate(item.id)).data[0]
       }
+      // forces reactive trigger in parent
+      this.selectedItem = Object.assign({}, item)
       this.resultsDialog = true
     },
 
