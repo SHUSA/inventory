@@ -24,7 +24,7 @@
             <v-chip slot="activator" :color="data.active ? null : 'info'" :disabled="data.active">
               {{data.name}}
             </v-chip>
-            <v-card max-width="250px">
+            <v-card max-width="100%">
               <v-container>
                 <!-- info for item -->
                 <v-list>
