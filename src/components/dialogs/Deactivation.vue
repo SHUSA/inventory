@@ -14,10 +14,15 @@
             <v-chip disabled color="orange lighten-2" text-color="black" small label>Reassign</v-chip>
             Items can be assigned a different {{isAssay() ? 'Assay' : 'Vendor'}}.
           </p>
-          <p>
+          <p v-if="selectedItem.active">
             <v-chip disabled color="red lighten-2" text-color="black" small label>Deactivate</v-chip>
             <span v-if="!isItem()">Any items associated with an assay or vendor will also be deactivated.</span>
             <span v-else>Selected item will be deactivated.</span>
+          </p>
+          <p v-if="!selectedItem.active">
+            <v-chip disabled color="red lighten-2" text-color="black" small label>Reactivate</v-chip>
+            <span v-if="!isItem()">Any items associated with an assay or vendor will also be reactivated.</span>
+            <span v-else>Selected item will be reactivated.</span>
           </p>
         </v-card-text>
         <v-card-actions>
@@ -25,7 +30,9 @@
             Reassign {{isAssay() ? 'Assay' : 'Vendor'}}
           </v-btn>
           <v-spacer/>
-          <v-btn color="red darken-1" flat @click="deactivate(selectedItem)">Deactivate</v-btn>
+          <v-btn :color="!this.selectedItem.active ? 'blue darken-1' : 'red darken-1'" flat @click="deactivate(selectedItem)">
+            {{this.selectedItem.active ? 'Deactivate' : 'Reactivate'}}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -40,8 +47,8 @@
           Results
         </v-card-title>
         <v-card-text class="subheading">
-          <p>{{selectedItem.name}} {{reassignDialog ? `reassigned to ${reassignInfo.name}` : 'deactivated'}}</p>
-          <p v-if="!isItem()">{{numItems}} items {{reassignDialog ? 'reassigned' : 'deactivated'}}</p>
+          <p>{{selectedItem.name}} {{reassignDialog ? `reassigned to ${reassignInfo.name}` : selectedItem.active ? 'reactivated' : 'deactivated'}}</p>
+          <p v-if="!isItem()">{{numItems}} items {{reassignDialog ? 'reassigned' : selectedItem.active ? 'reactivated' : 'deactivated'}}</p>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -73,6 +80,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <error :response="response"/>
   </div>
 </template>
 
@@ -96,6 +105,7 @@ export default {
       resultsDialog: false,
       reassignDialog: false,
       loading: false,
+      response: '',
       temp: {},
       numItems: 0
     }
@@ -162,43 +172,67 @@ export default {
       return this.selectedItem.hasOwnProperty('weeklyVolume')
     },
 
+    checkResponse (resp) {
+      if (resp.status === 200) {
+        return true
+      } else {
+        alert(`${resp.status} ${Array.isArray(resp.data) ? resp.data[0].message : resp.statusText}`)
+        return false
+      }
+    },
+
     async deactivate (item) {
       // conditional branching to determine which service to use
       // if selected has catalogNumber -> item, if has weeklyVolume -> assay, else vendor
       if (this.isItem()) {
-        item.active = false
-        await itemService.put(item.id, {active: false})
+        this.response = await itemService.put(item.id, {active: !item.active})
+        item.active = this.response.status === 200 ? !item.active : item.active
       } else if (this.isAssay()) {
-        item.active = false
-        await assayService.put(item)
-        // deactivate items with matching AssayId
-        this.numItems = (await itemService.deactivate(item.id)).data[0]
+        item.active = !item.active
+        this.response = await assayService.put(item)
+        if (this.response.status === 200) {
+          // deactivate items with matching AssayId
+          this.numItems = (await itemService.deactivate(item.id, item.active)).data[0]
+        }
       } else {
-        item.active = false
-        await vendorService.put(item)
-        // deactivate items with matching VendorId
-        this.numItems = (await itemService.deactivate(item.id)).data[0]
+        item.active = !item.active
+        this.response = await vendorService.put(item)
+        if (this.response.status === 200) {
+          // deactivate items with matching VendorId
+          this.numItems = (await itemService.deactivate(item.id, item.active)).data[0]
+        }
       }
-      // forces reactive trigger in parent
-      this.selectedItem = Object.assign({}, item)
-      this.resultsDialog = true
+
+      if (this.response.status === 200) {
+        // forces reactive trigger in parent
+        this.selectedItem = Object.assign({}, item)
+        this.resultsDialog = true
+      }
     },
 
     async reassign (item) {
       let resId = this.temp.id
       if (this.isAssay()) {
         // reassign AssayId
-        this.numItems = (await itemService.reassign(item.id, resId, 'AssayId')).data[0]
+        this.response = await itemService.reassign(item.id, resId, 'AssayId')
+        if (this.response.status === 200) {
+          this.numItems = this.response.data[0]
+        }
       } else {
         // reassign VendorId
-        this.numItems = (await itemService.reassign(item.id, resId, 'VendorId')).data[0]
+        this.response = await itemService.reassign(item.id, resId, 'VendorId')
+        if (this.response.status === 200) {
+          this.numItems = this.response.data[0]
+        }
       }
-      if (item.id !== resId) {
-        item.hasItem = false
-        this.temp.hasItem = true
-        this.reassignInfo = Object.assign({}, this.temp)
+      if (this.response.status === 200) {
+        if (item.id !== resId) {
+          item.hasItem = false
+          this.temp.hasItem = true
+          this.reassignInfo = Object.assign({}, this.temp)
+        }
+        this.resultsDialog = true
       }
-      this.resultsDialog = true
     }
   }
 }
