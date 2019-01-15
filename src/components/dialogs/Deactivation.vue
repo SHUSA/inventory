@@ -204,8 +204,6 @@ export default {
       }
 
       if (this.response.status === 200) {
-        // forces reactive trigger in parent
-        this.selectedItem = Object.assign({}, item)
         this.resultsDialog = true
       }
     },
