@@ -25,13 +25,15 @@
       </v-layout>
     </v-card-text>
     <v-divider/>
-    <v-card-actions>
-      <slot name="actions">
-        Card actions go here.
-      </slot>
-    </v-card-actions>
-    <!-- to do: add deactivation.vue here -->
-    <v-divider/>
+    <template v-if="admin">
+      <v-card-actions>
+        <slot name="actions">
+          Card actions go here.
+        </slot>
+      </v-card-actions>
+      <!-- to do: add deactivation.vue here -->
+      <v-divider/>
+    </template>
     <v-footer>
       <v-flex text-xs-center>
         Last Updated: {{time(data)}}
