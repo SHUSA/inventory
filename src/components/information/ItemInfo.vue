@@ -4,30 +4,30 @@
       v-model="itemInfoDialog"
       max-width="400px"
     >
-      <info-card :data="item" :info="info">
+      <info-card :data="itemInfo" :info="info">
         <template slot="subinfo">
           <v-card-text class="caption py-1">
             <v-tooltip left>
               <v-icon slot="activator" small class="pr-0">fa-hashtag</v-icon>
               <span>Catalog Number</span>
             </v-tooltip>
-            {{item.catalogNumber}}
+            {{itemInfo.catalogNumber}}
             <v-tooltip left>
               <v-icon slot="activator" small class="pr-0 pl-2">fa-vial</v-icon>
               <span>Reactions per Item</span>
             </v-tooltip>
-            {{item.reactionsPerItem}}
+            {{itemInfo.reactionsPerItem}}
             <br>
             <v-tooltip left>
               <v-icon slot="activator" small class="pr-0">{{assayIcon}}</v-icon>
               <span>Assay</span>
             </v-tooltip>
-            {{getAssay(item)}}
+            {{getAssay(itemInfo)}}
             <v-tooltip left>
               <v-icon slot="activator" small class="pr-0 pl-2">fa-store</v-icon>
               <span>Vendor</span>
             </v-tooltip>
-            {{getVendor(item)}}
+            {{getVendor(itemInfo)}}
           </v-card-text>
           <v-divider/>
           <v-card-text class="py-1">
@@ -36,12 +36,22 @@
           </v-card-text>
           <v-divider/>
         </template>
+        <template slot="actions">
+          <v-btn small flat @click="deactivate = true">{{itemInfo.active ? 'Deactivate' : 'Reactivate'}}</v-btn>
+          <v-spacer/>
+          <v-btn small flat>Edit</v-btn>
+        </template>
       </info-card>
     </v-dialog>
+
+    <!-- deactivate -->
+    <deactivation :selection.sync="itemInfo" :dialog.sync="deactivate"/>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import Deactivation from '../dialogs/Deactivation'
 import InfoCard from './InfoCard'
 
 export default {
@@ -53,11 +63,13 @@ export default {
   ],
 
   components: {
-    InfoCard
+    InfoCard,
+    Deactivation
   },
 
   data () {
     return {
+      deactivate: false,
       info: [
         {
           icon: 'fa-cube',
@@ -107,8 +119,23 @@ export default {
   },
 
   computed: {
+    ...mapState([
+      'admin',
+      'user'
+    ]),
+
+    itemInfo: {
+      get () {
+        return this.item
+      },
+
+      set (value) {
+        this.$emit('update:item', value)
+      }
+    },
+
     checkQuantity () {
-      return this.item.currentStock < this.item.reorderPoint
+      return this.itemInfo.currentStock < this.itemInfo.reorderPoint
     },
 
     itemInfoDialog: {
@@ -124,19 +151,19 @@ export default {
     },
 
     assayIcon () {
-      return this.getAssay(this.item).toLowerCase() === 'c. diff' ? 'fa-poo' : 'fa-dna'
+      return this.getAssay(this.itemInfo).toLowerCase() === 'c. diff' ? 'fa-poo' : 'fa-dna'
     },
 
     descriptionIcon () {
-      return this.item.itemDescription ? 'fa-sticky-note' : 'fa-times'
+      return this.itemInfo.itemDescription ? 'fa-sticky-note' : 'fa-times'
     },
 
     description () {
-      return this.item.itemDescription ? this.item.itemDescription : 'No description'
+      return this.itemInfo.itemDescription ? this.itemInfo.itemDescription : 'No description'
     },
 
     hasComment () {
-      return this.item.comment.trim()
+      return this.itemInfo.comment.trim()
     }
   },
 
