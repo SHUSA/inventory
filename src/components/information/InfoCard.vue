@@ -24,6 +24,12 @@
         </v-flex>
       </v-layout>
     </v-card-text>
+    <v-divider/>
+    <v-card-actions>
+      <slot name="actions">
+        Card actions go here.
+      </slot>
+    </v-card-actions>
     <!-- to do: add deactivation.vue here -->
     <v-divider/>
     <v-footer>
@@ -35,11 +41,20 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   props: [
     'data',
     'info'
   ],
+
+  computed: {
+    ...mapState([
+      'admin',
+      'user'
+    ])
+  },
 
   methods: {
     time (data) {
@@ -50,5 +65,7 @@ export default {
 </script>
 
 <style scoped>
-
+  /* input {
+    border-bottom: 1px solid black;
+  } */
 </style>
