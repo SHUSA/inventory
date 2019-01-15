@@ -133,10 +133,11 @@ module.exports = {
 
   async deactivate (req, res) {
     const id = req.body.params.id
+    const active = req.body.params.active
     let results = null
 
     try {
-      results = await Item.update({active: false}, {
+      results = await Item.update({active: active}, {
         where: {
           $or: [
             {AssayId: id},

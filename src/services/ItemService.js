@@ -48,11 +48,12 @@ export default {
     )
   },
 
-  deactivate (id) {
+  deactivate (id, active = false) {
     // send either AssayId or VendorId
     return API().put('deactivate-items', {
       params: {
-        id: id
+        id: id,
+        active: active
       }
     }).catch(err =>
       checkResponse(err)
