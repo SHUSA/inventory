@@ -37,9 +37,21 @@
           <v-divider/>
         </template>
         <template slot="actions">
-          <v-btn small flat @click="deactivate = true">{{itemInfo.active ? 'Deactivate' : 'Reactivate'}}</v-btn>
+          <v-tooltip right>
+              <v-btn slot="activator" small flat @click="deactivate = true">
+                <v-icon :color="itemInfo.active ? 'success' : 'error'">
+                  fa-power-off
+                </v-icon>
+              </v-btn>
+            <span>Item is {{itemInfo.active ? 'ACTIVE' : 'INACTIVE'}}</span>
+          </v-tooltip>
           <v-spacer/>
-          <v-btn small flat>Edit</v-btn>
+          <v-tooltip left>
+            <v-btn slot="activator" small flat>
+              <v-icon>fa-edit</v-icon>
+            </v-btn>
+            <span>Edit</span>
+          </v-tooltip>
         </template>
       </info-card>
     </v-dialog>
@@ -190,5 +202,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
