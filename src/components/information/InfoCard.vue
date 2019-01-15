@@ -27,6 +27,14 @@
     <v-divider/>
     <template v-if="admin">
       <v-card-actions>
+        <v-tooltip right>
+            <v-btn slot="activator" small flat @click="deactivate = true">
+              <v-icon :color="data.active ? 'success' : 'error'">
+                fa-power-off
+              </v-icon>
+            </v-btn>
+          <span>{{deactivationText}} is {{data.active ? 'ACTIVE' : 'INACTIVE'}}</span>
+        </v-tooltip>
         <slot name="actions">
           Card actions go here.
         </slot>
@@ -39,11 +47,15 @@
         Last Updated: {{time(data)}}
       </v-flex>
     </v-footer>
+
+    <!-- deactivate -->
+    <deactivation :selection.sync="data" :dialog.sync="deactivate"/>
   </v-card>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import Deactivation from '../dialogs/Deactivation'
 
 export default {
   props: [
@@ -51,11 +63,34 @@ export default {
     'info'
   ],
 
+  data () {
+    return {
+      deactivate: false
+    }
+  },
+
+  components: {
+    Deactivation
+  },
+
   computed: {
     ...mapState([
       'admin',
       'user'
-    ])
+    ]),
+
+    deactivationText () {
+      if (this.data.hasOwnProperty('catalogNumber')) {
+        // is item
+        return 'Item'
+      } else if (this.data.hasOwnProperty('weeklyVolume')) {
+        // is assay
+        return 'Assay'
+      } else {
+        // is vendor
+        return 'Vendor'
+      }
+    }
   },
 
   methods: {

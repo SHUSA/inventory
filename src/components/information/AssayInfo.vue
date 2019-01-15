@@ -5,6 +5,15 @@
       max-width="400px"
     >
       <info-card :data="assay" :info="info">
+        <template slot="actions">
+          <v-spacer/>
+          <v-tooltip left>
+            <v-btn slot="activator" small flat>
+              <v-icon>fa-edit</v-icon>
+            </v-btn>
+            <span>Edit</span>
+          </v-tooltip>
+        </template>
       </info-card>
     </v-dialog>
   </div>

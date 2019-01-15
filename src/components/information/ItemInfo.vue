@@ -37,14 +37,6 @@
           <v-divider/>
         </template>
         <template slot="actions">
-          <v-tooltip right>
-              <v-btn slot="activator" small flat @click="deactivate = true">
-                <v-icon :color="itemInfo.active ? 'success' : 'error'">
-                  fa-power-off
-                </v-icon>
-              </v-btn>
-            <span>Item is {{itemInfo.active ? 'ACTIVE' : 'INACTIVE'}}</span>
-          </v-tooltip>
           <v-spacer/>
           <v-tooltip left>
             <v-btn slot="activator" small flat>
@@ -55,15 +47,10 @@
         </template>
       </info-card>
     </v-dialog>
-
-    <!-- deactivate -->
-    <deactivation :selection.sync="itemInfo" :dialog.sync="deactivate"/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import Deactivation from '../dialogs/Deactivation'
 import InfoCard from './InfoCard'
 
 export default {
@@ -75,8 +62,7 @@ export default {
   ],
 
   components: {
-    InfoCard,
-    Deactivation
+    InfoCard
   },
 
   data () {
@@ -131,11 +117,6 @@ export default {
   },
 
   computed: {
-    ...mapState([
-      'admin',
-      'user'
-    ]),
-
     itemInfo: {
       get () {
         return this.item
