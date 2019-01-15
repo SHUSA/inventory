@@ -2,7 +2,8 @@
   <v-card v-if="loadComponent" flat color="transparent">
     <deactivation :selection.sync="selectedChip" :dialog.sync="dialog" :reassigned.sync="reassigned" :assays="assays" :vendors="vendors"/>
     <item-info v-if="itemInfoDialog" :item.sync="selectedChip" :dialog.sync="itemInfoDialog" :assays="assays" :vendors="vendors"/>
-    <assay-info v-if="assayInfoDialog" :assay.sync="selectedChip" :dialog.sync="assayInfoDialog" />
+    <assay-info v-if="assayInfoDialog" :assay.sync="selectedChip" :dialog.sync="assayInfoDialog"/>
+    <vendor-info v-if="vendorInfoDialog" :vendor.sync="selectedChip" :dialog.sync="vendorInfoDialog"/>
     <error :response="response"/>
     <v-container fill-height grid-list-md>
       <v-layout row wrap>
@@ -13,6 +14,7 @@
         <v-flex xs4 v-for="(list, index) in lists" :key="index">
           <v-list dense class="transparent">
             <v-list-tile-title class="title">{{list}}</v-list-tile-title>
+            <!-- to do: add transtiions -->
             <v-chip class="truncate" v-for="item in getArray(list)" :key="item.id" :color="item.hasItem ? 'info' : ''" @click="select(item)">
               {{item.name}}
             </v-chip>
@@ -20,19 +22,6 @@
         </v-flex>
       </v-layout>
     </v-container>
-
-    <!-- snack to deny entry -->
-    <v-snackbar
-      v-model="snackbar"
-      color="warning"
-      bottom
-    >
-      <v-icon class="pr-0">fa-exclamation-triangle</v-icon>
-      <v-flex class="text-xs-center">
-        <!-- to do: display item info on a card overlay -->
-        Information not yet available
-      </v-flex>
-    </v-snackbar>
   </v-card>
 </template>
 
@@ -44,6 +33,7 @@ import vendorService from '@/services/VendorService.js'
 import Deactivation from '../dialogs/Deactivation'
 import ItemInfo from '../information/ItemInfo'
 import AssayInfo from '../information/AssayInfo'
+import VendorInfo from '../information/VendorInfo'
 
 export default {
   data () {
@@ -58,7 +48,7 @@ export default {
       dialog: false,
       itemInfoDialog: false,
       assayInfoDialog: false,
-      snackbar: false,
+      vendorInfoDialog: false,
       lists: ['Items', 'Assays', 'Vendors']
     }
   },
@@ -112,7 +102,8 @@ export default {
   components: {
     Deactivation,
     ItemInfo,
-    AssayInfo
+    AssayInfo,
+    VendorInfo
   },
 
   mounted () {
@@ -203,11 +194,8 @@ export default {
         this.itemInfoDialog = true
       } else if (obj.hasOwnProperty('weeklyVolume')) {
         this.assayInfoDialog = true
-      } else if (this.admin) {
-        // deactivation dialog
-        this.dialog = true
       } else {
-        this.snackbar = true
+        this.vendorInfoDialog = true
       }
     }
   }
