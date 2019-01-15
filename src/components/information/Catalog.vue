@@ -72,37 +72,9 @@ export default {
   },
 
   watch: {
-    selectedChip (val) {
-      let index = null
-      // remove items if their assay or vendor is deactivated
-      if (val.hasOwnProperty('catalogNumber') && !val.active) {
-        // remove inactive items from item list
-        index = this.items.findIndex(item => item.id === val.id)
-        this.items.splice(index, 1)
-      } else if (val.hasOwnProperty('weeklyVolume') && !val.active) {
-        // is assay
-        if (val.hasItem) {
-          // remove items with same assay id
-          for (let i = this.items.length - 1; i >= 0; i--) {
-            if (this.items[i].AssayId === val.id) {
-              this.items.splice(i, 1)
-            }
-          }
-        }
-        index = this.assays.findIndex(assay => assay.id === val.id)
-        this.assays.splice(index, 1)
-      } else if (!val.active) {
-        // is vendor
-        if (val.hasItem) {
-          // remove items with same vendor id
-          for (let i = this.items.length - 1; i >= 0; i--) {
-            if (this.items[i].VendorId === val.id) {
-              this.items.splice(i, 1)
-            }
-          }
-        }
-        index = this.vendors.findIndex(vendor => vendor.id === val.id)
-        this.vendors.splice(index, 1)
+    itemInfoDialog (val) {
+      if (!val) {
+        this.removeItems(this.selectedChip)
       }
     },
 
@@ -168,6 +140,40 @@ export default {
       })
     },
 
+    removeItems (val) {
+      let index = null
+      // remove items if their assay or vendor is deactivated
+      if (val.hasOwnProperty('catalogNumber') && !val.active) {
+        // remove inactive items from item list
+        index = this.items.findIndex(item => item.id === val.id)
+        this.items.splice(index, 1)
+      } else if (val.hasOwnProperty('weeklyVolume') && !val.active) {
+        // is assay
+        if (val.hasItem) {
+          // remove items with same assay id
+          for (let i = this.items.length - 1; i >= 0; i--) {
+            if (this.items[i].AssayId === val.id) {
+              this.items.splice(i, 1)
+            }
+          }
+        }
+        index = this.assays.findIndex(assay => assay.id === val.id)
+        this.assays.splice(index, 1)
+      } else if (!val.active) {
+        // is vendor
+        if (val.hasItem) {
+          // remove items with same vendor id
+          for (let i = this.items.length - 1; i >= 0; i--) {
+            if (this.items[i].VendorId === val.id) {
+              this.items.splice(i, 1)
+            }
+          }
+        }
+        index = this.vendors.findIndex(vendor => vendor.id === val.id)
+        this.vendors.splice(index, 1)
+      }
+    },
+
     hasItem () {
       let itemAssayIds = {}
       let itemVendorIds = {}
@@ -193,12 +199,11 @@ export default {
     select (obj) {
       this.selectedChip = obj
 
-      // if (obj.hasOwnProperty('catalogNumber')) {
-      //   this.itemInfoDialog = true
-      // } else if (obj.hasOwnProperty('weeklyVolume')) {
-      //   this.assayInfoDialog = true
-      // } else
-      if (this.admin) {
+      if (obj.hasOwnProperty('catalogNumber')) {
+        this.itemInfoDialog = true
+      } else if (obj.hasOwnProperty('weeklyVolume')) {
+        this.assayInfoDialog = true
+      } else if (this.admin) {
         // deactivation dialog
         this.dialog = true
       } else {
