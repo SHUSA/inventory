@@ -93,6 +93,7 @@ module.exports = {
     const assay = req.body.params.assay
     const singleItem = list.length === 0
     const itemId = req.params.itemId
+    let result = []
     // to do: clean up code to be more flexible
 
     // calculate reorder point as long as item is active
@@ -113,18 +114,26 @@ module.exports = {
         await Item.update(item, {
           where: {
             id: itemId
-          }
+          },
+          returning: true,
+          plain: true
+        }).then(res => {
+          result.push(res[1])
         })
       } else {
         for (let i = 0; i < list.length; i++) {
           await Item.update(list[i], {
             where: {
               id: list[i].id
-            }
+            },
+            returning: true,
+            plain: true
+          }).then(res => {
+            result.push(res[1])
           })
         }
       }
-      res.send(item || list)
+      res.send(result)
     } catch (error) {
       console.log(error)
       res.status(500).send(error.errors)

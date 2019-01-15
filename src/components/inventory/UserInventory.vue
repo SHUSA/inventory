@@ -491,7 +491,7 @@ export default {
     },
 
     time (item) {
-      item.lastUpdate = this.$moment(item.updatedAt).format('MMM-DD-YYYY')
+      item.lastUpdate = this.$moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
       return item.lastUpdate
     },
 
@@ -584,7 +584,11 @@ export default {
 
     async save (item = null) {
       let itemArr = item ? [item] : this.filteredList
-      await itemService.put(null, null, null, itemArr)
+      let result = []
+      result = (await itemService.put(null, null, null, itemArr)).data
+      itemArr.forEach(item => {
+        item = Object.assign(item, result.find(res => item.id === res.id))
+      })
       this.openSnack('Items Saved')
       this.order(itemArr)
     },
