@@ -52,24 +52,6 @@ export default new Vuex.Store({
     setFilters (state, data) {
       state.storedFilters = data
     }
-    // setItemDialog (state, open) {
-    //   state.itemDialog = open
-    // },
-    // setAssayDialog (state, open) {
-    //   state.assayDialog = open
-    // },
-    // setVendorDialog (state, open) {
-    //   state.vendorDialog = open
-    // },
-    // setItemSave (state, saved) {
-    //   state.itemSave = saved
-    // },
-    // setAssaySave (state, saved) {
-    //   state.assaySave = saved
-    // },
-    // setVendorSave (state, saved) {
-    //   state.vendorSave = saved
-    // }
   },
   actions: {
     setUser ({ commit }, type) {
@@ -84,23 +66,5 @@ export default new Vuex.Store({
     setFilters ({ commit }, data) {
       commit('setFilters', data)
     }
-    // setItemDialog ({ commit }, open) {
-    //   commit('setItemDialog', open)
-    // },
-    // setAssayDialog ({ commit }, open) {
-    //   commit('setAssayDialog', open)
-    // },
-    // setVendorDialog ({ commit }, open) {
-    //   commit('setVendorDialog', open)
-    // },
-    // setItemSave ({ commit }, saved) {
-    //   commit('setItemSave', saved)
-    // },
-    // setAssaySave ({ commit }, saved) {
-    //   commit('setAssaySave', saved)
-    // },
-    // setVendorSave ({ commit }, saved) {
-    //   commit('setVendorSave', saved)
-    // }
   }
 })
