@@ -38,7 +38,6 @@
 
         <v-layout row wrap>
           <!-- displays each assay with outstanding orders -->
-          <!-- to do: decide how to display; from button? on screen? search on button press? -->
           <v-card-text>
             Assays not updated since {{lastOrderPeriod}}
             <v-chip disabled small>
@@ -139,6 +138,9 @@
         </v-card>
       </v-dialog>
 
+      <item-info v-if="itemInfoDialog" :item="selectedItem" :dialog.sync="itemInfoDialog" :assays="assayList" :vendors="vendorList"/>
+      <!-- to do: add assay info -->
+
       <transition-group
         :name="filteredList.length === supplies.length ? 'all-cards' : 'searched-cards'"
         tag="v-layout"
@@ -152,9 +154,10 @@
           <!-- big card -->
             <v-card>
               <v-card-title class="title py-1">
-                  {{item.name}}
-                  <!-- to do: add transition (bouncing) -->
-                  <v-icon small color="red" v-if="checkQuantity(item)">fa-exclamation-circle</v-icon>
+                {{item.name}}
+                <!-- to do: add transition (bouncing) -->
+                <v-icon small class="px-1" @click="displayInfo(item)">fa-question-circle</v-icon>
+                <v-icon small color="red" v-if="checkQuantity(item)">fa-exclamation-circle</v-icon>
               </v-card-title>
               <v-card-text class="caption py-0">#{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
               <v-divider/>
@@ -214,6 +217,7 @@ import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
 import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
+import ItemInfo from '../information/ItemInfo'
 const Json2csvParser = require('json2csv').Parser
 let unsavedData = false
 
@@ -227,6 +231,10 @@ window.onbeforeunload = () => {
 }
 
 export default {
+  components: {
+    ItemInfo
+  },
+
   data () {
     return {
       response: '',
@@ -238,8 +246,9 @@ export default {
       vendorList: [],
       assayList: [],
       filteredList: [],
-      selected: '',
+      selectedItem: {},
       loading: false,
+      itemInfoDialog: false,
       resultsDialog: false,
       resultsList: {ordered: [], updated: [], retracted: []},
       loadComponent: false,
@@ -580,6 +589,11 @@ export default {
       }
       item.vendor = this.vendorList.find(vendor => vendor.id === item.VendorId).name
       return item.vendor
+    },
+
+    displayInfo (item) {
+      this.selectedItem = item
+      this.itemInfoDialog = true
     },
 
     async save (item = null) {
