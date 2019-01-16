@@ -9,24 +9,29 @@
     <!-- for extra information that goes under title -->
     <slot name="subinfo"/>
     <!-- main info area -->
-    <template v-if="info">
-      <v-card-text class="py-1">
-        <v-layout row wrap>
-          <v-flex xs6 v-for="(info, index) in info" :key="index">
-            <v-tooltip left>
-              <v-icon slot="activator" small>{{info.icon}}</v-icon>
-              <span>{{info.tooltip}}</span>
-            </v-tooltip>
-            <span v-if="info.text">
-              {{info.text}}
-              <v-icon small>fa-caret-right</v-icon>
-              {{info.call}}
-            </span>
-          </v-flex>
-        </v-layout>
-      </v-card-text>
-      <v-divider/>
-    </template>
+    <v-card-text class="py-1">
+      <template v-if="info">
+          <v-layout row wrap>
+            <v-flex xs6 v-for="(info, index) in info" :key="index">
+              <v-tooltip left>
+                <span slot="activator">
+                  <v-icon small>{{info.icon}}</v-icon>
+                  <span v-if="info.text">
+                    {{info.text}}
+                    <v-icon small>fa-caret-right</v-icon>
+                    {{info.call}}
+                  </span>
+                </span>
+                <span>{{info.tooltip}}</span>
+              </v-tooltip>
+            </v-flex>
+          </v-layout>
+      </template>
+      <template v-else>
+        I dunno man. There's no info to display. ¯\_(ツ)_/¯
+      </template>
+    </v-card-text>
+    <v-divider/>
     <!-- card actions -->
     <template v-if="admin">
       <v-card-actions>
