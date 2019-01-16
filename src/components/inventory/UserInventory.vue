@@ -156,8 +156,14 @@
               <v-card-title class="title py-1">
                 {{item.name}}
                 <!-- to do: add transition (bouncing) -->
-                <v-icon small class="px-1" @click="displayInfo(item)">fa-question-circle</v-icon>
-                <v-icon small color="red" v-if="checkQuantity(item)">fa-exclamation-circle</v-icon>
+                <v-tooltip top>
+                  <v-icon slot="activator" small class="px-1 pb-1" @click="displayInfo(item)">fa-question-circle</v-icon>
+                  <span>Click for item information</span>
+                </v-tooltip>
+                <v-tooltip top v-if="checkQuantity(item)">
+                  <v-icon slot="activator" small color="red" class="pb-1">fa-exclamation-circle</v-icon>
+                  <span>Reorder point triggered</span>
+                </v-tooltip>
               </v-card-title>
               <v-card-text class="caption py-0">#{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
               <v-divider/>
