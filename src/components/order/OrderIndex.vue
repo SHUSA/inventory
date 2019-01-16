@@ -1,20 +1,45 @@
 <template>
   <!-- list all orders and choose one to display -->
-  <v-card v-if="loadComponent">
+  <v-card v-if="loadComponent" flat>
     <error :response="response"/>
-    <template v-if="pageTitle === 'orders'">
-      <v-list>
-        <v-list-tile v-for="(order, index) in orders" :key="order.createdAt" @click="viewOrder(index)">
-          <v-list-tile-action>
-            <v-icon v-if="order.completed">fa-check</v-icon>
-            <v-icon v-else>fa-angle-right </v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title v-if="order.new">{{order.name}}</v-list-tile-title>
-          <v-list-tile-title v-else>Week of {{time(order.createdAt)}}</v-list-tile-title>
-        </v-list-tile>
-        <v-alert :value="orders.length === 0" color="error" icon="fa-exclamation-triangle">No orders to display!</v-alert>
-      </v-list>
-    </template>
+    <v-expansion-panel v-if="pageTitle === 'orders'" v-model="panels" expand>
+      <!-- incomplete -->
+      <v-expansion-panel-content :class="panelClass(0)">
+        <div slot="header">
+          <v-icon small>fa-list-ul</v-icon>
+          Incomplete Orders
+        </div>
+        <v-divider/>
+        <v-list>
+          <v-list-tile v-for="order in incompleteOrders" :key="order.createdAt" @click="viewOrder(order)">
+            <v-list-tile-action>
+              <v-icon>fa-angle-right</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title v-if="order.new">{{order.name}}</v-list-tile-title>
+            <v-list-tile-title v-else>Week of {{time(order.createdAt)}}</v-list-tile-title>
+          </v-list-tile>
+          <v-alert :value="incompleteOrders.length === 0" color="success" icon="fa-check">All caught up!</v-alert>
+        </v-list>
+      </v-expansion-panel-content>
+      <!-- completed -->
+      <v-expansion-panel-content :class="panelClass(1)">
+        <div slot="header">
+          <v-icon small>fa-check</v-icon>
+          Completed Orders
+        </div>
+        <v-divider/>
+        <v-list>
+          <v-list-tile v-for="order in completedOrders" :key="order.createdAt" @click="viewOrder(order)">
+            <v-list-tile-action>
+              <v-icon>fa-check</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title v-if="order.new">{{order.name}}</v-list-tile-title>
+            <v-list-tile-title v-else>Week of {{time(order.createdAt)}}</v-list-tile-title>
+          </v-list-tile>
+          <v-alert :value="completedOrders.length === 0" color="error" icon="fa-exclamation-triangle">No orders to display!</v-alert>
+        </v-list>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
   </v-card>
 </template>
 
@@ -25,8 +50,10 @@ import orderService from '@/services/OrderService.js'
 export default {
   data () {
     return {
-      order: {},
       orders: [],
+      completedOrders: [],
+      incompleteOrders: [],
+      panels: [true, false],
       response: '',
       loadComponent: false
     }
@@ -62,12 +89,20 @@ export default {
   methods: {
     async initialize () {
       this.$store.dispatch('setTitle', this.route.name)
-
-      this.order = {}
       this.response = (await orderService.index())
+      this.orders = []
+      this.completedOrders = []
+      this.incompleteOrders = []
 
       if (this.response.status === 200) {
-        this.orders = this.response.data
+        this.orders = [...this.response.data]
+        this.orders.forEach(order => {
+          if (order.completed) {
+            this.completedOrders.push(order)
+          } else {
+            this.incompleteOrders.push(order)
+          }
+        })
       }
       this.loadComponent = true
     },
@@ -76,11 +111,14 @@ export default {
       return this.$moment(order).startOf('week').format('MMM-DD-YYYY')
     },
 
-    viewOrder (index) {
-      this.$store.dispatch('setTitle', `Week of ${this.time(this.orders[index].createdAt)}`)
-      this.order = this.orders[index]
+    panelClass (index) {
+      return this.panels[index] ? 'info' : 'gray lighten-2'
+    },
+
+    viewOrder (order) {
+      this.$store.dispatch('setTitle', `Week of ${this.time(order.createdAt)}`)
       // store selected order and push Order component
-      this.$store.dispatch('setOrder', this.order.id)
+      this.$store.dispatch('setOrder', order.id)
       this.$router.push({
         name: 'order'
       })
