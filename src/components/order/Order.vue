@@ -360,7 +360,6 @@ export default {
   mounted () {
     this.loadComponent = false
     if (this.storedOrder) {
-      this.$store.dispatch('setTitle', `Week of ${this.weekOf(this.storedOrder.createdAt)}`)
       this.initialize()
     }
 
@@ -376,6 +375,7 @@ export default {
       // get information
       this.thisOrder = (await orderService.show(this.storedOrder)).data
       this.entries = this.thisOrder.Entries
+      this.$store.dispatch('setTitle', `Week of ${this.weekOf(this.thisOrder.createdAt)}`)
       this.loadComponent = true
     },
 
