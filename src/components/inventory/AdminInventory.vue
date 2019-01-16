@@ -590,7 +590,7 @@ export default {
         currentStock: 0,
         weeksOfSafetyStock: 2,
         leadTimeDays: 7,
-        weeksOfReorder: 8,
+        weeksOfReorder: 6,
         reorderPoint: 0,
         reorderQuantity: 0,
         comment: ''
