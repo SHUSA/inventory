@@ -52,7 +52,7 @@
     </v-footer>
 
     <!-- deactivate -->
-    <deactivation :selection.sync="data" :dialog.sync="deactivate"/>
+    <deactivation :selection.sync="data" :dialog.sync="deactivate" :reassigned.sync="resData" :assays="assays" :vendors="vendors"/>
   </v-card>
 </template>
 
@@ -63,6 +63,9 @@ import Deactivation from '../dialogs/Deactivation'
 export default {
   props: [
     'data',
+    'assays',
+    'vendors',
+    'reassigned',
     'info'
   ],
 
@@ -92,6 +95,16 @@ export default {
       } else {
         // is vendor
         return 'Vendor'
+      }
+    },
+
+    resData: {
+      get () {
+        return this.reassigned
+      },
+
+      set (value) {
+        this.$emit('update:reassigned', value)
       }
     }
   },

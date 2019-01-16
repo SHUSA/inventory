@@ -1,9 +1,8 @@
 <template>
   <v-card v-if="loadComponent" flat color="transparent">
-    <deactivation :selection.sync="selectedChip" :dialog.sync="dialog" :reassigned.sync="reassigned" :assays="assays" :vendors="vendors"/>
     <item-info v-if="itemInfoDialog" :item.sync="selectedChip" :dialog.sync="itemInfoDialog" :assays="assays" :vendors="vendors"/>
-    <assay-info v-if="assayInfoDialog" :assay.sync="selectedChip" :dialog.sync="assayInfoDialog"/>
-    <vendor-info v-if="vendorInfoDialog" :vendor.sync="selectedChip" :dialog.sync="vendorInfoDialog"/>
+    <assay-info v-if="assayInfoDialog" :assay.sync="selectedChip" :dialog.sync="assayInfoDialog" :reassigned.sync="reassigned" :assays="assays"/>
+    <vendor-info v-if="vendorInfoDialog" :vendor.sync="selectedChip" :dialog.sync="vendorInfoDialog" :reassigned.sync="reassigned" :vendors="vendors"/>
     <error :response="response"/>
     <v-container fill-height grid-list-md>
       <v-layout row wrap>

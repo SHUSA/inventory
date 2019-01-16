@@ -4,7 +4,7 @@
       v-model="vendorInfoDialog"
       max-width="400px"
     >
-      <info-card :data="vendor">
+      <info-card :data="vendor" :vendors="vendors" :reassigned.sync="resData">
         <template slot="actions">
           <v-spacer/>
           <v-tooltip left>
@@ -25,6 +25,8 @@ import InfoCard from './InfoCard'
 export default {
   props: [
     'vendor',
+    'vendors',
+    'reassigned',
     'dialog'
   ],
 
@@ -42,6 +44,16 @@ export default {
         if (!value) {
           this.$emit('update:dialog', false)
         }
+      }
+    },
+
+    resData: {
+      get () {
+        return this.reassigned
+      },
+
+      set (value) {
+        this.$emit('update:reassigned', value)
       }
     }
   }
