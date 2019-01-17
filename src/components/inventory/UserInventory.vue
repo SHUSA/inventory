@@ -646,11 +646,12 @@ export default {
       let errorCount = 0
       this.overstocked = []
       itemArr.forEach(item => {
-        item.currentStock = parseFloat(item.currentStock)
-        if (isNaN(item.currentStock)) {
+        let num = parseFloat(item.currentStock)
+        if (isNaN(num)) {
           item.error = true
           errorCount++
         } else {
+          item.currentStock = num
           item.error = false
         }
 
