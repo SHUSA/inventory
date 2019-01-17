@@ -88,14 +88,26 @@
       </v-snackbar>
 
       <v-dialog
-        v-model="resultsDialog"
+        v-model="warningDialog"
         max-width="800"
-        @keydown.esc="resultsDialog = !resultsDialog"
+        @keydown.esc="warningDialog = false"
       >
         <v-card>
-          <v-card-title class="title blue lighten-2 font-weight-bold">Save Results</v-card-title>
+          <v-card-title class="title warning font-weight-bold">Overstocked</v-card-title>
           <v-divider/>
-          <v-container align-justify-center>
+          <v-card-text>
+            
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog
+        v-model="resultsDialog"
+        max-width="800"
+        @keydown.esc="resultsDialog = false"
+      >
+        <popup title="Save Results">
+          <v-container align-justify-center slot="content">
             <v-layout row wrap>
               <v-flex xs4>
                 <v-list dense>
@@ -135,7 +147,7 @@
               </v-flex>
             </v-layout>
           </v-container>
-        </v-card>
+        </popup>
       </v-dialog>
 
       <item-info v-if="itemInfoDialog" :item="selectedItem" :dialog.sync="itemInfoDialog" :assays="assayList" :vendors="vendorList"/>
@@ -249,7 +261,9 @@ export default {
       selectedItem: {},
       loading: false,
       itemInfoDialog: false,
+      assayInfoDialog: false,
       resultsDialog: false,
+      warningDialog: false,
       resultsList: {ordered: [], updated: [], retracted: []},
       loadComponent: false,
       snackbar: false,

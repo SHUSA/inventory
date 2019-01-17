@@ -6,138 +6,135 @@
         max-width="500px"
         v-model="completedDialog"
         @keydown.enter="changeStatus"
+        @keydown.esc="completedDialog = false"
       >
-        <v-card>
-          <v-card-title>
-            <span v-if="!thisOrder.completed" class="headline">Is the order complete?</span>
-            <span v-else class="headline">Undo completed status?</span>
-          </v-card-title>
-          <v-card-text>
-            <p>Completing the order will close out any edits to the order including adding new items, removing items, and editing existing items.</p>
-            <p>An order can be unlocked at a later date if any edits need to be made.
-              Items however cannot be removed or added if the order form is older than the current Sunday week.</p>
-            <p v-if="!thisOrder.completed">Deleting an order will remove the entire order form from view.
-              Please only do this if an order form has been accidentally made.
-              Alternatively, delete all items from the order form if you wish for this action to be permanent.
-            </p>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn v-if="!thisOrder.completed" color="error" small @click="deleteOrderDialog = true">Delete Order</v-btn>
-            <v-spacer/>
-            <v-progress-circular indeterminate color="primary" v-if="loading"/>
-            <v-btn color="error" flat @click.native="close">No</v-btn>
-            <v-btn color="primary" flat @click.native="changeStatus">Yes</v-btn>
-          </v-card-actions>
-        </v-card>
+        <popup :title="completedTitle" titleStyle="info">
+          <span slot="content">
+            <v-card-text>
+              <p>Completing the order will close out any edits to the order including adding new items, removing items, and editing existing items.</p>
+              <p>An order can be unlocked at a later date if any edits need to be made.
+                Items however cannot be removed or added if the order form is older than the current Sunday week.</p>
+              <p v-if="!thisOrder.completed">Deleting an order will remove the entire order form from view.
+                Please only do this if an order form has been accidentally made.
+                Alternatively, delete all items from the order form if you wish for this action to be permanent.
+              </p>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn v-if="!thisOrder.completed" color="error" small @click="deleteOrderDialog = true">Delete Order</v-btn>
+              <v-spacer/>
+              <v-progress-circular indeterminate color="primary" v-if="loading"/>
+              <v-btn color="error" flat @click.native="close">No</v-btn>
+              <v-btn color="primary" flat @click.native="changeStatus">Yes</v-btn>
+            </v-card-actions>
+          </span>
+        </popup>
       </v-dialog>
 
       <!-- edit entry -->
       <v-dialog
         max-width="500px"
         v-model="editEntryDialog"
+        @keydown.esc="editEntryDialog = false"
         @keydown.enter="saveEntry(editedEntry)"
       >
-        <v-card>
-          <v-card-title>
-            <span class="headline">Editing {{currentItem.itemName}}</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container grid-list-md>
-              <v-layout row wrap>
-                <v-flex xs5>
-                  <v-text-field
-                    ref="currentStock"
-                    clearable
-                    label="Stock" type="number"
-                    v-model="editedEntry.currentStock"
-                    validate-on-blur
-                    :rules="[rules.number]"
-                  />
+        <popup :title="`Editing ${currentItem.itemName}`">
+          <span slot="content">
+            <v-card-text>
+              <v-container grid-list-md>
+                <v-layout row wrap>
+                  <v-flex xs5>
+                    <v-text-field
+                      ref="currentStock"
+                      clearable
+                      label="Stock" type="number"
+                      v-model="editedEntry.currentStock"
+                      validate-on-blur
+                      :rules="[rules.number]"
+                    />
+                  </v-flex>
+                  <v-flex xs2></v-flex> <!-- spacer -->
+                  <v-flex xs5>
+                    <v-text-field
+                      ref="orderAmount"
+                      :clearable="admin"
+                      label="Order Amount" type="number"
+                      v-model="editedEntry.orderAmount"
+                      :disabled="!admin"
+                      validate-on-blur
+                      :rules="[rules.number]"
+                    />
+                  </v-flex>
+                  <v-flex xs12>
+                    <v-textarea
+                      label="Comment"
+                      clearable no-resize
+                      v-model="editedEntry.comment"
+                    />
+                  </v-flex>
+                  <v-flex xs12>
+                  <v-alert
+                    :value="alert"
+                    :type="alertType"
+                  >
+                    {{alertMessage}}
+                  </v-alert>
                 </v-flex>
-                <v-flex xs2></v-flex> <!-- spacer -->
-                <v-flex xs5>
-                  <v-text-field
-                    ref="orderAmount"
-                    :clearable="admin"
-                    label="Order Amount" type="number"
-                    v-model="editedEntry.orderAmount"
-                    :disabled="!admin"
-                    validate-on-blur
-                    :rules="[rules.number]"
-                  />
-                </v-flex>
-                <v-flex xs12>
-                  <v-textarea
-                    label="Comment"
-                    clearable no-resize
-                    v-model="editedEntry.comment"
-                  />
-                </v-flex>
-                <v-flex xs12>
-                <v-alert
-                  :value="alert"
-                  :type="alertType"
-                >
-                  {{alertMessage}}
-                </v-alert>
-              </v-flex>
-              </v-layout>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn v-if="admin" color="error" @click="deactivationDialog = true" small>Delete</v-btn>
-            <v-spacer/>
-            <v-progress-circular indeterminate color="primary" v-if="loading"/>
-            <v-btn color="error" flat @click="closeEditEntry()">Cancel</v-btn>
-            <v-btn color="primary" flat @click="saveEntry(editedEntry)">Save</v-btn>
-          </v-card-actions>
-        </v-card>
+                </v-layout>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn v-if="admin" color="error" @click="deactivationDialog = true" small>Delete</v-btn>
+              <v-spacer/>
+              <v-progress-circular indeterminate color="primary" v-if="loading"/>
+              <v-btn color="error" flat @click="closeEditEntry()">Cancel</v-btn>
+              <v-btn color="primary" flat @click="saveEntry(editedEntry)">Save</v-btn>
+            </v-card-actions>
+          </span>
+        </popup>
       </v-dialog>
 
       <!-- entry deactivation -->
       <v-dialog
         v-model="deactivationDialog"
         max-width="500px"
+        @keydown.esc="deactivationDialog = false"
       >
-        <v-card>
-          <v-card-title>
-            <span class="headline">Delete {{currentItem.itemName}} from the order?</span>
-          </v-card-title>
-          <v-card-actions>
+        <popup :title="`Delete ${currentItem.itemName} from the order?`">
+          <v-card-actions slot="content">
             <v-spacer/>
             <v-btn color="blue darken-1" flat @click="deactivationDialog = false">No</v-btn>
             <v-btn color="red darken-1" flat @click="deleteEntry(currentItem)">Yes</v-btn>
           </v-card-actions>
-        </v-card>
+        </popup>
       </v-dialog>
 
       <!-- order deactivation -->
       <v-dialog
         v-model="deleteOrderDialog"
         max-width="500px"
+        @keydown.esc="deleteOrderDialog = false"
       >
-        <v-card>
-          <v-card-title>
-            <span class="headline">Delete the current order form?</span>
-          </v-card-title>
-          <v-container>
-            <v-layout>
-              <v-flex xs12>
-                <v-alert
-                  :value="alert"
-                  :type="alertType"
-                >
-                  {{alertMessage}}
-                </v-alert>
-              </v-flex>
-            </v-layout>
-          </v-container>
-          <v-card-actions>
-            <v-spacer/>
-            <v-btn color="blue darken-1" flat @click="deleteOrderDialog = false">No</v-btn>
-            <v-btn color="red darken-1" flat @click="deleteOrder()">Yes</v-btn>
-          </v-card-actions>
-        </v-card>
+        <popup title="Delete the current order form?">
+          <span slot="content">
+            <v-container>
+              <v-layout>
+                <v-flex xs12>
+                  <v-alert
+                    :value="alert"
+                    :type="alertType"
+                  >
+                    {{alertMessage}}
+                  </v-alert>
+                </v-flex>
+              </v-layout>
+            </v-container>
+            <v-card-actions>
+              <v-spacer/>
+              <v-btn color="blue darken-1" flat @click="deleteOrderDialog = false">No</v-btn>
+              <v-btn color="red darken-1" flat @click="deleteOrder()">Yes</v-btn>
+            </v-card-actions>
+          </span>
+        </popup>
       </v-dialog>
 
       <v-container>
@@ -348,6 +345,10 @@ export default {
       })
 
       return arr.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}))
+    },
+
+    completedTitle () {
+      return this.thisOrder.completed ?  'Undo closing the order?' : 'Close out the order?'
     }
   },
 
