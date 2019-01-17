@@ -3,7 +3,7 @@
     v-model="assayInfoDialog"
     max-width="400px"
   >
-    <info-card v-if="assayInfoDialog" :data="assay" :assays="assays" :info="info" :reassigned.sync="resData">
+    <info-card :data="assay" :assays="assays" :info="info" :reassigned.sync="resData">
       <template slot="actions">
         <v-spacer/>
         <v-tooltip left>

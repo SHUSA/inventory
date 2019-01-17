@@ -3,7 +3,7 @@
     v-model="vendorInfoDialog"
     max-width="400px"
   >
-    <info-card v-if="vendorInfoDialog" :data="vendor" :vendors="vendors" :reassigned.sync="resData">
+    <info-card :data="vendor" :vendors="vendors" :reassigned.sync="resData">
       <template slot="actions">
         <v-spacer/>
         <v-tooltip left>

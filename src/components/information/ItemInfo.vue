@@ -3,7 +3,7 @@
       v-model="itemInfoDialog"
       max-width="400px"
     >
-      <info-card v-if="itemInfoDialog" :data="itemInfo" :info="info">
+      <info-card :data="itemInfo" :info="info">
         <template slot="subinfo">
           <v-card-text class="caption py-1">
             <v-tooltip left>

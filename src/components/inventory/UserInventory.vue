@@ -174,8 +174,9 @@
         </popup>
       </v-dialog>
 
-      <item-info :item="selectedItem" :dialog.sync="itemInfoDialog" :assays="assayList" :vendors="vendorList"/>
+      <item-info v-if="itemInfoDialog" :item="selectedItem" :dialog.sync="itemInfoDialog" :assays="assayList" :vendors="vendorList"/>
       <!-- to do: add assay info -->
+      <assay-info v-if="assayInfoDialog" :assay="selectedItem.assay" :dialog.sync="assayInfoDialog"/>
 
       <transition-group
         :name="filteredList.length === supplies.length ? 'all-cards' : 'searched-cards'"
@@ -201,7 +202,7 @@
                   <span>Reorder point triggered</span>
                 </v-tooltip>
               </v-card-title>
-              <v-card-text class="caption py-0">#{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
+              <v-card-text class="caption py-0" @click="assayInfoDialog = true">#{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
               <v-divider/>
               <v-card-text v-if="item.itemDescription" class="py-1">
                 <v-icon small>fa-info-circle</v-icon>
@@ -260,6 +261,7 @@ import vendorService from '@/services/VendorService.js'
 import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
 import ItemInfo from '../information/ItemInfo'
+import AssayInfo from '../information/AssayInfo'
 const Json2csvParser = require('json2csv').Parser
 let unsavedData = false
 
@@ -274,7 +276,8 @@ window.onbeforeunload = () => {
 
 export default {
   components: {
-    ItemInfo
+    ItemInfo,
+    AssayInfo
   },
 
   data () {
