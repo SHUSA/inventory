@@ -348,7 +348,7 @@ export default {
     },
 
     completedTitle () {
-      return this.thisOrder.completed ?  'Undo closing the order?' : 'Close out the order?'
+      return this.thisOrder.completed ? 'Undo closing the order?' : 'Close out the order?'
     }
   },
 
