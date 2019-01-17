@@ -3,7 +3,10 @@
   <!-- base card for ItemInfo and AssayInfo -->
   <!-- shares title, footer, and information areas -->
     <v-card-title class="title pb-1 blue lighten-2">
-      {{data.name}}
+      <div>
+        <v-icon small class="pb-1">{{titleIcon}}</v-icon>
+        {{data.name}}
+      </div>
     </v-card-title>
     <v-divider/>
     <!-- for extra information that goes under title -->
@@ -89,6 +92,19 @@ export default {
       'admin',
       'user'
     ]),
+
+    titleIcon () {
+      if (this.data.hasOwnProperty('catalogNumber')) {
+        // is item
+        return 'fa-syringe'
+      } else if (this.data.hasOwnProperty('weeklyVolume')) {
+        // is assay
+        return this.data.name.toLowerCase() === 'c. diff' ? 'fa-poo' : 'fa-dna'
+      } else {
+        // is vendor
+        return 'fa-store'
+      }
+    },
 
     deactivationText () {
       if (this.data.hasOwnProperty('catalogNumber')) {
