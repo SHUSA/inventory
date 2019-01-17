@@ -72,13 +72,13 @@
           />
           <v-spacer/>
           <!-- update button -->
-          <v-btn :color="dataHasChanged ? 'primary' : ''" small dark @click="checkOverstock()">Submit All</v-btn>
+          <v-btn :color="dataHasChanged ? 'primary' : ''" small dark @click="checkDataEntry()">Submit All</v-btn>
         </v-layout>
       </v-container>
 
       <v-snackbar
         v-model="snackbar"
-        color="primary"
+        :color="snackColor"
         bottom
       >
       <!-- to do: add snack color, icon, etc; see Inactive for hints -->
@@ -100,6 +100,7 @@
             The following items are overstocked. Please confirm the following.
           </v-card-text>
           <v-list dense>
+            <!-- to do: add input to change value -->
             <v-list-tile v-for="item in overstocked" :key="item.id">
               <v-icon small class="pr-1">fa-question</v-icon>
               {{item.name}} - Current: {{item.currentStock}} / Threshold: {{item.maxStock}}
@@ -187,7 +188,7 @@
           :key="item.id"
         >
           <!-- big card -->
-            <v-card>
+            <v-card :color="item.error ? 'error' : ''">
               <v-card-title class="title py-1">
                 {{item.name}}
                 <!-- to do: add transition (bouncing) -->
@@ -214,9 +215,9 @@
               <v-container class="py-0">
                   <!-- current stock -->
                   <v-text-field
-                    @keydown.enter="checkOverstock(item)"
+                    @keydown.enter="checkDataEntry(item)"
                     clearable
-                    label="Stock" type="number"
+                    label="Stock"
                     persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
                     :value="item.currentStock"
                     v-model="item.currentStock"
@@ -226,7 +227,7 @@
                   <v-checkbox v-model="item.order" class="py-0" label="Manual Order"/>
                   <!-- comment -->
                   <v-textarea
-                    @keydown.enter="checkOverstock(item)"
+                    @keydown.enter="checkDataEntry(item)"
                     clearable no-resize
                     rows="4" class="py-0"
                     label="Comment"
@@ -234,7 +235,7 @@
                     v-model="item.comment"
                   ></v-textarea>
                   <div class="text-xs-center">
-                    <v-btn @click="checkOverstock(item)" color="primary" small>Save Item</v-btn>
+                    <v-btn @click="checkDataEntry(item)" color="primary" small>Save Item</v-btn>
                   </div>
               </v-container>
               <v-divider/>
@@ -299,6 +300,7 @@ export default {
       loadComponent: false,
       snackbar: false,
       snackText: '',
+      snackColor: 'primary',
       alertMessage: '',
       sortType: 'DESC',
       category: {name: 'Name', key: 'name'},
@@ -340,10 +342,6 @@ export default {
         for (let key in initialState) {
           // ignore id
           if (key === 'id') continue
-          // convert string to number
-          if (key === 'currentStock') {
-            item[key] = parseFloat(item[key])
-          }
           // standardize comment comparison
           if (key === 'comment') {
             if (item[key] === null) {
@@ -606,8 +604,9 @@ export default {
     //   }
     // },
 
-    openSnack (text) {
+    openSnack (text, color = 'primary') {
       this.snackText = text
+      this.snackColor = color
       this.snackbar = true
     },
 
@@ -641,11 +640,20 @@ export default {
       this.itemInfoDialog = true
     },
 
-    checkOverstock (item = null) {
+    checkDataEntry (item = null) {
       let itemArr = item ? [item] : this.filteredList
       let maxStock = null
+      let errorCount = 0
       this.overstocked = []
       itemArr.forEach(item => {
+        item.currentStock = parseFloat(item.currentStock)
+        if (isNaN(item.currentStock)) {
+          item.error = true
+          errorCount++
+        } else {
+          item.error = false
+        }
+
         maxStock = Math.round((item.reorderPoint + item.reorderQuantity) * 100) / 100
 
         if (maxStock <= item.currentStock) {
@@ -654,7 +662,9 @@ export default {
         }
       })
 
-      if (this.overstocked.length > 0) {
+      if (errorCount > 0) {
+        this.openSnack('Please fix data entry errors', 'error')
+      } else if (this.overstocked.length > 0) {
         this.reviewedItems = itemArr
         this.warningDialog = true
       } else {
