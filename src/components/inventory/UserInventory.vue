@@ -72,7 +72,7 @@
           />
           <v-spacer/>
           <!-- update button -->
-          <v-btn :color="dataHasChanged ? 'primary' : ''" small dark @click="save()">Submit All</v-btn>
+          <v-btn :color="dataHasChanged ? 'primary' : ''" small dark @click="checkOverstock()">Submit All</v-btn>
         </v-layout>
       </v-container>
 
@@ -91,13 +91,34 @@
         v-model="warningDialog"
         max-width="800"
         @keydown.esc="warningDialog = false"
+        @keydown.enter="save(reviewedItems)"
       >
         <v-card>
           <v-card-title class="title warning font-weight-bold">Overstocked</v-card-title>
           <v-divider/>
           <v-card-text>
-            
+            The following items are overstocked. Please review.
           </v-card-text>
+          <v-list dense>
+            <v-list-tile v-for="item in overstocked" :key="item.id">
+              {{item.name}} - Current: {{item.currentStock}} / Threshold: {{item.maxStock}}
+            </v-list-tile>
+          </v-list>
+          <v-card-actions>
+            <v-tooltip top>
+              <v-btn slot="activator" flat @click="warningDialog = false">
+                <v-icon>fa-angle-double-left</v-icon>
+              </v-btn>
+              <span>Return</span>
+            </v-tooltip>
+            <v-spacer/>
+            <v-tooltip top>
+              <v-btn slot="activator" flat @click="save(reviewedItems)">
+                <v-icon>fa-angle-double-right</v-icon>
+              </v-btn>
+              <span>Continue</span>
+            </v-tooltip>
+          </v-card-actions>
         </v-card>
       </v-dialog>
 
@@ -191,7 +212,7 @@
               <v-container class="py-0">
                   <!-- current stock -->
                   <v-text-field
-                    @keydown.enter="save(item)"
+                    @keydown.enter="checkOverstock(item)"
                     clearable
                     label="Stock" type="number"
                     persistent-hint :hint="`Reorder amount: ${item.reorderQuantity} Reorder point: ${item.reorderPoint}`"
@@ -203,7 +224,7 @@
                   <v-checkbox v-model="item.order" class="py-0" label="Manual Order"/>
                   <!-- comment -->
                   <v-textarea
-                    @keydown.enter="save(item)"
+                    @keydown.enter="checkOverstock(item)"
                     clearable no-resize
                     rows="4" class="py-0"
                     label="Comment"
@@ -211,7 +232,7 @@
                     v-model="item.comment"
                   ></v-textarea>
                   <div class="text-xs-center">
-                    <v-btn @click="save(item)" color="primary" small>Save Item</v-btn>
+                    <v-btn @click="checkOverstock(item)" color="primary" small>Save Item</v-btn>
                   </div>
               </v-container>
               <v-divider/>
@@ -264,6 +285,8 @@ export default {
       vendorList: [],
       assayList: [],
       filteredList: [],
+      overstocked: [],
+      reviewedItems: [],
       selectedItem: {},
       loading: false,
       itemInfoDialog: false,
@@ -616,15 +639,36 @@ export default {
       this.itemInfoDialog = true
     },
 
-    async save (item = null) {
+    checkOverstock (item = null) {
       let itemArr = item ? [item] : this.filteredList
-      let result = []
-      result = (await itemService.put(null, null, null, itemArr)).data
+      let maxStock = null
+      this.overstocked = []
       itemArr.forEach(item => {
+        maxStock = Math.round((item.reorderPoint + item.reorderQuantity) * 100) / 100
+
+        if (maxStock <= item.currentStock) {
+          item.maxStock = maxStock
+          this.overstocked.push(item)
+        }
+      })
+
+      if (this.overstocked.length > 0) {
+        this.reviewedItems = itemArr
+        this.warningDialog = true
+      } else {
+        this.save(itemArr)
+      }
+    },
+
+    async save (items) {
+      let result = []
+      this.warningDialog = false
+      result = (await itemService.put(null, null, null, items)).data
+      items.forEach(item => {
         item = Object.assign(item, result.find(res => item.id === res.id))
       })
       this.openSnack('Items Saved')
-      this.order(itemArr)
+      this.order(items)
     },
 
     async order (itemArr) {
