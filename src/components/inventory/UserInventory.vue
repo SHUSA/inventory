@@ -97,13 +97,15 @@
           <v-card-title class="title warning font-weight-bold">Overstocked</v-card-title>
           <v-divider/>
           <v-card-text>
-            The following items are overstocked. Please review.
+            The following items are overstocked. Please confirm the following.
           </v-card-text>
           <v-list dense>
             <v-list-tile v-for="item in overstocked" :key="item.id">
+              <v-icon small class="pr-1">fa-question</v-icon>
               {{item.name}} - Current: {{item.currentStock}} / Threshold: {{item.maxStock}}
             </v-list-tile>
           </v-list>
+          <v-divider/>
           <v-card-actions>
             <v-tooltip top>
               <v-btn slot="activator" flat @click="warningDialog = false">
