@@ -174,7 +174,7 @@
         </popup>
       </v-dialog>
 
-      <item-info v-if="itemInfoDialog" :item="selectedItem" :dialog.sync="itemInfoDialog" :assays="assayList" :vendors="vendorList"/>
+      <item-info :item="selectedItem" :dialog.sync="itemInfoDialog" :assays="assayList" :vendors="vendorList"/>
       <!-- to do: add assay info -->
 
       <transition-group

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="itemInfoDialog">
     <v-dialog
       v-model="itemInfoDialog"
       max-width="400px"
