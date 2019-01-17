@@ -1,22 +1,20 @@
 <template>
-  <div v-if="assayInfoDialog">
-    <v-dialog
-      v-model="assayInfoDialog"
-      max-width="400px"
-    >
-      <info-card :data="assay" :assays="assays" :info="info" :reassigned.sync="resData">
-        <template slot="actions">
-          <v-spacer/>
-          <v-tooltip left>
-            <v-btn slot="activator" small flat>
-              <v-icon>fa-edit</v-icon>
-            </v-btn>
-            <span>Edit</span>
-          </v-tooltip>
-        </template>
-      </info-card>
-    </v-dialog>
-  </div>
+  <v-dialog
+    v-model="assayInfoDialog"
+    max-width="400px"
+  >
+    <info-card v-if="assayInfoDialog" :data="assay" :assays="assays" :info="info" :reassigned.sync="resData">
+      <template slot="actions">
+        <v-spacer/>
+        <v-tooltip left>
+          <v-btn slot="activator" small flat>
+            <v-icon>fa-edit</v-icon>
+          </v-btn>
+          <span>Edit</span>
+        </v-tooltip>
+      </template>
+    </info-card>
+  </v-dialog>
 </template>
 
 <script>

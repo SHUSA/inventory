@@ -1,22 +1,20 @@
 <template>
-  <div v-if="vendorInfoDialog">
-    <v-dialog
-      v-model="vendorInfoDialog"
-      max-width="400px"
-    >
-      <info-card :data="vendor" :vendors="vendors" :reassigned.sync="resData">
-        <template slot="actions">
-          <v-spacer/>
-          <v-tooltip left>
-            <v-btn slot="activator" small flat>
-              <v-icon>fa-edit</v-icon>
-            </v-btn>
-            <span>Edit</span>
-          </v-tooltip>
-        </template>
-      </info-card>
-    </v-dialog>
-  </div>
+  <v-dialog
+    v-model="vendorInfoDialog"
+    max-width="400px"
+  >
+    <info-card v-if="vendorInfoDialog" :data="vendor" :vendors="vendors" :reassigned.sync="resData">
+      <template slot="actions">
+        <v-spacer/>
+        <v-tooltip left>
+          <v-btn slot="activator" small flat>
+            <v-icon>fa-edit</v-icon>
+          </v-btn>
+          <span>Edit</span>
+        </v-tooltip>
+      </template>
+    </info-card>
+  </v-dialog>
 </template>
 
 <script>
