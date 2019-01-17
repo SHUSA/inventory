@@ -543,7 +543,7 @@ export default {
     },
 
     time (item) {
-      item.lastUpdate = this.$moment(item.updatedAt).format('MMM-DD-YYYY HH:mm:ss')
+      item.lastUpdate = this.$moment(item.updatedAt).format('MMM-DD-YYYY')
       return item.lastUpdate
     },
 
