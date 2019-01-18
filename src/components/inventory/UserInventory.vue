@@ -175,7 +175,6 @@
       </v-dialog>
 
       <item-info v-if="itemInfoDialog" :item="selectedItem" :dialog.sync="itemInfoDialog" :assays="assayList" :vendors="vendorList"/>
-      <!-- to do: add assay info -->
       <assay-info v-if="assayInfoDialog" :assay="selectedItem.assay" :dialog.sync="assayInfoDialog"/>
 
       <transition-group
@@ -191,18 +190,14 @@
           <!-- big card -->
             <v-card :color="item.error ? 'error' : ''">
               <v-card-title class="title py-1">
-                {{item.name}}
+                <span @click="displayItem(item)">{{item.name}}</span>
                 <!-- to do: add transition (bouncing) -->
-                <v-tooltip top>
-                  <v-icon slot="activator" small class="px-1 pb-1" @click="displayInfo(item)">fa-question-circle</v-icon>
-                  <span>Click for item information</span>
-                </v-tooltip>
                 <v-tooltip top v-if="checkQuantity(item)">
                   <v-icon slot="activator" small color="red" class="pb-1">fa-exclamation-circle</v-icon>
                   <span>Reorder point triggered</span>
                 </v-tooltip>
               </v-card-title>
-              <v-card-text class="caption py-0" @click="assayInfoDialog = true">#{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
+              <v-card-text class="caption py-0" @click="displayAssay(item)">#{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
               <v-divider/>
               <v-card-text v-if="item.itemDescription" class="py-1">
                 <v-icon small>fa-info-circle</v-icon>
@@ -638,9 +633,14 @@ export default {
       return item.vendor
     },
 
-    displayInfo (item) {
+    displayItem (item) {
       this.selectedItem = item
       this.itemInfoDialog = true
+    },
+
+    displayAssay (item) {
+      this.selectedItem = item
+      this.assayInfoDialog = true
     },
 
     checkDataEntry (item = null) {
