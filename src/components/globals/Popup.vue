@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title :class="'title font-weight-bold ' + titleStyle">
+    <v-card-title :class="'title ' + titleStyle">
       {{title}}
     </v-card-title>
     <v-divider/>

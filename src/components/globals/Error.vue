@@ -4,18 +4,20 @@
     persistent
     max-width="500px"
   >
-    <v-card>
-      <v-card-title class="title red lighten-2 font-weight-bold">
-        You've met with a terrible fate, haven't you?
-      </v-card-title>
-      <v-card-text>
-        {{getErrorMessage(response)}}
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer/>
-        <v-btn color="error" flat @click="close()">Close</v-btn>
-      </v-card-actions>
-    </v-card>
+    <popup
+      title="You've met with a terrible fate, haven't you?"
+      titleStyle="error"
+    >
+      <template slot="content">
+        <v-card-text>
+          {{getErrorMessage(response)}}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer/>
+          <v-btn color="error" flat @click="close()">Close</v-btn>
+        </v-card-actions>
+      </template>
+    </popup>
   </v-dialog>
 </template>
 

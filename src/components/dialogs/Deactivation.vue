@@ -5,36 +5,35 @@
       v-model="deactivationDialog"
       max-width="500px"
     >
-      <v-card>
-        <v-card-title class="title blue lighten-2 font-weight-bold">
-          Selected "{{selectedItem.name}}"
-        </v-card-title>
-        <v-card-text class="subheading">
-          <p v-if="!isItem() && selectedItem.hasItem">
-            <v-chip disabled color="orange lighten-2" text-color="black" small label>Reassign</v-chip>
-            Items can be assigned a different {{isAssay() ? 'Assay' : 'Vendor'}}.
-          </p>
-          <p v-if="selectedItem.active">
-            <v-chip disabled color="red lighten-2" text-color="black" small label>Deactivate</v-chip>
-            <span v-if="!isItem()">Any items associated with an assay or vendor will also be deactivated.</span>
-            <span v-else>Selected item will be deactivated.</span>
-          </p>
-          <p v-if="!selectedItem.active">
-            <v-chip disabled color="red lighten-2" text-color="black" small label>Reactivate</v-chip>
-            <span v-if="!isItem()">Any items associated with an assay or vendor will also be reactivated.</span>
-            <span v-else>Selected item will be reactivated.</span>
-          </p>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn v-if="!isItem() && selectedItem.hasItem" color="orange darken-1" flat @click="reassignDialog = true">
-            Reassign {{isAssay() ? 'Assay' : 'Vendor'}}
-          </v-btn>
-          <v-spacer/>
-          <v-btn :color="!this.selectedItem.active ? 'blue darken-1' : 'red darken-1'" flat @click="deactivate(selectedItem)">
-            {{this.selectedItem.active ? 'Deactivate' : 'Reactivate'}}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+      <popup :title='`Selected "${selectedItem.name}"`' titleStyle="warning">
+        <template slot="content">
+          <v-card-text class="subheading">
+            <p v-if="!isItem() && selectedItem.hasItem">
+              <v-chip disabled color="orange lighten-2" text-color="black" small label>Reassign</v-chip>
+              Items can be assigned a different {{isAssay() ? 'Assay' : 'Vendor'}}.
+            </p>
+            <p v-if="selectedItem.active">
+              <v-chip disabled color="red lighten-2" text-color="black" small label>Deactivate</v-chip>
+              <span v-if="!isItem()">Any items associated with an assay or vendor will also be deactivated.</span>
+              <span v-else>Selected item will be deactivated.</span>
+            </p>
+            <p v-if="!selectedItem.active">
+              <v-chip disabled color="red lighten-2" text-color="black" small label>Reactivate</v-chip>
+              <span v-if="!isItem()">Any items associated with an assay or vendor will also be reactivated.</span>
+              <span v-else>Selected item will be reactivated.</span>
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn v-if="!isItem() && selectedItem.hasItem" color="orange darken-1" flat @click="reassignDialog = true">
+              Reassign {{isAssay() ? 'Assay' : 'Vendor'}}
+            </v-btn>
+            <v-spacer/>
+            <v-btn :color="!this.selectedItem.active ? 'blue darken-1' : 'red darken-1'" flat @click="deactivate(selectedItem)">
+              {{this.selectedItem.active ? 'Deactivate' : 'Reactivate'}}
+            </v-btn>
+          </v-card-actions>
+        </template>
+      </popup>
     </v-dialog>
 
     <!-- results dialog -->
@@ -42,15 +41,12 @@
       v-model="resultsDialog"
       max-width="500px"
     >
-      <v-card>
-        <v-card-title class="title blue lighten-2 font-weight-bold">
-          Results
-        </v-card-title>
-        <v-card-text class="subheading">
+      <popup title="Results">
+        <v-card-text class="subheading" slot="content">
           <p>{{selectedItem.name}} {{reassignDialog ? `reassigned to ${reassignInfo.name}` : selectedItem.active ? 'reactivated' : 'deactivated'}}</p>
           <p v-if="!isItem()">{{numItems}} items {{reassignDialog ? 'reassigned' : selectedItem.active ? 'reactivated' : 'deactivated'}}</p>
         </v-card-text>
-      </v-card>
+      </popup>
     </v-dialog>
 
     <!-- reassign dialog -->
@@ -58,27 +54,28 @@
       v-model="reassignDialog"
       max-width="500px"
     >
-      <v-card>
-        <v-card-title class="title blue lighten-2 font-weight-bold">
-          Reassign items with {{selectedItem.name}} to ...?
-        </v-card-title>
-        <v-card-text>
-          <v-autocomplete
-            :items="isAssay() ? assays : vendors"
-            :label="isAssay() ? 'Assay' : 'Vendor'"
-            item-text="name"
-            return-object
-            v-model="temp"
-            clearable
-            dense
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer/>
-          <v-btn color="red darken-1" flat @click="reassignDialog = false">Cancel</v-btn>
-          <v-btn color="blue darken-1" flat @click="reassign(selectedItem)">Submit</v-btn>
-        </v-card-actions>
-      </v-card>
+      <popup
+        :title="`Reassign items with ${selectedItem.name} to ...?`"
+      >
+        <template slot="content">
+          <v-card-text>
+            <v-autocomplete
+              :items="isAssay() ? assays : vendors"
+              :label="isAssay() ? 'Assay' : 'Vendor'"
+              item-text="name"
+              return-object
+              v-model="temp"
+              clearable
+              dense
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn color="red darken-1" flat @click="reassignDialog = false">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat @click="reassign(selectedItem)">Submit</v-btn>
+          </v-card-actions>
+        </template>
+      </popup>
     </v-dialog>
 
     <error :response="response"/>

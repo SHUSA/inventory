@@ -1,8 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title class="title">Help</v-card-title>
-    <v-divider/>
-    <v-expansion-panel>
+  <popup title="Help" titleStyle="transparent">
+    <v-expansion-panel slot="content">
       <v-expansion-panel-content>
         <div slot="header">Updates</div>
         <update/>
@@ -21,7 +19,7 @@
         </v-card>
       </v-expansion-panel-content>
     </v-expansion-panel>
-  </v-card>
+  </popup>
 </template>
 
 <script>
