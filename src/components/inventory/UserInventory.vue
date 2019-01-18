@@ -190,14 +190,14 @@
           <!-- big card -->
             <v-card :color="item.error ? 'error' : ''">
               <v-card-title class="title py-1">
-                <span @click="displayItem(item)">{{item.name}}</span>
+                <span @click="displayItem(item)" class="pointer">{{item.name}}</span>
                 <!-- to do: add transition (bouncing) -->
                 <v-tooltip top v-if="checkQuantity(item)">
                   <v-icon slot="activator" small color="red" class="pb-1">fa-exclamation-circle</v-icon>
                   <span>Reorder point triggered</span>
                 </v-tooltip>
               </v-card-title>
-              <v-card-text class="caption py-0" @click="displayAssay(item)">#{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
+              <v-card-text class="caption pointer py-0" @click="displayAssay(item)">#{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
               <v-divider/>
               <v-card-text v-if="item.itemDescription" class="py-1">
                 <v-icon small>fa-info-circle</v-icon>
@@ -827,5 +827,9 @@ export default {
   .searched-cards-enter-active {
     position: relative;
     transition: all 1s ease;
+  }
+
+  .pointer {
+    cursor: pointer;
   }
 </style>
