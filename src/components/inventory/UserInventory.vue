@@ -189,13 +189,15 @@
         >
           <!-- big card -->
             <v-card :color="item.error ? 'error' : ''">
-              <v-card-title class="title py-1">
-                <span @click="displayItem(item)" class="pointer">{{item.name}}</span>
-                <!-- to do: add transition (bouncing) -->
-                <v-tooltip top v-if="checkQuantity(item)">
-                  <v-icon slot="activator" small color="red" class="pb-1">fa-exclamation-circle</v-icon>
-                  <span>Reorder point triggered</span>
-                </v-tooltip>
+              <v-card-title class="subheading py-1">
+                <span @click="displayItem(item)" class="pointer">
+                  {{item.name}}
+                  <!-- to do: add transition (bouncing) -->
+                  <v-tooltip top v-if="checkQuantity(item)">
+                    <v-icon slot="activator" small color="red" class="pb-1">fa-exclamation-circle</v-icon>
+                    <span>Reorder point triggered</span>
+                  </v-tooltip>
+                </span>
               </v-card-title>
               <v-card-text class="caption pointer py-0" @click="displayAssay(item)">#{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
               <v-divider/>

@@ -3,10 +3,10 @@
   <!-- base card for ItemInfo and AssayInfo -->
   <!-- shares title, footer, and information areas -->
     <v-card-title class="title pb-1 blue lighten-2">
-      <div>
+      <span>
         <v-icon small class="pb-1">{{titleIcon}}</v-icon>
         {{data.name}}
-      </div>
+      </span>
     </v-card-title>
     <v-divider/>
     <!-- for extra information that goes under title -->
