@@ -189,7 +189,7 @@
         >
           <!-- big card -->
             <v-card :color="item.error ? 'error' : ''">
-              <v-card-title class="subheading py-1">
+              <v-card-title class="title py-1">
                 <span @click="displayItem(item)" class="pointer">
                   {{item.name}}
                   <!-- to do: add transition (bouncing) -->
