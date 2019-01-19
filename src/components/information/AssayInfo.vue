@@ -34,12 +34,18 @@ export default {
 
   data () {
     return {
-      info: [
+      info: []
+    }
+  },
+
+  watch: {
+    assay (value) {
+      this.info = [
         {
           icon: 'fa-calendar-week',
           text: 'Volume',
           tooltip: 'Weekly Volume',
-          call: this.assay.weeklyVolume
+          call: value.weeklyVolume
         },
         {
           icon: null,
@@ -50,25 +56,25 @@ export default {
           icon: 'fa-running',
           text: '/ Week',
           tooltip: 'Runs per Week',
-          call: this.assay.weeklyRuns
+          call: value.weeklyRuns
         },
         {
           icon: 'fab fa-nintendo-switch',
           text: '/ Run',
           tooltip: 'Controls per Run',
-          call: this.assay.controlsPerRun
+          call: value.controlsPerRun
         },
         {
           icon: 'fa-boxes',
           text: 'Max Size',
           tooltip: 'Max Batch Size',
-          call: this.assay.maxBatchSize
+          call: value.maxBatchSize
         },
         {
           icon: 'fa-vials',
           text: 'Replicates',
           tooltip: 'Sample Replicates',
-          call: this.assay.sampleReplicates
+          call: value.sampleReplicates
         }
       ]
     }

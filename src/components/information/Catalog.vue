@@ -1,8 +1,8 @@
 <template>
   <v-card v-if="loadComponent" flat color="transparent">
-    <item-info v-if="itemInfoDialog" :item.sync="selectedChip" :dialog.sync="itemInfoDialog" :assays="assays" :vendors="vendors"/>
-    <assay-info v-if="assayInfoDialog" :assay.sync="selectedChip" :dialog.sync="assayInfoDialog" :reassigned.sync="reassigned" :assays="assays"/>
-    <vendor-info v-if="vendorInfoDialog" :vendor.sync="selectedChip" :dialog.sync="vendorInfoDialog" :reassigned.sync="reassigned" :vendors="vendors"/>
+    <item-info :item.sync="selectedItem" :dialog.sync="itemInfoDialog" :assays="assays" :vendors="vendors"/>
+    <assay-info :assay.sync="selectedAssay" :dialog.sync="assayInfoDialog" :reassigned.sync="reassigned" :assays="assays"/>
+    <vendor-info :vendor.sync="selectedVendor" :dialog.sync="vendorInfoDialog" :reassigned.sync="reassigned" :vendors="vendors"/>
     <error :response="response"/>
     <v-container fill-height grid-list-md>
       <v-layout row wrap>
@@ -43,7 +43,9 @@ export default {
       reassigned: {},
       response: '',
       loadComponent: false,
-      selectedChip: {},
+      selectedItem: {},
+      selectedAssay: {},
+      selectedVendor: {},
       dialog: false,
       itemInfoDialog: false,
       assayInfoDialog: false,
@@ -63,7 +65,7 @@ export default {
   watch: {
     itemInfoDialog (val) {
       if (!val) {
-        this.removeItems(this.selectedChip)
+        this.removeItems(this.selectedItem)
       }
     },
 
@@ -76,7 +78,7 @@ export default {
           }
         })
         this.items.forEach(item => {
-          if (item.AssayId === this.selectedChip.id) {
+          if (item.AssayId === this.selectedAssay.id) {
             item.AssayId = val.id
             item.AssayName = val.name
           }
@@ -89,7 +91,7 @@ export default {
           }
         })
         this.items.forEach(item => {
-          if (item.VendorId === this.selectedChip.id) {
+          if (item.VendorId === this.selectedVendor.id) {
             item.VendorId = val.id
             item.VendorName = val.name
           }
@@ -187,13 +189,14 @@ export default {
     },
 
     select (obj) {
-      this.selectedChip = obj
-
       if (obj.hasOwnProperty('catalogNumber')) {
+        this.selectedItem = obj
         this.itemInfoDialog = true
       } else if (obj.hasOwnProperty('weeklyVolume')) {
+        this.selectedAssay = obj
         this.assayInfoDialog = true
       } else {
+        this.selectedVendor = obj
         this.vendorInfoDialog = true
       }
     }

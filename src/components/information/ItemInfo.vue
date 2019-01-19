@@ -21,12 +21,12 @@
               <v-icon slot="activator" small class="pr-0">{{assayIcon}}</v-icon>
               <span>Assay</span>
             </v-tooltip>
-            {{getAssay(itemInfo)}}
+            {{itemInfo.assay ? itemInfo.assay.name : ''}}
             <v-tooltip left>
               <v-icon slot="activator" small class="pr-0 pl-2">fa-store</v-icon>
               <span>Vendor</span>
             </v-tooltip>
-            {{getVendor(itemInfo)}}
+            {{itemInfo.vendor}}
           </v-card-text>
           <v-divider/>
           <v-card-text class="py-1">
@@ -66,51 +66,69 @@ export default {
   data () {
     return {
       deactivate: false,
-      info: [
+      info: [],
+      assayIcon: '',
+      descriptionIcon: '',
+      description: '',
+      hasComment: ''
+    }
+  },
+
+  watch: {
+    itemInfo (value) {
+      this.info = [
         {
           icon: 'fa-cube',
           text: 'Current',
           tooltip: 'Current Stock',
-          call: this.item.currentStock
+          call: value.currentStock
         },
         {
           icon: 'fa-cube',
           text: 'Safety',
           tooltip: 'Safety Stock',
-          call: this.item.safetyStock
+          call: value.safetyStock
         },
 
         {
           icon: 'fa-less-than-equal',
           text: 'Reorder',
           tooltip: 'Reorder Point',
-          call: this.item.reorderPoint
+          call: value.reorderPoint
         },
         {
           icon: 'fa-shopping-cart',
           text: 'Reorder',
           tooltip: 'Reorder Quantity',
-          call: this.item.reorderQuantity
+          call: value.reorderQuantity
         },
         {
           icon: 'fa-calendar-week',
           text: 'Reorder Weeks',
           tooltip: 'Reorder Weeks',
-          call: this.item.weeksOfReorder
+          call: value.weeksOfReorder
         },
         {
           icon: 'fa-calendar-week',
           text: 'Safety Weeks',
           tooltip: 'Safety Weeks',
-          call: this.item.weeksOfSafetyStock
+          call: value.weeksOfSafetyStock
         },
         {
           icon: 'fa-clock',
           text: 'Lead Days',
           tooltip: 'Lead Time Days',
-          call: this.item.leadTimeDays
+          call: value.leadTimeDays
         }
       ]
+
+      this.getAssay(value)
+      this.getVendor(value)
+
+      this.assayIcon = value.name.toLowerCase() === 'c. diff' ? 'fa-poo' : 'fa-dna'
+      this.descriptionIcon = value.itemDescription ? 'fa-sticky-note' : 'fa-times'
+      this.description = value.itemDescription ? value.itemDescription : 'No description'
+      this.hasComment = value.comment.trim()
     }
   },
 
@@ -139,38 +157,20 @@ export default {
           this.$emit('update:dialog', false)
         }
       }
-    },
-
-    assayIcon () {
-      return this.getAssay(this.itemInfo).toLowerCase() === 'c. diff' ? 'fa-poo' : 'fa-dna'
-    },
-
-    descriptionIcon () {
-      return this.itemInfo.itemDescription ? 'fa-sticky-note' : 'fa-times'
-    },
-
-    description () {
-      return this.itemInfo.itemDescription ? this.itemInfo.itemDescription : 'No description'
-    },
-
-    hasComment () {
-      return this.itemInfo.comment.trim()
     }
   },
 
   methods: {
     getAssay (item) {
-      if (this.assays.length === 0) {
-        return null
+      if (!item.assay) {
+        item.assay = this.assays.find(assay => assay.id === item.AssayId)
       }
-      return this.assays.find(assay => assay.id === item.AssayId).name
     },
 
     getVendor (item) {
-      if (this.vendors.length === 0) {
-        return null
+      if (!item.vendor) {
+        item.vendor = this.vendors.find(vendor => vendor.id === item.VendorId).name
       }
-      return this.vendors.find(vendor => vendor.id === item.VendorId).name
     },
 
     time (item) {

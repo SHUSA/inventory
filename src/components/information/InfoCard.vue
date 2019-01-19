@@ -5,7 +5,7 @@
     <v-card-title class="title pb-1 blue lighten-2">
       <span>
         <v-icon small class="pb-1">{{titleIcon}}</v-icon>
-        {{data.name}}
+        {{name}}
       </span>
     </v-card-title>
     <v-divider/>
@@ -55,12 +55,12 @@
     </template>
     <v-footer>
       <v-flex text-xs-center>
-        Last Updated: {{time(data)}}
+        Last Updated: {{time}}
       </v-flex>
     </v-footer>
 
     <!-- deactivate -->
-    <deactivation :selection.sync="data" :dialog.sync="deactivate" :reassigned.sync="resData" :assays="assays" :vendors="vendors"/>
+    <deactivation v-if="hasData(data)" :selection.sync="data" :dialog.sync="deactivate" :reassigned.sync="resData" :assays="assays" :vendors="vendors"/>
   </v-card>
 </template>
 
@@ -79,7 +79,11 @@ export default {
 
   data () {
     return {
-      deactivate: false
+      deactivate: false,
+      titleIcon: '',
+      deactivationText: '',
+      time: '',
+      name: ''
     }
   },
 
@@ -87,37 +91,34 @@ export default {
     Deactivation
   },
 
+  watch: {
+    data (value) {
+      if (this.hasData(value)) {
+        this.name = value.name
+
+        if (value.hasOwnProperty('catalogNumber')) {
+          // is item
+          this.deactivationText = 'Item'
+          this.titleIcon = 'fa-syringe'
+        } else if (value.hasOwnProperty('weeklyVolume')) {
+          // is assay
+          this.deactivationText = 'Assay'
+          this.titleIcon = value.name.toLowerCase() === 'c. diff' ? 'fa-poo' : 'fa-dna'
+        } else {
+          // is vendor
+          this.deactivationText = 'Vendor'
+          this.titleIcon = 'fa-store'
+        }
+        this.time = this.$moment(value.updatedAt).format('MMM-DD-YYYY')
+      }
+    }
+  },
+
   computed: {
     ...mapState([
       'admin',
       'user'
     ]),
-
-    titleIcon () {
-      if (this.data.hasOwnProperty('catalogNumber')) {
-        // is item
-        return 'fa-syringe'
-      } else if (this.data.hasOwnProperty('weeklyVolume')) {
-        // is assay
-        return this.data.name.toLowerCase() === 'c. diff' ? 'fa-poo' : 'fa-dna'
-      } else {
-        // is vendor
-        return 'fa-store'
-      }
-    },
-
-    deactivationText () {
-      if (this.data.hasOwnProperty('catalogNumber')) {
-        // is item
-        return 'Item'
-      } else if (this.data.hasOwnProperty('weeklyVolume')) {
-        // is assay
-        return 'Assay'
-      } else {
-        // is vendor
-        return 'Vendor'
-      }
-    },
 
     resData: {
       get () {
@@ -131,8 +132,8 @@ export default {
   },
 
   methods: {
-    time (data) {
-      return this.$moment(data.updatedAt).format('MMM-DD-YYYY')
+    hasData (data = {}) {
+      return Object.keys(data).length > 0
     }
   }
 }

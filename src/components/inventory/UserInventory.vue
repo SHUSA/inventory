@@ -174,8 +174,8 @@
         </popup>
       </v-dialog>
 
-      <item-info v-if="itemInfoDialog" :item="selectedItem" :dialog.sync="itemInfoDialog" :assays="assayList" :vendors="vendorList"/>
-      <assay-info v-if="assayInfoDialog" :assay="selectedItem.assay" :dialog.sync="assayInfoDialog"/>
+      <item-info :item="selectedItem" :dialog.sync="itemInfoDialog" :assays="assayList" :vendors="vendorList"/>
+      <assay-info :assay="selectedItem.assay" :dialog.sync="assayInfoDialog"/>
 
       <transition-group
         :name="filteredList.length === supplies.length ? 'all-cards' : 'searched-cards'"
