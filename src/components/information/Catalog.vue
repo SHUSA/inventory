@@ -80,7 +80,7 @@ export default {
         this.items.forEach(item => {
           if (item.AssayId === this.selectedAssay.id) {
             item.AssayId = val.id
-            item.AssayName = val.name
+            item.assay = val
           }
         })
       } else {
@@ -93,7 +93,7 @@ export default {
         this.items.forEach(item => {
           if (item.VendorId === this.selectedVendor.id) {
             item.VendorId = val.id
-            item.VendorName = val.name
+            item.vendor = val.name
           }
         })
       }
