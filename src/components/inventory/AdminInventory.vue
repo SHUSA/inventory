@@ -1032,7 +1032,7 @@ export default {
           if (this.checkErrorMessage(response)) {
             // do nothing
           } else {
-            Object.assign(focusedItem, response.data)
+            Object.assign(focusedItem, response.data[0])
             this.snackText = 'Item updated'
           }
         } else {
