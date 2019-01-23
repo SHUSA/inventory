@@ -169,15 +169,6 @@ export default {
       return this.selectedItem.hasOwnProperty('weeklyVolume')
     },
 
-    checkResponse (resp) {
-      if (resp.status === 200) {
-        return true
-      } else {
-        alert(`${resp.status} ${Array.isArray(resp.data) ? resp.data[0].message : resp.statusText}`)
-        return false
-      }
-    },
-
     async deactivate (item) {
       // conditional branching to determine which service to use
       // if selected has catalogNumber -> item, if has weeklyVolume -> assay, else vendor
