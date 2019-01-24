@@ -12,10 +12,19 @@
       </v-flex>
     </v-snackbar>
 
+    <assay-dialog
+      :assayDialog.sync="assayDialog"
+      :itemList.sync="itemList"
+      :assayList.sync="assayList"
+      :assayNameList.sync="assayNameList"
+      :editedItem.sync="editedItem"
+    />
+
     <!-- dialog -->
     <v-dialog
       v-model="dialog"
       max-width="500px"
+      @keydown.enter="validateData()"
     >
       <dialog-base :formTitle="formTitle">
         <v-form slot="input-fields" ref="form" v-model="form" lazy-validation>
@@ -32,7 +41,7 @@
                   item-value="id"
                   v-model="editedItem.AssayId"
                   append-icon="fa-plus-square"
-                  @click:append="addAssay"
+                  @click:append="assayDialog = true"
                   :rules="[rules.assay]"
                   dense
                   required
@@ -46,7 +55,7 @@
                   item-value="id"
                   v-model="editedItem.VendorId"
                   append-icon="fa-plus-square"
-                  @click:append="addVendor"
+                  @click:append="vendorDialog = true"
                   :rules="[rules.vendor]"
                   dense
                   required
@@ -59,41 +68,41 @@
                 <v-text-field v-model.trim="editedItem.itemDescription" label="Item Description" clearable/>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.reactionsPerItem" validate-on-blur :rules="[rules.number]" ref="reactionsPerItem" type="number" min=0 hint="Use 0 for general items." persistent-hint label="Reactions per Item" clearable/>
+                <v-text-field v-model.number="editedItem.reactionsPerItem" validate-on-blur :rules="[rules.number]" type="number" min=0 hint="Use 0 for general items." persistent-hint label="Reactions per Item" clearable/>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.currentStock" validate-on-blur :rules="[rules.number]" ref="currentStock" type="number" min=0 label="Current Stock" clearable/>
+                <v-text-field v-model.number="editedItem.currentStock" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Current Stock" clearable/>
               </v-flex>
               <v-flex xs6>
                 <v-text-field disabled v-model="editedItem.safetyStock" label="Safety Stock"/>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" ref="weeksOfSafetyStock" type="number" min=0 label="Safety Weeks" clearable/>
+                <v-text-field v-model.number="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Safety Weeks" clearable/>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" ref="leadtimeDays" type="number" min=0 label="Lead Time (Days)" clearable/>
+                <v-text-field v-model.number="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Lead Time (Days)" clearable/>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" ref="weeksOfReorder" type="number" min=0 label="Reorder Weeks" clearable/>
+                <v-text-field v-model.number="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Reorder Weeks" clearable/>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.reorderPoint" validate-on-blur :rules="[rules.number]" ref="reorderPoint" type="number" min=0 label="Reorder Point" clearable/>
+                <v-text-field v-model.number="editedItem.reorderPoint" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Reorder Point" clearable/>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.reorderQuantity" validate-on-blur :rules="[rules.wholeNumber]" ref="reorderQuantity" type="number" min=0 label="Reorder Quantity" clearable/>
+                <v-text-field v-model.number="editedItem.reorderQuantity" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Reorder Quantity" clearable/>
+              </v-flex>
+              <!-- alert -->
+              <v-flex xs12>
+                <v-alert
+                  :value="alert"
+                  type="error"
+                >
+                  {{alertMessage}}
+                </v-alert>
               </v-flex>
             </v-layout>
           </v-container>
         </v-form>
-        <!-- alert -->
-        <v-flex xs12>
-          <v-alert
-            :value="alert"
-            type="error"
-          >
-            {{alertMessage}}
-          </v-alert>
-        </v-flex>
         <!-- actions -->
         <template slot="buttons">
           <v-progress-circular indeterminate color="primary" v-if="loading"/>
@@ -109,7 +118,7 @@
 import { mapState } from 'vuex'
 import itemService from '@/services/ItemService.js'
 import AssayDialog from './AssayDialog'
-import VendorDialog from './VendorDialog'
+// import VendorDialog from './VendorDialog'
 import Deactivation from './Deactivation'
 import DialogBase from './DialogBase'
 
@@ -118,6 +127,8 @@ export default {
     'itemDialog',
     'selectedItem',
     'catalogNumbers',
+    'assayNameList',
+    'vendorNameList',
     'itemList',
     'assayList',
     'vendorList',
@@ -126,7 +137,7 @@ export default {
 
   components: {
     AssayDialog,
-    VendorDialog,
+    // VendorDialog,
     DialogBase,
     Deactivation
   },
@@ -134,6 +145,8 @@ export default {
   data () {
     return {
       form: true,
+      assayDialog: false,
+      vendorDialog: false,
       deactivationDialog: false,
       response: '',
       alert: false,
@@ -152,7 +165,7 @@ export default {
         catalog: (text) => {
           if (text.length === 0) {
             return 'Please enter a unique catalog number'
-          } else if (this.catalogNumbers.includes(text.toUpperCase())) {
+          } else if (this.catalogs.includes(text.toUpperCase())) {
             // fixes error throwing on existing items
             if (this.index > -1) {
               return true
@@ -166,7 +179,7 @@ export default {
         assay: (text) => {
           if (text.length === 0) {
             return 'Please enter a valid name'
-          } else if (this.assayList.find(assay => assay.name.toUpperCase() === text.toUpperCase())) {
+          } else if (this.assayNames.find(assay => assay.toUpperCase() === text.toUpperCase())) {
             if (this.index > -1) {
               return true
             } else {
@@ -179,7 +192,7 @@ export default {
         vendor: (text) => {
           if (text.length === 0) {
             return 'Please enter a valid name'
-          } else if (this.vendorList.find(vendor => vendor.name.toUpperCase() === text.toUpperCase())) {
+          } else if (this.vendorNames.find(vendor => vendor.toUpperCase() === text.toUpperCase())) {
             if (this.index > -1) {
               return true
             } else {
@@ -273,6 +286,36 @@ export default {
       }
     },
 
+    catalogs: {
+      get () {
+        return this.catalogNumbers
+      },
+
+      set (value) {
+        this.$emit('update:catalogNumbers', value)
+      }
+    },
+
+    assayNames: {
+      get () {
+        return this.assayNameList
+      },
+
+      set (value) {
+        this.$emit('update:assayNameList', value)
+      }
+    },
+
+    vendorNames: {
+      get () {
+        return this.vendorNameList
+      },
+
+      set (value) {
+        this.$emit('update:vendorNameList', value)
+      }
+    },
+
     items: {
       get () {
         return this.itemList
@@ -308,18 +351,6 @@ export default {
     openSnack (text) {
       this.snackText = text
       this.snackbar = true
-    },
-
-    addAssay () {
-      this.assayForm = 'New Assay'
-      this.assayDialog = true
-      this.alert = false
-    },
-
-    addVendor () {
-      this.vendorForm = 'New Vendor'
-      this.vendorDialog = true
-      this.alert = false
     },
 
     close () {
@@ -358,6 +389,10 @@ export default {
 
         if (this.response.status === 200) {
           Object.assign(focusedItem, this.response.data[0])
+          if (this.currentItem.catalogNumber !== this.editedItem.catalogNumber) {
+            let index = this.catalogs.indexOf(this.editedItem.catalogNumber)
+            this.catalogs[index] = this.currentItem.catalogNumber
+          }
           this.snackText = `${this.response.data[0].name} updated`
         }
       } else {
@@ -366,7 +401,7 @@ export default {
 
         if (this.response.status === 200) {
           this.items.push(this.response.data)
-          // this.supplies.push(this.response.data)
+          this.catalogs.push(this.response.data.catalogNumber)
           this.snackText = `${this.response.data.name} saved`
         }
       }
