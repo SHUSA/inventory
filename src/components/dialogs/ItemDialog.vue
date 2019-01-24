@@ -31,7 +31,7 @@
           <v-container>
             <v-layout row wrap>
               <v-flex xs6>
-                <v-text-field v-model.trim="editedItem.name" :rules="[rules.item]" label="Item Name" clearable required/>
+                <v-text-field v-model.trim="editedItem.name" :rules="[rules.name]" label="Item Name" clearable required/>
               </v-flex>
               <v-flex xs6>
                 <v-autocomplete
@@ -42,7 +42,7 @@
                   v-model="editedItem.AssayId"
                   append-icon="fa-plus-square"
                   @click:append="assayDialog = true"
-                  :rules="[rules.assay]"
+                  :rules="[rules.name]"
                   dense
                   required
                 />
@@ -56,7 +56,7 @@
                   v-model="editedItem.VendorId"
                   append-icon="fa-plus-square"
                   @click:append="vendorDialog = true"
-                  :rules="[rules.vendor]"
+                  :rules="[rules.name]"
                   dense
                   required
                 />
@@ -176,34 +176,7 @@ export default {
             return true
           }
         },
-        assay: (text) => {
-          if (text.length === 0) {
-            return 'Please enter a valid name'
-          } else if (this.assayNames.find(assay => assay.toUpperCase() === text.toUpperCase())) {
-            if (this.index > -1) {
-              return true
-            } else {
-              return 'Duplicate assay name found'
-            }
-          } else {
-            return true
-          }
-        },
-        vendor: (text) => {
-          if (text.length === 0) {
-            return 'Please enter a valid name'
-          } else if (this.vendorNames.find(vendor => vendor.toUpperCase() === text.toUpperCase())) {
-            if (this.index > -1) {
-              return true
-            } else {
-              return 'Duplicate vendor name found'
-            }
-          } else {
-            return true
-          }
-        },
-
-        item: (text) => {
+        name: (text) => {
           return text.length > 0 ? true : 'Please enter a valid name'
         }
 
