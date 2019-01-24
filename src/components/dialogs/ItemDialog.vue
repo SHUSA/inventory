@@ -20,6 +20,13 @@
       :editedItem.sync="editedItem"
     />
 
+    <vendor-dialog
+      :vendorDialog.sync="vendorDialog"
+      :vendorList.sync="vendorList"
+      :vendorNameList.sync="vendorNameList"
+      :editedItem.sync="editedItem"
+    />
+
     <!-- dialog -->
     <v-dialog
       v-model="dialog"
@@ -118,7 +125,7 @@
 import { mapState } from 'vuex'
 import itemService from '@/services/ItemService.js'
 import AssayDialog from './AssayDialog'
-// import VendorDialog from './VendorDialog'
+import VendorDialog from './VendorDialog'
 import Deactivation from './Deactivation'
 import DialogBase from './DialogBase'
 
@@ -137,7 +144,7 @@ export default {
 
   components: {
     AssayDialog,
-    // VendorDialog,
+    VendorDialog,
     DialogBase,
     Deactivation
   },
