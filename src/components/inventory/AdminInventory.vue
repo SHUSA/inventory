@@ -22,6 +22,7 @@
         :assayList.sync="assayList"
         :assayIndex.sync="assayIndex"
         :editedItem="{}"
+        :reassigned.sync="reassigned"
       />
 
       <vendor-dialog
@@ -31,6 +32,7 @@
         :vendorIndex.sync="vendorIndex"
         :vendorList.sync="vendorList"
         :editedItem="{}"
+        :reassigned.sync="reassigned"
       />
 
       <v-container>
@@ -167,6 +169,7 @@ export default {
       currentItem: {},
       currentAssay: {},
       currentVendor: {},
+      reassigned: {},
       catalogNumbers: [],
       vendorNames: [],
       assayNames: [],
@@ -193,6 +196,56 @@ export default {
       editedIndex: -1,
       assayIndex: -1,
       vendorIndex: -1
+    }
+  },
+
+  watch: {
+    itemDialog (val) {
+      if (!val) {
+        this.removeItems(this.currentItem)
+      }
+    },
+
+    assayDialog (val) {
+      if (!val) {
+        this.removeItems(this.currentAssay)
+      }
+    },
+
+    vendorDialog (val) {
+      if (!val) {
+        this.removeItems(this.currentVendor)
+      }
+    },
+
+    reassigned (val) {
+      if (val.hasOwnProperty('weeklyVolume')) {
+        // change all items with associated assay
+        this.assayList.find(assay => {
+          if (assay.id === val.id) {
+            assay.hasItem = val.hasItem
+          }
+        })
+        this.supplies.forEach(item => {
+          if (item.AssayId === this.currentAssay.id) {
+            item.AssayId = val.id
+            item.assay = val
+          }
+        })
+      } else {
+        // change all items with associated vendor
+        this.vendorList.find(vendor => {
+          if (vendor.id === val.id) {
+            vendor.hasItem = val.hasItem
+          }
+        })
+        this.supplies.forEach(item => {
+          if (item.VendorId === this.currentVendor.id) {
+            item.VendorId = val.id
+            item.vendor = val.name
+          }
+        })
+      }
     }
   },
 
@@ -253,6 +306,8 @@ export default {
       this.assayList = (await assayService.index()).data
       this.assayNames = (await assayService.index(['name'], [true, false])).data.map(assay => assay.name.toUpperCase())
 
+      this.hasItem()
+
       // go to top
       window.scroll({
         top: 0,
@@ -263,6 +318,58 @@ export default {
   },
 
   methods: {
+    hasItem () {
+      let itemAssayIds = {}
+      let itemVendorIds = {}
+
+      // store assay and vendor ids from each item
+      this.supplies.forEach(item => {
+        itemAssayIds[item.AssayId] = true
+        itemVendorIds[item.VendorId] = true
+      })
+      // loop through assays and vendors and check if id is in the object ids
+      this.assayList.forEach(assay => {
+        assay.hasItem = itemAssayIds.hasOwnProperty(assay.id)
+      })
+      this.vendorList.forEach(vendor => {
+        vendor.hasItem = itemVendorIds.hasOwnProperty(vendor.id)
+      })
+    },
+
+    removeItems (val) {
+      let index = null
+      // remove items if their assay or vendor is deactivated
+      if (val.hasOwnProperty('catalogNumber') && !val.active) {
+        // remove inactive items from item list
+        index = this.supplies.findIndex(item => item.id === val.id)
+        this.supplies.splice(index, 1)
+      } else if (val.hasOwnProperty('weeklyVolume') && !val.active) {
+        // is assay
+        if (val.hasItem) {
+          // remove items with same assay id
+          for (let i = this.supplies.length - 1; i >= 0; i--) {
+            if (this.supplies[i].AssayId === val.id) {
+              this.supplies.splice(i, 1)
+            }
+          }
+        }
+        index = this.assayList.findIndex(assay => assay.id === val.id)
+        this.assayList.splice(index, 1)
+      } else if (!val.active) {
+        // is vendor
+        if (val.hasItem) {
+          // remove items with same vendor id
+          for (let i = this.supplies.length - 1; i >= 0; i--) {
+            if (this.supplies[i].VendorId === val.id) {
+              this.supplies.splice(i, 1)
+            }
+          }
+        }
+        index = this.vendorList.findIndex(vendor => vendor.id === val.id)
+        this.vendorList.splice(index, 1)
+      }
+    },
+
     getCSV () {
       const csvbtn = document.getElementById('csvbtn')
       const fields = ['vendor', 'catalogNumber', 'assay.name', 'name', 'currentStock', 'lastUpdate']
