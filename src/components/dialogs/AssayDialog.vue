@@ -1,7 +1,7 @@
 <template>
   <div>
     <error :response="response"/>
-      <!-- snack -->
+    <!-- snack -->
     <v-snackbar
       v-model="snackbar"
       color="primary"
@@ -295,10 +295,12 @@ export default {
         this.response = await assayService.post(this.editedAssay)
 
         if (this.response.status === 200) {
-          this.currentItem.AssayId = this.response.data.id
-          this.assays.push(this.response.data)
-          this.assayNames.push(this.response.data.name)
-          this.snackText = `${this.response.data.name} saved`
+          let data = this.response.data
+
+          this.currentItem.AssayId = data.id
+          this.assays.push(data)
+          this.assayNames.push(data.name)
+          this.snackText = `${data.name} saved`
         }
       }
 
