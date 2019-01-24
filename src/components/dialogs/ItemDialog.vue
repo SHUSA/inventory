@@ -33,7 +33,7 @@
       max-width="500px"
       @keydown.enter="validateData()"
     >
-      <dialog-base :formTitle="formTitle">
+      <dialog-base :formTitle="formTitle" :data.sync="currentItem">
         <v-form slot="input-fields" ref="form" v-model="form" lazy-validation>
           <v-container>
             <v-layout row wrap>

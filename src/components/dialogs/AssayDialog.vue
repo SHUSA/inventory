@@ -18,7 +18,7 @@
       max-width="500px"
       @keydown.enter="validateData()"
     >
-      <dialog-base :formTitle="formTitle">
+      <dialog-base :formTitle="formTitle" :data.sync="currentAssay" :assays="assays" :reassigned.sync="resData">
         <v-form slot="input-fields" ref="form" v-model="form" lazy-validation>
           <v-container>
             <v-layout row wrap>
@@ -79,7 +79,8 @@ export default {
     'assayNameList',
     'assayList',
     'assayIndex',
-    'editedItem'
+    'editedItem',
+    'reassigned'
   ],
 
   components: {
@@ -226,6 +227,16 @@ export default {
       set (value) {
         this.$emit('update:assayList', value)
       }
+    },
+
+    resData: {
+      get () {
+        return this.reassigned
+      },
+
+      set (value) {
+        this.$emit('update:reassigned', value)
+      }
     }
   },
 
@@ -297,6 +308,7 @@ export default {
         if (this.response.status === 200) {
           let data = this.response.data
 
+          data.hasItem = true
           this.currentItem.AssayId = data.id
           this.assays.push(data)
           this.assayNames.push(data.name)

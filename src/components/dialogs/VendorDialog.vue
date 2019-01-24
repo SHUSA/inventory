@@ -18,7 +18,7 @@
       max-width="500px"
       @keydown.enter="validateData()"
     >
-      <dialog-base :formTitle="formTitle">
+      <dialog-base :formTitle="formTitle" :data.sync="currentVendor" :vendors="vendors" :reassigned.sync="resData">
         <v-form slot="input-fields" ref="form" v-model="form" lazy-validation>
           <v-container>
             <v-layout row wrap>
@@ -65,7 +65,8 @@ export default {
     'vendorNameList',
     'vendorList',
     'vendorIndex',
-    'editedItem'
+    'editedItem',
+    'reassigned'
   ],
 
   components: {
@@ -189,6 +190,16 @@ export default {
       set (value) {
         this.$emit('update:vendorList', value)
       }
+    },
+
+    resData: {
+      get () {
+        return this.reassigned
+      },
+
+      set (value) {
+        this.$emit('update:reassigned', value)
+      }
     }
   },
 
@@ -242,6 +253,7 @@ export default {
         if (this.response.status === 200) {
           let data = this.response.data
 
+          data.hasItem = true
           this.currentItem.VendorId = data.id
           this.vendors.push(data)
           this.vendorNames.push(data.name)
