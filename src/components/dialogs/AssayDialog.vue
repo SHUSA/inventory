@@ -249,7 +249,7 @@ export default {
     close () {
       setTimeout(() => {
         this.editedAssay = Object.assign({}, this.defaultAssay)
-        this.index = -1
+        // this.index = -1
         // this.currentAssay = {}
         this.dialog = false
       }, 300)

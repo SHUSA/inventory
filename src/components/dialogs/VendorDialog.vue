@@ -212,7 +212,7 @@ export default {
     close () {
       setTimeout(() => {
         this.editedVendor = Object.assign({}, this.defaultVendor)
-        this.index = -1
+        // this.index = -1
         // this.currentVendor = {}
         this.dialog = false
       }, 300)

@@ -336,7 +336,7 @@ export default {
     close () {
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
-        this.index = -1
+        // this.index = -1
         // this.currentItem = {}
         this.dialog = false
       }, 300)
