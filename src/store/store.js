@@ -23,12 +23,12 @@ export default new Vuex.Store({
     isAdminLoggedIn: false,
     storedOrder: '',
     storedFilters: [],
-    itemDialog: false,
-    assayDialog: false,
-    vendorDialog: false,
-    itemSave: false,
-    assaySave: false,
-    vendorSave: false
+    itemList: [],
+    assayList: [],
+    vendorList: [],
+    catalogNumbers: [],
+    assayNames: [],
+    vendorNames: []
   },
   mutations: {
     setUser (state, type) {
@@ -51,6 +51,24 @@ export default new Vuex.Store({
     },
     setFilters (state, data) {
       state.storedFilters = data
+    },
+    setItems (state, data) {
+      state.itemList = data
+    },
+    setAssays (state, data) {
+      state.assayList = data
+    },
+    setVendors (state, data) {
+      state.vendorList = data
+    },
+    setCatalogNumbers (state, data) {
+      state.catalogNumbers = data
+    },
+    setAssayNames (state, data) {
+      state.assayNames = data
+    },
+    setVendorNames (state, data) {
+      state.vendorNames = data
     }
   },
   actions: {
@@ -65,6 +83,24 @@ export default new Vuex.Store({
     },
     setFilters ({ commit }, data) {
       commit('setFilters', data)
+    },
+    setItems ({ commit }, data) {
+      commit('setItems', data)
+    },
+    setAssays ({ commit }, data) {
+      commit('setAssays', data)
+    },
+    setVendors ({ commit }, data) {
+      commit('setVendors', data)
+    },
+    setCatalogNumbers ({ commit }, data) {
+      commit('setCatalogNumbers', data)
+    },
+    setAssayNames ({ commit }, data) {
+      commit('setAssayNames', data)
+    },
+    setVendorNames ({ commit }, data) {
+      commit('setVendorNames', data)
     }
   }
 })
