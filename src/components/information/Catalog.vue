@@ -1,9 +1,35 @@
 <template>
   <v-card v-if="loadComponent" flat color="transparent">
-    <item-info :item.sync="selectedItem" :dialog.sync="itemInfoDialog" :assays="assays" :vendors="vendors"/>
-    <assay-info :assay.sync="selectedAssay" :dialog.sync="assayInfoDialog" :reassigned.sync="reassigned" :assays="assays"/>
-    <vendor-info :vendor.sync="selectedVendor" :dialog.sync="vendorInfoDialog" :reassigned.sync="reassigned" :vendors="vendors"/>
     <error :response="response"/>
+
+    <item-info
+      :item.sync="selectedItem"
+      :dialog.sync="itemInfoDialog"
+      :itemList.sync="items"
+      :assayList.sync="assays"
+      :vendorList.sync="vendors"
+      :catalogNumbers.sync="catalogNumbers"
+      :assayNameList.sync="assayNames"
+      :vendorNameList="vendorNames"
+      :itemIndex.sync="itemIndex"
+    />
+    <assay-info
+      :assay.sync="selectedAssay"
+      :dialog.sync="assayInfoDialog"
+      :reassigned.sync="reassigned"
+      :itemList.sync="items"
+      :assayList.sync="assays"
+      :assayNameList.sync="assayNames"
+      :assayIndex.sync="assayIndex"
+    />
+    <vendor-info
+      :vendor.sync="selectedVendor"
+      :dialog.sync="vendorInfoDialog"
+      :reassigned.sync="reassigned"
+      :vendorList.sync="vendors"
+      :vendorNameList="vendorNames"
+      :vendorIndex.sync="vendorIndex"
+    />
     <v-container fill-height grid-list-md>
       <v-layout row wrap>
         <v-flex xs12 class="caption">
@@ -40,6 +66,12 @@ export default {
       items: [],
       assays: [],
       vendors: [],
+      itemIndex: -1,
+      assayIndex: -1,
+      vendorIndex: -1,
+      catalogNumbers: [],
+      assayNames: [],
+      vendorNames: [],
       reassigned: {},
       response: '',
       loadComponent: false,
@@ -64,8 +96,20 @@ export default {
 
   watch: {
     itemInfoDialog (val) {
-      if (!val) {
+      if (!val && !this.selectedItem.active) {
         this.removeItems(this.selectedItem)
+      }
+    },
+
+    assayInfoDialog (val) {
+      if (!val && !this.selectedAssay.active) {
+        this.removeItems(this.selectedAssay)
+      }
+    },
+
+    vendorInfoDialog (val) {
+      if (!val && !this.selectedVendor.active) {
+        this.removeItems(this.selectedVendor)
       }
     },
 
@@ -122,6 +166,9 @@ export default {
         this.items = this.response.data
         this.assays = (await assayService.index()).data
         this.vendors = (await vendorService.index()).data
+        this.catalogNumbers = (await itemService.index(['catalogNumber'], [true, false])).data.map(item => item.catalogNumber)
+        this.vendorNames = (await vendorService.index(['name'], [true, false])).data.map(vendor => vendor.name.toUpperCase())
+        this.assayNames = (await assayService.index(['name'], [true, false])).data.map(assay => assay.name.toUpperCase())
 
         this.hasItem()
       }
@@ -151,7 +198,7 @@ export default {
         }
         index = this.assays.findIndex(assay => assay.id === val.id)
         this.assays.splice(index, 1)
-      } else if (!val.active) {
+      } else if (!val.active && val.hasOwnProperty('hasItem')) {
         // is vendor
         if (val.hasItem) {
           // remove items with same vendor id
@@ -190,12 +237,15 @@ export default {
 
     select (obj) {
       if (obj.hasOwnProperty('catalogNumber')) {
+        this.itemIndex = this.items.findIndex(item => item.id === obj.id)
         this.selectedItem = obj
         this.itemInfoDialog = true
       } else if (obj.hasOwnProperty('weeklyVolume')) {
+        this.assayIndex = this.assays.findIndex(assay => assay.id === obj.id)
         this.selectedAssay = obj
         this.assayInfoDialog = true
       } else {
+        this.vendorIndex = this.vendors.findIndex(vendor => vendor.id === obj.id)
         this.selectedVendor = obj
         this.vendorInfoDialog = true
       }
