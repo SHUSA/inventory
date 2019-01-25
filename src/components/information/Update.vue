@@ -9,20 +9,41 @@
       <ul>
         <!-- (li>{2019.01.DD - v2.xx}ul>li{update notes})+br -->
         <li>
+          2019.01.18 - v2.14, Catalog Information
+          <ul>
+            <li>User Inventory</li>
+            <ul>
+              <li>A popup will appear if an item passes a threshold (currentStock >= reorderPoint + reorderQuantity) and prompt the user to review the values</li>
+              <li>Input method for current stock has changed to accept leading decimal points (Ex. 0.4 vs .4)</li>
+              <li>An error message will open and card highlighted if the current stock has been entered incorrectly</li>
+            </ul>
+            <li>Catalog</li>
+            <ul>
+              <li>Allows access to details for items, assays, and vendors</li>
+              <li>Admin will be able to edit information</li>
+            </ul>
+            <li>Others</li>
+            <ul>
+              <li>Admin can reactivate inactive data to be reused or repurposed for something else</li>
+              <li>Activation and reassignments can be done in Admin Inventory</li>
+              <li>Orders will now be split between completed and incomplete folders to reduce the number of visible items on the Order page</li>
+              <li>Default values for new items changed</li>
+            </ul>
+          </ul>
+        </li>
+        <br>
+        <li>
           2019.01.09 - v2.13; Catalog and Inactive, Error Handling
           <ul>
             <li>Catalog</li>
             <ul>
               <li>Show all active Items, Assays, and Vendors</li>
               <li>Admin can deactivate and reassign assay/vendors from here</li>
-              <!-- <li>Allows access to details for items, assays, and vendors</li> -->
-              <!-- <li>Admin will be able to edit information</li> -->
             </ul>
             <li>Inactive</li>
             <ul>
               <li>Only visible to admin</li>
               <li>Admin can reactivate data</li>
-              <!-- <li>Admin can reactivate inactive data to be reused or repurposed for something else</li> -->
             </ul>
             <li>Others</li>
             <ul>
