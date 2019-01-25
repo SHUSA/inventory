@@ -3,6 +3,17 @@
       v-model="itemInfoDialog"
       max-width="400px"
     >
+      <item-dialog
+        :itemDialog.sync="itemDialog"
+        :selectedItem.sync="itemInfo"
+        :catalogNumbers.sync="catalogs"
+        :assayNameList.sync="assayNames"
+        :vendorNameList.sync="vendorNames"
+        :itemList.sync="items"
+        :assayList.sync="assays"
+        :vendorList.sync="vendors"
+        :editedIndex.sync="index"
+      />
       <info-card :data="itemInfo" :info="info">
         <template slot="subinfo">
           <v-card-text class="caption py-1">
@@ -38,7 +49,7 @@
         <template slot="actions">
           <v-spacer/>
           <v-tooltip left>
-            <v-btn slot="activator" small flat>
+            <v-btn slot="activator" small flat @click="itemDialog = true">
               <v-icon>fa-edit</v-icon>
             </v-btn>
             <span>Edit</span>
@@ -50,17 +61,24 @@
 
 <script>
 import InfoCard from './InfoCard'
+import ItemDialog from '../dialogs/ItemDialog'
 
 export default {
   props: [
     'item',
     'dialog',
-    'assays',
-    'vendors'
+    'itemList',
+    'assayList',
+    'vendorList',
+    'catalogNumbers',
+    'vendorNameList',
+    'assayNameList',
+    'itemIndex'
   ],
 
   components: {
-    InfoCard
+    InfoCard,
+    ItemDialog
   },
 
   data () {
@@ -70,7 +88,8 @@ export default {
       assayIcon: '',
       descriptionIcon: '',
       description: '',
-      hasComment: ''
+      hasComment: '',
+      itemDialog: false
     }
   },
 
@@ -156,6 +175,76 @@ export default {
         if (!value) {
           this.$emit('update:dialog', false)
         }
+      }
+    },
+
+    index: {
+      get () {
+        return this.itemIndex
+      },
+
+      set (value) {
+        this.$emit('update:itemIndex', value)
+      }
+    },
+
+    catalogs: {
+      get () {
+        return this.catalogNumbers
+      },
+
+      set (value) {
+        this.$emit('update:catalogNumbers', value)
+      }
+    },
+
+    assayNames: {
+      get () {
+        return this.assayNameList
+      },
+
+      set (value) {
+        this.$emit('update:assayNameList', value)
+      }
+    },
+
+    vendorNames: {
+      get () {
+        return this.vendorNameList
+      },
+
+      set (value) {
+        this.$emit('update:vendorNameList', value)
+      }
+    },
+
+    items: {
+      get () {
+        return this.itemList
+      },
+
+      set (value) {
+        this.$emit('update:itemList', value)
+      }
+    },
+
+    assays: {
+      get () {
+        return this.assayList
+      },
+
+      set (value) {
+        this.$emit('update:assayList', value)
+      }
+    },
+
+    vendors: {
+      get () {
+        return this.vendorList
+      },
+
+      set (value) {
+        this.$emit('update:vendorList', value)
       }
     }
   },

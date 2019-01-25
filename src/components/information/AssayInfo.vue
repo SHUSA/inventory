@@ -3,11 +3,21 @@
     v-model="assayInfoDialog"
     max-width="400px"
   >
+    <assay-dialog
+      :assayDialog.sync="assayDialog"
+      :selectedAssay.sync="currentAssay"
+      :itemList.sync="items"
+      :assayNameList.sync="assayNames"
+      :assayList.sync="assays"
+      :assayIndex.sync="index"
+      :editedItem="{}"
+      :reassigned.sync="resData"
+    />
     <info-card :data="assay" :assays="assays" :info="info" :reassigned.sync="resData">
       <template slot="actions">
         <v-spacer/>
         <v-tooltip left>
-          <v-btn slot="activator" small flat>
+          <v-btn slot="activator" small flat @click="assayDialog = true">
             <v-icon>fa-edit</v-icon>
           </v-btn>
           <span>Edit</span>
@@ -19,27 +29,33 @@
 
 <script>
 import InfoCard from './InfoCard'
+import AssayDialog from '../dialogs/AssayDialog'
 
 export default {
   props: [
     'assay',
-    'assays',
+    'itemList',
+    'assayList',
     'reassigned',
-    'dialog'
+    'dialog',
+    'assayNameList',
+    'assayIndex'
   ],
 
   components: {
-    InfoCard
+    InfoCard,
+    AssayDialog
   },
 
   data () {
     return {
-      info: []
+      info: [],
+      assayDialog: false
     }
   },
 
   watch: {
-    assay (value) {
+    currentAssay (value) {
       this.info = [
         {
           icon: 'fa-calendar-week',
@@ -100,6 +116,56 @@ export default {
 
       set (value) {
         this.$emit('update:reassigned', value)
+      }
+    },
+
+    index: {
+      get () {
+        return this.assayIndex
+      },
+
+      set (value) {
+        this.$emit('update:assayIndex', value)
+      }
+    },
+
+    currentAssay: {
+      get () {
+        return this.assay
+      },
+
+      set (value) {
+        this.$emit('update:assay', value)
+      }
+    },
+
+    assayNames: {
+      get () {
+        return this.assayNameList
+      },
+
+      set (value) {
+        this.$emit('update:assayNameList', value)
+      }
+    },
+
+    items: {
+      get () {
+        return this.itemList
+      },
+
+      set (value) {
+        this.$emit('update:itemList', value)
+      }
+    },
+
+    assays: {
+      get () {
+        return this.assayList
+      },
+
+      set (value) {
+        this.$emit('update:assayList', value)
       }
     }
   }
