@@ -7,7 +7,7 @@
         :selectedItem.sync="currentItem"
         :catalogNumbers.sync="catalogNumbers"
         :assayNameList.sync="assayNames"
-        :vendorNameList="vendorNames"
+        :vendorNameList.sync="vendorNames"
         :itemList.sync="supplies"
         :assayList.sync="assayList"
         :vendorList.sync="vendorList"
@@ -21,7 +21,7 @@
         :assayNameList.sync="assayNames"
         :assayList.sync="assayList"
         :assayIndex.sync="assayIndex"
-        :editedItem="{}"
+        :editedItem="currentItem"
         :reassigned.sync="reassigned"
       />
 
@@ -31,13 +31,13 @@
         :vendorNameList.sync="vendorNames"
         :vendorIndex.sync="vendorIndex"
         :vendorList.sync="vendorList"
-        :editedItem="{}"
+        :editedItem="currentItem"
         :reassigned.sync="reassigned"
       />
 
       <v-container>
         <v-layout row wrap>
-          <v-btn small dark color="primary" @click="itemDialog = true">
+          <v-btn small dark color="primary" @click="editItem({})">
             Add Item
           </v-btn>
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
@@ -201,19 +201,19 @@ export default {
 
   watch: {
     itemDialog (val) {
-      if (!val) {
+      if (!val && !this.currentItem.active) {
         this.removeItems(this.currentItem)
       }
     },
 
     assayDialog (val) {
-      if (!val) {
+      if (!val && !this.currentAssay.active) {
         this.removeItems(this.currentAssay)
       }
     },
 
     vendorDialog (val) {
-      if (!val) {
+      if (!val && !this.currentVendor.active) {
         this.removeItems(this.currentVendor)
       }
     },
@@ -339,11 +339,11 @@ export default {
     removeItems (val) {
       let index = null
       // remove items if their assay or vendor is deactivated
-      if (val.hasOwnProperty('catalogNumber') && !val.active) {
+      if (val.hasOwnProperty('catalogNumber')) {
         // remove inactive items from item list
         index = this.supplies.findIndex(item => item.id === val.id)
         this.supplies.splice(index, 1)
-      } else if (val.hasOwnProperty('weeklyVolume') && !val.active) {
+      } else if (val.hasOwnProperty('weeklyVolume')) {
         // is assay
         if (val.hasItem) {
           // remove items with same assay id
@@ -355,7 +355,7 @@ export default {
         }
         index = this.assayList.findIndex(assay => assay.id === val.id)
         this.assayList.splice(index, 1)
-      } else if (!val.active) {
+      } else if (val.hasOwnProperty('hasItem')) {
         // is vendor
         if (val.hasItem) {
           // remove items with same vendor id

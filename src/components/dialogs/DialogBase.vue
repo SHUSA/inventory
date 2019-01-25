@@ -31,7 +31,7 @@ import Deactivation from './Deactivation'
 export default {
   props: [
     'formTitle',
-    'data',
+    'dataInfo',
     'assays',
     'vendors',
     'reassigned'
@@ -78,6 +78,16 @@ export default {
 
       set (value) {
         this.$emit('update:reassigned', value)
+      }
+    },
+
+    data: {
+      get () {
+        return this.dataInfo
+      },
+
+      set (value) {
+        this.$emit('update:dataInfo', value)
       }
     }
   },

@@ -18,7 +18,7 @@
       max-width="500px"
       @keydown.enter="validateData()"
     >
-      <dialog-base :formTitle="formTitle" :data.sync="currentAssay" :assays="assays" :reassigned.sync="resData">
+      <dialog-base :formTitle="formTitle" :dataInfo.sync="currentAssay" :assays="assays" :reassigned.sync="resData">
         <v-form slot="input-fields" ref="form" v-model="form" lazy-validation>
           <v-container>
             <v-layout row wrap>
@@ -55,7 +55,7 @@
         <!-- actions -->
         <template slot="buttons">
           <v-progress-circular indeterminate color="primary" v-if="loading"/>
-          <v-btn flat color="error">Cancel</v-btn>
+          <v-btn flat color="error" @click="close">Cancel</v-btn>
           <v-btn flat color="primary" @click="validateData()">Save</v-btn>
         </template>
       </dialog-base>
@@ -141,7 +141,7 @@ export default {
       if (val) {
         if (this.index > -1) {
           // existing assay
-          this.editedAssay = Object.assign(this.editedAssay, this.selectedAssay)
+          this.editedAssay = Object.assign(this.editedAssay, this.currentAssay)
           this.formTitle = `Editing ${this.selectedAssay.name}`
         } else {
           // new assay
@@ -250,7 +250,7 @@ export default {
       setTimeout(() => {
         this.editedAssay = Object.assign({}, this.defaultAssay)
         this.index = -1
-        this.currentAssay = {}
+        // this.currentAssay = {}
         this.dialog = false
       }, 300)
     },
@@ -271,7 +271,11 @@ export default {
       let assayInfo = {}
 
       if (this.index > -1) {
-        // existing assay
+        // existing assay]
+        // update active state if changed
+        if (this.currentAssay.active !== this.editedAssay.active) {
+          this.editedAssay.active = this.currentAssay.active
+        }
         this.response = await assayService.put(this.editedAssay)
 
         if (this.response.status === 200) {

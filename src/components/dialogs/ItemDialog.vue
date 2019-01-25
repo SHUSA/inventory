@@ -33,7 +33,7 @@
       max-width="500px"
       @keydown.enter="validateData()"
     >
-      <dialog-base :formTitle="formTitle" :data.sync="currentItem">
+      <dialog-base :formTitle="formTitle" :dataInfo.sync="currentItem">
         <v-form slot="input-fields" ref="form" v-model="form" lazy-validation>
           <v-container>
             <v-layout row wrap>
@@ -113,7 +113,7 @@
         <!-- actions -->
         <template slot="buttons">
           <v-progress-circular indeterminate color="primary" v-if="loading"/>
-          <v-btn flat color="error">Cancel</v-btn>
+          <v-btn flat color="error" @click="close()">Cancel</v-btn>
           <v-btn flat color="primary" @click="validateData()">Save</v-btn>
         </template>
       </dialog-base>
@@ -222,7 +222,7 @@ export default {
   watch: {
     dialog (val) {
       if (val) {
-        this.editedItem = Object.assign(this.editedItem, this.selectedItem)
+        this.editedItem = Object.assign(this.editedItem, this.currentItem)
         this.formTitle = this.index === -1 ? 'New Item' : `Editing ${this.editedItem.name}`
       } else {
         this.close()
@@ -337,7 +337,7 @@ export default {
       setTimeout(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.index = -1
-        this.currentItem = {}
+        // this.currentItem = {}
         this.dialog = false
       }, 300)
     },
@@ -363,12 +363,15 @@ export default {
 
       if (this.index > -1) {
         // existing item
-        let focusedItem = this.items[this.index]
         this.editedItem.updatedAt = Date.now()
-        this.response = await itemService.put(focusedItem.id, this.editedItem, assayInfo)
+        // update active state if changed
+        if (this.currentItem.active !== this.editedItem.active) {
+          this.editedItem.active = this.currentItem.active
+        }
+        this.response = await itemService.put(this.currentItem.id, this.editedItem, assayInfo)
 
         if (this.response.status === 200) {
-          Object.assign(focusedItem, this.response.data[0])
+          Object.assign(this.items[this.index], this.response.data[0])
           if (this.currentItem.catalogNumber !== this.editedItem.catalogNumber) {
             let index = this.catalogs.indexOf(this.editedItem.catalogNumber)
             this.catalogs[index] = this.currentItem.catalogNumber

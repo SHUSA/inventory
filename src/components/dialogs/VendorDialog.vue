@@ -18,7 +18,7 @@
       max-width="500px"
       @keydown.enter="validateData()"
     >
-      <dialog-base :formTitle="formTitle" :data.sync="currentVendor" :vendors="vendors" :reassigned.sync="resData">
+      <dialog-base :formTitle="formTitle" :dataInfo.sync="currentVendor" :vendors="vendors" :reassigned.sync="resData">
         <v-form slot="input-fields" ref="form" v-model="form" lazy-validation>
           <v-container>
             <v-layout row wrap>
@@ -44,7 +44,7 @@
         <!-- actions -->
         <template slot="buttons">
           <v-progress-circular indeterminate color="primary" v-if="loading"/>
-          <v-btn flat color="error">Cancel</v-btn>
+          <v-btn flat color="error" @click="close()">Cancel</v-btn>
           <v-btn flat color="primary" @click="validateData()">Save</v-btn>
         </template>
       </dialog-base>
@@ -114,7 +114,7 @@ export default {
       if (val) {
         if (this.index > -1) {
           // existing vendor
-          this.editedVendor = Object.assign(this.editedVendor, this.selectedVendor)
+          this.editedVendor = Object.assign(this.editedVendor, this.currentVendor)
           this.formTitle = `Editing ${this.selectedVendor.name}`
         } else {
           // new vendor
@@ -213,7 +213,7 @@ export default {
       setTimeout(() => {
         this.editedVendor = Object.assign({}, this.defaultVendor)
         this.index = -1
-        this.currentVendor = {}
+        // this.currentVendor = {}
         this.dialog = false
       }, 300)
     },
@@ -235,6 +235,10 @@ export default {
 
       if (this.index > -1) {
         // existing vendor
+        // update active state if changed
+        if (this.currentVendor.active !== this.editedVendor.active) {
+          this.editedVendor.active = this.currentVendor.active
+        }
         this.response = await vendorService.put(this.editedVendor)
 
         if (this.response.status === 200) {
