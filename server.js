@@ -11,7 +11,7 @@ const app = express()
 app.use(morgan('combined'))
 app.use(bodyParser.json())
 app.use(cors())
-// require('./server/passport')
+require('./server/passport')
 require('./server/routes')(app)
 
 // create middleware to handle the serving the app
