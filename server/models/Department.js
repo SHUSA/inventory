@@ -10,11 +10,21 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       required: true
     },
+    location: {
+      type: DataTypes.STRING,
+      required: true
+    },
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
     }
   })
+
+  Department.associate = function (models) {
+    Department.hasMany(models.Order)
+    Department.hasMany(models.Assay)
+    Department.hasMany(models.User)
+  }
 
   return Department
 }

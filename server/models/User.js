@@ -24,18 +24,42 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4
     },
     email: {
-      type: DataTypes.STRING,
-      unique: true
+      type: DataTypes.STRING
     },
-    password: DataTypes.STRING,
-    initials: DataTypes.STRING,
+    password: {
+      type: DataTypes.STRING,
+      required: true
+    },
+    passwordHint: {
+      type: DataTypes.STRING,
+      defaultValue: 'No hints!'
+    },
     username: {
       type: DataTypes.STRING,
+      required: true,
       unique: true
     },
-    accessLevel: {
-      type: DataTypes.INTEGER,
-      defaultValue: 1
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    itemDefaults: {
+      type: DataTypes.JSONB,
+      defaultValue: {
+        weeksOfSafetyStock: 4,
+        leadTimeDays: 7,
+        weeksOfReorder: 4
+      }
+    },
+    assayDefaults: {
+      type: DataTypes.JSONB,
+      defaultValue: {
+        weeklyVolume: 0,
+        weeklyRuns: 0,
+        controlsPerRun: 0,
+        maxBatchSize: 0,
+        sampleReplicates: 0
+      }
     }
   }, {
     hooks: {

@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Assay.associate = function (models) {
     Assay.belongsTo(models.Department)
+    Assay.hasMany(models.Item)
   }
 
   return Assay
