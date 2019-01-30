@@ -357,7 +357,6 @@ export default {
     async save () {
       let assayInfo = this.assays.find(assay => assay.id === this.editedItem.AssayId)
 
-      this.editedItem.catalogNumber = this.editedItem.catalogNumber.toUpperCase()
       // scaling to account for weird JS math
       this.editedItem.currentStock = parseInt(this.editedItem.currentStock * 100 + 0.01) / 100
 
