@@ -25,7 +25,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
       unique: true,
       validate: {
         isEmail: true,
@@ -69,7 +68,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
-      // beforeCreate: hashPassword,
+      beforeCreate: function (user) {
+        user.username = user.username.toLowerCase()
+        if (!user.email || user.email.length === 0 || user.email === undefined) {
+          user.email = `${user.username.replace(/ /g, '').toLowerCase()}@bar.com`
+        } else {
+          user.email = user.email.toLowerCase()
+        }
+        return user
+      },
       beforeUpdate: hashPassword,
       beforeSave: hashPassword
     }

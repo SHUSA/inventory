@@ -3,18 +3,15 @@ const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
 function jwtSignUser (user) {
-  const THIRTY_MINUTES = 60 * 30
+  const ONE_DAY = 60 * 60 * 24
   return jwt.sign(user, config.authentication.jwtSecret, {
-    expiresIn: THIRTY_MINUTES
+    expiresIn: ONE_DAY
   })
 }
 
 module.exports = {
   async register (req, res) {
     let user = req.body
-    if (!user.email || user.email.length === 0 || user.email === undefined) {
-      user.email = `${user.username.replace(/ /g, '').toLowerCase()}@bar.com`
-    }
     try {
       const userJson = (await User.create(user)).toJSON()
       res.send({
