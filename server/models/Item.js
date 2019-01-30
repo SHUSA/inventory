@@ -53,6 +53,17 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: true
     },
     image: DataTypes.BLOB
+  }, {
+    hooks: {
+      beforeCreate: function (item) {
+        item.catalogNumber = item.catalogNumber.toUpperCase()
+        return item
+      },
+      beforeUpdate: function (item) {
+        item.catalogNumber = item.catalogNumber.toUpperCase()
+        return item
+      }
+    }
   })
 
   Item.associate = function (models) {
