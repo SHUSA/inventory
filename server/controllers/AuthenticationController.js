@@ -4,36 +4,26 @@ const config = require('../config/config')
 
 function jwtSignUser (user) {
   const THIRTY_MINUTES = 60 * 30
-  return jwt.sign(user, config.jwtSecret, {
+  return jwt.sign(user, config.authentication.jwtSecret, {
     expiresIn: THIRTY_MINUTES
   })
 }
 
 module.exports = {
   async register (req, res) {
-    const user = req.body
-    const userData = {}
-    for (let key in user) {
-      userData[key] = user[key]
+    let user = req.body
+    if (!user.email || user.email.length === 0 || user.email === undefined) {
+      user.email = `${user.username.replace(/ /g, '').toLowerCase()}@bar.com`
     }
-    const newUser = new User(userData)
-    const userJson = newUser.toJSON()
     try {
-      await newUser.save((err) => {
-        if (err) {
-          console.log(err)
-          res.send(err)
-        } else {
-          res.send({
-            user: userJson,
-            token: jwtSignUser(userJson)
-          })
-        }
+      const userJson = (await User.create(user)).toJSON()
+      res.send({
+        user: userJson,
+        token: jwtSignUser(userJson)
       })
     } catch (error) {
-      res.status(400).send({
-        error: 'This email account is already in use.'
-      })
+      console.log(error)
+      res.status(400).send(error.errors)
     }
   },
 
