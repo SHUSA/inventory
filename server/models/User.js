@@ -69,11 +69,15 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
       beforeCreate: function (user) {
-        user.username = user.username.toLowerCase()
+        // default email
         if (!user.email || user.email.length === 0 || user.email === undefined) {
           user.email = `${user.username.replace(/ /g, '').toLowerCase()}@bar.com`
         } else {
           user.email = user.email.toLowerCase()
+        }
+        // default password for regular users
+        if (!user.password || user.password.length === 0 || user.password === undefined) {
+          user.password = `${user.username.replace(/ /g, '')}123`
         }
         return user
       },
