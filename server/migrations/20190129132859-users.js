@@ -27,7 +27,6 @@ module.exports = {
     }})).dataValues
 
     await User.create({
-      password: '12345678',
       username: 'Administrator',
       isAdmin: true,
       DepartmentId: department.id
@@ -38,8 +37,7 @@ module.exports = {
     }})).dataValues
 
     await User.create({
-      password: '12345678',
-      username: 'Molecular Admin',
+      username: 'MolecularAdmin',
       isAdmin: true,
       DepartmentId: department.id
     })

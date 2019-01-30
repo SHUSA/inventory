@@ -1,4 +1,5 @@
 const { User } = require('../models')
+const { Department } = require('../models')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
@@ -32,6 +33,7 @@ module.exports = {
     }
 
     try {
+      // to do: refactor
       await User.update({_id: req.body.id}, userData, (err, doc) => {
         if (err) {
           console.log(err)
@@ -50,34 +52,37 @@ module.exports = {
     }
   },
 
+  // create route for password recovery
+
   async login (req, res) {
-    const {name, password} = req.body
-    // name field for general login
     try {
-      await User.find({
-        $or: [
-          {email: name},
-          {usename: name}
-        ]}, (err, user) => {
-        if (err) {
-          console.log(err)
-        } else {
-          const isPasswordValid = user.comparePassword(password)
+      const {name, password} = req.body
+      const user = await User.findOne({
+        where: {
+          $or: [
+            {email: name},
+            {username: name}
+          ]
+        },
+        include: [Department]
+      })
 
-          if (!user || !isPasswordValid) {
-            return res.status(403).send({
-              error: 'Login information is incorrect'
-            })
-          }
+      const isPasswordValid = await user.comparePassword(password)
 
-          const userJson = user.toJSON()
-          res.send({
-            user: userJson,
-            token: jwtSignUser(userJson)
-          })
-        }
+      if (!user || !isPasswordValid) {
+        return res.status(403).send({
+          error: 'Login information is incorrect'
+        })
+      }
+
+      const userJson = user.toJSON()
+      
+      res.send({
+        user: userJson,
+        token: jwtSignUser(userJson)
       })
     } catch (error) {
+      console.log(error)
       res.status(500).send({
         error: 'An error has occured trying to log in'
       })
