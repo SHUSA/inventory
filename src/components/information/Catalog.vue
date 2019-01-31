@@ -89,7 +89,6 @@ export default {
   computed: {
     ...mapState([
       'pageTitle',
-      'admin',
       'user'
     ])
   },

@@ -84,7 +84,6 @@ export default {
   computed: {
     ...mapState([
       'user',
-      'admin',
       'route',
       'storedFilters'
     ]),
@@ -166,7 +165,7 @@ export default {
         this.selected = this.assays.map(x => x.id)
       }
       this.$store.dispatch('setFilters', this.selected)
-      let route = this.user ? 'inventory-user' : 'inventory-admin'
+      let route = this.user.isUserLoggedIn ? 'inventory-admin' : 'inventory-user'
       this.$router.push({
         name: route
       })

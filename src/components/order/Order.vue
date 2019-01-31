@@ -56,10 +56,10 @@
                   <v-flex xs5>
                     <v-text-field
                       ref="orderAmount"
-                      :clearable="admin"
+                      :clearable="user.isUserLoggedIn"
                       label="Order Amount" type="number"
                       v-model="editedEntry.orderAmount"
-                      :disabled="!admin"
+                      :disabled="!user.isUserLoggedIn"
                       validate-on-blur
                       :rules="[rules.number]"
                     />
@@ -83,7 +83,7 @@
               </v-container>
             </v-card-text>
             <v-card-actions>
-              <v-btn v-if="admin" color="error" @click="deactivationDialog = true" small>Delete</v-btn>
+              <v-btn v-if="user.isUserLoggedIn" color="error" @click="deactivationDialog = true" small>Delete</v-btn>
               <v-spacer/>
               <v-progress-circular indeterminate color="primary" v-if="loading"/>
               <v-btn color="error" flat @click="closeEditEntry()">Cancel</v-btn>
@@ -140,8 +140,8 @@
       <v-container>
         <!-- control area -->
         <v-layout row wrap>
-          <v-btn v-if="!thisOrder.completed && admin" slot="activator" color="primary" class="mb-0" dark small @click="completedDialog = !completedDialog">Complete Order</v-btn>
-          <v-btn v-if="thisOrder.completed && admin" slot="activator" color="error" class="mb-0" dark small @click="completedDialog = !completedDialog">Undo Complete</v-btn>
+          <v-btn v-if="!thisOrder.completed && user.isUserLoggedIn" slot="activator" color="primary" class="mb-0" dark small @click="completedDialog = !completedDialog">Complete Order</v-btn>
+          <v-btn v-if="thisOrder.completed && user.isUserLoggedIn" slot="activator" color="error" class="mb-0" dark small @click="completedDialog = !completedDialog">Undo Complete</v-btn>
 
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
             <v-icon small class="pr-1">fa-file-download</v-icon>
@@ -321,7 +321,7 @@ export default {
 
   computed: {
     ...mapState([
-      'admin',
+      'user',
       'storedOrder'
     ]),
 

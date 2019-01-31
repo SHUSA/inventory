@@ -36,7 +36,7 @@
     </v-card-text>
     <v-divider/>
     <!-- card actions -->
-    <template v-if="admin">
+    <template v-if="user.isUserLoggedIn">
       <v-card-actions>
         <v-tooltip right>
             <v-btn slot="activator" small flat @click="deactivate = true">
@@ -116,7 +116,6 @@ export default {
 
   computed: {
     ...mapState([
-      'admin',
       'user'
     ]),
 

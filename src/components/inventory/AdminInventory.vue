@@ -252,7 +252,6 @@ export default {
   computed: {
     ...mapState([
       'pageTitle',
-      'admin',
       'user',
       'storedFilters'
     ]),
@@ -294,6 +293,12 @@ export default {
   },
 
   async mounted () {
+    // redirect if user
+    if (!this.user.isUserLoggedIn) {
+      this.$router.push({
+        name: 'index'
+      })
+    }
     // initialize variables
     this.loadComponent = false
     this.response = (await itemService.show(this.storedFilters))

@@ -26,7 +26,6 @@ export default {
   computed: {
     ...mapState([
       'user',
-      'admin',
       'pageTitle'
     ])
   }

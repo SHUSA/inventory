@@ -90,14 +90,13 @@ export default {
   computed: {
     ...mapState([
       'user',
-      'admin',
       'route'
     ])
   },
 
   mounted () {
     // redirect if user
-    if (this.user) {
+    if (!this.user.isUserLoggedIn) {
       this.$router.push({
         name: 'index'
       })

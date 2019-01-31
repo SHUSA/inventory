@@ -318,7 +318,6 @@ export default {
   computed: {
     ...mapState([
       'pageTitle',
-      'admin',
       'user',
       'storedFilters'
     ]),
@@ -705,10 +704,10 @@ export default {
       itemArr.map(item => {
         entry = this.createEntry(item)
         // add to itemsToOrder if reorderPoint triggered or has a manual order and is a user
-        if ((item.order || this.checkQuantity(item)) && this.user) {
+        if ((item.order || this.checkQuantity(item))) {
           itemsToOrder.push(entry)
         // add to doNotOrder if reorderPoint not triggered and is user
-        } else if (!this.checkQuantity(item) && this.user) {
+        } else if (!this.checkQuantity(item)) {
           doNotOrder.push(entry)
         }
       })
