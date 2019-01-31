@@ -56,12 +56,12 @@ module.exports = {
 
   async login (req, res) {
     try {
-      const {name, password} = req.body
+      const {username, password} = req.body
       const user = await User.findOne({
         where: {
           $or: [
-            {email: name},
-            {username: name}
+            {email: username},
+            {username: username}
           ]
         },
         include: [Department]
