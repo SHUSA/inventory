@@ -4,23 +4,18 @@ import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  strict: true,
-  plugins: [
-    createPersistedState()
-  ],
-  state: {
-    // set to true for testing
-    users: {
-      user: true,
-      admin: true
+function initialState () {
+  return {
+    user: {
+      info: {},
+      department: null,
+      itemDefaults: {},
+      assayDefaults: {},
+      isUserLoggedIn: false
     },
-    welcome: '',
-    pageTitle: '',
     token: null,
-    userId: null,
-    isUserLoggedIn: false,
-    isAdminLoggedIn: false,
+    welcome: 'Hello User!',
+    pageTitle: '',
     storedOrder: '',
     storedFilters: [],
     itemList: [],
@@ -29,19 +24,58 @@ export default new Vuex.Store({
     catalogNumbers: [],
     assayNames: [],
     vendorNames: []
-  },
+  }
+}
+
+export default new Vuex.Store({
+  strict: true,
+  plugins: [
+    createPersistedState({storage: window.sessionStorage})
+  ],
+  state: initialState(),
   mutations: {
-    setUser (state, type) {
-      for (let key in state.users) {
-        if (key === type) {
-          // always true for testing
-          state.welcome = `Hello ${type}!`
-          state[key] = true
-        } else {
-          // set to true for testing
-          state[key] = false
+    resetAll (state) {
+      const initial = initialState()
+      Object.keys(initial).forEach(key => {
+        state[key] = initial[key]
+      })
+    },
+    setUser (state, user) {
+      if (user === 'user') {
+        state.welcome = 'Hello User!'
+      } else {
+        state.user.info = {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          isAdmin: user.isAdmin,
+          passwordHint: user.passwordHint
         }
+        state.user.department = user.department
+        state.welcome = `Hello ${state.user.info.username}!`
       }
+    },
+    setToken (state, token) {
+      // to do: account for general user vs admin
+      state.token = token
+      if (token) {
+        state.user.isUserLoggedIn = true
+      } else {
+        state.user.isUserLoggedIn = false
+      }
+    },
+    setSettings (state, settings) {
+      state.user.itemDefaults = settings.itemDefaults
+      state.user.assayDefaults = settings.assayDefaults
+    },
+    resetCredentials (state) {
+      state.user = Object.assign(state.user, {
+        info: {},
+        department: null,
+        itemDefaults: {},
+        assayDefaults: {},
+        isUserLoggedIn: false
+      })
     },
     setTitle (state, title) {
       state.pageTitle = title
@@ -72,8 +106,20 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    setUser ({ commit }, type) {
-      commit('setUser', type)
+    async setUser ({ dispatch, commit }, user) {
+      if (user === 'user') {
+        await dispatch('resetCredentials')
+      }
+      commit('setUser', user)
+    },
+    setToken ({ commit }, token) {
+      commit('setToken', token)
+    },
+    setSettings ({ commit }, settings) {
+      commit('setSettings', settings)
+    },
+    resetCredentials ({commit}) {
+      commit('resetCredentials')
     },
     setTitle ({ commit }, title) {
       commit('setTitle', title)
@@ -101,6 +147,9 @@ export default new Vuex.Store({
     },
     setVendorNames ({ commit }, data) {
       commit('setVendorNames', data)
+    },
+    resetAll ({ commit }) {
+      commit('resetAll')
     }
   }
 })
