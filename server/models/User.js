@@ -77,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
         }
         // default password for regular users
         if (!user.password || user.password.length === 0 || user.password === undefined) {
-          user.password = `${user.username.replace(/ /g, '')}123`
+          user.password = `${user.username.replace(/ /g, '').slice(0, 5)}123`
         }
         return user
       },
