@@ -27,7 +27,6 @@
           <v-list-tile
             v-for="(item, index) in routes" :key="index"
             @click="goTo(item)"
-            v-if="checkUser(item)"
           >
             <v-list-tile-title>{{item}}</v-list-tile-title>
           </v-list-tile>
@@ -38,8 +37,8 @@
     <v-toolbar-items>
       <!-- login and other info -->
       <v-btn flat disabled class="display"><span class="white--text">{{welcome}}</span></v-btn>
-      <v-btn flat @click="login">
-        Login
+      <v-btn v-if="this.$route.name !== 'login'" flat @click="login">
+        Log Out
       </v-btn>
       <v-btn flat class="display">
         {{time}}
@@ -57,17 +56,22 @@ export default {
     return {
       time: this.$moment().format('MMM DD, YYYY'),
       title: 'Molecular Inventory',
-      help: false,
-      routes: ['Inventory', 'Orders', 'Catalog', 'Inactive']
+      help: false
     }
   },
   computed: {
     ...mapState([
       'pageTitle',
-      'admin',
       'user',
       'welcome'
-    ])
+    ]),
+    routes () {
+      if (this.user.isUserLoggedIn) {
+        return ['Inventory', 'Orders', 'Catalog', 'Inactive']
+      } else {
+        return ['Inventory', 'Orders', 'Catalog']
+      }
+    }
   },
 
   components: {
@@ -85,14 +89,6 @@ export default {
       this.$router.push({
         name: route.toLowerCase()
       })
-    },
-
-    checkUser (item) {
-      if (item === 'Inactive' && this.user) {
-        return false
-      } else {
-        return true
-      }
     }
   }
 }
