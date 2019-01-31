@@ -130,7 +130,6 @@ export default {
     },
 
     validateData () {
-      // checks input entry for numbers
       if (this.$refs.form.validate()) {
         this.alert = false
         this.loading = true
@@ -166,7 +165,6 @@ export default {
           })
         } else {
           // failure
-          // display password hint as alert
           this.alertMessage = response.data.error
           this.loading = false
           this.alert = true
