@@ -7,14 +7,18 @@ Vue.use(Vuex)
 function initialState () {
   return {
     user: {
-      info: {},
-      department: null,
+      id: '',
+      username: '',
+      email: '',
+      isAdmin: false,
+      passwordHint: '',
+      department: {},
       itemDefaults: {},
       assayDefaults: {},
       isUserLoggedIn: false
     },
     token: null,
-    welcome: 'Hello User!',
+    welcome: '',
     pageTitle: '',
     storedOrder: '',
     storedFilters: [],
@@ -30,7 +34,8 @@ function initialState () {
 export default new Vuex.Store({
   strict: true,
   plugins: [
-    createPersistedState({storage: window.sessionStorage})
+    createPersistedState()
+    // createPersistedState({storage: window.sessionStorage})
   ],
   state: initialState(),
   mutations: {
@@ -44,15 +49,15 @@ export default new Vuex.Store({
       if (user === 'user') {
         state.welcome = 'Hello User!'
       } else {
-        state.user.info = {
+        state.user = Object.assign(state.user, {
           id: user.id,
           username: user.username,
           email: user.email,
           isAdmin: user.isAdmin,
           passwordHint: user.passwordHint
-        }
-        state.user.department = user.department
-        state.welcome = `Hello ${state.user.info.username}!`
+        })
+        state.user.department = user.Department
+        state.welcome = `Hello ${state.user.username}!`
       }
     },
     setToken (state, token) {
@@ -67,15 +72,6 @@ export default new Vuex.Store({
     setSettings (state, settings) {
       state.user.itemDefaults = settings.itemDefaults
       state.user.assayDefaults = settings.assayDefaults
-    },
-    resetCredentials (state) {
-      state.user = Object.assign(state.user, {
-        info: {},
-        department: null,
-        itemDefaults: {},
-        assayDefaults: {},
-        isUserLoggedIn: false
-      })
     },
     setTitle (state, title) {
       state.pageTitle = title
@@ -106,10 +102,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async setUser ({ dispatch, commit }, user) {
-      if (user === 'user') {
-        await dispatch('resetCredentials')
-      }
+    setUser ({ commit }, user) {
       commit('setUser', user)
     },
     setToken ({ commit }, token) {
@@ -117,9 +110,6 @@ export default new Vuex.Store({
     },
     setSettings ({ commit }, settings) {
       commit('setSettings', settings)
-    },
-    resetCredentials ({commit}) {
-      commit('resetCredentials')
     },
     setTitle ({ commit }, title) {
       commit('setTitle', title)
