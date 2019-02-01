@@ -61,9 +61,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: {
         weeklyVolume: 0,
         weeklyRuns: 0,
-        controlsPerRun: 0,
-        maxBatchSize: 0,
-        sampleReplicates: 0
+        controlsPerRun: 0
       }
     }
   }, {
