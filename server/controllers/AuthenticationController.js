@@ -67,9 +67,15 @@ module.exports = {
         include: [Department]
       })
 
+      if (!user) {
+        return res.status(403).send({
+          error: 'Login information is incorrect'
+        })
+      }
+
       const isPasswordValid = await user.comparePassword(password)
 
-      if (!user || !isPasswordValid) {
+      if (!isPasswordValid) {
         return res.status(403).send({
           error: 'Login information is incorrect'
         })
