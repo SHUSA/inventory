@@ -264,7 +264,7 @@ export default {
         }
       }
 
-      if (!this.alert) {
+      if (!this.alert && this.response.status === 200) {
         this.loading = false
         this.openSnack(this.snackText)
         this.close()
