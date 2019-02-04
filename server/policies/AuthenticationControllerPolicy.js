@@ -8,7 +8,7 @@ module.exports = {
         new RegExp('^[a-zA-Z0-9]{8,32}$')
       ),
       username: Joi.string().regex(
-        new RegExp('^[a-zA-Z0-9]{3}$')
+        new RegExp('^[a-zA-Z0-9]{3,}$')
       )
     }
 
@@ -17,7 +17,7 @@ module.exports = {
       switch (error.details[0].context.key) {
         case 'username':
           res.status(400).send({
-            error: 'Username must be at least 5 characters and only alphanumberic values'
+            error: 'Username must be at least 3 characters and only alphanumberic values'
           })
           break
         case 'password':
