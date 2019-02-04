@@ -26,29 +26,32 @@ module.exports = {
   },
 
   async update (req, res) {
-    const user = req.body
-    const userData = {}
-    for (let key in user) {
-      userData[key] = user[key]
+    let user = req.body
+    if (user.password === '' || user.password === null || user.password === undefined) {
+      delete user.password
     }
-
     try {
-      // to do: refactor
-      await User.update({_id: req.body.id}, userData, (err, doc) => {
-        if (err) {
-          console.log(err)
-          res.send(err)
-        } else {
-          res.send({
-            user: userData,
-            token: jwtSignUser(userData)
-          })
-        }
+      let result = await User.update(user, {
+        where: {
+          id: user.id
+        },
+        returning: true,
+        plain: true
+      })
+      result = (await User.findOne({
+        where: {
+          id: result[1].dataValues.id
+        },
+        include: [Department]
+      })).toJSON()
+
+      res.send({
+        user: result,
+        token: jwtSignUser(user)
       })
     } catch (error) {
-      res.status(500).send({
-        error: 'Cannot update account'
-      })
+      console.log(error)
+      res.status(500).send(error)
     }
   },
 
@@ -77,7 +80,8 @@ module.exports = {
 
       if (!isPasswordValid) {
         return res.status(403).send({
-          error: 'Login information is incorrect'
+          error: 'Login information is incorrect',
+          hint: user.passwordHint
         })
       }
 
