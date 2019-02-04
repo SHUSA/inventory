@@ -7,9 +7,18 @@
     <v-divider/>
     <v-card-text>
       <ul>
-        <!-- (li>{2019.01.DD - v2.xx}ul>li{update notes})+br -->
+        <!-- (li>{2019.02.DD - v.1.xx}ul>li{update notes})+br -->
         <li>
-          2019.01.18 - v2.14, Catalog Information
+          2019.02.04 - v.1.00, User Authorization and Admin Login
+          <ul>
+            <li>Admin now has a login</li>
+            <li>Admin can change their own settings</li>
+            <li>User currently does not require a password</li>
+          </ul>
+        </li>
+        <br>
+        <li>
+          2019.01.18 - v.b2.14, Catalog Information
           <ul>
             <li>User Inventory</li>
             <ul>
@@ -33,7 +42,7 @@
         </li>
         <br>
         <li>
-          2019.01.09 - v2.13; Catalog and Inactive, Error Handling
+          2019.01.09 - v.b2.13; Catalog and Inactive, Error Handling
           <ul>
             <li>Catalog</li>
             <ul>
@@ -54,7 +63,7 @@
         </li>
         <br>
         <li>
-          2018.12.21 - v2.12; User Search, Single Item Edits, Order Edit
+          2018.12.21 - v.b2.12; User Search, Single Item Edits, Order Edit
           <ul>
             <li>User Inventory</li>
             <ul>
@@ -79,7 +88,7 @@
         </li>
         <br>
         <li>
-          2018.12.DD - v2.1, Bug Fixes
+          2018.12.DD - v.b2.1, Bug Fixes
           <ul>
             <li>Changed Order url path to prevent conflicts from a running process</li>
             <li>UserInventory card transitions smoothened out</li>
@@ -89,7 +98,7 @@
         </li>
         <br>
         <li>
-          2018.12.12 - v2.1, User UI Update <v-icon small>far fa-smile-beam</v-icon>
+          2018.12.12 - v.b2.1, User UI Update <v-icon small>far fa-smile-beam</v-icon>
           <ul>
             <li>User UI heavily overhauled</li>
             <ul>
@@ -105,7 +114,7 @@
         </li>
         <br>
         <li>
-          2018.12.06 - v2.05, Quick Fix
+          2018.12.06 - v.b2.05, Quick Fix
           <ul>
             <!-- <li>UI change for User</li> -->
             <!-- <li>Activation/deactivation of items, assay, vendors available</li> -->
@@ -117,7 +126,7 @@
         </li>
         <br>
         <li>
-          2018.11.27 - v2.0, Workflow
+          2018.11.27 - v.b2.0, Workflow
           <ul>
             <li>UI and workflow rework</li>
             <li>Pre-filters added for Inventory</li>
@@ -127,14 +136,14 @@
         </li>
         <br>
         <li>
-          2018.11.05 - v1.7.17, Duplicates
+          2018.11.05 - v.b1.7.17, Duplicates
           <ul>
             <li>Cleaned up duplicate Assay and Vendor validation when creating/editing Assays and Vendors</li>
           </ul>
         </li>
         <br>
         <li>
-          2018.10.31 - v1.7.16, Quick Fix and Add All Assays
+          2018.10.31 - v.b1.7.16, Quick Fix and Add All Assays
           <ul>
             <li>Quick fix to order of assays to be A->Z</li>
             <li>Outstanding assays will have a red number badge</li>
@@ -145,7 +154,7 @@
         </li>
         <br>
         <li>
-          2018.10.29 - v1.7.15, CSVs and Notices
+          2018.10.29 - v.b1.7.15, CSVs and Notices
           <ul>
             <li>CSV printouts now reflect what you see in the table in the same order</li>
             <li>Dirty incomplete Orders are now visible</li>
@@ -161,7 +170,7 @@
         </li>
         <br>
         <li>
-          2018.10.24 - v1.7.14, Orders
+          2018.10.24 - v.b1.7.14, Orders
           <ul>
             <li>Added csv download to Orders</li>
             <li>Added assay name to Orders</li>
@@ -172,7 +181,7 @@
         </li>
         <br>
         <li>
-          2018.10.17 - v1.7.13, Bugs and Fixes
+          2018.10.17 - v.b1.7.13, Bugs and Fixes
           <ul>
             <li><s>Server connections straightened out</s> Currently at 4041. No success restoring original address</li>
             <li>Add Item and Download CSV are removed from the speeddial for easier access</li>
@@ -180,14 +189,14 @@
         </li>
         <br>
         <li>
-          2018.10.12 - v.1.7.12, Login
+          2018.10.12 - v.b.1.7.12, Login
           <ul>
             <li>Header now shows who is logged in</li>
           </ul>
         </li>
         <br>
         <li>
-          2018.10.11 - v1.7.11, Validation and Errors
+          2018.10.11 - v.b1.7.11, Validation and Errors
           <ul>
             <li>Updated form validation for items</li>
             <li>Updated error message displays</li>
@@ -195,7 +204,7 @@
         </li>
         <br>
         <li>
-          2018.10.10 - v1.7.10, Updating Reorder Values
+          2018.10.10 - v.b1.7.10, Updating Reorder Values
           <ul>
             <li>Reorder quantities and points now update when Assay information changes, before only took effect when the item itself was updated</li>
             <li>Changed to numerical version numbers instead of letters</li>
@@ -204,14 +213,14 @@
         </li>
         <br>
         <li>
-          2018.10.08 - v1.7i, CSV Export
+          2018.10.08 - v.b1.7i, CSV Export
           <ul>
             <li>Full active inventory can be exported as CSV</li>
           </ul>
         </li>
         <br>
         <li>
-          2018.10.05 - v1.7h, Tiny Improvements
+          2018.10.05 - v.b1.7h, Tiny Improvements
           <ul>
             <li>Added Go to Bottom button to easier access table scrollbar</li>
             <li>Fixed a bug with notifications displaying at the wrong time and closes them when a new form is opened</li>
@@ -219,7 +228,7 @@
         </li>
         <br>
         <li>
-          2018.10.04 - v1.7g, Helpful Things
+          2018.10.04 - v.b1.7g, Helpful Things
           <ul>
             <li>Go to Top button added when you scroll too far down</li>
             <li>Notifications added when things are saved, updated, or ordered</li>
@@ -229,7 +238,7 @@
         </li>
         <br>
         <li>
-          2018.10.01 - v1.7f, Order Bug Fixes
+          2018.10.01 - v.b1.7f, Order Bug Fixes
           <ul>
             <li>Fixed a bug with ordering where a new order form is constantly created</li>
             <li>Added a badge for manually ordered items in Order if it is under the reorder point</li>
@@ -238,7 +247,7 @@
         </li>
         <br>
         <li>
-          2018.09.27 - v1.7e, Minor Bug Fixes
+          2018.09.27 - v.b1.7e, Minor Bug Fixes
           <ul>
             <!-- <li>Enter to submit only succeeds for topmost dialog</li> -->
             <li>Rounding errors scaled to account for JS math weirdness</li>
@@ -247,7 +256,7 @@
         </li>
         <br>
         <li>
-          2018.09.26 - v1.7d, Intuitiveness
+          2018.09.26 - v.b1.7d, Intuitiveness
           <ul>
             <li>Clicking on Item Name now brings up the Edit Item dialog, previously done on the info icon</li>
             <li>Info icon brings up the a separate tab for Item Info, read only</li>
@@ -255,7 +264,7 @@
         </li>
         <br>
         <li>
-          2018.09.25 - v1.7c, Minor improvements
+          2018.09.25 - v.b1.7c, Minor improvements
           <ul>
             <li>Update notes added to Header</li>
             <li>Calculation of Reorder Points now done whenever Item is updated and if it is active</li>
@@ -265,7 +274,7 @@
         </li>
         <br>
         <li>
-          2018.09.24 - v1.7b, Initial beta version
+          2018.09.24 - v.b1.7b, Initial beta version
           <ul>
             <li>Able to enter/edit Item, Assay, and Vendor information</li>
             <li>Able to view Item information in a separate tab</li>
