@@ -145,6 +145,7 @@ export default {
           this.formTitle = `Editing ${this.selectedAssay.name}`
         } else {
           // new assay
+          this.editedAssay = Object.assign(this.editedAssay, this.user.assayDefaults)
           this.formTitle = 'New Assay'
         }
       } else {

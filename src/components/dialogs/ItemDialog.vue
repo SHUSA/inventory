@@ -223,6 +223,9 @@ export default {
     dialog (val) {
       if (val) {
         this.editedItem = Object.assign(this.editedItem, this.currentItem)
+        if (this.editedIndex === -1) {
+          this.editedItem = Object.assign(this.editedItem, this.user.itemDefaults)
+        }
         this.formTitle = this.index === -1 ? 'New Item' : `Editing ${this.editedItem.name}`
       } else {
         this.close()
