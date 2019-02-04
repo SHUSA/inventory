@@ -1,130 +1,208 @@
 <template>
-  <v-dialog
-    v-model="settingsDialog"
-    width="500px"
-  >
-    <popup title="Settings">
-      <template slot="content">
-        <v-form ref="form" v-model="form" lazy-validation>
-          <v-container>
-            <v-layout row wrap>
-              <!-- username -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.username"
-                  label="Username"
-                  clearable
-                />
-              </v-flex>
-              <!-- email -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.email"
-                  label="Email"
-                  clearable
-                />
-              </v-flex>
-              <!-- new password -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.password"
-                  label="New Password"
-                  clearable
-                  type="password"
-                />
-              </v-flex>
-              <!-- confirm new password -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.passwordConfirm"
-                  label="Confirm Password"
-                  clearable
-                  type="password"
-                />
-              </v-flex>
-              <!-- password hint -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.passwordHint"
-                  label="Password Hint"
-                  clearable
-                />
-              </v-flex>
-              <!-- Department Name -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.department.name"
-                  label="Current Department"
-                  clearable
-                />
-              </v-flex>
-              <!-- weeks of safety stock -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.itemDefaults.weeksOfSafetyStock"
-                  label="Weeks of Safety Stock"
-                  clearable
-                />
-              </v-flex>
-              <!-- Lead Time Days -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.itemDefaults.leadTimeDays"
-                  label="Lead Time Days"
-                  clearable
-                />
-              </v-flex>
-              <!-- weeks of reorder -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.itemDefaults.weeksOfReorder"
-                  label="Weeks of Reorder"
-                  clearable
-                />
-              </v-flex>
-              <!-- weekly volume -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.assayDefaults.weeklyVolume"
-                  label="Weekly Volume"
-                  clearable
-                />
-              </v-flex>
-              <!-- weekly runs -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.assayDefaults.weeklyRuns"
-                  label="Weekly Runs"
-                  clearable
-                />
-              </v-flex>
-              <!-- controls per run -->
-              <v-flex xs6>
-                <v-text-field
-                  v-model="editedSettings.assayDefaults.controlsPerRun"
-                  label="Controls per Run"
-                  clearable
-                />
-              </v-flex>
-              <!-- <v-flex xs12 v-for="(info, index) in settings" :key="index">
-                <v-text-field
-                  v-if="!objectDefaults(info.key)"
-                  :label="info.title"
-                  v-model="editedSettings[info.key]"
-                />
-              </v-flex> -->
-            </v-layout>
-          </v-container>
-        </v-form>
-        <v-divider/>
-        <v-card-actions>
-          <v-spacer/>
-          <v-btn flat color="error" @click="close()">Close</v-btn>
-          <v-btn flat color="primary">Save</v-btn>
-        </v-card-actions>
-      </template>
-    </popup>
-  </v-dialog>
+  <div>
+    <error :response="response"/>
+    <!-- snack -->
+    <v-snackbar
+      v-model="snackbar"
+      color="primary"
+      bottom
+    >
+      <v-flex class="text-xs-center">
+        {{snackText}}
+      </v-flex>
+    </v-snackbar>
+    <!-- settings dialog -->
+    <v-dialog
+      v-model="settingsDialog"
+      width="500px"
+      @keydown.enter="validateData()"
+    >
+      <popup title="Settings">
+        <template slot="content">
+          <v-form ref="form" v-model="form" lazy-validation>
+            <v-container>
+              <v-layout row wrap>
+                <v-flex xs12 class="subheading">
+                  User Information
+                  <v-icon small @click="toggle('toggleUser')">{{toggleUser ? "fa-window-close" : "fa-edit"}}</v-icon>
+                  <v-divider/>
+                </v-flex>
+                <!-- username -->
+                <v-flex xs6>
+                  <v-text-field
+                    v-model.trim="editedSettings.username"
+                    label="Username"
+                    :clearable="toggleUser"
+                    :disabled="!toggleUser"
+                    ref="toggleUser"
+                    validate-on-blur
+                    :rules=[rules.text]
+                    required
+                  />
+                </v-flex>
+                <!-- email -->
+                <v-flex xs6>
+                  <v-text-field
+                    v-model.trim="editedSettings.email"
+                    label="Email"
+                    :clearable="toggleUser"
+                    :disabled="!toggleUser"
+                    validate-on-blur
+                    :rules=[rules.text]
+                    required
+                  />
+                </v-flex>
+                <v-flex xs12 class="subheading">
+                  Password
+                  <v-icon small @click="toggle('togglePassword')">{{togglePassword ? "fa-window-close" : "fa-edit"}}</v-icon>
+                  <v-divider/>
+                </v-flex>
+                <!-- new password -->
+                <v-flex xs6>
+                  <v-text-field
+                    v-model.trim="editedSettings.password"
+                    label="New Password"
+                    type="password"
+                    autocomplete="foo"
+                    :rules="[rules.password]"
+                    :clearable="togglePassword"
+                    :disabled="!togglePassword"
+                    validate-on-blur
+                    ref="togglePassword"
+                  />
+                </v-flex>
+                <!-- confirm new password -->
+                <v-flex xs6>
+                  <v-text-field
+                    v-model.trim="editedSettings.passwordConfirm"
+                    label="Confirm Password"
+                    type="password"
+                    autocomplete="foo"
+                    :rules="[rules.password]"
+                    :clearable="togglePassword"
+                    :disabled="!togglePassword"
+                    validate-on-blur
+                    ref="confirmPassword"
+                  />
+                </v-flex>
+                <!-- password hint -->
+                <v-flex xs6>
+                  <v-text-field
+                    v-model.trim="editedSettings.passwordHint"
+                    label="Password Hint"
+                    :clearable="togglePassword"
+                    :disabled="!togglePassword"
+                    validate-on-blur
+                    :rules=[rules.text]
+                  />
+                </v-flex>
+                <v-flex xs12 class="subheading">
+                  Item Defaults
+                  <v-icon small @click="toggle('toggleItem')">{{toggleItem ? "fa-window-close" : "fa-edit"}}</v-icon>
+                  <v-divider/>
+                </v-flex>
+                <!-- weeks of safety stock -->
+                <v-flex xs6>
+                  <v-text-field
+                    v-model.number="editedSettings.itemDefaults.weeksOfSafetyStock"
+                    label="Weeks of Safety Stock"
+                    :clearable="toggleItem"
+                    :disabled="!toggleItem"
+                    ref="toggleItem"
+                    validate-on-blur
+                    :rules=[rules.wholeNumber]
+                    required
+                  />
+                </v-flex>
+                <!-- Lead Time Days -->
+                <v-flex xs6>
+                  <v-text-field
+                    v-model.number="editedSettings.itemDefaults.leadTimeDays"
+                    label="Lead Time Days"
+                    :clearable="toggleItem"
+                    :disabled="!toggleItem"
+                    validate-on-blur
+                    :rules=[rules.wholeNumber]
+                    required
+                  />
+                </v-flex>
+                <!-- weeks of reorder -->
+                <v-flex xs6>
+                  <v-text-field
+                    v-model.number="editedSettings.itemDefaults.weeksOfReorder"
+                    label="Weeks of Reorder"
+                    :clearable="toggleItem"
+                    :disabled="!toggleItem"
+                    validate-on-blur
+                    :rules=[rules.wholeNumber]
+                    required
+                  />
+                </v-flex>
+                <v-flex xs12 class="subheading">
+                  Assay Defaults
+                  <v-icon small @click="toggle('toggleAssay')">{{toggleAssay ? "fa-window-close" : "fa-edit"}}</v-icon>
+                  <v-divider/>
+                </v-flex>
+                <!-- weekly volume -->
+                <v-flex xs6>
+                  <v-text-field
+                    v-model.number="editedSettings.assayDefaults.weeklyVolume"
+                    label="Weekly Volume"
+                    :clearable="toggleAssay"
+                    :disabled="!toggleAssay"
+                    ref="toggleAssay"
+                    validate-on-blur
+                    :rules=[rules.wholeNumber]
+                    required
+                  />
+                </v-flex>
+                <!-- weekly runs -->
+                <v-flex xs6>
+                  <v-text-field
+                    v-model.number="editedSettings.assayDefaults.weeklyRuns"
+                    label="Weekly Runs"
+                    :clearable="toggleAssay"
+                    :disabled="!toggleAssay"
+                    validate-on-blur
+                    :rules=[rules.wholeNumber]
+                    required
+                  />
+                </v-flex>
+                <!-- controls per run -->
+                <v-flex xs6>
+                  <v-text-field
+                    v-model.number="editedSettings.assayDefaults.controlsPerRun"
+                    label="Controls per Run"
+                    :clearable="toggleAssay"
+                    :disabled="!toggleAssay"
+                    validate-on-blur
+                    :rules=[rules.wholeNumber]
+                    required
+                  />
+                </v-flex>
+                <!-- alert -->
+                <v-flex xs12>
+                  <v-alert
+                    :value="alert"
+                    type="error"
+                  >
+                    {{alertMessage}}
+                  </v-alert>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-form>
+          <v-divider/>
+          <v-card-actions>
+            <v-spacer/>
+            <v-progress-circular indeterminate color="primary" v-if="loading"/>
+            <v-btn flat color="error" @click="settingsDialog = false">Close</v-btn>
+            <v-btn flat color="primary" @click="validateData()">Save</v-btn>
+          </v-card-actions>
+        </template>
+      </popup>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -139,8 +217,32 @@ export default {
   data () {
     return {
       form: true,
-      settingsInfo: {},
       settings: [],
+      response: '',
+      loading: false,
+      alert: false,
+      alertMessage: '',
+      snackbar: false,
+      snackText: '',
+      toggleUser: false,
+      togglePassword: false,
+      toggleItem: false,
+      toggleAssay: false,
+      rules: {
+        wholeNumber: (val) => {
+          return val !== null && val >= 0 && Number.isInteger(val) ? true : 'Please enter an integer'
+        },
+        text (val) {
+          if (val) {
+            return val.length > 0 ? true : ''
+          } else {
+            return ''
+          }
+        },
+        password (val) {
+          return val.length >= 8 || val.length === 0 || 'New password must be at least 8 characters long'
+        }
+      },
       editedSettings: {
         username: '',
         email: '',
@@ -153,7 +255,7 @@ export default {
           leadTimeDays: 7,
           weeksOfReorder: 4
         },
-        asssayDefaults: {
+        assayDefaults: {
           weeklyVolume: 0,
           weeklyRuns: 0,
           controlsPerRun: 0
@@ -171,7 +273,7 @@ export default {
           leadTimeDays: 7,
           weeksOfReorder: 4
         },
-        asssayDefaults: {
+        assayDefaults: {
           weeklyVolume: 0,
           weeklyRuns: 0,
           controlsPerRun: 0
@@ -181,43 +283,24 @@ export default {
   },
 
   watch: {
-    dialog (val) {
-      this.settingsInfo = Object.assign({}, this.user)
-      this.editedSettings = Object.assign(this.editedSettings, this.settingsInfo)
-      // if (val) {
-      //   this.settings = [
-      //     {
-      //       title: 'Username',
-      //       key: 'username',
-      //       val: this.settingsInfo.info.username
-      //     },
-      //     {
-      //       title: 'Email',
-      //       key: 'email',
-      //       val: this.settingsInfo.info.email
-      //     },
-      //     {
-      //       title: 'Password Hint',
-      //       key: 'passwordHint',
-      //       val: this.settingsInfo.info.passwordHint
-      //     },
-      //     {
-      //       title: 'Department',
-      //       key: 'department',
-      //       val: this.settingsInfo.department
-      //     },
-      //     {
-      //       title: 'Item Defaults',
-      //       key: 'itemDefaults',
-      //       val: this.settingsInfo.itemDefaults
-      //     },
-      //     {
-      //       title: 'Assay Defaults',
-      //       key: 'assayDefaults',
-      //       val: this.settingsInfo.assayDefaults
-      //     }
-      //   ]
-      // }
+    settingsDialog (val) {
+      if (val) {
+        for (let key in this.itemDefaults) {
+          this.editedSettings.itemDefaults[key] = this.user.itemDefaults[key]
+        }
+        for (let key in this.assayDefaults) {
+          this.editedSettings.assayDefaults[key] = this.user.assayDefaults[key]
+        }
+        for (let key in this.user) {
+          // prevent cloning reference from store
+          if (key === 'itemDefaults' || key === 'assayDefaults') {
+            continue
+          }
+          this.editedSettings[key] = this.user[key]
+        }
+      } else {
+        this.close()
+      }
     }
   },
 
@@ -238,18 +321,60 @@ export default {
   },
 
   methods: {
-    // objectDefaults (title) {
-    //   return title === 'itemDefaults' || title === 'assayDefaults'
-    // },
+    openSnack (text) {
+      this.snackText = text
+      this.snackbar = true
+    },
 
-    save () {
+    validateData () {
+      if (this.editedSettings.password !== this.editedSettings.passwordConfirm) {
+        this.alertMessage = 'Passwords do not match'
+        this.alert = true
+        return
+      }
+      if (this.$refs.form.validate()) {
+        this.alert = false
+        this.loading = true
+        this.save()
+      } else {
+        this.alert = true
+        this.alertMessage = 'Please fix errors'
+      }
+    },
 
+    toggle (name) {
+      this[name] = !this[name]
+      this.$nextTick(() => this.$refs[name].focus())
+    },
+
+    async save () {
+      // to do: finish user update
+      this.response = await AuthenticationService.userupdate(this.editedSettings)
+
+      if (this.response.status === 200) {
+        let data = this.response.data
+        this.$store.dispatch('setToken', data.token)
+        this.$store.dispatch('setUser', data.user)
+        this.$store.dispatch('setSettings', data.user)
+        this.snackText = 'User data updated'
+      }
+
+      if (!this.alert && this.response.status === 200) {
+        this.loading = false
+        this.openSnack(this.snackText)
+        this.settingsDialog = false
+      }
     },
 
     close () {
       setTimeout(() => {
+        this.toggleUser = false
+        this.togglePassword = false
+        this.toggleItem = false
+        this.toggleAssay = false
+        this.loading = false
+        this.alert = false
         this.editedSettings = Object.assign({}, this.defaultSettings)
-        this.settingsDialog = false
       }, 300)
     }
   }
