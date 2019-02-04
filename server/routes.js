@@ -14,7 +14,7 @@ module.exports = (app) => {
     AuthenticationControllerPolicy.register,
     AuthenticationController.register)
   app.post('/login', AuthenticationController.login)
-  app.put('/userupdate', isAuthenticated, AuthenticationController.update)
+  app.put('/userupdate', AuthenticationController.update)
 
   app.get('/department', DepartmentController.index)
   app.get('/department/:deptId', DepartmentController.show)
@@ -40,6 +40,7 @@ module.exports = (app) => {
 
   app.get('/orders', OrdersController.index)
   app.get('/orders/:orderId', OrdersController.show)
+  // to do: add authentication once all users must log in
   app.post('/orders', OrdersController.post)
   app.put('/orders/:orderId', OrdersController.put)
   app.delete('/orders/:orderId', OrdersController.remove)

@@ -1,4 +1,5 @@
 const { Entry } = require('../models')
+// to do: eager loading for items?
 
 module.exports = {
   async index (req, res) {

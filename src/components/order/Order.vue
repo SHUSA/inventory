@@ -30,6 +30,8 @@
         </popup>
       </v-dialog>
 
+      <!-- to do: add checklist, open inventory in another tab -->
+
       <!-- edit entry -->
       <v-dialog
         max-width="500px"

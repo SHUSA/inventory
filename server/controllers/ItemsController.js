@@ -1,4 +1,5 @@
 const { Item } = require('../models')
+// to do: eager loading for assay and vendor
 
 function calculateStockLevels (item, assay) {
   let weeklyUse = 0

@@ -1,5 +1,5 @@
 const { Assay } = require('../models')
-
+// to do: add eager loading? Department
 module.exports = {
   async index (req, res) {
     try {
