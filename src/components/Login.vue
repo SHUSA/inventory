@@ -29,6 +29,8 @@
                     autocomplete="foo"
                     :rules=[rules.text]
                     clearable
+                    :hint="hint"
+                    :persistent-hint="persistentHint"
                   />
                 </v-flex>
                 <!-- alert -->
@@ -83,6 +85,8 @@ export default {
       alert: false,
       loading: false,
       form: true,
+      hint: '',
+      persistentHint: false,
       alertMessage: '',
       credentials: {
         username: '',
@@ -124,6 +128,8 @@ export default {
       this.dialog = false
       this.loading = false
       setTimeout(() => {
+        this.hint = ''
+        this.persistentHint = false
         this.alert = false
         this.username = ''
         this.password = ''
@@ -144,6 +150,7 @@ export default {
     async login (type = null) {
       if (type) {
         // user
+        this.persistentHint = false
         this.$store.dispatch('setUser', type)
         this.$router.push({
           name: 'index'
@@ -155,6 +162,8 @@ export default {
 
         if (response.status === 200) {
           let user = response.data.user
+
+          this.persistentHint = false
           // success
           // set store values and load index component
           this.$store.dispatch('setToken', response.data.token)
@@ -166,6 +175,8 @@ export default {
           })
         } else {
           // failure
+          this.hint = response.data.hint || ''
+          this.persistentHint = true
           this.alertMessage = response.data.error
           this.loading = false
           this.alert = true
