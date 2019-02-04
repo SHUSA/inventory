@@ -11,6 +11,7 @@
       <template slot="content">
         <v-card-text>
           {{getErrorMessage(response)}}
+          {{getExtraMessage(response)}}
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
@@ -40,6 +41,14 @@ export default {
         // stop process and display error message
         this.dialog = true
         return Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
+      }
+    },
+
+    getExtraMessage (resp) {
+      if (resp.status !== 200 && resp.status !== undefined && !this.closed) {
+        // stop process and display error message
+        this.dialog = true
+        return Array.isArray(resp.data.error) || null
       }
     },
 
