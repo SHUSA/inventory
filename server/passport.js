@@ -1,5 +1,6 @@
 const passport = require('passport')
 const { User } = require('./models')
+const { Department } = require('./models')
 
 const JwtStrategy = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
@@ -15,8 +16,10 @@ passport.use(
       const user = await User.findOne({
         where: {
           id: jwtPayLoad.id
-        }
+        },
+        include: [Department]
       })
+      // check if user department matches assay/order department?
       if (!user) {
         return done(new Error(), false)
       }
