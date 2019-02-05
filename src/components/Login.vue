@@ -85,6 +85,7 @@ export default {
       alert: false,
       loading: false,
       form: true,
+      count: 0,
       hint: '',
       persistentHint: false,
       alertMessage: '',
@@ -163,6 +164,7 @@ export default {
         if (response.status === 200) {
           let user = response.data.user
 
+          this.count = 0
           this.persistentHint = false
           // success
           // set store values and load index component
@@ -175,8 +177,12 @@ export default {
           })
         } else {
           // failure
-          this.hint = response.data.hint || ''
-          this.persistentHint = true
+          this.count++
+          if (this.count === 3) {
+            this.hint = response.data.hint || ''
+            this.persistentHint = true
+            this.count = 0
+          }
           this.alertMessage = response.data.error
           this.loading = false
           this.alert = true
