@@ -345,15 +345,7 @@ export default {
     },
 
     validateData () {
-      // checks input entry for numbers
-      if (this.$refs.form.validate()) {
-        this.alert = false
-        this.loading = true
-        this.save()
-      } else {
-        this.alert = true
-        this.alertMessage = 'Please fix errors'
-      }
+      this.$validate.form(this)
     },
 
     async save () {

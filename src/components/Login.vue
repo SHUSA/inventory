@@ -138,14 +138,8 @@ export default {
     },
 
     validateData () {
-      if (this.$refs.form.validate()) {
-        this.alert = false
-        this.loading = true
-        this.login()
-      } else {
-        this.alert = true
-        this.alertMessage = 'Please complete the form'
-      }
+      const msg = 'Please complete the form'
+      this.$validate.form(this, msg)
     },
 
     async login (type = null) {

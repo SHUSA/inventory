@@ -332,14 +332,7 @@ export default {
         this.alert = true
         return
       }
-      if (this.$refs.form.validate()) {
-        this.alert = false
-        this.loading = true
-        this.save()
-      } else {
-        this.alert = true
-        this.alertMessage = 'Please fix errors'
-      }
+      this.$validate.response(this)
     },
 
     toggle (name) {
