@@ -590,27 +590,10 @@ export default {
       return this.checkQuantity(item) ? item.reorderQuantity : 0
     },
 
-    // checkErrorMessage (resp) {
-    //   if (resp.status !== 200) {
-    //     // stop process and display error message
-    //     this.loading = false
-    //     this.alert = true
-    //     this.alertMessage = Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
-    //     return true
-    //   } else {
-    //     // no errors received
-    //     return false
-    //   }
-    // },
-
     openSnack (text, color = 'primary') {
       this.snackText = text
       this.snackColor = color
       this.snackbar = true
-    },
-
-    closeSnack () {
-      // to do: functions when snack is closed
     },
 
     getItemName (itemId) {
