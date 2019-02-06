@@ -47,8 +47,8 @@
                 </v-list>
                 <v-card-actions>
                   <v-spacer/>
-                  <v-btn :color="activationText === 'Reactivate' ? 'success' : 'warning'" flat @click="reactivate(data, category)">
-                    {{activationText}}
+                  <v-btn :color="data.active ? 'warning' : 'success'" flat @click="reactivate(data, category)">
+                    {{data.active ? 'Deactivate' : 'Reactivate'}}
                   </v-btn>
                   <v-spacer/>
                 </v-card-actions>
@@ -77,7 +77,6 @@ export default {
       response: '',
       categories: ['Items', 'Assays', 'Vendors'],
       menu: {},
-      activationText: 'reactivate',
       snackbar: false,
       snackText: '',
       snackColor: 'info',
@@ -131,13 +130,11 @@ export default {
       if (!results.status === 200) {
         data.active = false
         this.snackbar = false // close previous snack if called consecutively
-        this.activationText = 'Reactivate'
         this.snackText = `${Array.isArray(results.data) ? results.data[0].message : results.statusText}`
         this.snackColor = 'error'
         this.snackIcon = 'fa-skull-crossbones'
         this.snackbar = true
       } else {
-        this.activationText = data.active ? 'deactivate' : 'reactivate'
         this.snackText = `${data.name} has been ${data.active ? 'reactivated' : 'deactivated'}`
         this.snackColor = data.active ? 'success' : 'warning'
         this.snackIcon = data.active ? 'fa-check-circle' : 'fa-exclamation-triangle'
@@ -155,17 +152,17 @@ export default {
         results = await itemService.put(data.id, data)
         this.checkStatus(results, data)
         // assay reactivation
-        if (!data.assay.active) {
+        if (!data.Assay.active) {
           // do not process if assay is active
-          data.assay.active = !data.assay.active
-          results = await assayService.put(data.assay)
+          data.Assay.active = !data.Assay.active
+          results = await assayService.put(data.Assay)
           this.checkStatus(results, data)
         }
         // vendor reactivation
-        if (!data.vendor.active) {
+        if (!data.Vendor.active) {
           // do not process if vendor is active
-          data.vendor.active = !data.vendor.active
-          results = await vendorService.put(data.vendor)
+          data.Vendor.active = !data.Vendor.active
+          results = await vendorService.put(data.Vendor)
           this.checkStatus(results, data)
         }
       } else if (category === 'Assays') {
