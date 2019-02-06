@@ -41,7 +41,7 @@
             </v-btn>
             <v-list>
               <v-list-tile
-                v-for="(n, index) in [20, 10, 5]"
+                v-for="(n, index) in [24, 12, 6]"
                 :key="index"
                 @click="itemsPerPage = n"
               >
