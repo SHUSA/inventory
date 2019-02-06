@@ -3,7 +3,11 @@ export default {
     if (vue.$refs.form.validate()) {
       vue.alert = false
       vue.loading = true
-      vue.save()
+      if (vue.save) {
+        return vue.save()
+      } else {
+        return vue.login()
+      }
     } else {
       vue.alert = true
       vue.alertMessage = text || 'Please fix errors'
