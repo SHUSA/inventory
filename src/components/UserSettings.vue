@@ -88,12 +88,11 @@
                 <!-- password hint -->
                 <v-flex xs6>
                   <v-text-field
-                    v-model.trim="editedSettings.passwordHint"
+                    v-model="editedSettings.passwordHint"
                     label="Password Hint"
                     :clearable="togglePassword"
                     :disabled="!togglePassword"
                     validate-on-blur
-                    :rules=[rules.text]
                   />
                 </v-flex>
                 <v-flex xs12 class="subheading">
@@ -332,6 +331,7 @@ export default {
         this.alert = true
         return
       }
+      this.editedSettings.passwordHint = this.editedSettings.passwordHint || ''
       this.$validate.response(this)
     },
 
@@ -341,7 +341,6 @@ export default {
     },
 
     async save () {
-      // to do: finish user update
       this.response = await AuthenticationService.userupdate(this.editedSettings)
 
       if (this.response.status === 200) {
