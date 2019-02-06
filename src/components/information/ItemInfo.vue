@@ -88,7 +88,6 @@ export default {
       assayIcon: '',
       descriptionIcon: '',
       description: '',
-      hasComment: '',
       itemDialog: false
     }
   },
@@ -144,7 +143,6 @@ export default {
       this.assayIcon = value.name.toLowerCase() === 'c. diff' ? 'fa-poo' : 'fa-dna'
       this.descriptionIcon = value.itemDescription ? 'fa-sticky-note' : 'fa-times'
       this.description = value.itemDescription ? value.itemDescription : 'No description'
-      this.hasComment = value.comment.trim()
     }
   },
 
