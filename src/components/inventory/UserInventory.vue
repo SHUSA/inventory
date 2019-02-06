@@ -303,7 +303,7 @@ export default {
       response: '',
       searchTerm: '',
       page: 1,
-      itemsPerPage: 20,
+      itemsPerPage: 24,
       pageLength: 1,
       suppliesCopy: {},
       supplies: [],
@@ -359,14 +359,13 @@ export default {
       for (let i = 0; i < this.filteredList.length; i++) {
         let item = this.filteredList[i]
         let initialState = this.suppliesCopy[item.name]
+        // to do: fix data change detection
         for (let key in initialState) {
           // ignore id
           if (key === 'id') continue
           // standardize comment comparison
           if (key === 'comment') {
-            if (item[key] === null) {
-              item[key] = ''
-            }
+            item[key] = item[key] || ''
           }
           // compare original and current values
           if (initialState[key] === item[key]) {
@@ -446,8 +445,6 @@ export default {
     unsavedData = false
   },
 
-  // to do: add navigation guard for unsaved data
-
   methods: {
     paginate () {
       const length = this.filteredList.length
@@ -476,7 +473,7 @@ export default {
       this.supplies.forEach(item => {
         this.suppliesCopy[item.name] = {}
         this.suppliesCopy[item.name].currentStock = item.currentStock
-        this.suppliesCopy[item.name].comment = item.comment
+        this.suppliesCopy[item.name].comment = item.comment || ''
         this.suppliesCopy[item.name].id = item.id
       })
     },
