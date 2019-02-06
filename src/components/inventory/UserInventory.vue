@@ -34,6 +34,21 @@
               <v-icon class="pl-1">fa-sort</v-icon>
             </v-btn>
           </v-menu>
+          <!-- to do: add items per page controller -->
+          <v-menu>
+            <v-btn slot="activator" small dark left>
+              Items/page: {{itemsPerPage}}
+            </v-btn>
+            <v-list>
+              <v-list-tile
+                v-for="(n, index) in [20, 10, 5]"
+                :key="index"
+                @click="itemsPerPage = n"
+              >
+                <v-list-tile-title>{{n}}</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
         </v-layout>
 
         <v-layout row wrap>
@@ -174,8 +189,12 @@
         </popup>
       </v-dialog>
 
-      <item-info :item="selectedItem" :dialog.sync="itemInfoDialog" :assays="assayList" :vendors="vendorList"/>
-      <assay-info :assay="selectedItem.assay" :dialog.sync="assayInfoDialog"/>
+      <item-info :item="selectedItem" :dialog.sync="itemInfoDialog"/>
+      <assay-info :assay="selectedItem.Assay" :dialog.sync="assayInfoDialog"/>
+
+      <div class="text-xs-center">
+        <v-pagination v-model="page" :length="pageLength"/>
+      </div>
 
       <transition-group
         :name="filteredList.length === supplies.length ? 'all-cards' : 'searched-cards'"
@@ -184,7 +203,7 @@
       >
         <v-flex
           xs6 sm4 md3 lg2
-          v-for="item in filteredList"
+          v-for="item in paginatedItems[page - 1]"
           :key="item.id"
         >
           <!-- big card -->
@@ -199,7 +218,7 @@
                   </v-tooltip>
                 </span>
               </v-card-title>
-              <v-card-text class="caption pointer py-0" @click="displayAssay(item)">#{{item.catalogNumber}} - {{getVendor(item)}} - {{getAssay(item)}}</v-card-text>
+              <v-card-text class="caption pointer py-0" @click="displayAssay(item)">#{{item.catalogNumber}} - {{item.Vendor.name}} - {{item.Assay.name}}</v-card-text>
               <v-divider/>
               <v-card-text v-if="item.itemDescription" class="py-1">
                 <v-icon small>fa-info-circle</v-icon>
@@ -245,6 +264,10 @@
             </v-card>
         </v-flex>
       </transition-group>
+
+      <div class="text-xs-center">
+        <v-pagination v-model="page" :length="pageLength"/>
+      </div>
       <scroll/>
     </v-container>
   </v-card>
@@ -253,8 +276,6 @@
 <script>
 import { mapState } from 'vuex'
 import itemService from '@/services/ItemService.js'
-import assayService from '@/services/AssayService.js'
-import vendorService from '@/services/VendorService.js'
 import entryService from '@/services/EntryService.js'
 import orderService from '@/services/OrderService.js'
 import ItemInfo from '../information/ItemInfo'
@@ -281,15 +302,15 @@ export default {
     return {
       response: '',
       searchTerm: '',
+      page: 1,
+      itemsPerPage: 20,
+      pageLength: 1,
       suppliesCopy: {},
-      vendorNames: [],
-      assayNames: [],
       supplies: [],
-      vendorList: [],
-      assayList: [],
       filteredList: [],
       overstocked: [],
       reviewedItems: [],
+      paginatedItems: [],
       selectedItem: {},
       loading: false,
       itemInfoDialog: false,
@@ -367,34 +388,7 @@ export default {
     },
 
     outstandingAssays () {
-      let obj = {}
-      this.supplies.map(item => {
-        this.recentlyUpdated(item)
-        this.getAssay(item)
-        // check if assay object is attached and make sure it's not a duplicate
-        if (item.assay) {
-          let assayName = item.assay.name
-          // create object for each assay in supplies
-          if (!obj.hasOwnProperty(assayName)) {
-            obj[assayName] = {}
-            obj[assayName].count = 0
-            obj[assayName].recentlyUpdated = item.recentlyUpdated
-          }
-          // count number of outstanding items with same assay name
-          if (!item.recentlyUpdated) obj[assayName].count += 1
-        }
-      })
-
-      let arr = []
-      Object.keys(obj).forEach((key, i) => {
-        arr.push({
-          name: key,
-          count: obj[key].count,
-          recentlyUpdated: obj[key].recentlyUpdated
-        })
-      })
-
-      return arr.sort((a, b) => a.name.localeCompare(b.name, 'en', {'sensitivity': 'base'}))
+      return this.$util.outstandingAssays(this)
     }
   },
 
@@ -408,6 +402,10 @@ export default {
       this.sortItems()
     },
 
+    itemsPerPage () {
+      this.paginate()
+    },
+
     searchTerm (val) {
       if (val !== null) {
         if (val.length > 1) {
@@ -418,6 +416,7 @@ export default {
       } else {
         this.filteredList = this.supplies
       }
+      this.paginate()
     }
   },
 
@@ -429,11 +428,7 @@ export default {
     if (this.response.status === 200) {
       this.supplies = this.response.data
       this.filteredList = this.supplies
-      this.catalogNumbers = (await itemService.index(['catalogNumber'])).data.map(item => item.catalogNumber)
-      this.vendorList = (await vendorService.index()).data
-      this.vendorNames = this.vendorList.map(vendor => vendor.name.toUpperCase())
-      this.assayList = (await assayService.index()).data
-      this.assayNames = this.assayList.map(assay => assay.name.toUpperCase())
+      this.paginate()
 
       // go to top
       window.scroll({
@@ -454,6 +449,29 @@ export default {
   // to do: add navigation guard for unsaved data
 
   methods: {
+    paginate () {
+      const length = this.filteredList.length
+      this.paginatedItems = [] // reset
+      this.pageLength = Math.ceil(length / this.itemsPerPage)
+      if (this.pageLength === 1) {
+        this.paginatedItems.push(this.filteredList)
+      } else {
+        // store items in paginatedItems based on itemsPerPage
+        for (let i = 0; i < this.pageLength; i++) {
+          // page number
+          this.paginatedItems.push([])
+          for (let k = i * this.itemsPerPage; k < Math.min((i + 1) * this.itemsPerPage, length); k++) {
+            // index in filteredList
+            this.paginatedItems[i].push(this.filteredList[k])
+          }
+        }
+      }
+      // reset page number to last page if outside pagination bounds
+      if (this.page > this.pageLength) {
+        this.page = this.pageLength
+      }
+    },
+
     createCopy () {
       this.supplies.forEach(item => {
         this.suppliesCopy[item.name] = {}
@@ -469,9 +487,9 @@ export default {
       let query = val.toLowerCase()
       found = this.supplies.filter(item => {
         if (item.name.toLowerCase().includes(query) ||
-          item.assay.name.toLowerCase().includes(query) ||
+          item.Assay.name.toLowerCase().includes(query) ||
           item.catalogNumber.toLowerCase().includes(query) ||
-          item.vendor.toLowerCase().includes(query) ||
+          item.Vendor.name.toLowerCase().includes(query) ||
           item.itemDescription.toLowerCase().includes(query)
         ) {
           return item
@@ -486,7 +504,7 @@ export default {
       if (this.isSelected(name)) {
         let keep = []
         // reomve clicked filter
-        keep = this.filteredList.filter(item => item.assay.name !== name)
+        keep = this.filteredList.filter(item => item.Assay.name !== name)
         if (keep.length === 0) {
           // if keeping nothing, display all items
           this.filteredList = this.supplies
@@ -499,17 +517,18 @@ export default {
         if (this.filteredList.length === this.supplies.length) {
           // if all items are displayed, reset filteredList and assign clicked filter
           this.filteredList = []
-          this.filteredList = this.supplies.filter(item => item.assay.name === name)
+          this.filteredList = this.supplies.filter(item => item.Assay.name === name)
         } else {
           // if some items are displayed and filter is not selected, add to filteredList
-          this.filteredList = this.filteredList.concat(this.supplies.filter(item => item.assay.name === name))
+          this.filteredList = this.filteredList.concat(this.supplies.filter(item => item.Assay.name === name))
         }
       }
+      this.paginate()
     },
 
     isSelected (name) {
       return this.filteredList.find(item => {
-        return item.assay.name === name && this.filteredList.length !== this.supplies.length
+        return item.Assay.name === name && this.filteredList.length !== this.supplies.length
       })
     },
 
@@ -527,12 +546,13 @@ export default {
         this.filteredList.sort((a, b) => a[key].localeCompare(b[key], 'en', {'sensitivity': 'base'}))
         if (this.sortType === 'ASC') this.filteredList.reverse()
       }
+      this.paginate()
       this.loading = false
     },
 
     getCSV () {
       const csvbtn = document.getElementById('csvbtn')
-      const fields = ['vendor', 'catalogNumber', 'assay.name', 'name', 'currentStock', 'lastUpdate']
+      const fields = ['Vendor.name', 'catalogNumber', 'Assay.name', 'name', 'currentStock', 'lastUpdate']
       const json2csv = new Json2csvParser({fields})
       const csv = json2csv.parse(this.filteredList)
       const blob = new Blob([csv], {type: 'text/csv'})
@@ -580,8 +600,8 @@ export default {
         comment: item.comment,
         itemName: item.name,
         catalogNumber: item.catalogNumber,
-        vendorName: item.vendor,
-        assayName: item.assay.name,
+        vendorName: item.Vendor.name,
+        assayName: item.Assay.name,
         manualOrder: item.order
       }
     },
@@ -599,22 +619,6 @@ export default {
     getItemName (itemId) {
       let item = this.supplies.find(item => item.id === itemId)
       return item.name
-    },
-
-    getAssay (item) {
-      if (this.assayList.length === 0) {
-        return null
-      }
-      item.assay = this.assayList.find(assay => assay.id === item.AssayId)
-      return item.assay.name
-    },
-
-    getVendor (item) {
-      if (this.vendorList.length === 0) {
-        return null
-      }
-      item.vendor = this.vendorList.find(vendor => vendor.id === item.VendorId).name
-      return item.vendor
     },
 
     displayItem (item) {
