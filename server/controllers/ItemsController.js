@@ -126,10 +126,16 @@ module.exports = {
             id: itemId
           },
           returning: true,
-          plain: true,
-          include: [Assay, Vendor]
-        }).then(res => {
-          result.push(res[1])
+          plain: true
+        }).then(async res => {
+          result.push(
+            await Item.findOne({
+              where: {
+                id: res[1].id
+              },
+              include: [Assay, Vendor]
+            })
+          )
         })
       } else {
         for (let i = 0; i < list.length; i++) {
@@ -138,10 +144,16 @@ module.exports = {
               id: list[i].id
             },
             returning: true,
-            plain: true,
-            include: [Assay, Vendor]
-          }).then(res => {
-            result.push(res[1])
+            plain: true
+          }).then(async res => {
+            result.push(
+              await Item.findOne({
+                where: {
+                  id: res[1].id
+                },
+                include: [Assay, Vendor]
+              })
+            )
           })
         }
       }
