@@ -1,5 +1,6 @@
 const { Item } = require('../models')
-// to do: eager loading for assay and vendor
+const { Assay } = require('../models')
+const { Vendor } = require('../models')
 
 function calculateStockLevels (item, assay) {
   let weeklyUse = 0
@@ -44,7 +45,8 @@ module.exports = {
         order: [
           ['name', 'ASC']
         ],
-        attributes: attributes
+        attributes: attributes,
+        include: [Assay, Vendor]
       })
 
       res.send(items)
@@ -65,7 +67,8 @@ module.exports = {
         },
         order: [
           ['name', 'ASC']
-        ]
+        ],
+        include: [Assay, Vendor]
       })
       res.send(items)
     } catch (error) {
@@ -81,6 +84,12 @@ module.exports = {
 
     try {
       item = await Item.create(item)
+      item = await Item.findOne({
+        where: {
+          id: item.id
+        },
+        include: [Assay, Vendor]
+      })
       res.send(item)
     } catch (error) {
       console.log(error)
@@ -117,7 +126,8 @@ module.exports = {
             id: itemId
           },
           returning: true,
-          plain: true
+          plain: true,
+          include: [Assay, Vendor]
         }).then(res => {
           result.push(res[1])
         })
@@ -128,7 +138,8 @@ module.exports = {
               id: list[i].id
             },
             returning: true,
-            plain: true
+            plain: true,
+            include: [Assay, Vendor]
           }).then(res => {
             result.push(res[1])
           })
