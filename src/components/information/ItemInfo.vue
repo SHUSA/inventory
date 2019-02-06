@@ -32,12 +32,12 @@
               <v-icon slot="activator" small class="pr-0">{{assayIcon}}</v-icon>
               <span>Assay</span>
             </v-tooltip>
-            {{itemInfo.assay ? itemInfo.assay.name : ''}}
+            {{itemInfo.Assay ? itemInfo.Assay.name : ''}}
             <v-tooltip left>
               <v-icon slot="activator" small class="pr-0 pl-2">fa-store</v-icon>
               <span>Vendor</span>
             </v-tooltip>
-            {{itemInfo.vendor}}
+            {{itemInfo.Vendor ? itemInfo.Vendor.name : ''}}
           </v-card-text>
           <v-divider/>
           <v-card-text class="py-1">
@@ -140,9 +140,6 @@ export default {
           call: value.leadTimeDays
         }
       ]
-
-      this.getAssay(value)
-      this.getVendor(value)
 
       this.assayIcon = value.name.toLowerCase() === 'c. diff' ? 'fa-poo' : 'fa-dna'
       this.descriptionIcon = value.itemDescription ? 'fa-sticky-note' : 'fa-times'
@@ -250,18 +247,6 @@ export default {
   },
 
   methods: {
-    getAssay (item) {
-      if (!item.assay) {
-        item.assay = this.assays.find(assay => assay.id === item.AssayId)
-      }
-    },
-
-    getVendor (item) {
-      if (!item.vendor) {
-        item.vendor = this.vendors.find(vendor => vendor.id === item.VendorId).name
-      }
-    },
-
     time (item) {
       return this.$moment(item.updatedAt).format('MMM-DD-YYYY')
     }

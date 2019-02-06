@@ -31,8 +31,8 @@
                   <template v-if="category === 'Items'">
                     <v-list-tile-title class="subheading">Name: {{data.name}}</v-list-tile-title>
                     <v-list-tile-title class="subheading">Catalog: {{data.catalogNumber}}</v-list-tile-title>
-                    <v-list-tile-title class="subheading">Assay: {{getAssay(data)}}</v-list-tile-title>
-                    <v-list-tile-title class="subheading">Vendor: {{getVendor(data)}}</v-list-tile-title>
+                    <v-list-tile-title class="subheading">Assay: {{data.Assay.name}}</v-list-tile-title>
+                    <v-list-tile-title class="subheading">Vendor: {{data.Vendor.name}}</v-list-tile-title>
                     <v-card-text v-if="!data.active">
                       Note: Associated assays and vendors will also be reactivated.
                     </v-card-text>
@@ -74,8 +74,6 @@ export default {
       items: [],
       vendors: [],
       assays: [],
-      vendorList: [],
-      assayList: [],
       response: '',
       categories: ['Items', 'Assays', 'Vendors'],
       menu: {},
@@ -118,11 +116,6 @@ export default {
         this.items = this.response.data
         this.assays = (await assayService.index([], false)).data
         this.vendors = (await vendorService.index([], false)).data
-
-        this.assayList = (await assayService.index(['name', 'id', 'active'])).data
-        this.assayList = this.assayList.concat(this.assays)
-        this.vendorList = (await vendorService.index(['name', 'id', 'active'])).data
-        this.vendorList = this.vendorList.concat(this.vendors)
       }
     },
 
@@ -132,18 +125,6 @@ export default {
 
     getArray (key) {
       return this[key.toLowerCase()]
-    },
-
-    getAssay (data) {
-      if (this.assayList.length === 0) return null
-      data.assay = this.assayList.find(assay => assay.id === data.AssayId)
-      return data.assay.name
-    },
-
-    getVendor (data) {
-      if (this.vendorList.length === 0) return null
-      data.vendor = this.vendorList.find(vendor => vendor.id === data.VendorId)
-      return data.vendor.name
     },
 
     checkStatus (results, data) {
