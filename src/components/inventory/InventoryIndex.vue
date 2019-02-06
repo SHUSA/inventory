@@ -33,7 +33,6 @@
             <!-- filter chips -->
             <transition-group name="chips" tag="span">
               <v-chip
-                v-if="show"
                 v-for="(item, index) in list"
                 :key="index"
                 :color="isSelected(item.id) ? 'blue lighten-2' : ''"
@@ -123,6 +122,7 @@ export default {
       if (this.show) {
         if (this.shown === type) {
           this.show = false
+          this.list = []
         } else {
           this.selected = []
         }
@@ -131,9 +131,9 @@ export default {
       }
 
       // pass data to list
-      if (type === 'assays') {
+      if (type === 'assays' && this.show) {
         this.list = this.assays
-      } else if (type === 'vendors') {
+      } else if (type === 'vendors' && this.show) {
         this.list = this.vendors
       }
       this.shown = type
