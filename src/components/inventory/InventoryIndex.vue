@@ -9,7 +9,7 @@
           <v-flex xs12>
             <v-card-text>Choose your filters</v-card-text>
           </v-flex>
-          <v-flex xs4>
+          <v-flex xs4 v-if="user.isUserLoggedIn">
             <v-card-text class="warning">Warning: Displaying too much data can slow processing</v-card-text>
           </v-flex>
           <v-flex xs12>
