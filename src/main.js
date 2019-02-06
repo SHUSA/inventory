@@ -10,9 +10,11 @@ import 'vuetify/dist/vuetify.min.css'
 import store from '@/store/store'
 import moment from 'moment'
 import validate from './js/validate'
+import utility from './js/utility'
 import Scroll from '@/components/globals/Scroll.vue'
 import Error from '@/components/globals/Error.vue'
 import Popup from '@/components/globals/Popup.vue'
+// import Notification from '@/components/globals/Notification.vue'
 
 Vue.config.productionTip = false
 Vue.use(Veutify, {
@@ -21,10 +23,12 @@ Vue.use(Veutify, {
 
 Object.defineProperty(Vue.prototype, '$moment', { value: moment })
 Object.defineProperty(Vue.prototype, '$validate', { value: validate })
+Object.defineProperty(Vue.prototype, '$util', { value: utility })
 
 Vue.component('scroll', Scroll)
 Vue.component('error', Error)
 Vue.component('popup', Popup)
+// Vue.component('notification', Notification)
 
 sync(store, router)
 
