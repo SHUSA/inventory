@@ -91,17 +91,6 @@
         </v-layout>
       </v-container>
 
-      <v-snackbar
-        v-model="snackbar"
-        :color="snackColor"
-        bottom
-      >
-      <!-- to do: add snack color, icon, etc; see Inactive for hints -->
-        <v-flex class="text-xs-center">
-          {{snackText}}
-        </v-flex>
-      </v-snackbar>
-
       <v-dialog
         v-model="warningDialog"
         max-width="800"
@@ -319,9 +308,6 @@ export default {
       warningDialog: false,
       resultsList: {ordered: [], updated: [], retracted: []},
       loadComponent: false,
-      snackbar: false,
-      snackText: '',
-      snackColor: 'primary',
       alertMessage: '',
       sortType: 'DESC',
       category: {name: 'Name', key: 'name'},
@@ -607,12 +593,6 @@ export default {
       return this.checkQuantity(item) ? item.reorderQuantity : 0
     },
 
-    openSnack (text, color = 'primary') {
-      this.snackText = text
-      this.snackColor = color
-      this.snackbar = true
-    },
-
     getItemName (itemId) {
       let item = this.supplies.find(item => item.id === itemId)
       return item.name
@@ -652,7 +632,10 @@ export default {
       })
 
       if (errorCount > 0) {
-        this.openSnack('Please fix data entry errors', 'error')
+        this.$store.dispatch('setSnack', {
+          text: 'Please fix data entry errors',
+          color: 'error'
+        })
       } else if (this.overstocked.length > 0) {
         this.reviewedItems = itemArr
         this.warningDialog = true
@@ -668,7 +651,11 @@ export default {
       items.forEach(item => {
         item = Object.assign(item, result.find(res => item.id === res.id))
       })
-      this.openSnack('Items Saved')
+      this.$store.dispatch('setSnack', {
+        text: 'Items saved',
+        color: 'success',
+        icon: 'fa-boxes'
+      })
       this.order(items)
     },
 

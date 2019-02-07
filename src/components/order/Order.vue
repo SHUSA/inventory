@@ -182,17 +182,6 @@
       </v-container>
     </v-card-title>
 
-    <v-snackbar
-        v-model="snackbar"
-        :color="snackColor"
-        bottom
-      >
-    <!-- to do: add snack color, icon, etc; see Inactive for hints -->
-      <v-flex class="text-xs-center">
-        {{snackText}}
-      </v-flex>
-    </v-snackbar>
-
     <!-- data table -->
     <v-data-table
       ref="search"
@@ -262,9 +251,6 @@ export default {
       loading: false,
       loadComponent: false,
       search: '',
-      snackbar: false,
-      snackText: '',
-      snackColor: 'primary',
       alert: false,
       alertType: 'info',
       alertMessage: '',
@@ -418,23 +404,14 @@ export default {
 
     isOrderComplete (order) {
       if (order.completed) {
-        this.closeSnack()
-        this.snackColor = 'error'
-        this.openSnack('Order closed. Unable to edit.')
+        this.$store.dispatch('setSnack', {
+          text: 'Order closed. Unable to edit.',
+          color: 'error'
+        })
         return true
       } else {
         return false
       }
-    },
-
-    openSnack (text) {
-      this.snackText = text
-      this.snackbar = true
-    },
-
-    closeSnack () {
-      this.snackbar = false
-      this.snackColor = 'primary'
     },
 
     editEntry (entry) {
@@ -492,7 +469,11 @@ export default {
           if (!this.checkErrorMessage(response)) {
             // close procedure
             this.loading = true
-            this.openSnack(`${this.currentItem.itemName} updated`)
+            this.$store.dispatch('setSnack', {
+              text: `${this.currentItem.itemName} updated`,
+              color: 'success',
+              icon: 'fa-clipboard-list'
+            })
             this.loading = false
             this.closeEditEntry()
           }
@@ -514,8 +495,11 @@ export default {
             await orderService.delete(this.thisOrder.id)
             this.$router.push({name: 'orders'})
           }
-          this.snackColor = 'error'
-          this.openSnack(`${this.currentItem.itemName} deleted`)
+          this.$store.dispatch('setSnack', {
+            text: `${this.currentItem.itemName} deleted`,
+            color: 'error',
+            icon: 'fa-times'
+          })
           this.loading = false
           this.deactivationDialog = false
           this.closeEditEntry()
@@ -539,8 +523,9 @@ export default {
         response = await entryService.put(entries)
         if (!this.checkErrorMessage(response)) {
           // close out order form and redirect to index
-          this.snackColor = 'primary'
-          this.openSnack('Order has been removed. Redirecting momentarily.')
+          this.$store.dispatch('setSnack', {
+            text: 'Order has been removed. Redirecting momentarily'
+          })
           this.deleteOrderDialog = false
           this.close()
           setTimeout(() => {

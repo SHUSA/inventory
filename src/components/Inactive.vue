@@ -1,14 +1,6 @@
 <template>
   <v-card>
     <error :response="response"/>
-    <v-snackbar
-      v-model="snackbar"
-      :color="snackColor"
-      bottom
-    >
-      <v-icon class="pr-0">{{snackIcon}}</v-icon>
-      {{snackText}}
-    </v-snackbar>
     <v-container>
       <v-layout row wrap v-for="(category, index) in categories" :key="index">
         <!-- loop through categories and get info from arrays -->
@@ -76,11 +68,7 @@ export default {
       assays: [],
       response: '',
       categories: ['Items', 'Assays', 'Vendors'],
-      menu: {},
-      snackbar: false,
-      snackText: '',
-      snackColor: 'info',
-      snackIcon: ''
+      menu: {}
     }
   },
 
@@ -129,23 +117,23 @@ export default {
     checkStatus (results, data) {
       if (!results.status === 200) {
         data.active = false
-        this.snackbar = false // close previous snack if called consecutively
-        this.snackText = `${Array.isArray(results.data) ? results.data[0].message : results.statusText}`
-        this.snackColor = 'error'
-        this.snackIcon = 'fa-skull-crossbones'
-        this.snackbar = true
+        this.$store.dispatch('setSnack', {
+          text: `${Array.isArray(results.data) ? results.data[0].message : results.statusText}`,
+          color: 'error',
+          icon: 'fa-skull-crossbones'
+        })
       } else {
-        this.snackText = `${data.name} has been ${data.active ? 'reactivated' : 'deactivated'}`
-        this.snackColor = data.active ? 'success' : 'warning'
-        this.snackIcon = data.active ? 'fa-check-circle' : 'fa-exclamation-triangle'
-        this.snackbar = true
+        this.$store.dispatch('setSnack', {
+          text: `${data.name} has been ${data.active ? 'reactivated' : 'deactivated'}`,
+          color: data.active ? 'success' : 'warning',
+          icon: data.active ? 'fa-check-circle' : 'fa-exclamation-triangle'
+        })
       }
     },
 
     async reactivate (data, category) {
       let results = null
       data.active = !data.active
-      this.snackbar = false
 
       if (category === 'Items') {
         // item reactivation
@@ -190,10 +178,11 @@ export default {
           })
         }
       } else {
-        this.snackText = 'I dunno man. Something is wrong.'
-        this.snackColor = 'warning'
-        this.snackIcon = 'fa-cat'
-        this.snackbar = true
+        this.$store.dispatch('setSnack', {
+          text: 'I dunno man. Something is wrong.',
+          color: 'warning',
+          icon: 'fa-cat'
+        })
         return null
       }
     }

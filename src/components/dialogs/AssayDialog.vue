@@ -1,17 +1,6 @@
 <template>
   <div>
     <error :response="response"/>
-    <!-- snack -->
-    <v-snackbar
-      v-model="snackbar"
-      color="primary"
-      bottom
-    >
-      <v-flex class="text-xs-center">
-        {{snackText}}
-      </v-flex>
-    </v-snackbar>
-
     <!-- dialog -->
     <v-dialog
       v-model="dialog"
@@ -96,7 +85,6 @@ export default {
       alert: false,
       alertMessage: '',
       loading: false,
-      snackbar: false,
       snackText: '',
       formTitle: 'New Assay',
       rules: {
@@ -241,11 +229,6 @@ export default {
   },
 
   methods: {
-    openSnack (text) {
-      this.snackText = text
-      this.snackbar = true
-    },
-
     close () {
       setTimeout(() => {
         this.editedAssay = Object.assign({}, this.defaultAssay)
@@ -256,7 +239,7 @@ export default {
     },
 
     validateData () {
-      this.$validate.response(this)
+      this.$validate.form(this)
     },
 
     async save () {
@@ -277,23 +260,26 @@ export default {
             this.currentItem.AssayId = assayInfo.id
           }
           Object.assign(this.assays[this.index], assayInfo)
-          // update all items with edited assay
-          let itemList = []
-          this.items.map(item => {
-            if (item.AssayId === assayInfo.id) {
-              itemList.push(item)
-            }
-          })
-          this.response = await itemService.put(null, null, null, itemList)
 
-          if (this.response.status === 200) {
-            let index = 0
-            // reassign new values to supplies
-            this.response.data.map(item => {
-              index = this.items.findIndex(x => x.id === item.id)
-              this.items.splice(index, 1)
-              this.items.push(item)
+          if (this.currentAssay.hasItem) {
+            // update all items with edited assay if assay has items
+            let itemList = []
+            this.items.map(item => {
+              if (item.AssayId === assayInfo.id) {
+                itemList.push(item)
+              }
             })
+            this.response = await itemService.put(null, null, null, itemList)
+
+            if (this.response.status === 200) {
+              let index = 0
+              // reassign new values to supplies
+              this.response.data.map(item => {
+                index = this.items.findIndex(x => x.id === item.id)
+                this.items.splice(index, 1)
+                this.items.push(item)
+              })
+            }
           }
           this.snackText = `${assayInfo.name} updated`
         }
@@ -314,7 +300,11 @@ export default {
 
       if (!this.alert && this.response.status === 200) {
         this.loading = false
-        this.openSnack(this.snackText)
+        this.$store.dispatch('setSnack', {
+          text: this.snackText,
+          color: 'success',
+          icon: 'fa-dna'
+        })
         this.close()
       }
     }

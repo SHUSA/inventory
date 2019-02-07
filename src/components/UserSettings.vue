@@ -1,16 +1,6 @@
 <template>
   <div>
     <error :response="response"/>
-    <!-- snack -->
-    <v-snackbar
-      v-model="snackbar"
-      color="primary"
-      bottom
-    >
-      <v-flex class="text-xs-center">
-        {{snackText}}
-      </v-flex>
-    </v-snackbar>
     <!-- settings dialog -->
     <v-dialog
       v-model="settingsDialog"
@@ -221,8 +211,6 @@ export default {
       loading: false,
       alert: false,
       alertMessage: '',
-      snackbar: false,
-      snackText: '',
       toggleUser: false,
       togglePassword: false,
       toggleItem: false,
@@ -320,11 +308,6 @@ export default {
   },
 
   methods: {
-    openSnack (text) {
-      this.snackText = text
-      this.snackbar = true
-    },
-
     validateData () {
       if (this.editedSettings.password !== this.editedSettings.passwordConfirm) {
         this.alertMessage = 'Passwords do not match'
@@ -332,7 +315,7 @@ export default {
         return
       }
       this.editedSettings.passwordHint = this.editedSettings.passwordHint || ''
-      this.$validate.response(this)
+      this.$validate.form(this)
     },
 
     toggle (name) {
@@ -348,12 +331,15 @@ export default {
         this.$store.dispatch('setToken', data.token)
         this.$store.dispatch('setUser', data.user)
         this.$store.dispatch('setSettings', data.user)
-        this.snackText = 'User data updated'
       }
 
       if (!this.alert && this.response.status === 200) {
         this.loading = false
-        this.openSnack(this.snackText)
+        this.$store.dispatch('setSnack', {
+          text: 'User data updated',
+          color: 'success',
+          icon: 'fa-user'
+        })
         this.settingsDialog = false
       }
     },

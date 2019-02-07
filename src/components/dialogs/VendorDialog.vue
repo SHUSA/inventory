@@ -1,16 +1,6 @@
 <template>
   <div>
     <error :response="response"/>
-    <!-- snack -->
-    <v-snackbar
-      v-model="snackbar"
-      color="primary"
-      bottom
-    >
-      <v-flex class="text-xs-center">
-        {{snackText}}
-      </v-flex>
-    </v-snackbar>
 
     <!-- dialog -->
     <v-dialog
@@ -82,7 +72,6 @@ export default {
       alert: false,
       alertMessage: '',
       loading: false,
-      snackbar: false,
       snackText: '',
       formTitle: 'New Vendor',
       rules: {
@@ -203,11 +192,6 @@ export default {
   },
 
   methods: {
-    openSnack (text) {
-      this.snackText = text
-      this.snackbar = true
-    },
-
     close () {
       setTimeout(() => {
         this.editedVendor = Object.assign({}, this.defaultVendor)
@@ -258,7 +242,11 @@ export default {
 
       if (!this.alert && this.response.status === 200) {
         this.loading = false
-        this.openSnack(this.snackText)
+        this.$store.dispatch('setSnack', {
+          text: this.snackText,
+          color: 'success',
+          icon: 'fa-shop'
+        })
         this.close()
       }
     }
