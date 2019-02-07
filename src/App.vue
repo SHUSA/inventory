@@ -2,6 +2,7 @@
   <div id="app">
     <v-app>
       <page-header/>
+      <notification/>
       <main>
         <v-container fluid>
           <router-view/>
@@ -13,11 +14,13 @@
 
 <script>
 import PageHeader from '@/components/Header.vue'
+import Notification from '@/components/globals/Notification'
 
 export default {
   name: 'App',
   components: {
-    PageHeader
+    PageHeader,
+    Notification
   }
 }
 </script>

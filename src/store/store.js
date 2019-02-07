@@ -27,7 +27,13 @@ function initialState () {
     vendorList: [],
     catalogNumbers: [],
     assayNames: [],
-    vendorNames: []
+    vendorNames: [],
+    snackbar: {
+      open: false,
+      text: '',
+      color: 'primary',
+      icon: ''
+    }
   }
 }
 
@@ -99,6 +105,16 @@ export default new Vuex.Store({
     },
     setVendorNames (state, data) {
       state.vendorNames = data
+    },
+    closeSnack (state) {
+      state.snackbar.open = false
+    },
+    setSnack (state, snack) {
+      if (snack.color === 'error' && !snack.icon) {
+        snack.icon = 'fa-exclamation-triangle'
+      }
+      const settings = Object.assign({open: true}, snack)
+      state.snackbar = Object.assign({}, initialState().snackbar, settings)
     }
   },
   actions: {
@@ -137,6 +153,14 @@ export default new Vuex.Store({
     },
     setVendorNames ({ commit }, data) {
       commit('setVendorNames', data)
+    },
+    setSnack ({ commit }, snack) {
+      if (snack.open !== false) {
+        commit('closeSnack')
+      }
+      setTimeout(() => {
+        commit('setSnack', snack)
+      }, 100)
     },
     resetAll ({ commit }) {
       commit('resetAll')

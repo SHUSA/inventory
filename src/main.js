@@ -14,7 +14,6 @@ import utility from './js/utility'
 import Scroll from '@/components/globals/Scroll.vue'
 import Error from '@/components/globals/Error.vue'
 import Popup from '@/components/globals/Popup.vue'
-// import Notification from '@/components/globals/Notification.vue'
 
 Vue.config.productionTip = false
 Vue.use(Veutify, {
@@ -28,7 +27,6 @@ Object.defineProperty(Vue.prototype, '$util', { value: utility })
 Vue.component('scroll', Scroll)
 Vue.component('error', Error)
 Vue.component('popup', Popup)
-// Vue.component('notification', Notification)
 
 sync(store, router)
 
