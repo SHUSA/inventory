@@ -313,8 +313,8 @@ export default {
       category: {name: 'Name', key: 'name'},
       categories: [
         {name: 'Name', key: 'name'},
-        {name: 'Assay', key: 'assay'},
-        {name: 'Vendor', key: 'vendor'},
+        {name: 'Assay', key: 'Assay'},
+        {name: 'Vendor', key: 'Vendor'},
         {name: 'Catalog#', key: 'catalogNumber'},
         {name: 'Stock', key: 'currentStock'},
         {name: 'Last Update', key: 'updatedAt'}
@@ -522,7 +522,7 @@ export default {
         this.filteredList.sort((a, b) => {
           return this.sortType === 'DESC' ? b[key] - a[key] : a[key] - b[key]
         })
-      } else if (key === 'assay') {
+      } else if (key === 'Assay' || key === 'Vendor') {
         this.filteredList.sort((a, b) => a[key].name.localeCompare(b[key].name, 'en', {'sensitivity': 'base'}))
         if (this.sortType === 'ASC') this.filteredList.reverse()
       } else {
