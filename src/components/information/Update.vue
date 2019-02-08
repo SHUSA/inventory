@@ -9,6 +9,21 @@
       <ul>
         <!-- (li>{2019.02.DD - v.1.xx}ul>li{update notes})+br -->
         <li>
+          2019.02.DD - v.1.01, Optimization and Bug Fixes
+          <ul>
+            <li>User Inventory</li>
+            <ul>
+              <li>Pagination added to decrease page load</li>
+              <li>Fixed finicky detection of changed data entry</li>
+            </ul>
+            <li>Others</li>
+            <ul>
+              <li>Improvements under the hood to optimize processing speed</li>
+            </ul>
+          </ul>
+        </li>
+        <br>
+        <li>
           2019.02.04 - v.1.00, User Authorization and Admin Login
           <ul>
             <li>Admin now has a login</li>

@@ -18,7 +18,7 @@
     <!-- toolbar -->
     <v-toolbar app clipped-left flat dark>
       <v-toolbar-title>
-        {{title}} v1.00
+        {{title}} v1.01
         <!-- help -->
         <v-dialog
           v-model="help"
