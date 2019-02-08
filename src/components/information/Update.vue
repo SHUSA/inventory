@@ -9,7 +9,7 @@
       <ul>
         <!-- (li>{2019.02.DD - v.1.xx}ul>li{update notes})+br -->
         <li>
-          2019.02.DD - v.1.01, Optimization and Bug Fixes
+          2019.02.08 - v.1.01, Optimization and Bug Fixes
           <ul>
             <li>User Inventory</li>
             <ul>
