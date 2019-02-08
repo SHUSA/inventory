@@ -180,8 +180,8 @@ export default {
       search: '',
       headers: [
         {text: 'Item', value: 'name', width: '15%'},
-        {text: 'Vendor', value: 'vendor'},
-        {text: 'Assay', value: 'assay.name'},
+        {text: 'Vendor', value: 'Vendor.name'},
+        {text: 'Assay', value: 'Assay.name'},
         {text: 'Catalog #', value: 'catalogNumber'},
         {text: 'Desc', value: 'itemDescription', width: '10%'},
         {text: 'Stock', value: 'currentStock'},
