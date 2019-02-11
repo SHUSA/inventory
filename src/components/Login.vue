@@ -26,7 +26,7 @@
                     validate-on-blur
                     v-model.trim="credentials.password"
                     type="password"
-                    autocomplete="foo"
+                    autocomplete="off"
                     :rules=[rules.text]
                     clearable
                     :hint="hint"
