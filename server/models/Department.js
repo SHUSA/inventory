@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     Department.hasMany(models.Order)
     Department.hasMany(models.Assay)
     Department.hasMany(models.User)
+    Department.hasMany(models.Item)
   }
 
   return Department

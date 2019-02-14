@@ -1,3 +1,7 @@
+function setLongCat (deptId, catNum) {
+  return `${deptId}-${catNum}`
+}
+
 module.exports = (sequelize, DataTypes) => {
   const Item = sequelize.define('Item', {
     id: {
@@ -10,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       required: true
     },
     catalogNumber: {
+      type: DataTypes.STRING,
+      required: true
+    },
+    longCatalog: {
       type: DataTypes.STRING,
       unique: true,
       required: true
@@ -57,10 +65,18 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeCreate: function (item) {
         item.catalogNumber = item.catalogNumber.toUpperCase()
+        item.longCatalog = setLongCat(item.DepartmentId, item.catalogNumber)
         return item
       },
       beforeUpdate: function (item) {
         item.catalogNumber = item.catalogNumber.toUpperCase()
+        item.longCatalog = setLongCat(item.DepartmentId, item.catalogNumber)
+        return item
+      },
+      beforeBulkUpdate: function (item) {
+        let itemAttr = item.attributes
+        itemAttr.catalogNumber = itemAttr.catalogNumber.toUpperCase()
+        itemAttr.longCatalog = setLongCat(itemAttr.DepartmentId, itemAttr.catalogNumber)
         return item
       }
     }
@@ -69,6 +85,7 @@ module.exports = (sequelize, DataTypes) => {
   Item.associate = function (models) {
     Item.belongsTo(models.Assay)
     Item.belongsTo(models.Vendor)
+    Item.belongsTo(models.Department)
   }
 
   return Item
