@@ -234,6 +234,7 @@ export default {
         this.editedAssay = Object.assign({}, this.defaultAssay)
         // this.index = -1
         // this.currentAssay = {}
+        this.loading = false
         this.dialog = false
       }, 300)
     },

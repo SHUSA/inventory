@@ -324,6 +324,7 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem)
         // this.index = -1
         // this.currentItem = {}
+        this.loading = false
         this.dialog = false
       }, 300)
     },

@@ -197,6 +197,7 @@ export default {
         this.editedVendor = Object.assign({}, this.defaultVendor)
         // this.index = -1
         // this.currentVendor = {}
+        this.loading = false
         this.dialog = false
       }, 300)
     },
