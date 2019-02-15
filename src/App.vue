@@ -3,6 +3,7 @@
     <v-app>
       <page-header/>
       <notification/>
+      <error :response="response"/>
       <main>
         <v-container fluid>
           <router-view/>
@@ -15,12 +16,25 @@
 <script>
 import PageHeader from '@/components/Header.vue'
 import Notification from '@/components/globals/Notification'
+import authenticationService from '@/services/AuthenticationService.js'
 
 export default {
   name: 'App',
   components: {
     PageHeader,
     Notification
+  },
+
+  data () {
+    return {
+      response: ''
+    }
+  },
+
+  async mounted () {
+    if (this.$route.name !== 'login') {
+      this.response = await authenticationService.sessionCheck()
+    }
   }
 }
 </script>

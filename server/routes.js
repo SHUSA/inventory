@@ -15,6 +15,7 @@ module.exports = (app) => {
     AuthenticationController.register)
   app.post('/login', AuthenticationController.login)
   app.post('/userupdate', AuthenticationController.update)
+  app.post('/sessioncheck', isAuthenticated)
 
   app.get('/department', DepartmentController.index)
   app.get('/department/:deptId', DepartmentController.show)
@@ -29,7 +30,7 @@ module.exports = (app) => {
   app.get('/items', ItemsController.index)
   app.get('/items/list', ItemsController.show)
   app.post('/items', isAuthenticated, ItemsController.post)
-  app.put('/items/:itemId', ItemsController.put)
+  app.put('/items/:itemId', isAuthenticated, ItemsController.put)
   app.put('/deactivate-items', isAuthenticated, ItemsController.deactivate)
   app.put('/reassign-items', isAuthenticated, ItemsController.reassign)
 

@@ -49,6 +49,12 @@ export default {
       if (resp.status !== 200 && resp.status !== undefined && !this.closed) {
         // stop process and display error message
         this.dialog = true
+        if (resp.data.redirect) {
+          setTimeout(() => {
+            this.close()
+            this.$router.push({ name: 'login' })
+          }, 5000)
+        }
         return resp.data.error || null
       }
     },

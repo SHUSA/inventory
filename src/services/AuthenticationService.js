@@ -18,5 +18,11 @@ export default {
     return API().post('userupdate', user).catch(err =>
       checkResponse(err)
     )
+  },
+
+  sessionCheck () {
+    return API().post('sessioncheck').catch(err =>
+      checkResponse(err)
+    )
   }
 }
