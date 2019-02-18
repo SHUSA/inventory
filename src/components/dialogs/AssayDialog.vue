@@ -23,12 +23,12 @@
               <v-flex xs6>
                 <v-text-field v-model.number="editedAssay.controlsPerRun" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Controls per Run"/>
               </v-flex>
-              <v-flex xs6>
+              <!-- <v-flex xs6>
                 <v-text-field v-model.number="editedAssay.maxBatchSize" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Max Batch Size"/>
               </v-flex>
               <v-flex xs6>
                 <v-text-field v-model.number="editedAssay.sampleReplicates" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Sample Replicates"/>
-              </v-flex>
+              </v-flex> -->
               <!-- alert -->
               <v-flex xs12>
                 <v-alert

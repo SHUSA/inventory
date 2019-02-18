@@ -79,19 +79,19 @@ export default {
           text: '/ Run',
           tooltip: 'Controls per Run',
           call: value.controlsPerRun
-        },
-        {
-          icon: 'fa-boxes',
-          text: 'Max Size',
-          tooltip: 'Max Batch Size',
-          call: value.maxBatchSize
-        },
-        {
-          icon: 'fa-vials',
-          text: 'Replicates',
-          tooltip: 'Sample Replicates',
-          call: value.sampleReplicates
         }
+        // {
+        //   icon: 'fa-boxes',
+        //   text: 'Max Size',
+        //   tooltip: 'Max Batch Size',
+        //   call: value.maxBatchSize
+        // },
+        // {
+        //   icon: 'fa-vials',
+        //   text: 'Replicates',
+        //   tooltip: 'Sample Replicates',
+        //   call: value.sampleReplicates
+        // }
       ]
     }
   },
