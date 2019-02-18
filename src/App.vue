@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import PageHeader from '@/components/Header.vue'
 import Notification from '@/components/globals/Notification'
 import authenticationService from '@/services/AuthenticationService.js'
@@ -31,8 +32,14 @@ export default {
     }
   },
 
+  computed: {
+    ...mapState([
+      'user'
+    ])
+  },
+
   async mounted () {
-    if (this.$route.name !== 'login') {
+    if (this.$route.name !== 'login' && this.user.isUserLoggedIn) {
       this.response = await authenticationService.sessionCheck()
     }
   }
