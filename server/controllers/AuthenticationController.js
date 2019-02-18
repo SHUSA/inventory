@@ -55,6 +55,11 @@ module.exports = {
     }
   },
 
+  checkSession (req, res) {
+    // dummy method to prevent 404 on token check
+    return req
+  },
+
   // create route for password recovery
 
   async login (req, res) {
