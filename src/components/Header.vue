@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- user settings -->
-    <user-settings :dialog.sync="dialog"/>
+    <user-settings v-if="user.isUserLoggedIn" :dialog.sync="dialog"/>
     <!-- logout -->
     <v-dialog
       v-model="logoutDialog"
@@ -18,7 +18,7 @@
     <!-- toolbar -->
     <v-toolbar app clipped-left flat dark>
       <v-toolbar-title>
-        {{title}} v1.01
+        {{title}} v1.011
         <!-- help -->
         <v-dialog
           v-model="help"
@@ -43,9 +43,10 @@
           <v-list>
             <v-list-tile
               v-for="(item, index) in routes" :key="index"
-              @click="goTo(item)"
             >
-              <v-list-tile-title>{{item}}</v-list-tile-title>
+              <router-link :to="{name: item.toLowerCase()}" class="no-underline">
+                <a class="link-color">{{item}}</a>
+              </router-link>
             </v-list-tile>
           </v-list>
         </v-menu>
@@ -71,7 +72,7 @@
 <script>
 import { mapState } from 'vuex'
 import Help from './information/Help'
-import UserSettings from './UserSettings'
+import UserSettings from './authentication/UserSettings'
 
 export default {
   components: {
@@ -120,21 +121,22 @@ export default {
     exit () {
       this.logoutDialog = false
       setTimeout(() => {
+        this.$store.dispatch('resetAll')
         this.$router.push({
           name: 'login'
         })
       }, 300)
-    },
-
-    goTo (route) {
-      this.$router.push({
-        name: route.toLowerCase()
-      })
     }
   }
 }
 </script>
 
 <style scoped>
+  .no-underline {
+    text-decoration: none;
+  }
 
+  .link-color {
+    color: black;
+  }
 </style>

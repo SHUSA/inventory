@@ -9,6 +9,18 @@
       <ul>
         <!-- (li>{2019.02.DD - v.1.xx}ul>li{update notes})+br -->
         <li>
+          2019.02.18 - v.1.011
+          <ul>
+            <li>Others</li>
+              <ul>
+                <li>Autocomplete for passwords turned off</li>
+                <li>Check session on intial page load and refresh</li>
+                <li>Clarified Back and Accept in User Inventory's warning dialog</li>
+              </ul>
+          </ul>
+        </li>
+        <br>
+        <li>
           2019.02.08 - v.1.01, Optimization and Bug Fixes
           <ul>
             <li>User Inventory</li>
