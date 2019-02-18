@@ -107,7 +107,7 @@ export default {
 
   async mounted () {
     let initial = 'menu'
-    this.$store.dispatch('resetAll')
+    // this.$store.dispatch('resetAll')
     this.$store.dispatch('setTitle', initial)
   },
 
