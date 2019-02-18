@@ -113,19 +113,13 @@
           </v-list>
           <v-divider/>
           <v-card-actions>
-            <v-tooltip top>
-              <v-btn slot="activator" color="error" flat @click="warningDialog = false">
-                Back
-              </v-btn>
-              <span>Return</span>
-            </v-tooltip>
+            <v-btn slot="activator" color="error" flat @click="warningDialog = false">
+              Back
+            </v-btn>
             <v-spacer/>
-            <v-tooltip top>
-              <v-btn slot="activator" color="primary" flat @click="save(reviewedItems)">
-                Accept & Submit
-              </v-btn>
-              <span>Continue</span>
-            </v-tooltip>
+            <v-btn slot="activator" color="primary" flat @click="save(reviewedItems)">
+              Accept & Submit
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
