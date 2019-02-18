@@ -95,6 +95,7 @@
         v-model="warningDialog"
         max-width="800"
         @keydown.esc="warningDialog = false"
+        @keydown.delete="warningDialog = false"
         @keydown.enter="save(reviewedItems)"
       >
         <v-card>
@@ -113,15 +114,15 @@
           <v-divider/>
           <v-card-actions>
             <v-tooltip top>
-              <v-btn slot="activator" flat @click="warningDialog = false">
-                <v-icon>fa-angle-double-left</v-icon>
+              <v-btn slot="activator" color="error" flat @click="warningDialog = false">
+                Back
               </v-btn>
               <span>Return</span>
             </v-tooltip>
             <v-spacer/>
             <v-tooltip top>
-              <v-btn slot="activator" flat @click="save(reviewedItems)">
-                <v-icon>fa-angle-double-right</v-icon>
+              <v-btn slot="activator" color="primary" flat @click="save(reviewedItems)">
+                Accept & Submit
               </v-btn>
               <span>Continue</span>
             </v-tooltip>
