@@ -51,6 +51,7 @@ export default {
         this.dialog = true
         if (resp.data.redirect) {
           setTimeout(() => {
+            this.$store.dispatch('resetAll')
             this.close()
             this.$router.push({ name: 'login' })
           }, 5000)
