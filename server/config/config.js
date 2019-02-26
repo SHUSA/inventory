@@ -9,7 +9,8 @@ module.exports = {
     options: {
       dialect: process.env.DIALECT || 'postgres',
       host: process.env.SRL_INVENTORY_HOST || 'localhost',
-      port: process.env.SRL_INVENTORY_DB_PORT || '5432'
+      port: process.env.SRL_INVENTORY_DB_PORT || '5432',
+      operatorsAliases: false
     }
   },
   authentication: {
