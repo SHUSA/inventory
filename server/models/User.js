@@ -45,10 +45,6 @@ module.exports = (sequelize, DataTypes) => {
       required: true,
       unique: true
     },
-    isAdmin: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
-    },
     itemDefaults: {
       type: DataTypes.JSONB,
       defaultValue: {
@@ -67,16 +63,21 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     hooks: {
-      beforeCreate: function (user) {
+      beforeCreate: function (user, department) {
+        // default username
+        if (!user.username || user.username.length === 0) {
+          // to do: review default scheme
+          user.username = `${department.name}User`
+        }
         // default email
-        if (!user.email || user.email.length === 0 || user.email === undefined) {
+        if (!user.email || user.email.length === 0) {
           user.email = `${user.username.replace(/ /g, '').toLowerCase()}@bar.com`
         } else {
           user.email = user.email.toLowerCase()
         }
         // default password for regular users
-        if (!user.password || user.password.length === 0 || user.password === undefined) {
-          user.password = `${user.username.replace(/ /g, '').slice(0, 5)}123`
+        if (!user.password || user.password.length === 0) {
+          user.password = `${user.username.replace(/ /g, '')}123`
         }
         return user
       },
@@ -94,6 +95,7 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = function (models) {
     User.belongsTo(models.Department)
+    User.belongsTo(models.Role)
   }
 
   return User

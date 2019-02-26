@@ -11,8 +11,11 @@ module.exports = (sequelize, DataTypes) => {
       required: true
     },
     location: {
-      type: DataTypes.STRING,
-      required: true
+      type: DataTypes.STRING
+    },
+    all: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
     active: {
       type: DataTypes.BOOLEAN,
