@@ -1,3 +1,5 @@
+const Sequelize = require('sequelize')
+const Op = Sequelize.Op
 const { Department } = require('../models')
 
 module.exports = {
@@ -5,7 +7,14 @@ module.exports = {
     try {
       let departments = await Department.findAll({
         where: {
-          active: req.query.status
+          active: req.query.active,
+          [Op.not]: {
+            all: true
+          }
+        },
+        attributes: {
+          include: req.query.attributes,
+          exclude: 'all'
         },
         order: [
           ['name', 'DESC']
@@ -19,19 +28,6 @@ module.exports = {
       })
     }
   },
-
-  async show (req, res) {
-    try {
-      let department = await Department.findById(req.params.deptId)
-      res.send(department)
-    } catch (error) {
-      console.log(error)
-      res.status(500).send({
-        error: 'An error occured fetching Department'
-      })
-    }
-  },
-
   async post (req, res) {
     try {
       const department = await Department.create(req.body)

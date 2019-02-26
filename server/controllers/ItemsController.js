@@ -1,3 +1,5 @@
+const Sequelize = require('sequelize')
+const Op = Sequelize.Op
 const { Item } = require('../models')
 const { Assay } = require('../models')
 const { Vendor } = require('../models')
@@ -60,7 +62,7 @@ module.exports = {
     try {
       let items = await Item.findAll({
         where: {
-          $or: ['id', 'AssayId', 'VendorId'].map(key => ({
+          [Op.or]: ['id', 'AssayId', 'VendorId'].map(key => ({
             [key]: req.query.ids
           })),
           active: req.query.active
