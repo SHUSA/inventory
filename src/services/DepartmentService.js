@@ -2,14 +2,13 @@ import API from './API'
 import checkResponse from './checkResponse'
 
 export default {
-  index () {
-    return API().get('departments').catch(err =>
-      checkResponse(err)
-    )
-  },
-
-  show (departmentId) {
-    return API().get(`departments/${departmentId}`).catch(err =>
+  index (attributes = [], active = true) {
+    return API().get('departments', {
+      params: {
+        attributes: attributes,
+        active: active
+      }
+    }).catch(err =>
       checkResponse(err)
     )
   },
