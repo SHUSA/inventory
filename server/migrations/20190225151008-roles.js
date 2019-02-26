@@ -1,5 +1,6 @@
 const { User } = require('../models')
 const { Role } = require('../models')
+const { Department } = require('../models')
 
 module.exports = {
   up: async function (queryInterface, Sequelize) {
@@ -33,10 +34,7 @@ module.exports = {
       type: Sequelize.UUID
     })
 
-    // queryInterface.removeColumn('Users', 'RoleId')
-    // queryInterface.dropTable('Roles')
-
-    await Role.create({name: 'User'})
+    const userRole = (await Role.create({name: 'User'})).toJSON()
     await Role.create({name: 'Sub Admin', isSubAdmin: true})
     const admin = (await Role.create({ name: 'Admin', isAdmin: true })).toJSON()
     const superAdmin = (await Role.create({ name: 'Super Admin', isSuperAdmin: true })).toJSON()
@@ -48,34 +46,43 @@ module.exports = {
         isAdmin: true
       }
     })
+    const department = (await Department.findOne({
+      where: {
+        name: 'Molecular'
+      }
+    })).toJSON()
+    await User.create({}, department).then(user => {
+      User.update({RoleId: userRole.id}, {
+        where: {
+          id: user.id
+        }
+      })
+    })
 
     queryInterface.removeColumn('Users', 'isAdmin')
   },
 
   down: async function (queryInterface, Sequelize) {
     queryInterface.addColumn('Users', 'isAdmin', {
-      type: Sequelize.STRING,
-      defaultValue: false
+      type: Sequelize.BOOLEAN,
+      defaultValue: true
     })
 
-    const admin = (await Role.findOne({
+    const user = (await Role.findOne({
       where: {
-        isAdmin: true
-      }
-    })).toJSON()
-    const superAdmin = (await Role.findOne({
-      where: {
-        isSuperAdmin: true
+        isSubAdmin: false,
+        isAdmin: false,
+        isSuperAdmin: false
       }
     })).toJSON()
 
-    await User.update({isAdmin: true}, {
+    await User.destroy({
       where: {
-        RoleId: [admin, superAdmin]
+        RoleId: user.id
       }
     })
 
     queryInterface.removeColumn('Users', 'RoleId')
-    queryInterface.dropTable('Role')
+    queryInterface.dropTable('Roles')
   }
 }
