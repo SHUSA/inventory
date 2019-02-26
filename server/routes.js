@@ -14,14 +14,14 @@ module.exports = (app) => {
   app.post('/register',
     AuthenticationControllerPolicy.register,
     AuthenticationController.register)
+  app.post('/user-login', AuthenticationController.userLogin)
   app.post('/login', AuthenticationController.login)
   app.post('/userupdate', isAuthenticated, AuthenticationController.update)
   app.post('/sessioncheck', isAuthenticated, AuthenticationController.checkSession)
 
-  app.get('/department', DepartmentController.index)
-  app.get('/department/:deptId', DepartmentController.show)
-  app.post('/department', isAuthenticated, DepartmentController.post)
-  app.put('/department/:deptId', isAuthenticated, DepartmentController.put)
+  app.get('/departments', DepartmentController.index)
+  app.post('/departments', DepartmentController.post)
+  app.put('/departments/:deptId', isAuthenticated, DepartmentController.put)
 
   app.get('/vendors', VendorsController.index)
   app.get('/vendors/:vendorId', VendorsController.show)
@@ -31,8 +31,7 @@ module.exports = (app) => {
   app.get('/items', ItemsController.index)
   app.get('/items/list', ItemsController.show)
   app.post('/items', isAuthenticated, ItemsController.post)
-  // app.put('/items/:itemId', isAuthenticated, ItemsController.put)
-  app.put('/items/:itemId', ItemsController.put)
+  app.put('/items/:itemId', isAuthenticated, ItemsController.put)
   app.put('/deactivate-items', isAuthenticated, ItemsController.deactivate)
   app.put('/reassign-items', isAuthenticated, ItemsController.reassign)
 
@@ -43,9 +42,8 @@ module.exports = (app) => {
 
   app.get('/orders', OrdersController.index)
   app.get('/orders/:orderId', OrdersController.show)
-  // to do: add authentication once all users must log in
   app.post('/orders', OrdersController.post)
-  app.put('/orders/:orderId', OrdersController.put)
+  app.put('/orders/:orderId', isAuthenticated, OrdersController.put)
   app.delete('/orders/:orderId', OrdersController.remove)
 
   app.get('/entries', EntryController.index)
