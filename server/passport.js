@@ -1,6 +1,7 @@
 const passport = require('passport')
 const { User } = require('./models')
 const { Department } = require('./models')
+const { Role } = require('./models')
 
 const JwtStrategy = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
@@ -17,7 +18,7 @@ passport.use(
         where: {
           id: jwtPayLoad.id
         },
-        include: [Department]
+        include: [Department, Role]
       })
       // check if user department matches assay/order department?
       if (!user) {
