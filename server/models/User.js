@@ -79,6 +79,8 @@ module.exports = (sequelize, DataTypes) => {
         if (!user.password || user.password.length === 0) {
           user.password = `${user.username.replace(/ /g, '')}123`
         }
+        // set DepartmentId
+        user.DepartmentId = department.id
         return user
       },
       beforeUpdate: hashPassword,
