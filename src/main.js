@@ -9,6 +9,7 @@ import { sync } from 'vuex-router-sync'
 import 'vuetify/dist/vuetify.min.css'
 import store from '@/store/store'
 import moment from 'moment'
+import {clone, cloneDeep} from 'lodash'
 import validate from './js/validate'
 import utility from './js/utility'
 import Scroll from '@/components/globals/Scroll.vue'
@@ -23,6 +24,8 @@ Vue.use(Veutify, {
 Object.defineProperty(Vue.prototype, '$moment', { value: moment })
 Object.defineProperty(Vue.prototype, '$validate', { value: validate })
 Object.defineProperty(Vue.prototype, '$util', { value: utility })
+Object.defineProperty(Vue.prototype, '$clone', { value: clone })
+Object.defineProperty(Vue.prototype, '$clonedeep', { value: cloneDeep })
 
 Vue.component('scroll', Scroll)
 Vue.component('error', Error)
