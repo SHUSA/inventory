@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- user settings -->
-    <user-settings v-if="user.isUserLoggedIn" :dialog.sync="dialog"/>
+    <user-settings v-if="user.isAdmin" :dialog.sync="dialog"/>
     <!-- logout -->
     <v-dialog
       v-model="logoutDialog"
@@ -54,7 +54,7 @@
       <v-spacer/>
       <v-toolbar-items>
         <!-- login and other info -->
-        <v-btn flat :disabled="!user.isUserLoggedIn" class="display" @click="dialog = true">
+        <v-btn flat :disabled="!user.isAdmin" class="display" @click="dialog = true">
           <v-icon v-if="user.isUserLoggedIn" class="pr-1" small>fa-cog</v-icon>
           <span class="white--text">{{welcome}}</span>
         </v-btn>
