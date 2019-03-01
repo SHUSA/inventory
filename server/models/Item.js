@@ -2,6 +2,14 @@ function setLongCat (deptId, catNum) {
   return `${deptId}-${catNum}`
 }
 
+function setCatalog (item) {
+  if (item.catalogNumber && item.DepartmentId) {
+    item.catalogNumber = item.catalogNumber.toUpperCase()
+    item.longCatalog = setLongCat(item.DepartmentId, item.catalogNumber)
+  }
+  return item
+}
+
 module.exports = (sequelize, DataTypes) => {
   const Item = sequelize.define('Item', {
     id: {
@@ -64,19 +72,14 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks: {
       beforeCreate: function (item) {
-        item.catalogNumber = item.catalogNumber.toUpperCase()
-        item.longCatalog = setLongCat(item.DepartmentId, item.catalogNumber)
-        return item
+        return setCatalog(item)
       },
       beforeUpdate: function (item) {
-        item.catalogNumber = item.catalogNumber.toUpperCase()
-        item.longCatalog = setLongCat(item.DepartmentId, item.catalogNumber)
-        return item
+        return setCatalog(item)
       },
       beforeBulkUpdate: function (item) {
         let itemAttr = item.attributes
-        itemAttr.catalogNumber = itemAttr.catalogNumber.toUpperCase()
-        itemAttr.longCatalog = setLongCat(itemAttr.DepartmentId, itemAttr.catalogNumber)
+        setCatalog(itemAttr)
         return item
       }
     }
