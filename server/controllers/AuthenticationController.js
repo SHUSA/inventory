@@ -31,21 +31,57 @@ function assignAccess (user) {
 module.exports = {
   async register (req, res) {
     const user = req.body.credentials
-    const department = req.body.department
+    let department = null
+    let role = null
+    // check if department exists
     // if department is new, new user becomes an admin
     // else is a normal user
     // to do: check to see if department exists
+    department = (await Department.findOne({
+      where: {
+        name: req.body.department.name
+      }
+    })).toJSON()
+
+    if (!department) {
+      // new department, make department
+      department = (await Department.create({
+        name: req.body.department.name
+      })).toJSON()
+      // get admin role
+      role = (await Role.findOne({
+        where: {
+          isSubAdmin: false,
+          isAdmin: true,
+          isSuperAdmin: false
+        }
+      })).toJSON()
+    } else {
+      // existing department, new user is normal user
+      role = (await Role.findOne({
+        where: {
+          isSubAdmin: false,
+          isAdmin: false,
+          isSuperAdmin: false
+        }
+      })).toJSON()
+    }
+
+    user.DepartmentId = department.id
+    user.RoleId = role.id
 
     try {
       const userJson = (await User.create(user, department)).toJSON()
       delete userJson.password
+      delete userJson.RoleId
+
       res.send({
         user: userJson,
         token: jwtSignUser(userJson)
       })
     } catch (error) {
       console.log(error)
-      res.status(400).send(error.errors)
+      res.status(500).send(error.errors)
     }
   },
 
