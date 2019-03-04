@@ -1,5 +1,6 @@
 <template>
   <div>
+    <error :response="response"/>
     <!-- login dialog -->
     <v-dialog
       v-model="dialog"
@@ -55,16 +56,31 @@
       </popup>
     </v-dialog>
 
+    <!-- user login -->
+    <v-dialog
+      v-model="userDialog"
+      width="500px"
+    >
+      <popup title="User Login">
+        <template slot="content">
+          <span v-for="dept in departments" :key="dept.id">
+            <v-btn flat @click="login(dept)">{{dept.name}}</v-btn>
+          </span>
+        </template>
+      </popup>
+    </v-dialog>
+
     <!-- choose login -->
     <v-layout>
       <v-spacer/>
       <v-flex xs8>
         <v-card>
           <v-card-title>
-            <h3 class="headline">Who are you?</h3>
+            <h3 class="headline">Choose your login</h3>
           </v-card-title>
           <v-card-actions>
-            <v-btn flat @click="login('user')">User</v-btn>
+            <!-- to do: change menu to dialog with all departments -->
+            <v-btn flat @click="userDialog = true">User</v-btn>
             <v-btn flat @click="dialog = true">Admin</v-btn>
           </v-card-actions>
         </v-card>
@@ -77,16 +93,20 @@
 <script>
 import { mapState } from 'vuex'
 import AuthenticationService from '@/services/AuthenticationService.js'
+import DepartmentService from '@/services/DepartmentService.js'
 
 export default {
   data () {
     return {
+      userDialog: false,
       dialog: false,
       alert: false,
       loading: false,
       form: true,
       count: 0,
       hint: '',
+      response: '',
+      departments: [],
       persistentHint: false,
       alertMessage: '',
       credentials: {
@@ -109,6 +129,10 @@ export default {
     let initial = 'menu'
     // this.$store.dispatch('resetAll')
     this.$store.dispatch('setTitle', initial)
+    this.response = await DepartmentService.index(['id', 'name'])
+    if (this.response.status === 200) {
+      this.departments = this.$clonedeep(this.response.data)
+    }
   },
 
   watch: {
@@ -142,42 +166,44 @@ export default {
       this.$validate.form(this, msg)
     },
 
-    async login (type = null) {
-      if (type) {
+    setUserData (data) {
+      this.count = 0
+      this.persistentHint = false
+      // success
+      // set store values and load index component
+      this.$store.dispatch('setToken', data.token)
+      this.$store.dispatch('setUser', data.user)
+      this.$store.dispatch('setSettings', data.user)
+      this.$store.dispatch('setInventoryTitle', data.user.Department.name)
+      this.close()
+      this.$router.push({
+        name: 'index'
+      })
+    },
+
+    async login (dept = null) {
+      if (dept) {
         // user
-        this.persistentHint = false
-        this.$store.dispatch('setUser', type)
-        this.$router.push({
-          name: 'index'
-        })
+        this.response = await AuthenticationService.userLogin(dept)
+
+        if (this.response.status === 200) {
+          this.setUserData(this.response.data)
+        }
       } else {
         // check credentials
-        let response = null
-        response = await AuthenticationService.login(this.credentials)
+        this.response = await AuthenticationService.login(this.credentials)
 
-        if (response.status === 200) {
-          let user = response.data.user
-
-          this.count = 0
-          this.persistentHint = false
-          // success
-          // set store values and load index component
-          this.$store.dispatch('setToken', response.data.token)
-          this.$store.dispatch('setUser', user)
-          this.$store.dispatch('setSettings', user)
-          this.close()
-          this.$router.push({
-            name: 'index'
-          })
+        if (this.response.status === 200) {
+          this.setUserData(this.response.data)
         } else {
           // failure
           this.count++
           if (this.count === 3) {
-            this.hint = response.data.hint || ''
+            this.hint = this.response.data.hint || ''
             this.persistentHint = true
             this.count = 0
           }
-          this.alertMessage = response.data.error
+          this.alertMessage = this.response.data.error
           this.loading = false
           this.alert = true
         }
