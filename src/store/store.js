@@ -20,6 +20,7 @@ function initialState () {
     token: null,
     welcome: '',
     pageTitle: '',
+    inventoryTitle: '',
     storedOrder: '',
     storedFilters: [],
     itemList: [],
@@ -105,6 +106,9 @@ export default new Vuex.Store({
     setVendorNames (state, data) {
       state.vendorNames = data
     },
+    setInventoryTitle (state, title) {
+      state.inventoryTitle = title + ' '
+    },
     closeSnack (state) {
       state.snackbar.open = false
     },
@@ -160,6 +164,9 @@ export default new Vuex.Store({
       setTimeout(() => {
         commit('setSnack', snack)
       }, 100)
+    },
+    setInventoryTitle ({ commit }, title) {
+      commit('setInventoryTitle', title)
     },
     resetAll ({ commit }) {
       commit('resetAll')

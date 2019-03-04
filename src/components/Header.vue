@@ -18,7 +18,7 @@
     <!-- toolbar -->
     <v-toolbar app clipped-left flat dark>
       <v-toolbar-title>
-        {{title}} v1.011
+        {{inventoryTitle}}Inventory v1.011
         <!-- help -->
         <v-dialog
           v-model="help"
@@ -83,7 +83,6 @@ export default {
   data () {
     return {
       time: this.$moment().format('MMM DD, YYYY'),
-      title: 'Molecular Inventory',
       help: false,
       dialog: false,
       logoutDialog: false
@@ -92,6 +91,7 @@ export default {
 
   computed: {
     ...mapState([
+      'inventoryTitle',
       'pageTitle',
       'user',
       'welcome'
