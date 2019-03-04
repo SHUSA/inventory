@@ -34,9 +34,6 @@ module.exports = {
     let department = null
     let role = null
     // check if department exists
-    // if department is new, new user becomes an admin
-    // else is a normal user
-    // to do: check to see if department exists
     department = (await Department.findOne({
       where: {
         name: req.body.department.name
