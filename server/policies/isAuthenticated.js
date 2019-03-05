@@ -7,10 +7,12 @@ module.exports = function (req, res, next) {
       let error = {}
       if (info.name === 'TokenExpiredError') {
         error.error = 'Session ended. Redirecting to login.'
+        error.title = 'Pardon the interruption.'
         error.redirect = true
       } else {
         error.error = 'Access denied.'
         error.redirect = false
+        error.title = 'You no take candle.'
       }
 
       res.status(403).send(error)

@@ -5,7 +5,7 @@
     max-width="500px"
   >
     <popup
-      title="You've met with a terrible fate, haven't you?"
+      :title="title"
       titleStyle="error"
     >
       <template slot="content">
@@ -32,7 +32,8 @@ export default {
   data () {
     return {
       dialog: false,
-      closed: false
+      closed: false,
+      title: ''
     }
   },
 
@@ -40,6 +41,7 @@ export default {
     getErrorMessage (resp) {
       if (resp.status !== 200 && resp.status !== undefined && !this.closed) {
         // stop process and display error message
+        this.title = 'You\'ve met with a terrible fate, haven\'t you?'
         this.dialog = true
         return Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
       }
@@ -48,6 +50,7 @@ export default {
     getExtraMessage (resp) {
       if (resp.status !== 200 && resp.status !== undefined && !this.closed) {
         // stop process and display error message
+        this.title = resp.data.title
         this.dialog = true
         if (resp.data.redirect) {
           setTimeout(() => {
