@@ -14,12 +14,12 @@ passport.use(
     secretOrKey: config.authentication.jwtSecret
   }, async function (jwtPayLoad, done) {
     try {
-      const user = await User.findOne({
+      const user = (await User.findOne({
         where: {
           id: jwtPayLoad.id
         },
         include: [Department, Role]
-      })
+      })).toJSON()
       // check if user department matches assay/order department?
       if (!user) {
         return done(new Error(), false)
