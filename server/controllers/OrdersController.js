@@ -4,12 +4,15 @@ const moment = require('moment')
 
 module.exports = {
   async index (req, res) {
+    const search = {
+      active: req.query.active
+    }
+    if (!req.user.Department.all) {
+      search.DepartmentId = req.user.DepartmentId
+    }
     try {
       let orders = await Order.findAll({
-        where: {
-          active: req.query.active,
-          DepartmentId: req.query.departmentId
-        },
+        where: search,
         order: [
           ['createdAt', 'DESC']
         ]
@@ -40,7 +43,7 @@ module.exports = {
   async post (req, res) {
     try {
       const order = await Order.create({
-        DepartmentId: req.body.params.departmentId
+        DepartmentId: req.user.DepartmentId
       })
       res.send(order)
     } catch (error) {
@@ -52,7 +55,9 @@ module.exports = {
     const order = req.body
     const oneMonthAgo = moment().subtract(30, 'days').format()
     if (order.createdAt < oneMonthAgo && order.completed) {
-      res.status(500).send([{ message: 'Order is completed and older than one month. Unable to delete.' }])
+      res.status(500).send({
+        error: 'Order is completed and older than one month. Unable to delete.'
+      })
     }
     try {
       await Order.update(order, {

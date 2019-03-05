@@ -28,21 +28,21 @@ module.exports = (app) => {
   app.post('/vendors', isAuthenticated, VendorsController.post)
   app.put('/vendors/:vendorId', isAuthenticated, VendorsController.put)
 
-  app.get('/items', ItemsController.index)
+  app.get('/items', isAuthenticated, ItemsController.index)
   app.get('/items/list', ItemsController.show)
   app.post('/items', isAuthenticated, ItemsController.post)
   app.put('/items/:itemId', isAuthenticated, ItemsController.put)
   app.put('/deactivate-items', isAuthenticated, ItemsController.deactivate)
   app.put('/reassign-items', isAuthenticated, ItemsController.reassign)
 
-  app.get('/assays', AssaysController.index)
+  app.get('/assays', isAuthenticated, AssaysController.index)
   app.get('/assays/:assayId', AssaysController.show)
   app.post('/assays', isAuthenticated, AssaysController.post)
   app.put('/assays/:assayId', isAuthenticated, AssaysController.put)
 
-  app.get('/orders', OrdersController.index)
+  app.get('/orders', isAuthenticated, OrdersController.index)
   app.get('/orders/:orderId', OrdersController.show)
-  app.post('/orders', OrdersController.post)
+  app.post('/orders', isAuthenticated, OrdersController.post)
   app.put('/orders/:orderId', isAuthenticated, OrdersController.put)
   app.delete('/orders/:orderId', OrdersController.remove)
 

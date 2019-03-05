@@ -2,10 +2,9 @@ import API from './API'
 import checkResponse from './checkResponse'
 
 export default {
-  index (departmentId, active = true) {
+  index (active = true) {
     return API().get('orders', {
       params: {
-        departmentId: departmentId,
         active: active
       }
     }).catch(err =>
@@ -19,12 +18,8 @@ export default {
     )
   },
 
-  post (departmentId) {
-    return API().post('orders', {
-      params: {
-        departmentId: departmentId
-      }
-    }).catch(err =>
+  post () {
+    return API().post('orders').catch(err =>
       checkResponse(err)
     )
   },

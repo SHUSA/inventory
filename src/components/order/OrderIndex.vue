@@ -106,7 +106,7 @@ export default {
   methods: {
     async initialize () {
       this.$store.dispatch('setTitle', this.route.name)
-      this.response = (await orderService.index(this.user.department.id))
+      this.response = (await orderService.index())
       this.orders = []
       this.completedOrders = []
       this.incompleteOrders = []
