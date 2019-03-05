@@ -55,7 +55,7 @@
       <v-toolbar-items>
         <!-- login and other info -->
         <v-btn flat :disabled="!user.isAdmin" class="display" @click="dialog = true">
-          <v-icon v-if="user.isUserLoggedIn" class="pr-1" small>fa-cog</v-icon>
+          <v-icon v-if="user.isAdmin" class="pr-1" small>fa-cog</v-icon>
           <span class="white--text">{{welcome}}</span>
         </v-btn>
         <v-btn v-if="this.$route.name !== 'login'" flat @click="logout()">
@@ -98,7 +98,7 @@ export default {
     ]),
 
     routes () {
-      if (this.user.isUserLoggedIn) {
+      if (this.user.isAdmin) {
         return ['Inventory', 'Orders', 'Catalog', 'Inactive']
       } else {
         return ['Inventory', 'Orders', 'Catalog']
@@ -108,14 +108,7 @@ export default {
 
   methods: {
     logout () {
-      if (this.user.isUserLoggedIn) {
-        // admin
-        this.logoutDialog = true
-        return null
-      }
-      this.$router.push({
-        name: 'login'
-      })
+      this.logoutDialog = true
     },
 
     exit () {

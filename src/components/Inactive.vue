@@ -81,7 +81,7 @@ export default {
 
   mounted () {
     // redirect if user
-    if (!this.user.isUserLoggedIn) {
+    if (!this.user.isAdmin) {
       this.$router.push({
         name: 'index'
       })
