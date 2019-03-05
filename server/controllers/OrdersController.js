@@ -7,7 +7,8 @@ module.exports = {
     try {
       let orders = await Order.findAll({
         where: {
-          active: req.query.active
+          active: req.query.active,
+          DepartmentId: req.query.departmentId
         },
         order: [
           ['createdAt', 'DESC']
@@ -38,7 +39,9 @@ module.exports = {
 
   async post (req, res) {
     try {
-      const order = await Order.create(req.body)
+      const order = await Order.create({
+        DepartmentId: req.body.params.departmentId
+      })
       res.send(order)
     } catch (error) {
       res.status(500).send(error.errors)

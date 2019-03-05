@@ -661,9 +661,9 @@ export default {
       let doNotOrder = []
       let entry = {}
       let matchedEntry = null
-      let orderList = (await orderService.index()).data
+      let orderList = (await orderService.index(this.user.department.id)).data
       // most recent Order or create new Order if none exist
-      let lastOrder = orderList.length === 0 ? (await orderService.post()).data : orderList[0]
+      let lastOrder = orderList.length === 0 ? (await orderService.post(this.user.department.id)).data : orderList[0]
       this.resultsList = {ordered: [], updated: [], retracted: []}
 
       // check through filteredList and see if order exists or if currentStock <= reorderPoint
@@ -677,12 +677,11 @@ export default {
           doNotOrder.push(entry)
         }
       })
-
       // ordering
       if (itemsToOrder.length > 0) {
         if (this.orderIsRecent(lastOrder)) {
           // recent order too old or completed, create new order and associate OrderId
-          lastOrder = (await orderService.post()).data
+          lastOrder = (await orderService.post(this.user.department.id)).data
           itemsToOrder.map(entry => {
             entry.OrderId = lastOrder.id
           })
