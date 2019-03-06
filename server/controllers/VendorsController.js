@@ -3,12 +3,15 @@ const { Vendor } = require('../models')
 module.exports = {
   async index (req, res) {
     try {
-      const active = req.query.active
       const attributes = req.query.attributes
+      const search = {
+        active: req.query.active
+      }
+      if (!req.user.Department.all) {
+        search.DepartmentId = req.user.DepartmentId
+      }
       let vendors = await Vendor.findAll({
-        where: {
-          active: active
-        },
+        where: search,
         order: [
           ['name', 'ASC']
         ],
@@ -31,7 +34,10 @@ module.exports = {
 
   async post (req, res) {
     try {
-      const vendor = await Vendor.create(req.body)
+      const vendorData = req.body
+      vendorData.DepartmentId = req.user.DepartmentId
+
+      const vendor = await Vendor.create(vendorData)
       res.send(vendor)
     } catch (error) {
       res.status(500).send(error.errors)

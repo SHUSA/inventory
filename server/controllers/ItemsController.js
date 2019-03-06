@@ -38,12 +38,15 @@ function calculateStockLevels (item, assay) {
 module.exports = {
   async index (req, res) {
     try {
-      const active = req.query.active
       const attributes = req.query.attributes
+      const search = {
+        active: req.query.active
+      }
+      if (!req.user.Department.all) {
+        search.DepartmentId = req.user.DepartmentId
+      }
       let items = await Item.findAll({
-        where: {
-          active: active
-        },
+        where: search,
         order: [
           ['name', 'ASC']
         ],
@@ -83,6 +86,7 @@ module.exports = {
     let item = req.body.params.item
     const assay = req.body.params.assay
     item = calculateStockLevels(item, assay)
+    item.DepartmentId = req.user.DepartmentId
 
     try {
       item = await Item.create(item)

@@ -3,12 +3,15 @@ const { Assay } = require('../models')
 module.exports = {
   async index (req, res) {
     try {
-      const active = req.query.active
       const attributes = req.query.attributes
+      const search = {
+        active: req.query.active
+      }
+      if (!req.user.Department.all) {
+        search.DepartmentId = req.user.DepartmentId
+      }
       let assays = await Assay.findAll({
-        where: {
-          active: active
-        },
+        where: search,
         order: [
           ['name', 'ASC']
         ],
@@ -32,7 +35,10 @@ module.exports = {
 
   async post (req, res) {
     try {
-      const assay = await Assay.create(req.body)
+      const assayData = req.body
+      assayData.DepartmentId = req.user.DepartmentId
+
+      const assay = await Assay.create(assayData)
       res.send(assay)
     } catch (error) {
       console.log(error)
