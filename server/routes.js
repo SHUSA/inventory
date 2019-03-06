@@ -23,7 +23,7 @@ module.exports = (app) => {
   app.post('/departments', DepartmentController.post)
   app.put('/departments/:deptId', isAuthenticated, DepartmentController.put)
 
-  app.get('/vendors', VendorsController.index)
+  app.get('/vendors', isAuthenticated, VendorsController.index)
   app.get('/vendors/:vendorId', VendorsController.show)
   app.post('/vendors', isAuthenticated, VendorsController.post)
   app.put('/vendors/:vendorId', isAuthenticated, VendorsController.put)
