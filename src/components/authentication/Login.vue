@@ -70,6 +70,118 @@
       </popup>
     </v-dialog>
 
+    <!-- register -->
+    <v-dialog
+      v-model="registerDialog"
+      width="500px"
+      @keydown.enter="validateData('regForm')"
+    >
+      <popup title="Registration">
+        <template slot="content">
+          <v-form ref="regForm" v-model="regForm" lazy-validation>
+            <v-container grid-list-md>
+              <v-layout row wrap>
+                <!-- to do: add v-flex and rules -->
+                <v-flex xs12>
+                  <!-- username -->
+                  <v-text-field
+                    label="Username"
+                    validate-on-blur
+                    v-model.trim="registration.username"
+                    clearable
+                    :rules="[rules.text]"
+                    :error-messages="usernameError"
+                    persistent-hint
+                    required
+                  />
+                </v-flex>
+                <!-- email -->
+                <v-flex xs12>
+                  <v-text-field
+                    label="Email"
+                    validate-on-blur
+                    v-model.trim="registration.email"
+                    clearable
+                    :error-messages="emailError"
+                    :rules="[rules.text]"
+                    required
+                  />
+                </v-flex>
+                <v-flex xs12>
+                  <!-- department -->
+                  <v-combobox
+                    v-model="registration.department"
+                    :items="departments"
+                    item-text="name"
+                    item-value="name"
+                    :return-object="false"
+                    :search-input.sync="search"
+                    label="Department"
+                    hint="Join an existing department or create a new one"
+                    persistent-hint
+                    validate-on-blur
+                    :rules="[rules.department]"
+                  >
+                    <template v-slot:no-data>
+                      <v-list-tile>
+                        <v-list-tile-content>
+                          <v-list-tile-title>
+                            No results matching "<strong>{{ search }}</strong>". Press <kbd>enter</kbd> to create a new one
+                          </v-list-tile-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                    </template>
+                  </v-combobox>
+                </v-flex>
+                <v-flex xs12>
+                  <!-- password -->
+                  <v-text-field
+                    label="Password"
+                    validate-on-blur
+                    v-model.trim="registration.password"
+                    clearable
+                    :rules="[rules.text]"
+                    :error-messages="passwordError"
+                    type="password"
+                    autocomplete="off"
+                    required
+                  />
+                </v-flex>
+                  <v-flex xs12>
+                  <!-- password confirm -->
+                  <v-text-field
+                    label="Confirm Password"
+                    validate-on-blur
+                    v-model.trim="registration.confirmPassword"
+                    clearable
+                    :rules="[rules.text]"
+                    type="password"
+                    autocomplete="off"
+                    required
+                  />
+                  </v-flex>
+                  <!-- alert -->
+                  <v-flex xs12>
+                    <v-alert
+                      :value="regAlert"
+                      type="error"
+                    >
+                      {{alertMessage}}
+                    </v-alert>
+                  </v-flex>
+              </v-layout>
+            </v-container>
+          </v-form>
+          <v-card-actions>
+            <v-spacer/>
+            <v-progress-circular indeterminate color="primary" v-if="loading"/>
+            <v-btn flat color="error" @click="close()">Cancel</v-btn>
+            <v-btn flat color="primary" @click="validateData('regForm')">Submit</v-btn>
+          </v-card-actions>
+        </template>
+      </popup>
+    </v-dialog>
+
     <!-- choose login -->
     <v-layout>
       <v-spacer/>
@@ -79,10 +191,10 @@
             <h3 class="headline">Choose your login</h3>
           </v-card-title>
           <v-card-actions>
-            <!-- to do: change menu to dialog with all departments -->
             <v-btn flat @click="userDialog = true">User</v-btn>
             <v-btn flat @click="dialog = true">Admin</v-btn>
           </v-card-actions>
+          <v-card-text class="caption pa-0 pl-2" @click="registerDialog = true">Register</v-card-text>
         </v-card>
       </v-flex>
       <v-spacer/>
@@ -99,13 +211,20 @@ export default {
   data () {
     return {
       userDialog: false,
+      registerDialog: false,
       dialog: false,
       alert: false,
+      regAlert: false,
       loading: false,
       form: true,
+      regForm: true,
       count: 0,
       hint: '',
       response: '',
+      search: null,
+      usernameError: '',
+      emailError: '',
+      passwordError: '',
       departments: [],
       persistentHint: false,
       alertMessage: '',
@@ -113,13 +232,19 @@ export default {
         username: '',
         password: ''
       },
+      registration: {
+        username: '',
+        email: '',
+        department: '',
+        password: '',
+        confirmPassword: ''
+      },
       rules: {
         text (val) {
-          if (val) {
-            return val.length > 0 ? true : ''
-          } else {
-            return ''
-          }
+          return val.length > 0 ? true : 'Required'
+        },
+        department (val) {
+          return val.length > 0 ? true : 'Please enter or select a department'
         }
       }
     }
@@ -150,6 +275,7 @@ export default {
 
   methods: {
     close () {
+      this.registerDialog = false
       this.dialog = false
       this.loading = false
       setTimeout(() => {
@@ -161,9 +287,9 @@ export default {
       }, 300)
     },
 
-    validateData () {
+    validateData (formRef = 'form') {
       const msg = 'Please complete the form'
-      this.$validate.form(this, msg)
+      this.$validate.form(this, msg, formRef)
     },
 
     setUserData (data) {
@@ -179,6 +305,27 @@ export default {
       this.$router.push({
         name: 'index'
       })
+    },
+
+    async register () {
+      if (this.registration.password !== this.registration.confirmPassword) {
+        this.alertMessage = 'Passwords do not match'
+        this.alert = true
+        return
+      }
+      this.response = await AuthenticationService.register(this.registration)
+      if (this.response.status === 200) {
+        // data is good, login
+        this.setUserData(this.response.data)
+      } else if (this.response.status === 400) {
+        // bad registration, assign error messages
+        this.usernameError = this.response.data.usernameError || ''
+        this.emailError = this.response.data.emailError || ''
+        this.passwordError = this.response.data.passwordError || ''
+        this.alertMessage = 'Errors in registration. Please fix.'
+        this.loading = false
+        this.regAlert = true
+      }
     },
 
     async login (dept = null) {

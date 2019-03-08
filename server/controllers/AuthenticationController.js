@@ -30,21 +30,33 @@ function assignAccess (user) {
 
 module.exports = {
   async register (req, res) {
-    const user = req.body.credentials
+    const user = req.body.registration
     let department = null
     let role = null
     // check if department exists
-    department = (await Department.findOne({
+    department = await Department.findOne({
       where: {
-        name: req.body.department.name
+        name: user.department
+      }
+    })
+    // get general user role
+    role = (await Role.findOne({
+      where: {
+        isSubAdmin: false,
+        isAdmin: false,
+        isSuperAdmin: false
       }
     })).toJSON()
 
     if (!department) {
-      // new department, make department
+      // new department, make department if it does not exist
       department = (await Department.create({
-        name: req.body.department.name
+        name: user.department
       })).toJSON()
+      // create general user
+      await User.create({
+        RoleId: role.id
+      }, department)
       // get admin role
       role = (await Role.findOne({
         where: {
@@ -54,23 +66,24 @@ module.exports = {
         }
       })).toJSON()
     } else {
-      // existing department, new user is normal user
-      role = (await Role.findOne({
-        where: {
-          isSubAdmin: false,
-          isAdmin: false,
-          isSuperAdmin: false
-        }
-      })).toJSON()
+      department = department.toJSON()
     }
 
     user.DepartmentId = department.id
     user.RoleId = role.id
 
     try {
-      const userJson = (await User.create(user, department)).toJSON()
+      let userJson = (await User.create(user, department)).toJSON()
+      userJson = (await User.findOne({
+        where: {
+          id: userJson.id
+        },
+        include: [Department, Role]
+      })).toJSON()
+      userJson.isAdmin = role.isAdmin || role.isSubAdmin || role.isSuperAdmin
       delete userJson.password
       delete userJson.RoleId
+      delete userJson.Role
 
       res.send({
         user: userJson,

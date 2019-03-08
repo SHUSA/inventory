@@ -2,10 +2,9 @@ import API from './API'
 import checkResponse from './checkResponse'
 
 export default {
-  register (credentials, department) {
+  register (registration) {
     return API().post('register', {
-      credentials: credentials,
-      department: department
+      registration: registration
     }).catch(err =>
       checkResponse(err)
     )

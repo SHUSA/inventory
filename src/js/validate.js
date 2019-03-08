@@ -1,10 +1,12 @@
 export default {
-  form (vue, text) {
-    if (vue.$refs.form.validate()) {
+  form (vue, text, formRef = 'form') {
+    if (vue.$refs[formRef].validate()) {
       vue.alert = false
       vue.loading = true
       if (vue.save) {
         return vue.save()
+      } else if (vue.register) {
+        return vue.register()
       } else {
         return vue.login()
       }

@@ -3,38 +3,37 @@ const Joi = require('joi')
 module.exports = {
   register (req, res, next) {
     const schema = {
-      email: Joi.string().email(),
-      password: Joi.string().regex(
-        new RegExp('^[a-zA-Z0-9]{8,32}$')
-      ),
-      username: Joi.string().regex(
+      username: Joi.string().required().regex(
         new RegExp('^[a-zA-Z0-9]{3,}$')
+      ),
+      email: Joi.string().required().email(),
+      password: Joi.string().required().regex(
+        new RegExp('^[a-zA-Z0-9]{8,32}$')
       )
     }
 
-    const { error } = Joi.validate(req.body, schema)
+    const { error } = Joi.validate(req.body.registration, schema, {
+      abortEarly: false,
+      allowUnknown: true
+    })
+    const errObj = {}
     if (error) {
-      switch (error.details[0].context.key) {
-        case 'username':
-          res.status(400).send({
-            error: 'Username must be at least 3 characters and only alphanumberic values'
-          })
-          break
-        case 'password':
-          res.status(400).send({
-            error: 'Password must be 8-32 characters and only alphanumberic values'
-          })
-          break
-        case 'email':
-          res.status(400).send({
-            error: 'Invalid email format'
-          })
-          break
-        default:
-          res.status(400).send({
-            error: 'Invalid registration information'
-          })
-      }
+      error.details.forEach(error => {
+        switch (error.context.key) {
+          case 'username':
+            errObj.usernameError = 'Username must be at least 3 characters and only alphanumberic values'
+            break
+          case 'password':
+            errObj.passwordError = 'Password must be 8-32 characters and only alphanumberic values'
+            break
+          case 'email':
+            errObj.emailError = 'Invalid email format'
+            break
+          default:
+            errObj.error = 'Invalid registration information'
+        }
+      })
+      res.status(400).send(errObj)
     } else {
       next()
     }
