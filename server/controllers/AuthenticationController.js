@@ -29,6 +29,35 @@ function assignAccess (user) {
 }
 
 module.exports = {
+  async getUsers (req, res) {
+    const user = req.user
+    let users = []
+    const options = {
+      include: [Role, Department],
+      attributes: {
+        exclude: ['password', 'RoleId']
+      }
+    }
+    try {
+      if (user.Role.isAdmin) {
+        // if admin, get all users from that department
+        users = await User.findAll({
+          where: {
+            DepartmentId: user.DepartmentId
+          },
+          options
+        })
+      } else if (user.Role.isSuperAdmin) {
+        // if super admin, get all users,
+        users = await User.findAll({ options })
+      }
+      res.send(users)
+    } catch (error) {
+      console.log(error)
+      res.status(500).send(error.errors)
+    }
+  },
+
   async register (req, res) {
     const user = req.body.registration
     let department = null

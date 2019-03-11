@@ -18,6 +18,7 @@ module.exports = (app) => {
   app.post('/login', AuthenticationController.login)
   app.post('/userupdate', isAuthenticated, AuthenticationController.update)
   app.post('/sessioncheck', isAuthenticated, AuthenticationController.checkSession)
+  app.get('/get-users', isAuthenticated, AuthenticationController.getUsers)
 
   app.get('/departments', DepartmentController.index)
   app.post('/departments', DepartmentController.post)
