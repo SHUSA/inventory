@@ -33,29 +33,29 @@ export default {
     return {
       dialog: false,
       closed: false,
-      title: ''
+      title: 'You\'ve met with a terrible fate, haven\'t you?'
     }
   },
 
   methods: {
     getErrorMessage (resp) {
-      if (resp.status !== 200 && resp.status !== undefined && !this.closed) {
+      if (resp.status !== 200 && resp.status !== 400 && resp.status !== undefined && !this.closed) {
         // stop process and display error message
-        this.title = resp.data.title ? resp.data.title : 'You\'ve met with a terrible fate, haven\'t you?'
+        this.title = resp.data.title ? resp.data.title : this.title
         this.dialog = true
         return Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
       }
     },
 
     getExtraMessage (resp) {
-      if (resp.status !== 200 && resp.status !== undefined && !this.closed) {
+      if (resp.status !== 200 && resp.status !== 400 && resp.status !== undefined && !this.closed) {
         // stop process and display error message
         if (resp.data.redirect) {
           setTimeout(() => {
             this.$store.dispatch('resetAll')
             this.close()
             this.$router.push({ name: 'login' })
-          }, 5000)
+          }, 3000)
         }
         return resp.data.error || null
       }
