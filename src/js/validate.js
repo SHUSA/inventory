@@ -5,7 +5,7 @@ export default {
       vue.loading = true
       if (vue.save) {
         return vue.save()
-      } else if (vue.register) {
+      } else if (vue.register && formRef === 'regForm') {
         return vue.register()
       } else {
         return vue.login()
