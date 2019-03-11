@@ -34,6 +34,10 @@
                     :persistent-hint="persistentHint"
                   />
                 </v-flex>
+                <!-- forgot password -->
+                <!-- <v-flex xs12 class="py-0">
+                  <a class="grey--text">Forgot Password?</a>
+                </v-flex> -->
                 <!-- alert -->
                 <v-flex xs12>
                   <v-alert
@@ -74,7 +78,6 @@
     <v-dialog
       v-model="registerDialog"
       width="500px"
-      @keydown.enter="validateData('regForm')"
     >
       <popup title="Registration">
         <template slot="content">
@@ -194,7 +197,12 @@
             <v-btn flat @click="userDialog = true">User</v-btn>
             <v-btn flat @click="dialog = true">Admin</v-btn>
           </v-card-actions>
-          <v-card-text class="caption pa-0 pl-2" @click="registerDialog = true">Register</v-card-text>
+          <v-divider/>
+          <v-card-text class="caption pl-0 pt-0 pb-1">
+            <v-btn small flat class="text-capitalize" @click="registerDialog = true">
+              Register
+            </v-btn>
+          </v-card-text>
         </v-card>
       </v-flex>
       <v-spacer/>
