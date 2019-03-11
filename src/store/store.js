@@ -11,6 +11,8 @@ function initialState () {
       username: '',
       email: '',
       isAdmin: false,
+      isSubAdmin: false,
+      isGeneral: false,
       passwordHint: '',
       department: {},
       itemDefaults: {},
@@ -60,6 +62,8 @@ export default new Vuex.Store({
           username: user.username,
           email: user.email,
           isAdmin: user.isAdmin,
+          isSubAdmin: user.isSubAdmin,
+          isGeneral: user.isGeneral,
           passwordHint: user.passwordHint
         })
         state.user.department = user.Department

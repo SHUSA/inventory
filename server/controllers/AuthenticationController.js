@@ -109,7 +109,8 @@ module.exports = {
         },
         include: [Department, Role]
       })).toJSON()
-      userJson.isAdmin = role.isAdmin || role.isSubAdmin || role.isSuperAdmin
+      userJson.isAdmin = role.isAdmin || role.isSuperAdmin
+      userJson.isSubAdmin = role.isSubAdmin
       delete userJson.password
       delete userJson.RoleId
       delete userJson.Role
@@ -219,7 +220,8 @@ module.exports = {
         include: [Department, Role]
       })).toJSON()
 
-      result.isAdmin = result.Role.isAdmin || result.Role.isSubAdmin || result.Role.isSuperAdmin
+      result.isAdmin = result.Role.isAdmin || result.Role.isSuperAdmin
+      result.isSubAdmin = result.Role.isSubAdmin
       delete result.Role
 
       res.send({
@@ -275,7 +277,7 @@ module.exports = {
       }
 
       const token = jwtSignUser(user)
-      user.isAdmin = false
+      user.isGeneral = true
 
       // give user token and send
       res.send({
@@ -323,7 +325,8 @@ module.exports = {
 
       const role = userJson.Role
       // roles come into play in other functions
-      userJson.isAdmin = role.isAdmin || role.isSubAdmin || role.isSuperAdmin
+      userJson.isAdmin = role.isAdmin || role.isSuperAdmin
+      userJson.isSubAdmin = role.isSubAdmin
       delete userJson.password
       delete userJson.RoleId
       delete userJson.Role

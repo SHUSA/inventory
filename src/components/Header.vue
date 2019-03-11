@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- user settings -->
-    <user-settings v-if="user.isAdmin" :dialog.sync="dialog"/>
+    <user-settings v-if="!user.isGeneral" :dialog.sync="dialog"/>
     <!-- logout -->
     <v-dialog
       v-model="logoutDialog"
@@ -18,7 +18,7 @@
     <!-- toolbar -->
     <v-toolbar app clipped-left flat dark>
       <v-toolbar-title>
-        {{inventoryTitle}}Inventory v1.011
+        {{inventoryTitle}}Inventory<sup>v1.011</sup>
         <!-- help -->
         <v-dialog
           v-model="help"
@@ -31,6 +31,7 @@
           <help/>
         </v-dialog>
       </v-toolbar-title>
+      <v-spacer/>
       <v-spacer/>
       <v-toolbar-items>
         <!-- menu routes -->
@@ -53,13 +54,18 @@
       </v-toolbar-items>
       <v-spacer/>
       <v-toolbar-items>
+        <!-- manage users -->
+        <v-btn v-if="user.isAdmin" icon flat>
+          <v-icon>fa-users</v-icon>
+        </v-btn>
         <!-- login and other info -->
-        <v-btn flat :disabled="!user.isAdmin" class="display" @click="dialog = true">
-          <v-icon v-if="user.isAdmin" class="pr-1" small>fa-cog</v-icon>
+        <v-btn flat :disabled="user.isGeneral" class="display" @click="dialog = true">
+          <v-icon v-if="!user.isGeneral" class="pr-1" small>fa-cog</v-icon>
           <span class="white--text">{{welcome}}</span>
         </v-btn>
-        <v-btn v-if="this.$route.name !== 'login'" flat @click="logout()">
-          Log Out
+        <v-btn icon v-if="this.$route.name !== 'login'" flat @click="logout()">
+          <!-- Log Out -->
+          <v-icon>fa-sign-out-alt</v-icon>
         </v-btn>
         <v-btn flat disabled class="display">
           <span class="white--text">{{time}}</span>
@@ -98,7 +104,7 @@ export default {
     ]),
 
     routes () {
-      if (this.user.isAdmin) {
+      if (this.user.isAdmin || this.user.isSubAdmin) {
         return ['Inventory', 'Orders', 'Catalog', 'Inactive']
       } else {
         return ['Inventory', 'Orders', 'Catalog']

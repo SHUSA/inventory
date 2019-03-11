@@ -9,7 +9,7 @@
           <v-flex xs12>
             <v-card-text>Choose your filters</v-card-text>
           </v-flex>
-          <v-flex xs4 v-if="user.isAdmin">
+          <v-flex xs4 v-if="user.isAdmin || user.isSubAdmin">
             <v-card-text class="warning">Warning: Displaying too much data can slow processing</v-card-text>
           </v-flex>
           <v-flex xs12>
@@ -165,7 +165,7 @@ export default {
         this.selected = this.assays.map(x => x.id)
       }
       this.$store.dispatch('setFilters', this.selected)
-      let route = this.user.isAdmin ? 'inventory-admin' : 'inventory-user'
+      let route = (this.user.isAdmin || this.user.isSubAdmin) ? 'inventory-admin' : 'inventory-user'
       this.$router.push({
         name: route
       })
