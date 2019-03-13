@@ -10,9 +10,9 @@
     >
       <template slot="content">
         <v-card-text>
-          {{getErrorMessage(response)}}
+          {{getErrorMessage(data)}}
           <br>
-          {{getExtraMessage(response)}}
+          {{getExtraMessage(data)}}
         </v-card-text>
         <v-card-actions>
           <v-spacer/>
@@ -33,12 +33,20 @@ export default {
     return {
       dialog: false,
       closed: false,
-      title: 'You\'ve met with a terrible fate, haven\'t you?'
+      title: 'You\'ve met with a terrible fate, haven\'t you?',
+      data: {}
+    }
+  },
+
+  watch: {
+    response () {
+      this.data = this.$clonedeep(this.response)
     }
   },
 
   methods: {
     getErrorMessage (resp) {
+      this.closed = false
       if (resp.status !== 200 && resp.status !== 400 && resp.status !== undefined && !this.closed) {
         // stop process and display error message
         this.title = resp.data.title ? resp.data.title : this.title
@@ -64,6 +72,7 @@ export default {
     close () {
       this.dialog = false
       this.closed = true
+      this.data = {}
     }
   }
 }
