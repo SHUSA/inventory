@@ -324,7 +324,7 @@ export default {
     },
 
     async save () {
-      this.response = await AuthenticationService.userupdate(this.editedSettings)
+      this.response = await AuthenticationService.userUpdate(this.editedSettings)
 
       if (this.response.status === 200) {
         let data = this.response.data

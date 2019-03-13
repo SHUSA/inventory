@@ -28,7 +28,7 @@ export default {
     )
   },
 
-  userupdate (user) {
+  userUpdate (user) {
     return API().post('userupdate', user).catch(err =>
       checkResponse(err)
     )
