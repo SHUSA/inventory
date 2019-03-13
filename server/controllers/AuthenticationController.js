@@ -13,8 +13,7 @@ function jwtSignUser (user) {
   })
 }
 
-function assignAccess (user) {
-  const role = user.Role
+function assignAccess (role) {
   let authLevel = 0
 
   if (role.isSubAdmin) {
@@ -32,26 +31,65 @@ module.exports = {
   async getUsers (req, res) {
     const user = req.user
     let users = []
-    const options = {
-      include: [Role, Department],
-      attributes: {
-        exclude: ['password', 'RoleId']
-      }
-    }
     try {
+      // get users
       if (user.Role.isAdmin) {
         // if admin, get all users from that department
         users = await User.findAll({
           where: {
-            DepartmentId: user.DepartmentId
+            DepartmentId: user.DepartmentId,
+            [Op.not]: {
+              id: user.id,
+              name: `${user.Department.name}User`
+            }
           },
-          options
+          include: [{
+            model: Role,
+            attributes: ['id', 'name']
+          }, Department],
+          attributes: {
+            exclude: ['password', 'RoleId']
+          },
+          order: [
+            [Department, 'name', 'ASC'],
+            [Role, 'name', 'ASC']
+          ]
         })
       } else if (user.Role.isSuperAdmin) {
         // if super admin, get all users,
-        users = await User.findAll({ options })
+        users = await User.findAll({
+          where: {
+            [Op.not]: {
+              id: user.id
+            }
+          },
+          include: [{
+            model: Role,
+            attributes: ['id', 'name']
+          }, Department],
+          attributes: {
+            exclude: ['password', 'RoleId']
+          },
+          order: [
+            [Department, 'name', 'ASC'],
+            [Role, 'name', 'ASC']
+          ]
+        })
       }
-      res.send(users)
+
+      const roles = await Role.findAll({
+        where: {
+          [Op.not]: {
+            isSuperAdmin: true
+          }
+        },
+        attributes: ['id', 'name'],
+        order: [
+          ['name', 'ASC']
+        ]
+      })
+
+      res.send({ users, roles })
     } catch (error) {
       console.log(error)
       res.status(500).send(error.errors)
@@ -129,6 +167,7 @@ module.exports = {
     const targetChanges = req.body
     const tokenUser = req.user
     let targetUser = null
+    let assignToken = true
 
     // check if tokenUser and targetUser are same
     // if yes, allow edits
@@ -147,55 +186,51 @@ module.exports = {
         })).toJSON()
 
         if (!targetUser) {
-          res.status(404).send({
+          return res.status(404).send({
             error: 'User to be updated cannot be found.'
           })
         }
       } catch (error) {
         console.log(error)
-        res.status(500).send(error.errors)
+        return res.status(500).send(error.errors)
       }
       const targetAccess = assignAccess(targetUser.Role)
       const tokenAccess = assignAccess(tokenUser.Role)
 
       if (tokenAccess <= targetAccess || targetUser.username === `${targetUser.Department.name}User`) {
         // deny change if general user or token access <= target
-        res.status(403).send({
+        return res.status(403).send({
           error: 'Update denied. Target user has equal priviledges or is a general user.'
         })
       }
     }
-
-    // to do: decide how new role will be received from service
     if (targetChanges.role) {
+      // if there is a role change in the update
       if (!tokenUser.Role.isSubAdmin) {
-        const newRole = targetChanges.role
-        // if there is a role change in the update
         try {
           // find new role, must be admin or lower
           // if token is admin, new role cannot be higher than subadmin
           let role = (await Role.findOne({
             where: {
-              isSubAdmin: newRole.isSubAdmin || false,
-              isAdmin: tokenUser.Role.isAdmin ? false : (newRole.isAdmin || false),
-              isSuperAdmin: false
+              id: targetChanges.Role.id
             }
           })).toJSON()
 
           if (!role) {
-            res.status(404).send({
+            return res.status(404).send({
               error: 'Invalid role.'
             })
           }
           targetChanges.RoleId = role.id
         } catch (error) {
           console.log(error)
-          res.status(500).send(error.errors)
+          return res.status(500).send(error.errors)
         }
       } else {
         // if token is subadmin, cannot change roles
         delete targetChanges.RoleId
       }
+      assignToken = false
     }
 
     if (targetChanges.password === '' || targetChanges.password === null || targetChanges.password === undefined) {
@@ -223,6 +258,15 @@ module.exports = {
       result.isAdmin = result.Role.isAdmin || result.Role.isSuperAdmin
       result.isSubAdmin = result.Role.isSubAdmin
       delete result.Role
+
+      if (assignToken) {
+        res.send({
+          user: result,
+          token: jwtSignUser(result)
+        })
+      } else {
+        res.send(result)
+      }
 
       res.send({
         user: result,
@@ -255,7 +299,7 @@ module.exports = {
     } catch (error) {
       // if role does not exist, there's a problem
       console.log(error)
-      res.status(500).send(error.errors)
+      return res.status(500).send(error.errors)
     }
 
     try {

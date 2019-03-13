@@ -55,7 +55,7 @@ module.exports = {
     const order = req.body
     const oneMonthAgo = moment().subtract(30, 'days').format()
     if (order.createdAt < oneMonthAgo && order.completed) {
-      res.status(500).send({
+      return res.status(500).send({
         error: 'Order is completed and older than one month. Unable to delete.'
       })
     }
