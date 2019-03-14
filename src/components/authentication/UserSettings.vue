@@ -14,7 +14,7 @@
               <v-layout row wrap>
                 <v-flex xs12 class="subheading">
                   User Information
-                  <v-icon small @click="toggle('toggleUser')">{{toggleUser ? "fa-window-close" : "fa-edit"}}</v-icon>
+                  <v-icon small>fa-edit</v-icon>
                   <v-divider/>
                 </v-flex>
                 <!-- username -->
@@ -22,9 +22,7 @@
                   <v-text-field
                     v-model.trim="editedSettings.username"
                     label="Username"
-                    :clearable="toggleUser"
-                    :disabled="!toggleUser"
-                    ref="toggleUser"
+                    clearable
                     validate-on-blur
                     :rules=[rules.text]
                     required
@@ -35,8 +33,6 @@
                   <v-text-field
                     v-model.trim="editedSettings.email"
                     label="Email"
-                    :clearable="toggleUser"
-                    :disabled="!toggleUser"
                     validate-on-blur
                     :rules=[rules.text]
                     required
@@ -44,7 +40,7 @@
                 </v-flex>
                 <v-flex xs12 class="subheading">
                   Password
-                  <v-icon small @click="toggle('togglePassword')">{{togglePassword ? "fa-window-close" : "fa-edit"}}</v-icon>
+                  <v-icon small>fa-edit</v-icon>
                   <v-divider/>
                 </v-flex>
                 <!-- new password -->
@@ -55,10 +51,7 @@
                     type="password"
                     autocomplete="off"
                     :rules="[rules.password]"
-                    :clearable="togglePassword"
-                    :disabled="!togglePassword"
                     validate-on-blur
-                    ref="togglePassword"
                   />
                 </v-flex>
                 <!-- confirm new password -->
@@ -69,8 +62,6 @@
                     type="password"
                     autocomplete="off"
                     :rules="[rules.password]"
-                    :clearable="togglePassword"
-                    :disabled="!togglePassword"
                     validate-on-blur
                     ref="confirmPassword"
                   />
@@ -80,95 +71,81 @@
                   <v-text-field
                     v-model="editedSettings.passwordHint"
                     label="Password Hint"
-                    :clearable="togglePassword"
-                    :disabled="!togglePassword"
                     validate-on-blur
                   />
                 </v-flex>
-                <v-flex xs12 class="subheading">
-                  Item Defaults
-                  <v-icon small @click="toggle('toggleItem')">{{toggleItem ? "fa-window-close" : "fa-edit"}}</v-icon>
-                  <v-divider/>
-                </v-flex>
-                <!-- weeks of safety stock -->
-                <v-flex xs6>
-                  <v-text-field
-                    v-model.number="editedSettings.itemDefaults.weeksOfSafetyStock"
-                    label="Weeks of Safety Stock"
-                    :clearable="toggleItem"
-                    :disabled="!toggleItem"
-                    ref="toggleItem"
-                    validate-on-blur
-                    :rules=[rules.wholeNumber]
-                    required
-                  />
-                </v-flex>
-                <!-- Lead Time Days -->
-                <v-flex xs6>
-                  <v-text-field
-                    v-model.number="editedSettings.itemDefaults.leadTimeDays"
-                    label="Lead Time Days"
-                    :clearable="toggleItem"
-                    :disabled="!toggleItem"
-                    validate-on-blur
-                    :rules=[rules.wholeNumber]
-                    required
-                  />
-                </v-flex>
-                <!-- weeks of reorder -->
-                <v-flex xs6>
-                  <v-text-field
-                    v-model.number="editedSettings.itemDefaults.weeksOfReorder"
-                    label="Weeks of Reorder"
-                    :clearable="toggleItem"
-                    :disabled="!toggleItem"
-                    validate-on-blur
-                    :rules=[rules.wholeNumber]
-                    required
-                  />
-                </v-flex>
-                <v-flex xs12 class="subheading">
-                  Assay Defaults
-                  <v-icon small @click="toggle('toggleAssay')">{{toggleAssay ? "fa-window-close" : "fa-edit"}}</v-icon>
-                  <v-divider/>
-                </v-flex>
-                <!-- weekly volume -->
-                <v-flex xs6>
-                  <v-text-field
-                    v-model.number="editedSettings.assayDefaults.weeklyVolume"
-                    label="Weekly Volume"
-                    :clearable="toggleAssay"
-                    :disabled="!toggleAssay"
-                    ref="toggleAssay"
-                    validate-on-blur
-                    :rules=[rules.wholeNumber]
-                    required
-                  />
-                </v-flex>
-                <!-- weekly runs -->
-                <v-flex xs6>
-                  <v-text-field
-                    v-model.number="editedSettings.assayDefaults.weeklyRuns"
-                    label="Weekly Runs"
-                    :clearable="toggleAssay"
-                    :disabled="!toggleAssay"
-                    validate-on-blur
-                    :rules=[rules.wholeNumber]
-                    required
-                  />
-                </v-flex>
-                <!-- controls per run -->
-                <v-flex xs6>
-                  <v-text-field
-                    v-model.number="editedSettings.assayDefaults.controlsPerRun"
-                    label="Controls per Run"
-                    :clearable="toggleAssay"
-                    :disabled="!toggleAssay"
-                    validate-on-blur
-                    :rules=[rules.wholeNumber]
-                    required
-                  />
-                </v-flex>
+                <template v-if="user.isAdmin || user.isSubAdmin">
+                  <v-flex xs12 class="subheading">
+                    Item Defaults
+                    <v-icon small>fa-edit</v-icon>
+                    <v-divider/>
+                  </v-flex>
+                  <!-- weeks of safety stock -->
+                  <v-flex xs6>
+                    <v-text-field
+                      v-model.number="editedSettings.itemDefaults.weeksOfSafetyStock"
+                      label="Weeks of Safety Stock"
+                      validate-on-blur
+                      :rules=[rules.wholeNumber]
+                      required
+                    />
+                  </v-flex>
+                  <!-- Lead Time Days -->
+                  <v-flex xs6>
+                    <v-text-field
+                      v-model.number="editedSettings.itemDefaults.leadTimeDays"
+                      label="Lead Time Days"
+                      validate-on-blur
+                      :rules=[rules.wholeNumber]
+                      required
+                    />
+                  </v-flex>
+                  <!-- weeks of reorder -->
+                  <v-flex xs6>
+                    <v-text-field
+                      v-model.number="editedSettings.itemDefaults.weeksOfReorder"
+                      label="Weeks of Reorder"
+                      validate-on-blur
+                      :rules=[rules.wholeNumber]
+                      required
+                    />
+                  </v-flex>
+                  <v-flex xs12 class="subheading">
+                    Assay Defaults
+                    <v-icon small>fa-edit</v-icon>
+                    <v-divider/>
+                  </v-flex>
+                  <!-- weekly volume -->
+                  <v-flex xs6>
+                    <v-text-field
+                      v-model.number="editedSettings.assayDefaults.weeklyVolume"
+                      label="Weekly Volume"
+                      validate-on-blur
+                      :rules=[rules.wholeNumber]
+                      required
+                    />
+                  </v-flex>
+                  <!-- weekly runs -->
+                  <v-flex xs6>
+                    <v-text-field
+                      v-model.number="editedSettings.assayDefaults.weeklyRuns"
+                      label="Weekly Runs"
+                      validate-on-blur
+                      :rules=[rules.wholeNumber]
+                      required
+                    />
+                  </v-flex>
+                  <!-- controls per run -->
+                  <v-flex xs6>
+                    <v-text-field
+                      v-model.number="editedSettings.assayDefaults.controlsPerRun"
+                      label="Controls per Run"
+                      validate-on-blur
+                      :rules=[rules.wholeNumber]
+                      required
+                    />
+                  </v-flex>
+                </template>
                 <!-- alert -->
                 <v-flex xs12>
                   <v-alert
@@ -211,10 +188,6 @@ export default {
       loading: false,
       alert: false,
       alertMessage: '',
-      toggleUser: false,
-      togglePassword: false,
-      toggleItem: false,
-      toggleAssay: false,
       rules: {
         wholeNumber: (val) => {
           return val !== null && val >= 0 && Number.isInteger(val) ? true : 'Please enter an integer'
@@ -318,11 +291,6 @@ export default {
       this.$validate.form(this)
     },
 
-    toggle (name) {
-      this[name] = !this[name]
-      this.$nextTick(() => this.$refs[name].focus())
-    },
-
     async save () {
       this.response = await AuthenticationService.userUpdate(this.editedSettings)
 
@@ -346,10 +314,6 @@ export default {
 
     close () {
       setTimeout(() => {
-        this.toggleUser = false
-        this.togglePassword = false
-        this.toggleItem = false
-        this.toggleAssay = false
         this.loading = false
         this.alert = false
         this.editedSettings = Object.assign({}, this.defaultSettings)
