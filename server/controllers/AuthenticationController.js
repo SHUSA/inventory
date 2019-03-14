@@ -39,8 +39,10 @@ module.exports = {
           where: {
             DepartmentId: user.DepartmentId,
             [Op.not]: {
-              id: user.id,
-              name: `${user.Department.name}User`
+              [Op.or]: [
+                { id: user.id },
+                { username: `${user.Department.name}User` }
+              ]
             }
           },
           include: [{
