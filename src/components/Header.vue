@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!-- user management -->
+    <!-- to do: do not display if no users? -->
+    <user-management v-if="user.isAdmin || user.isSubAdmin" :dialog.sync="userManageDialog"/>
     <!-- user settings -->
     <user-settings v-if="!user.isGeneral" :dialog.sync="dialog"/>
     <!-- logout -->
@@ -55,7 +58,7 @@
       <v-spacer/>
       <v-toolbar-items>
         <!-- manage users -->
-        <v-btn v-if="user.isAdmin" icon flat>
+        <v-btn v-if="user.isAdmin" icon flat @click="userManageDialog = true">
           <v-icon>fa-users</v-icon>
         </v-btn>
         <!-- login and other info -->
@@ -79,11 +82,13 @@
 import { mapState } from 'vuex'
 import Help from './information/Help'
 import UserSettings from './authentication/UserSettings'
+import UserManagement from './authentication/UserManagement'
 
 export default {
   components: {
     Help,
-    UserSettings
+    UserSettings,
+    UserManagement
   },
 
   data () {
@@ -91,6 +96,7 @@ export default {
       time: this.$moment().format('MMM DD, YYYY'),
       help: false,
       dialog: false,
+      userManageDialog: false,
       logoutDialog: false
     }
   },
