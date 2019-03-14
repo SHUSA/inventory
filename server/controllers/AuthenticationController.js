@@ -79,10 +79,17 @@ module.exports = {
         })
       }
 
+      const access = assignAccess(user.Role)
+      const excRole = [{ isSuperAdmin: true }]
+
+      if (access < 3) {
+        excRole.push({ isAdmin: true })
+      }
+
       const roles = await Role.findAll({
         where: {
           [Op.not]: {
-            isSuperAdmin: true
+            [Op.or]: excRole
           }
         },
         attributes: ['id', 'name'],
@@ -210,6 +217,14 @@ module.exports = {
       // if there is a role change in the update
       if (!tokenUser.Role.isSubAdmin) {
         try {
+          // find all users from the same department as target
+          const deptUsers = await User.findAll({
+            where: {
+              DepartmentId: targetChanges.Department.id
+            },
+            include: [Role]
+          })
+
           // find new role, must be admin or lower
           // if token is admin, new role cannot be higher than subadmin
           let role = (await Role.findOne({
@@ -221,6 +236,23 @@ module.exports = {
           if (!role) {
             return res.status(404).send({
               error: 'Invalid role.'
+            })
+          }
+
+          // must have at least 1 admin in department; send error if role change results in 0 admins
+          let userIndex = null
+          deptUsers.findIndex((user, index) => {
+            if (user.dataValues.id === targetUser.id) {
+              userIndex = index
+            }
+          })
+          if (userIndex) {
+            deptUsers.splice(userIndex, 1)
+          }
+          const adminRoles = deptUsers.filter(user => user.dataValues.Role.name === 'Admin')
+          if (adminRoles.length < 1) {
+            return res.status(500).send({
+              error: 'Unable to process. Must have at least one admin to a department.'
             })
           }
           targetChanges.RoleId = role.id
@@ -269,11 +301,6 @@ module.exports = {
       } else {
         res.send(result)
       }
-
-      res.send({
-        user: result,
-        token: jwtSignUser(result)
-      })
     } catch (error) {
       console.log(error)
       res.status(500).send(error)
