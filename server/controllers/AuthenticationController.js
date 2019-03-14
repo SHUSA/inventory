@@ -175,7 +175,7 @@ module.exports = {
   async update (req, res) {
     const targetChanges = req.body
     const tokenUser = req.user
-    let targetUser = null
+    let targetUser = req.body
     let assignToken = true
 
     // check if tokenUser and targetUser are same
