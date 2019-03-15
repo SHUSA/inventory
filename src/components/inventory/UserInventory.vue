@@ -34,7 +34,6 @@
               <v-icon class="pl-1">fa-sort</v-icon>
             </v-btn>
           </v-menu>
-          <!-- to do: add items per page controller -->
           <v-menu>
             <v-btn slot="activator" small dark left>
               Items/page: {{itemsPerPage}}

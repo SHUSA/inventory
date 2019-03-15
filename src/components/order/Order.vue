@@ -162,7 +162,6 @@
           />
         </v-layout>
         <!-- completed message -->
-        <!-- to do: place in a better spot -->
         <v-card v-if="thisOrder.completed" class="ma-2">
           <v-card-text>Completed on {{time(thisOrder.completeDate)}}</v-card-text>
         </v-card>

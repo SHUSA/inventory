@@ -50,7 +50,6 @@
           Card actions go here.
         </slot>
       </v-card-actions>
-      <!-- to do: add deactivation.vue here -->
       <v-divider/>
     </template>
     <v-footer>

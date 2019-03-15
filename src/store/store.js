@@ -71,7 +71,6 @@ export default new Vuex.Store({
       }
     },
     setToken (state, token) {
-      // to do: account for general user vs admin
       state.token = token
       if (token) {
         state.user.isUserLoggedIn = true

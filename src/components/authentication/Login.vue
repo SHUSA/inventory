@@ -84,7 +84,6 @@
           <v-form ref="regForm" v-model="regForm" lazy-validation>
             <v-container grid-list-md>
               <v-layout row wrap>
-                <!-- to do: add v-flex and rules -->
                 <v-flex xs12>
                   <!-- username -->
                   <v-text-field

@@ -8,7 +8,6 @@ const DepartmentController = require('./controllers/DepartmentController')
 const EntryController = require('./controllers/EntryController')
 const isAuthenticated = require('./policies/isAuthenticated')
 // define placement of authentication
-// to do: decide where to place authentication
 
 module.exports = (app) => {
   app.post('/register',
