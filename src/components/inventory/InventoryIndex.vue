@@ -165,7 +165,7 @@ export default {
         this.selected = this.assays.map(x => x.id)
       }
       this.$store.dispatch('setFilters', this.selected)
-      let route = !(this.user.isAdmin || this.user.isSubAdmin) ? 'inventory-admin' : 'inventory-user'
+      let route = (this.user.isAdmin || this.user.isSubAdmin) ? 'inventory-admin' : 'inventory-user'
       this.$router.push({
         name: route
       })
