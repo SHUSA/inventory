@@ -77,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
         }
         // default password for regular users
         if (!user.password || user.password.length === 0) {
-          user.password = `${user.username.replace(/ /g, '')}123`
+          user.password = `${user.username.replace(/ /g, '').toLowerCase()}12345`
         }
         // set DepartmentId
         user.DepartmentId = department.id
