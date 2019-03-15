@@ -47,7 +47,7 @@ export default {
   methods: {
     getErrorMessage (resp) {
       this.closed = false
-      if (resp.status !== 200 && resp.status !== 400 && resp.status !== undefined && !this.closed) {
+      if (resp.status !== 200 && resp.status !== 400 && resp.status !== undefined && !this.closed && !resp.doNotDisplay) {
         // stop process and display error message
         this.title = resp.data.title ? resp.data.title : this.title
         this.dialog = true
@@ -56,7 +56,7 @@ export default {
     },
 
     getExtraMessage (resp) {
-      if (resp.status !== 200 && resp.status !== 400 && resp.status !== undefined && !this.closed) {
+      if (resp.status !== 200 && resp.status !== 400 && resp.status !== undefined && !this.closed && !resp.doNotDisplay) {
         // stop process and display error message
         if (resp.data.redirect) {
           setTimeout(() => {

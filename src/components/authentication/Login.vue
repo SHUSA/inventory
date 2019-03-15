@@ -351,6 +351,7 @@ export default {
           this.setUserData(this.response.data)
         } else {
           // failure
+          this.response.doNotDisplay = true
           this.count++
           if (this.count === 3) {
             this.hint = this.response.data.hint || ''
