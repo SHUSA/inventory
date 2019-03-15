@@ -38,5 +38,11 @@ export default {
     return API().post('auth/user/session').catch(err =>
       checkResponse(err)
     )
+  },
+
+  reset (user) {
+    return API().post('auth/passwordreset', user).catch(err =>
+      checkResponse(err)
+    )
   }
 }

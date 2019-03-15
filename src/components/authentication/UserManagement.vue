@@ -1,10 +1,22 @@
 <template>
   <div>
     <error :response="response"/>
+    <v-dialog
+      v-model="resetDialog"
+      width="500px"
+    >
+      <popup :title="`Reset ${targetUser.username}?`">
+        <v-card-actions slot="content">
+          <v-spacer/>
+          <v-btn flat color="error" @click="resetDialog = false">No</v-btn>
+          <v-btn flat color="primary" @click="reset(targetUser)">Yes</v-btn>
+        </v-card-actions>
+      </popup>
+    </v-dialog>
     <!-- user management dialog -->
     <v-dialog
       v-model="manageDialog"
-      width="500px"
+      width="800px"
     >
       <popup :title="`${user.department.name} Users`">
         <template slot="content">
@@ -28,6 +40,11 @@
                   @change="updateUser(props.item)"
                 />
               </td>
+              <td>
+                <v-btn small @click="openResetDialog(props.item)">
+                  Reset
+                </v-btn>
+              </td>
             </template>
           </v-data-table>
         </template>
@@ -48,12 +65,15 @@ export default {
   data () {
     return {
       response: '',
+      resetDialog: false,
       roles: [],
       users: [],
+      targetUser: {},
       headers: [
         { text: 'Username', sortable: false },
         { text: 'Department', sortable: false },
-        { text: 'Role', sortable: false }
+        { text: 'Role', sortable: false },
+        { text: 'Password Reset', sortable: false }
       ],
       loading: {}
     }
@@ -67,6 +87,7 @@ export default {
     manageDialog (val) {
       if (!val) {
         this.loading = {}
+        this.targetUser = {}
       } else {
         this.initialize()
       }
@@ -116,6 +137,28 @@ export default {
       } else {
         let origId = this.roles.find(role => role.name === data.Role.name)
         data.Role.id = origId
+      }
+    },
+
+    openResetDialog (data) {
+      this.targetUser = data
+      this.resetDialog = true
+    },
+
+    async reset (data) {
+      this.loading[data.id] = true
+      this.response = await AuthenticationService.reset(data)
+      this.loading[data.id] = false
+      if (this.response.status === 200) {
+        // merge received data into users
+        this.resetDialog = false
+        data.role = false
+        data = this.$clonedeep(this.response.data)
+        this.$store.dispatch('setSnack', {
+          text: `${data.username} reseted`,
+          color: 'warning',
+          icon: 'fa-user'
+        })
       }
     }
   }

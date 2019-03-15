@@ -27,6 +27,19 @@ function assignAccess (role) {
   return authLevel
 }
 
+function compareAccess (targetUser, tokenUser, res) {
+  const targetAccess = assignAccess(targetUser.Role)
+  const tokenAccess = assignAccess(tokenUser.Role)
+
+  if (tokenAccess <= targetAccess || targetUser.username === `${targetUser.Department.name}User`) {
+    // deny change if general user or token access <= target
+    return res.status(403).send({
+      error: 'Update denied. Target user has equal priviledges or is a general user.'
+    })
+  }
+  // if no problems, exit function
+}
+
 module.exports = {
   async getUsers (req, res) {
     const user = req.user
@@ -203,15 +216,7 @@ module.exports = {
         console.log(error)
         return res.status(500).send(error.errors)
       }
-      const targetAccess = assignAccess(targetUser.Role)
-      const tokenAccess = assignAccess(tokenUser.Role)
-
-      if (tokenAccess <= targetAccess || targetUser.username === `${targetUser.Department.name}User`) {
-        // deny change if general user or token access <= target
-        return res.status(403).send({
-          error: 'Update denied. Target user has equal priviledges or is a general user.'
-        })
-      }
+      compareAccess(targetUser, tokenUser, res)
     }
     if (targetChanges.role) {
       // if there is a role change in the update
@@ -413,6 +418,32 @@ module.exports = {
       res.status(500).send({
         error: 'An error has occured trying to log in'
       })
+    }
+  },
+
+  async reset (req, res) {
+    let targetUser = req.body
+    const tokenUser = req.user
+
+    // only super admin or admin can reset and only those with lower access
+    compareAccess(targetUser, tokenUser, res)
+
+    targetUser.password = `${targetUser.username.replace(/ /g, '').toLowerCase()}12345`
+    targetUser.passwordHint = 'Default password'
+
+    try {
+      await User.update(targetUser, {
+        where: {
+          id: targetUser.id
+        }
+      })
+
+      delete targetUser.password
+
+      res.send(targetUser)
+    } catch (error) {
+      console.log(error)
+      res.status(500).send(error)
     }
   }
 }
