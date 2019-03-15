@@ -37,6 +37,7 @@
 
       <v-container>
         <v-layout row wrap>
+          <!-- to do: turn off add item button if super admin -->
           <v-btn small dark color="primary" @click="editItem({})">
             Add Item
           </v-btn>
@@ -56,12 +57,11 @@
           <v-text-field
             v-model="search"
             append-icon="fa-search"
-            label="Search for item, assay, vendor, etc"
-            hint="test"
+            hint="Searches entire table"
+            search="Search"
             persistent-hint
             clearable
             single-line
-            hide-details
           />
         </v-layout>
         <v-layout row wrap>
@@ -75,7 +75,12 @@
               </v-badge>
             </v-chip>
           </v-card-text>
-          <v-chip v-for="(value, index) in outstandingAssays" :key="index" @click="searchTerm(value.name)">
+          <v-chip
+            v-for="(value, index) in outstandingAssays"
+            :key="index"
+            @click="searchTerm(value.name)"
+            :color="isSelected(value.name) ? 'info' : ''"
+          >
             <v-badge color="red" right>
               <span v-if="value.count > 0" slot="badge">{{value.count}}</span>
               <span>{{value.name}}</span>
@@ -267,7 +272,7 @@ export default {
 
   async mounted () {
     // redirect if user
-    if (!this.user.isUserLoggedIn) {
+    if (!(this.user.isAdmin || this.user.isSubAdmin)) {
       this.$router.push({
         name: 'index'
       })
@@ -345,6 +350,29 @@ export default {
         }
         index = this.vendorList.findIndex(vendor => vendor.id === val.id)
         this.vendorList.splice(index, 1)
+      }
+    },
+
+    // filter (items, search, filter) {
+    //   let tempKey = ''
+    //   if (search === '' || search === null) {
+    //     return items
+    //   }
+    //   return items.filter(item => {
+    //     this.headers.forEach(header => {
+    //       tempKey = header.value.split('.').map()
+    //       filter(item[header.value], search.toLowerCase())
+    //     })
+    //   })
+    // },
+
+    isSelected (name) {
+      if (this.$refs.search) {
+        return this.$refs.search.filteredItems.find(item => {
+          return item.Assay.name === name
+        })
+      } else {
+        return true
       }
     },
 
