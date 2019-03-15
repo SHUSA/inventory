@@ -10,14 +10,14 @@ const isAuthenticated = require('./policies/isAuthenticated')
 // define placement of authentication
 
 module.exports = (app) => {
-  app.post('/register',
+  app.post('/auth/register',
     AuthenticationControllerPolicy.register,
     AuthenticationController.register)
-  app.post('/user-login', AuthenticationController.userLogin)
-  app.post('/login', AuthenticationController.login)
-  app.post('/userupdate', isAuthenticated, AuthenticationController.update)
-  app.post('/sessioncheck', isAuthenticated, AuthenticationController.checkSession)
-  app.get('/get-users', isAuthenticated, AuthenticationController.getUsers)
+  app.post('/auth/user/login', AuthenticationController.userLogin)
+  app.post('/auth/admin/login', AuthenticationController.login)
+  app.post('/auth/user/update', isAuthenticated, AuthenticationController.update)
+  app.post('/auth/user/session', isAuthenticated, AuthenticationController.checkSession)
+  app.get('/auth/users/get', isAuthenticated, AuthenticationController.getUsers)
 
   app.get('/departments', DepartmentController.index)
   app.post('/departments', DepartmentController.post)
@@ -32,8 +32,8 @@ module.exports = (app) => {
   app.get('/items/list', ItemsController.show)
   app.post('/items', isAuthenticated, ItemsController.post)
   app.put('/items/:itemId', isAuthenticated, ItemsController.put)
-  app.put('/deactivate-items', isAuthenticated, ItemsController.deactivate)
-  app.put('/reassign-items', isAuthenticated, ItemsController.reassign)
+  app.put('/items/deactivate', isAuthenticated, ItemsController.deactivate)
+  app.put('/items/reassign', isAuthenticated, ItemsController.reassign)
 
   app.get('/assays', isAuthenticated, AssaysController.index)
   app.get('/assays/:assayId', AssaysController.show)

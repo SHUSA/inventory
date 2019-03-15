@@ -50,7 +50,7 @@ export default {
 
   deactivate (id, active = false) {
     // send either AssayId or VendorId
-    return API().put('deactivate-items', {
+    return API().put('items/deactivate', {
       params: {
         id: id,
         active: active
@@ -62,7 +62,7 @@ export default {
 
   reassign (oldId, newId, type) {
     // send either AssayId or VendorId
-    return API().put('reassign-items', {
+    return API().put('items/reassign', {
       params: {
         oldId: oldId,
         newId: newId,

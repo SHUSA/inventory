@@ -3,13 +3,13 @@ import checkResponse from './checkResponse'
 
 export default {
   getUsers () {
-    return API().get('get-users').catch(err =>
+    return API().get('auth/users/get').catch(err =>
       checkResponse(err)
     )
   },
 
   register (registration) {
-    return API().post('register', {
+    return API().post('auth/register', {
       registration: registration
     }).catch(err =>
       checkResponse(err)
@@ -17,25 +17,25 @@ export default {
   },
 
   userLogin (department) {
-    return API().post('user-login', department).catch(err =>
+    return API().post('auth/user/login', department).catch(err =>
       checkResponse(err)
     )
   },
 
   login (credentials) {
-    return API().post('login', credentials).catch(err =>
+    return API().post('auth/admin/login', credentials).catch(err =>
       checkResponse(err)
     )
   },
 
   userUpdate (user) {
-    return API().post('userupdate', user).catch(err =>
+    return API().post('auth/user/update', user).catch(err =>
       checkResponse(err)
     )
   },
 
   sessionCheck () {
-    return API().post('sessioncheck').catch(err =>
+    return API().post('auth/user/session').catch(err =>
       checkResponse(err)
     )
   }
