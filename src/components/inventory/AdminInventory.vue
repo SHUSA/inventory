@@ -87,6 +87,16 @@
             </v-badge>
           </v-chip>
         </v-layout>
+        <v-layout row wrap>
+          <!-- display current vendors -->
+          <v-card-text>Vendors in this filter:</v-card-text>
+          <v-chip
+            v-for="(value, index) in listVendors"
+            :key="index" @click="searchTerm(value)"
+            :color="isSelected(value) ? 'info' : ''">
+            {{value}}
+          </v-chip>
+        </v-layout>
       </v-container>
     </v-card-title>
 
@@ -265,6 +275,17 @@ export default {
       return this.$moment().startOf('week').subtract(7, 'day').format('MMM DD, YYYY')
     },
 
+    listVendors () {
+      let arr = []
+      this.supplies.map(entry => {
+        if (arr.indexOf(entry.Vendor.name) === -1) {
+          arr.push(entry.Vendor.name)
+        }
+      })
+
+      return arr.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}))
+    },
+
     outstandingAssays () {
       return this.$util.outstandingAssays(this)
     }
@@ -369,7 +390,7 @@ export default {
     isSelected (name) {
       if (this.$refs.search) {
         return this.$refs.search.filteredItems.find(item => {
-          return item.Assay.name === name
+          return item.Assay.name === name || item.Vendor.name === name
         })
       } else {
         return true
@@ -405,7 +426,7 @@ export default {
       const blob2 = new Blob([csv2], {type: 'text/csv'})
       const csv3 = json2csv3.parse(this.vendorList)
       const blob3 = new Blob([csv3], {type: 'text/csv'})
-      // const blob0 = new Blob([assay], {type: 'text/json'})
+      // const blob0 = new Blob([JSON.stringify(this.assayList[0])], {type: 'text/json'})
       // console.log(assay)
       // console.log(blob0)
 

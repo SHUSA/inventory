@@ -39,6 +39,7 @@
               <li>Authorization checks added for various creation and editing functions</li>
               <li>Adjusted error messages to only trigger at certain statuses</li>
               <li>Fixed Admin Parameter Backup</li>
+              <li>Added vendor quick buttons in Admin Inventory</li>
             </ul>
           </ul>
         </li>
