@@ -150,6 +150,14 @@
             Order CSV
           </v-btn>
 
+          <v-btn v-if="user.isAdmin || user.isSubAdmin"
+            dark small
+            to="/inventory/admin"
+            target="_blank"
+          >
+            Open Inventory
+          </v-btn>
+
           <v-spacer/>
 
           <v-text-field
