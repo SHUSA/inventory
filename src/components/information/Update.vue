@@ -38,6 +38,7 @@
               <li>Database restructured to take into account Departments</li>
               <li>Authorization checks added for various creation and editing functions</li>
               <li>Adjusted error messages to only trigger at certain statuses</li>
+              <li>Fixed Admin Parameter Backup</li>
             </ul>
           </ul>
         </li>

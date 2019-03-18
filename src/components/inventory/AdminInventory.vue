@@ -390,7 +390,7 @@ export default {
 
     async getBackup () {
       const json2csv = new Json2csvParser()
-      const json2csv2 = new Json2csvParser()
+      const json2csv2 = new Json2csvParser({flatten: true})
       const json2csv3 = new Json2csvParser()
       const zip = new JSZip()
       let items = []
