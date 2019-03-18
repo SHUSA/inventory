@@ -40,6 +40,7 @@
               <li>Adjusted error messages to only trigger at certain statuses</li>
               <li>Fixed Admin Parameter Backup</li>
               <li>Added vendor quick buttons in Admin Inventory</li>
+              <li>Added button in Orders to open Inventory in another tab to prevent unintentional logout (Admin)</li>
             </ul>
           </ul>
         </li>
