@@ -21,7 +21,7 @@
     <!-- toolbar -->
     <v-toolbar app clipped-left flat dark>
       <v-toolbar-title>
-        {{inventoryTitle}}Inventory<sup>v1.011</sup>
+        {{inventoryTitle}}Inventory<sup>v1.1</sup>
         <!-- help -->
         <v-dialog
           v-model="help"

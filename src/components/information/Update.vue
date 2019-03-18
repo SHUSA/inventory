@@ -9,6 +9,40 @@
       <ul>
         <!-- (li>{2019.02.DD - v.1.xx}ul>li{update notes})+br -->
         <li>
+          2019.03.19 - v.1.1 - User Registration and Departments
+          <ul>
+            <li>User Registration</li>
+            <ul>
+              <li>New users can create or join an existing department</li>
+              <li>If joining an existing department, Department Admin can prmote user to Admin to help with inventory management</li>
+              <ul>
+                <li>User registration is only meant to be used for assisting Admin</li>
+                <li>Regular users for inventory purposes do not have to register</li>
+              </ul>
+              <li>General users are created when new departments are created</li>
+              <ul>
+                <li>No password required</li>
+              </ul>
+            </ul>
+            <li>Departments</li>
+            <ul>
+              <li>Departments are created when a new user creates it</li>
+              <li>Items, Assays, Vendors, and Orders are separated by Department</li>
+              <li>Users can only manipulate items assigned to their department</li>
+            </ul>
+            <li>Others</li>
+            <ul>
+              <li>Session length changed from 24 hours to 8 hours</li>
+              <li>Removed edit toggles on User Settings</li>
+              <li>Fixed buttons on overstock warning to be clearer</li>
+              <li>Database restructured to take into account Departments</li>
+              <li>Authorization checks added for various creation and editing functions</li>
+              <li>Adjusted error messages to only trigger at certain statuses</li>
+            </ul>
+          </ul>
+        </li>
+        <br>
+        <li>
           2019.02.18 - v.1.011
           <ul>
             <li>Others</li>
