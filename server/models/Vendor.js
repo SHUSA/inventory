@@ -46,6 +46,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Vendor.associate = function (models) {
     Vendor.hasMany(models.Item)
+    Vendor.belongsTo(models.Department)
   }
 
   return Vendor
