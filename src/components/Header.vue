@@ -4,7 +4,7 @@
     <!-- to do: do not display if no users? -->
     <user-management v-if="user.isAdmin || user.isSubAdmin" :dialog.sync="userManageDialog"/>
     <!-- user settings -->
-    <user-settings v-if="!user.isGeneral" :dialog.sync="dialog"/>
+    <user-settings v-if="login" :dialog.sync="dialog"/>
     <!-- logout -->
     <v-dialog
       v-model="logoutDialog"
@@ -63,7 +63,7 @@
         </v-btn>
         <!-- login and other info -->
         <v-btn flat :disabled="user.isGeneral" class="display" @click="dialog = true">
-          <v-icon v-if="!user.isGeneral" class="pr-1" small>fa-cog</v-icon>
+          <v-icon v-if="login" class="pr-1" small>fa-cog</v-icon>
           <span class="white--text">{{welcome}}</span>
         </v-btn>
         <v-btn icon v-if="this.$route.name !== 'login'" flat @click="logout()">
@@ -106,8 +106,13 @@ export default {
       'inventoryTitle',
       'pageTitle',
       'user',
-      'welcome'
+      'welcome',
+      'route'
     ]),
+
+    login () {
+      return !this.user.isGeneral && this.route.path !== '/'
+    },
 
     routes () {
       if (this.user.isAdmin || this.user.isSubAdmin) {
