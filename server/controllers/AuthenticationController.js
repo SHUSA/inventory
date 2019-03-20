@@ -31,13 +31,13 @@ function compareAccess (targetUser, tokenUser, res) {
   const targetAccess = assignAccess(targetUser.Role)
   const tokenAccess = assignAccess(tokenUser.Role)
 
-  if (tokenAccess <= targetAccess || targetUser.username === `${targetUser.Department.name}User`) {
-    // deny change if general user or token access <= target
-    return res.status(403).send({
-      error: 'Update denied. Target user has equal priviledges or is a general user.'
-    })
-  }
-  // if no problems, exit function
+  return tokenAccess <= targetAccess || targetUser.username === `${targetUser.Department.name}User`
+}
+
+function denyAccess (res) {
+  res.status(403).send({
+    error: 'Update denied. Target user has equal priviledges or is a general user.'
+  })
 }
 
 module.exports = {
@@ -216,7 +216,10 @@ module.exports = {
         console.log(error)
         return res.status(500).send(error.errors)
       }
-      compareAccess(targetUser, tokenUser, res)
+      if (compareAccess(targetUser, tokenUser, res)) {
+        return denyAccess(res)
+      }
+
     }
     if (targetChanges.role) {
       // if there is a role change in the update
@@ -426,7 +429,9 @@ module.exports = {
     const tokenUser = req.user
 
     // only super admin or admin can reset and only those with lower access
-    compareAccess(targetUser, tokenUser, res)
+    if (compareAccess(targetUser, tokenUser, res)) {
+      return denyAccess(res)
+    }
 
     targetUser.password = `${targetUser.username.replace(/ /g, '').toLowerCase()}12345`
     targetUser.passwordHint = 'Default password'
