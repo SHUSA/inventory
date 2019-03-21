@@ -1,7 +1,8 @@
 <template>
   <div>
+    <!-- department management -->
+    <department-management v-if="sup" :dialog.sync="deptDialog"/>
     <!-- user management -->
-    <!-- to do: do not display if no users? -->
     <user-management v-if="user.isAdmin || user.isSubAdmin" :dialog.sync="userManageDialog"/>
     <!-- user settings -->
     <user-settings v-if="login" :dialog.sync="dialog"/>
@@ -21,7 +22,7 @@
     <!-- toolbar -->
     <v-toolbar app clipped-left flat dark>
       <v-toolbar-title>
-        {{inventoryTitle}}Inventory<sup>v1.1</sup>
+        {{inventoryTitle}}Inventory<sup>v1.11</sup>
         <!-- help -->
         <v-dialog
           v-model="help"
@@ -57,6 +58,10 @@
       </v-toolbar-items>
       <v-spacer/>
       <v-toolbar-items>
+        <!-- to do: add department management if super -->
+        <v-btn flat icon v-if="sup" @click="deptDialog = true">
+          <v-icon>fa-archive</v-icon>
+        </v-btn>
         <!-- manage users -->
         <v-btn v-if="user.isAdmin" icon flat @click="userManageDialog = true">
           <v-icon>fa-users</v-icon>
@@ -83,12 +88,14 @@ import { mapState } from 'vuex'
 import Help from './information/Help'
 import UserSettings from './authentication/UserSettings'
 import UserManagement from './authentication/UserManagement'
+import DepartmentManagement from './authentication/DepartmentManagement'
 
 export default {
   components: {
     Help,
     UserSettings,
-    UserManagement
+    UserManagement,
+    DepartmentManagement
   },
 
   data () {
@@ -97,6 +104,7 @@ export default {
       help: false,
       dialog: false,
       userManageDialog: false,
+      deptDialog: false,
       logoutDialog: false
     }
   },
@@ -106,6 +114,7 @@ export default {
       'inventoryTitle',
       'pageTitle',
       'user',
+      'sup',
       'welcome',
       'route'
     ]),

@@ -7,7 +7,14 @@
     <v-divider/>
     <v-card-text>
       <ul>
-        <!-- (li>{2019.02.DD - v.1.xx}ul>li{update notes})+br -->
+        <!-- (li>{2019.03.DD - v.1.xx}ul>li{update notes})+br -->
+        <li>
+          2019.03.21 - v.1.11 - Department Controls
+          <ul>
+            <li>Added change department controls for users</li>
+          </ul>
+        </li>
+        <br>
         <li>
           2019.03.19 - v.1.1 - User Registration and Departments
           <ul>
