@@ -40,6 +40,17 @@ function denyAccess (res) {
   })
 }
 
+function assignRole (user, role) {
+  user.isAdmin = role.isAdmin || role.isSuperAdmin
+  user.isSubAdmin = role.isSubAdmin
+  user.sup = role.isSuperAdmin
+  delete user.password
+  delete user.RoleId
+  delete user.Role
+
+  return user
+}
+
 module.exports = {
   async getUsers (req, res) {
     const user = req.user
@@ -169,11 +180,7 @@ module.exports = {
         },
         include: [Department, Role]
       })).toJSON()
-      userJson.isAdmin = role.isAdmin || role.isSuperAdmin
-      userJson.isSubAdmin = role.isSubAdmin
-      delete userJson.password
-      delete userJson.RoleId
-      delete userJson.Role
+      assignRole(userJson, role)
 
       res.send({
         user: userJson,
@@ -190,6 +197,7 @@ module.exports = {
     const tokenUser = req.user
     let targetUser = req.body
     let assignToken = true
+    const isNotSelf = tokenUser.id !== targetChanges.id
 
     // check if tokenUser and targetUser are same
     // if yes, allow edits
@@ -197,7 +205,7 @@ module.exports = {
     // if not, check if token user access is equal or same to target; do not allow changes
     // if not, check if token user access is higher than target's; allow change except for above
 
-    if (targetChanges.id !== tokenUser.id) {
+    if (isNotSelf) {
       // verify user being updated and get info
       try {
         targetUser = (await User.findOne({
@@ -219,7 +227,6 @@ module.exports = {
       if (compareAccess(targetUser, tokenUser, res)) {
         return denyAccess(res)
       }
-
     }
     if (targetChanges.role) {
       // if there is a role change in the update
@@ -279,6 +286,31 @@ module.exports = {
       delete targetChanges.password
     }
 
+    // if department changes reset role to User
+    if (targetChanges.DepartmentId && targetChanges.Department) {
+      if (targetChanges.DepartmentId !== targetChanges.Department.id) {
+        let role = (await Role.findOne({
+          where: {
+            isAdmin: false,
+            isSubAdmin: false,
+            isSuperAdmin: false
+          }
+        })).toJSON()
+
+        targetChanges.RoleId = role.id
+      }
+    }
+
+    let include = []
+    if (isNotSelf) {
+      include = [{
+        model: Role,
+        attributes: ['id', 'name']
+      }, Department]
+    } else {
+      include = [Department, Role]
+    }
+
     try {
       let result = await User.update(targetChanges, {
         where: {
@@ -294,12 +326,15 @@ module.exports = {
         attributes: {
           exclude: ['password', 'RoleId', 'password']
         },
-        include: [Department, Role]
+        include: include
       })).toJSON()
 
-      result.isAdmin = result.Role.isAdmin || result.Role.isSuperAdmin
-      result.isSubAdmin = result.Role.isSubAdmin
-      delete result.Role
+      if (!isNotSelf) {
+        result.isAdmin = result.Role.isAdmin || result.Role.isSuperAdmin
+        result.isSubAdmin = result.Role.isSubAdmin
+        result.sup = result.Role.isSuperAdmin
+        delete result.Role
+      }
 
       if (assignToken) {
         res.send({
@@ -406,11 +441,7 @@ module.exports = {
 
       const role = userJson.Role
       // roles come into play in other functions
-      userJson.isAdmin = role.isAdmin || role.isSuperAdmin
-      userJson.isSubAdmin = role.isSubAdmin
-      delete userJson.password
-      delete userJson.RoleId
-      delete userJson.Role
+      assignRole(userJson, role)
 
       res.send({
         user: userJson,

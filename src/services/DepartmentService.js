@@ -21,9 +21,7 @@ export default {
 
   put (department) {
     return API().put(`departments/${department.id}`, {
-      params: {
-        department: department
-      }
+      params: department
     }).catch(err =>
       checkResponse(err)
     )

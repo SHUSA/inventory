@@ -17,7 +17,7 @@ module.exports = {
           exclude: 'all'
         },
         order: [
-          ['name', 'DESC']
+          ['name', 'ASC']
         ]
       })
       res.send(departments)
@@ -41,9 +41,14 @@ module.exports = {
 
   async put (req, res) {
     try {
-      const department = await Department.update(req.body, {
+      if (!req.user.Role.isSuperAdmin) {
+        return res.status(403).send({
+          error: 'Access denied'
+        })
+      }
+      const department = await Department.update(req.body.params, {
         where: {
-          id: req.params.deptId
+          id: req.body.params.id
         }
       })
       res.send(department)

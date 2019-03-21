@@ -29,7 +29,16 @@
             <!-- allow change user role -->
             <template slot="items" slot-scope="props">
               <td>{{props.item.username}}</td>
-              <td>{{props.item.Department.name}}</td>
+              <td>
+                <v-select
+                  v-model="props.item.DepartmentId"
+                  :items="departments"
+                  item-text="name"
+                  item-value="id"
+                  :loading="loading[props.item.id]"
+                  @change="updateUser(props.item)"
+                />
+              </td>
               <td>
                 <v-select
                   v-model="props.item.Role.id"
@@ -56,6 +65,7 @@
 <script>
 import { mapState } from 'vuex'
 import AuthenticationService from '@/services/AuthenticationService.js'
+import DepartmentService from '@/services/DepartmentService.js'
 
 export default {
   props: [
@@ -67,6 +77,7 @@ export default {
       response: '',
       resetDialog: false,
       roles: [],
+      departments: [],
       users: [],
       targetUser: {},
       headers: [
@@ -116,6 +127,7 @@ export default {
       if (this.response.status === 200) {
         this.users = this.$clonedeep(this.response.data.users)
         this.roles = this.$clonedeep(this.response.data.roles)
+        this.departments = this.$clonedeep((await DepartmentService.index()).data)
       }
     },
 
@@ -136,7 +148,9 @@ export default {
         })
       } else {
         let origId = this.roles.find(role => role.name === data.Role.name)
+        let origDept = this.departments.find(dept => dept.name === data.Department.name)
         data.Role.id = origId
+        data.DepartmentId = origDept
       }
     },
 

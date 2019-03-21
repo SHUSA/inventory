@@ -19,6 +19,7 @@ function initialState () {
       assayDefaults: {},
       isUserLoggedIn: false
     },
+    sup: false,
     token: null,
     welcome: '',
     pageTitle: '',
@@ -68,6 +69,7 @@ export default new Vuex.Store({
         })
         state.user.department = user.Department
         state.welcome = `Hello ${state.user.username}!`
+        state.sup = user.sup
       }
     },
     setToken (state, token) {
