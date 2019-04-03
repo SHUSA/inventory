@@ -122,7 +122,7 @@ export default {
             if (this.completedOrders.length > 0) {
               // compare previous create date with new create date
               let orderGroup = this.completedOrders[i]
-              if (this.$moment(order.createdAt).isSame(orderGroup.orders[0].createdAt, 'month')) {
+              if (this.$moment(order.createdAt).isSame(this.$moment(orderGroup.orders[0].createdAt).startOf('week'), 'month')) {
                 // if same month, push to current index
                 orderGroup.orders.push(order)
               } else {
