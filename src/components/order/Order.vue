@@ -18,6 +18,12 @@
                 Please only do this if an order form has been accidentally made.
                 Alternatively, delete all items from the order form if you wish for this action to be permanent.
               </p>
+              <v-alert
+                :value="alert"
+                :type="alertType"
+              >
+                {{alertMessage}}
+              </v-alert>
             </v-card-text>
             <v-card-actions>
               <v-btn v-if="!thisOrder.completed" color="error" small @click="deleteOrderDialog = true">Delete Order</v-btn>
@@ -142,8 +148,8 @@
       <v-container>
         <!-- control area -->
         <v-layout row wrap>
-          <v-btn v-if="!thisOrder.completed && user.isAdmin || user.isSubAdmin" slot="activator" color="primary" class="mb-0" dark small @click="completedDialog = !completedDialog">Complete Order</v-btn>
-          <v-btn v-if="thisOrder.completed && user.isAdmin || user.isSubAdmin" slot="activator" color="error" class="mb-0" dark small @click="completedDialog = !completedDialog">Undo Complete</v-btn>
+          <v-btn v-if="!thisOrder.completed && (user.isAdmin || user.isSubAdmin)" slot="activator" color="primary" class="mb-0" dark small @click="completedDialog = !completedDialog">Complete Order</v-btn>
+          <v-btn v-if="thisOrder.completed && (user.isAdmin || user.isSubAdmin)" slot="activator" color="error" class="mb-0" dark small @click="completedDialog = !completedDialog">Undo Complete</v-btn>
 
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
             <v-icon small class="pr-1">fa-file-download</v-icon>
@@ -401,7 +407,7 @@ export default {
         this.loading = false
         this.alertType = 'error'
         this.alert = true
-        this.alertMessage = Array.isArray(resp.data) ? resp.data[0].message : resp.statusText
+        this.alertMessage = resp.data ? resp.data.error : resp.statusText
         return true
       } else {
         // no errors received
@@ -447,6 +453,9 @@ export default {
     },
 
     async changeStatus () {
+      let response = null
+      const origDate = this.thisOrder.completeDate
+      const origStatus = this.thisOrder.completed
       this.loading = true
       if (this.thisOrder.completed) {
         this.thisOrder.completeDate = null
@@ -455,9 +464,14 @@ export default {
         this.thisOrder.completeDate = Date.now()
         this.thisOrder.completed = true
       }
-      await orderService.put(this.thisOrder)
-      this.loading = false
-      this.close()
+      response = await orderService.put(this.thisOrder)
+      if (!this.checkErrorMessage(response)) {
+        this.loading = false
+        this.close()
+      } else {
+        this.thisOrder.completeDate = origDate
+        this.thisOrder.completed = origStatus
+      }
     },
 
     async saveEntry (entry) {
