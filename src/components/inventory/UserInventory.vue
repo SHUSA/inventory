@@ -544,7 +544,7 @@ export default {
     },
 
     recentlyUpdated (item) {
-      let oneWeekAgo = this.$moment().startOf('week').subtract(7, 'day').format()
+      let oneWeekAgo = this.$moment().startOf('week').subtract(7, 'day').toISOString()
 
       // checks to see if item was updated in the past 2 weeks, starting from Sunday
       // does not account if user or admin did the update
@@ -563,7 +563,7 @@ export default {
     },
 
     orderIsRecent (lastOrder) {
-      const lastSunday = this.$moment().startOf('week').format()
+      const lastSunday = this.$moment().startOf('week').toISOString()
 
       return lastOrder.createdAt < lastSunday || lastOrder.completed
     },

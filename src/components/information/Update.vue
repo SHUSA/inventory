@@ -7,7 +7,15 @@
     <v-divider/>
     <v-card-text>
       <ul>
-        <!-- (li>{2019.03.DD - v.1.xx}ul>li{update notes})+br -->
+        <!-- (li>{2019.04.DD - v.1.xx}ul>li{update notes})+br -->
+        <li>
+          2019.04.03 - v.1.12
+          <ul>
+            <li>Fixed a bug where Orders could not be archived</li>
+            <li>Fixed a bug where time comparisons were not evaluated correctly</li>
+          </ul>
+        </li>
+        <br>
         <li>
           2019.03.21 - v.1.11 - Department Controls
           <ul>

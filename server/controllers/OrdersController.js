@@ -53,19 +53,27 @@ module.exports = {
 
   async put (req, res) {
     const order = req.body
-    const oneMonthAgo = moment().subtract(30, 'days').format()
-    if (order.createdAt < oneMonthAgo && order.completed) {
-      return res.status(500).send({
-        error: 'Order is completed and older than one month. Unable to delete.'
-      })
-    }
+    const oneMonthAgo = moment().subtract(30, 'days').toISOString()
+    let updatedOrder = null
     try {
-      await Order.update(order, {
-        where: {
-          id: req.params.orderId
-        }
-      })
-      res.send(order)
+      updatedOrder = await Order.findById(req.params.orderId)
+        .then(foundOrder => {
+          foundOrder = foundOrder.toJSON()
+          // only allow edit if subadmin or above AND if order is not completed AND not more than 30 days old
+          if (order.createdAt < oneMonthAgo && foundOrder.completed) {
+            return res.status(500).send({
+              error: 'Order is completed and older than one month. Unable to edit.'
+            })
+          }
+          Order.update(order, {
+            where: {
+              id: req.params.orderId
+            },
+            returning: true,
+            plain: true
+          })
+        })
+      res.send(updatedOrder)
     } catch (error) {
       res.status(500).send(error.errors)
     }
