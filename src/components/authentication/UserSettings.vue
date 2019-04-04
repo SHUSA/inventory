@@ -2,11 +2,7 @@
   <div>
     <error :response="response"/>
     <!-- settings dialog -->
-    <v-dialog
-      v-model="settingsDialog"
-      width="500px"
-      @keydown.enter="validateData()"
-    >
+    <v-dialog v-model="settingsDialog" width="500px" @keydown.enter="validateData()">
       <popup title="Settings">
         <template slot="content">
           <v-form ref="form" v-model="form" lazy-validation>
@@ -24,7 +20,7 @@
                     label="Username"
                     clearable
                     validate-on-blur
-                    :rules=[rules.text]
+                    :rules="[rules.text]"
                     required
                   />
                 </v-flex>
@@ -34,7 +30,7 @@
                     v-model.trim="editedSettings.email"
                     label="Email"
                     validate-on-blur
-                    :rules=[rules.text]
+                    :rules="[rules.text]"
                     required
                   />
                 </v-flex>
@@ -80,13 +76,23 @@
                     <v-icon small>fa-edit</v-icon>
                     <v-divider/>
                   </v-flex>
+                  <!-- weeks of base stock -->
+                  <v-flex xs6>
+                    <v-text-field
+                      v-model.number="editedSettings.itemDefaults.baseWeeks"
+                      label="Base Stock Weeks"
+                      validate-on-blur
+                      :rules="[rules.wholeNumber]"
+                      required
+                    />
+                  </v-flex>
                   <!-- weeks of safety stock -->
                   <v-flex xs6>
                     <v-text-field
                       v-model.number="editedSettings.itemDefaults.weeksOfSafetyStock"
                       label="Weeks of Safety Stock"
                       validate-on-blur
-                      :rules=[rules.wholeNumber]
+                      :rules="[rules.wholeNumber]"
                       required
                     />
                   </v-flex>
@@ -96,7 +102,7 @@
                       v-model.number="editedSettings.itemDefaults.leadTimeDays"
                       label="Lead Time Days"
                       validate-on-blur
-                      :rules=[rules.wholeNumber]
+                      :rules="[rules.wholeNumber]"
                       required
                     />
                   </v-flex>
@@ -106,7 +112,7 @@
                       v-model.number="editedSettings.itemDefaults.weeksOfReorder"
                       label="Weeks of Reorder"
                       validate-on-blur
-                      :rules=[rules.wholeNumber]
+                      :rules="[rules.wholeNumber]"
                       required
                     />
                   </v-flex>
@@ -121,7 +127,7 @@
                       v-model.number="editedSettings.assayDefaults.weeklyVolume"
                       label="Weekly Volume"
                       validate-on-blur
-                      :rules=[rules.wholeNumber]
+                      :rules="[rules.wholeNumber]"
                       required
                     />
                   </v-flex>
@@ -131,7 +137,7 @@
                       v-model.number="editedSettings.assayDefaults.weeklyRuns"
                       label="Weekly Runs"
                       validate-on-blur
-                      :rules=[rules.wholeNumber]
+                      :rules="[rules.wholeNumber]"
                       required
                     />
                   </v-flex>
@@ -141,19 +147,14 @@
                       v-model.number="editedSettings.assayDefaults.controlsPerRun"
                       label="Controls per Run"
                       validate-on-blur
-                      :rules=[rules.wholeNumber]
+                      :rules="[rules.wholeNumber]"
                       required
                     />
                   </v-flex>
                 </template>
                 <!-- alert -->
                 <v-flex xs12>
-                  <v-alert
-                    :value="alert"
-                    type="error"
-                  >
-                    {{alertMessage}}
-                  </v-alert>
+                  <v-alert :value="alert" type="error">{{alertMessage}}</v-alert>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -176,9 +177,7 @@ import { mapState } from 'vuex'
 import AuthenticationService from '@/services/AuthenticationService.js'
 
 export default {
-  props: [
-    'dialog'
-  ],
+  props: ['dialog'],
 
   data () {
     return {
@@ -189,8 +188,10 @@ export default {
       alert: false,
       alertMessage: '',
       rules: {
-        wholeNumber: (val) => {
-          return val !== null && val >= 0 && Number.isInteger(val) ? true : 'Please enter an integer'
+        wholeNumber: val => {
+          return val !== null && val >= 0 && Number.isInteger(val)
+            ? true
+            : 'Please enter an integer'
         },
         text (val) {
           if (val) {
@@ -200,7 +201,11 @@ export default {
           }
         },
         password (val) {
-          return val.length >= 8 || val.length === 0 || 'New password must be at least 8 characters long'
+          return (
+            val.length >= 8 ||
+            val.length === 0 ||
+            'New password must be at least 8 characters long'
+          )
         }
       },
       editedSettings: {
@@ -211,6 +216,7 @@ export default {
         passwordHint: '',
         department: '',
         itemDefaults: {
+          baseWeeks: 4,
           weeksOfSafetyStock: 4,
           leadTimeDays: 7,
           weeksOfReorder: 4
@@ -229,6 +235,7 @@ export default {
         passwordHint: '',
         department: '',
         itemDefaults: {
+          baseWeeks: 4,
           weeksOfSafetyStock: 4,
           leadTimeDays: 7,
           weeksOfReorder: 4
@@ -265,9 +272,7 @@ export default {
   },
 
   computed: {
-    ...mapState([
-      'user'
-    ]),
+    ...mapState(['user']),
 
     settingsDialog: {
       get () {
@@ -282,7 +287,9 @@ export default {
 
   methods: {
     validateData () {
-      if (this.editedSettings.password !== this.editedSettings.passwordConfirm) {
+      if (
+        this.editedSettings.password !== this.editedSettings.passwordConfirm
+      ) {
         this.alertMessage = 'Passwords do not match'
         this.alert = true
         return
@@ -292,7 +299,9 @@ export default {
     },
 
     async save () {
-      this.response = await AuthenticationService.userUpdate(this.editedSettings)
+      this.response = await AuthenticationService.userUpdate(
+        this.editedSettings
+      )
 
       if (this.response.status === 200) {
         let data = this.response.data
@@ -324,5 +333,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

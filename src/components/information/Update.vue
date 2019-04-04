@@ -9,6 +9,13 @@
       <ul>
         <!-- (li>{2019.04.DD - v.1.xx}ul>li{update notes})+br -->
         <li>
+          2019.04.05 - v.1.13
+          <ul>
+            <li>Base Weeks added to Items to adjust the base stock of an item</li>
+          </ul>
+        </li>
+        <br>
+        <li>
           2019.04.03 - v.1.12
           <ul>
             <li>Fixed a bug where Orders could not be archived</li>

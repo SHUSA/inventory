@@ -133,6 +133,12 @@ export default {
           call: value.weeksOfSafetyStock
         },
         {
+          icon: 'fa-calendar-week',
+          text: 'Base Weeks',
+          tooltip: 'Safety Weeks',
+          call: value.baseWeeks
+        },
+        {
           icon: 'fa-clock',
           text: 'Lead Days',
           tooltip: 'Lead Time Days',

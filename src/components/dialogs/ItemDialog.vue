@@ -74,6 +74,9 @@
                 <v-text-field disabled v-model="editedItem.safetyStock" label="Safety Stock"/>
               </v-flex>
               <v-flex xs6>
+                <v-text-field v-model.number="editedItem.baseWeeks" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Base Stock Weeks" clearable/>
+              </v-flex>
+              <v-flex xs6>
                 <v-text-field v-model.number="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Safety Weeks" clearable/>
               </v-flex>
               <v-flex xs6>
@@ -185,6 +188,7 @@ export default {
         itemDescription: '',
         reactionsPerItem: 0,
         currentStock: 0,
+        baseWeeks: 4,
         weeksOfSafetyStock: 2,
         leadTimeDays: 7,
         weeksOfReorder: 8,
@@ -199,6 +203,7 @@ export default {
         itemDescription: '',
         reactionsPerItem: 0,
         currentStock: 0,
+        baseWeeks: 4,
         weeksOfSafetyStock: 2,
         leadTimeDays: 7,
         weeksOfReorder: 6,
