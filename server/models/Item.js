@@ -39,6 +39,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.REAL,
       defaultValue: 0
     },
+    baseWeeks: {
+      type: DataTypes.REAL,
+      defaultValue: 4
+    },
     weeksOfSafetyStock: {
       type: DataTypes.REAL,
       defaultValue: 0

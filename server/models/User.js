@@ -48,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
     itemDefaults: {
       type: DataTypes.JSONB,
       defaultValue: {
+        baseWeeks: 4,
         weeksOfSafetyStock: 4,
         leadTimeDays: 7,
         weeksOfReorder: 4

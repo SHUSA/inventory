@@ -23,7 +23,7 @@ function calculateStockLevels (item, assay) {
     // console.log(`assay.weeklyRuns * assay.controlsPerRun ${assay.weeklyRuns * assay.controlsPerRun}`)
     // console.log(`(assay.weeklyVolume + assay.weeklyRuns * assay.controlsPerRun) ${(assay.weeklyVolume + assay.weeklyRuns * assay.controlsPerRun)}`)
     // console.log(`weeklyUse ${weeklyUse}`)
-    baseStock = weeklyUse * 4
+    baseStock = weeklyUse * item.baseWeeks // default 4
     // console.log(`baseStock ${baseStock}`)
     item.safetyStock = Math.ceil(weeklyUse * parseFloat(item.weeksOfSafetyStock) * 100) / 100
     // console.log(`safetyStock ${item.safetyStock}`)

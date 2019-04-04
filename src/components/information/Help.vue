@@ -10,7 +10,7 @@
         <v-card color="grey lighten-3">
           <v-card-text>
               <p>weeklyUse = (weeklyVolume + weeklyRuns * controlsPerRun) / reactionsPerItem</p>
-              <p>baseStock = weeklyUse * 4</p>
+              <p>baseStock = weeklyUse * baseWeeks</p>
               <p>safetyStock = ceil(weeklyUse * weeksOfSafetyStock * 100) / 100</p>
               <p>leadTimeUsage = weeklyUse * leadTimeDays / 7</p>
               <p>reorderPoint = ceil((leadTimeUsage + safetyStock + baseStock) * 100) / 100</p>
