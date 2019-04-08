@@ -9,6 +9,13 @@
       <ul>
         <!-- (li>{2019.04.DD - v.1.xx}ul>li{update notes})+br -->
         <li>
+          2019.04.08 - v.1.14
+          <ul>
+            <li>Order and Entries backup added to backup parameters</li>
+          </ul>
+        </li>
+        <br>
+        <li>
           2019.04.05 - v.1.13
           <ul>
             <li>Base Weeks added to Items to adjust the base stock of an item</li>
