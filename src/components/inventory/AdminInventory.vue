@@ -164,6 +164,8 @@ import { mapState } from 'vuex'
 import itemService from '@/services/ItemService.js'
 import assayService from '@/services/AssayService.js'
 import vendorService from '@/services/VendorService.js'
+import orderService from '@/services/OrderService.js'
+import entryService from '@/services/EntryService.js'
 import ItemDialog from '../dialogs/ItemDialog'
 import AssayDialog from '../dialogs/AssayDialog'
 import VendorDialog from '../dialogs/VendorDialog'
@@ -413,12 +415,18 @@ export default {
       const json2csv = new Json2csvParser()
       const json2csv2 = new Json2csvParser({flatten: true})
       const json2csv3 = new Json2csvParser()
+      const json2csv4 = new Json2csvParser()
+      const json2csv5 = new Json2csvParser()
       const zip = new JSZip()
       let items = []
+      let orders = []
+      let entries = []
       // to do: convert data to json for zip
       // const assay = (await assayService.index()).data
       // const csv = json2csv.parse(assay)
       items = (await itemService.index()).data
+      orders = (await orderService.index()).data
+      entries = (await entryService.index()).data
 
       const csv = json2csv.parse(this.assayList)
       const blob = new Blob([csv], {type: 'text/csv'})
@@ -426,6 +434,11 @@ export default {
       const blob2 = new Blob([csv2], {type: 'text/csv'})
       const csv3 = json2csv3.parse(this.vendorList)
       const blob3 = new Blob([csv3], {type: 'text/csv'})
+      const csv4 = json2csv4.parse(orders)
+      const blob4 = new Blob([csv4], {type: 'text/csv'})
+      const csv5 = json2csv5.parse(entries)
+      const blob5 = new Blob([csv5], {type: 'text/csv'})
+      
       // const blob0 = new Blob([JSON.stringify(this.assayList[0])], {type: 'text/json'})
       // console.log(assay)
       // console.log(blob0)
@@ -433,6 +446,8 @@ export default {
       zip.file(`${this.$moment().format('YYYY-MM-DD')} Assay Backup.csv`, blob)
       zip.file(`${this.$moment().format('YYYY-MM-DD')} Item Backup.csv`, blob2)
       zip.file(`${this.$moment().format('YYYY-MM-DD')} Vendor Backup.csv`, blob3)
+      zip.file(`${this.$moment().format('YYYY-MM-DD')} Order Backup.csv`, blob4)
+      zip.file(`${this.$moment().format('YYYY-MM-DD')} Entry Backup.csv`, blob5)
       // zip.file(`${this.$moment().format('YYYY-MM-DD')} Assay Backup.json`, blob0)
 
       zip.generateAsync({type: 'blob'})
