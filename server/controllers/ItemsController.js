@@ -11,24 +11,13 @@ function calculateStockLevels (item, assay) {
   // stock calculation will only run if weekly volume AND reactions per item > 0
   // otherwise, reorder points will be user defined
   if (parseInt(assay.weeklyVolume) !== 0 && parseFloat(item.reactionsPerItem) !== 0) {
-    // console.log(`weeklyVolume ${assay.weeklyVolume}`)
-    // console.log(`weekly runs ${assay.weeklyRuns}`)
-    // console.log(`controlsPerRun ${assay.controlsPerRun}`)
-    // console.log(`reactionsPerItem ${item.reactionsPerItem}`)
     // to do: reevaluate sampleReplicates in formula
     // weeklyUse = (assay.weeklyVolume * assay.sampleReplicates +
     //   assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem
     weeklyUse = (parseInt(assay.weeklyVolume) + parseInt(assay.weeklyRuns) * parseInt(assay.controlsPerRun)) / parseInt(item.reactionsPerItem)
-    // console.log('weeklyUse = (assay.weeklyVolume + assay.weeklyRuns * assay.controlsPerRun) / item.reactionsPerItem')
-    // console.log(`assay.weeklyRuns * assay.controlsPerRun ${assay.weeklyRuns * assay.controlsPerRun}`)
-    // console.log(`(assay.weeklyVolume + assay.weeklyRuns * assay.controlsPerRun) ${(assay.weeklyVolume + assay.weeklyRuns * assay.controlsPerRun)}`)
-    // console.log(`weeklyUse ${weeklyUse}`)
     baseStock = weeklyUse * item.baseWeeks // default 4
-    // console.log(`baseStock ${baseStock}`)
     item.safetyStock = Math.ceil(weeklyUse * parseFloat(item.weeksOfSafetyStock) * 100) / 100
-    // console.log(`safetyStock ${item.safetyStock}`)
     leadTimeUsage = weeklyUse * parseFloat(item.leadTimeDays) / 7
-    // console.log(`leadTimeUsage ${leadTimeUsage}`)
     item.reorderPoint = Math.ceil((leadTimeUsage + item.safetyStock + baseStock) * 100) / 100
     item.reorderQuantity = Math.ceil(weeklyUse * parseFloat(item.weeksOfReorder))
   }
