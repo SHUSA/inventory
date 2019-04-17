@@ -65,12 +65,12 @@
         </v-layout>
         <v-layout row wrap>
           <!-- displays each assay with outstanding orders -->
-          <v-expansion-panel class="mt-3" expand>
+          <v-expansion-panel class="mt-3" v-model="panels" expand>
+            <!-- outstanding assays -->
             <v-expansion-panel-content>
               <template slot="header">Outstanding Assays</template>
               <v-divider/>
               <v-card-text>
-              <!-- to do: add a way to collapse chips -->
                 Not updated since {{lastOrderPeriod}}, Ex:
                 <v-chip small class="ml-0">
                   <v-badge color="red" right>
@@ -91,6 +91,7 @@
                 </v-badge>
               </v-chip>
             </v-expansion-panel-content>
+            <!-- vendors -->
             <v-expansion-panel-content>
               <template slot="header">Vendors</template>
               <v-divider/>
@@ -190,6 +191,7 @@ export default {
   data () {
     return {
       response: '',
+      panels: [true, false],
       currentItem: {},
       currentAssay: {},
       currentVendor: {},
