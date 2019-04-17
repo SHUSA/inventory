@@ -177,27 +177,18 @@
         <v-card v-if="thisOrder.completed" class="ma-2">
           <v-card-text>Completed on {{time(thisOrder.completeDate)}}</v-card-text>
         </v-card>
-        <!-- to do: add a way to collapse chips -->
         <!-- render assays and vendors in list -->
         <v-layout row wrap>
-          <v-expansion-panel class="mt-3" v-model="panels" expand>
-            <!-- vendors -->
-            <v-expansion-panel-content>
-              <template slot="header">Vendors</template>
-              <v-divider/>
-              <v-chip v-for="(value, index) in listVendors" :key="index" @click="search = value">
-                {{value}}
-              </v-chip>
-            </v-expansion-panel-content>
-            <!-- assays -->
-            <v-expansion-panel-content>
-              <template slot="header">Assays</template>
-              <v-divider/>
-              <v-chip v-for="(value, index) in listAssays" :key="index" @click="search = value">
-                {{value}}
-              </v-chip>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
+          <v-card-text>Vendors in this order:</v-card-text>
+          <v-chip v-for="(value, index) in listVendors" :key="index" @click="search = value">
+            {{value}}
+          </v-chip>
+        </v-layout>
+        <v-layout row wrap>
+          <v-card-text>Assays in this order:</v-card-text>
+          <v-chip v-for="(value, index) in listAssays" :key="index" @click="search = value">
+            {{value}}
+          </v-chip>
         </v-layout>
       </v-container>
     </v-card-title>
@@ -262,7 +253,6 @@ export default {
         sortBy: 'vendor',
         descending: false
       },
-      panels: [true, false],
       currentItem: {},
       errors: {},
       deactivationDialog: false,
