@@ -9,6 +9,15 @@
       <ul>
         <!-- (li>{2019.04.DD - v.1.xx}ul>li{update notes})+br -->
         <li>
+          2019.04.17 - v.1.15
+          <ul>
+            <li>Reskinned Overstocked items into a table (previously a list)</li>
+            <li>Icons added to menu dropdown</li>
+            <li>General code cleanup</li>
+          </ul>
+        </li>
+        <br>
+        <li>
           2019.04.08 - v.1.14
           <ul>
             <li>Order and Entries backup added to backup parameters</li>
