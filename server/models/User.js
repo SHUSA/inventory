@@ -67,7 +67,6 @@ module.exports = (sequelize, DataTypes) => {
       beforeCreate: function (user, department) {
         // default username
         if (!user.username || user.username.length === 0) {
-          // to do: review default scheme
           user.username = `${department.name}User`
         }
         // default email

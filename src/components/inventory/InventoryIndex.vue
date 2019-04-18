@@ -20,21 +20,20 @@
           <v-flex xs12>
             <!-- select all -->
             <transition name="chips">
-              <!-- to do: fix colors; use info, success, warning, error, etc -->
-              <v-chip v-if="show"  @click="selectAll(list)" :color="allSelected ? 'red' : someSelected ? 'orange' : ''">
+              <v-chip v-if="show"  @click="selectAll(list)" :color="allSelected ? 'error' : someSelected ? 'warning' : ''">
                 {{!allSelected ? 'SELECT ALL' : 'DESELECT ALL'}}
               </v-chip>
             </transition>
             <!-- submit -->
             <transition name="submit" mode="out-in">
-              <v-chip v-if="(allSelected || someSelected) && show" key="submit" @click="submit()" color="green">Go!</v-chip>
+              <v-chip v-if="(allSelected || someSelected) && show" key="submit" @click="submit()" color="success">Go!</v-chip>
             </transition>
             <br>
             <!-- filter chips -->
             <transition-group name="chips" tag="span">
               <v-chip
-                v-for="(item, index) in list"
-                :key="index"
+                v-for="item in list"
+                :key="item.id"
                 :color="isSelected(item.id) ? 'blue lighten-2' : ''"
                 @click="add(item)"
               >

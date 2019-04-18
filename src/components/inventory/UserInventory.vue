@@ -103,13 +103,19 @@
           <v-card-text>
             The following items are overstocked. Please confirm the following.
           </v-card-text>
-          <v-list dense>
-            <!-- to do: add input to change value -->
-            <v-list-tile v-for="item in overstocked" :key="item.id">
-              <v-icon small class="pr-1">fa-question</v-icon>
-              {{item.name}} - Current: {{item.currentStock}} / Threshold: {{item.maxStock}}
-            </v-list-tile>
-          </v-list>
+          <!-- data table -->
+          <v-data-table
+            :headers="headers"
+            :items="overstocked"
+            hide-actions
+            class="elevation-3"
+          >
+            <template slot="items" slot-scope="props">
+              <td>{{props.item.name}}</td>
+              <td>{{props.item.currentStock}}</td>
+              <td>{{props.item.maxStock}}</td>
+            </template>
+          </v-data-table>
           <v-divider/>
           <v-card-actions>
             <v-btn slot="activator" color="error" flat @click="warningDialog = false">
@@ -302,6 +308,23 @@ export default {
       warningDialog: false,
       resultsList: {ordered: [], updated: [], retracted: []},
       loadComponent: false,
+      headers: [
+        {
+          text: 'Name',
+          sortable: false,
+          value: 'name'
+        },
+        {
+          text: 'Current Stock',
+          sortable: false,
+          value: 'currentStock'
+        },
+        {
+          text: 'Threshold',
+          sortable: false,
+          value: 'maxStock'
+        }
+      ],
       alertMessage: '',
       sortType: 'DESC',
       category: {name: 'Name', key: 'name'},

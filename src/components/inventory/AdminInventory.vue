@@ -37,8 +37,7 @@
 
       <v-container>
         <v-layout row wrap>
-          <!-- to do: turn off add item button if super admin -->
-          <v-btn small dark color="primary" @click="editItem({})">
+          <v-btn small dark color="primary" v-if="!sup" @click="editItem({})">
             Add Item
           </v-btn>
           <v-btn href="javascript:void(0)" id="csvbtn" small dark @click="getCSV">
@@ -67,11 +66,11 @@
         <v-layout row wrap>
           <!-- displays each assay with outstanding orders -->
           <v-card-text>
-            Assays not updated since {{lastOrderPeriod}} will look like so
+            Assays not updated since {{lastOrderPeriod}}
             <v-chip small>
               <v-badge color="red" right>
-                <span slot="badge">EX</span>
-                <span>Example</span>
+                <span slot="badge">#</span>
+                <span>Name</span>
               </v-badge>
             </v-chip>
           </v-card-text>
@@ -89,7 +88,7 @@
         </v-layout>
         <v-layout row wrap>
           <!-- display current vendors -->
-          <v-card-text>Vendors in this filter:</v-card-text>
+          <v-card-text>Vendors:</v-card-text>
           <v-chip
             v-for="(value, index) in listVendors"
             :key="index" @click="searchTerm(value)"
@@ -190,6 +189,7 @@ export default {
       catalogNumbers: [],
       vendorNames: [],
       assayNames: [],
+      showChip: false,
       itemDialog: false,
       assayDialog: false,
       vendorDialog: false,
@@ -270,6 +270,8 @@ export default {
     ...mapState([
       'pageTitle',
       'user',
+      'route',
+      'sup',
       'storedFilters'
     ]),
 
@@ -302,9 +304,15 @@ export default {
     }
     // initialize variables
     this.loadComponent = false
+    if (this.storedFilters.length === 0) {
+      let data = (await itemService.index(['id'])).data
+      let ids = data.map(x => x.id)
+      this.$store.dispatch('setFilters', ids)
+    }
     this.response = (await itemService.show(this.storedFilters))
 
     if (this.response.status === 200) {
+      this.$store.dispatch('setTitle', this.route.name)
       this.supplies = this.response.data
       this.catalogNumbers = (await itemService.index(['catalogNumber'], [true, false])).data.map(item => item.catalogNumber)
       this.vendorList = (await vendorService.index()).data
@@ -438,7 +446,7 @@ export default {
       const blob4 = new Blob([csv4], {type: 'text/csv'})
       const csv5 = json2csv5.parse(entries)
       const blob5 = new Blob([csv5], {type: 'text/csv'})
-      
+
       // const blob0 = new Blob([JSON.stringify(this.assayList[0])], {type: 'text/json'})
       // console.log(assay)
       // console.log(blob0)

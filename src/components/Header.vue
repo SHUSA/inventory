@@ -22,7 +22,7 @@
     <!-- toolbar -->
     <v-toolbar app clipped-left flat dark>
       <v-toolbar-title>
-        {{inventoryTitle}}Inventory<sup>v1.14</sup>
+        {{inventoryTitle}}Inventory<sup>v1.15</sup>
         <!-- help -->
         <v-dialog
           v-model="help"
@@ -39,7 +39,6 @@
       <v-spacer/>
       <v-toolbar-items>
         <!-- menu routes -->
-        <!-- to do: add icons; book, elementor, triangle !, etc -->
         <v-menu v-if="this.$route.name !== 'login'">
           <v-btn slot="activator" flat>
             <v-icon small class="pr-1">fa-bars</v-icon>
@@ -49,8 +48,9 @@
             <v-list-tile
               v-for="(item, index) in routes" :key="index"
             >
-              <router-link :to="{name: item.toLowerCase()}" class="no-underline">
-                <a class="link-color">{{item}}</a>
+              <router-link :to="{name: item.label.toLowerCase()}" class="no-underline">
+                <v-icon size="20">{{item.icon}}</v-icon>
+                <a class="link-color">{{item.label}}</a>
               </router-link>
             </v-list-tile>
           </v-list>
@@ -58,7 +58,6 @@
       </v-toolbar-items>
       <v-spacer/>
       <v-toolbar-items>
-        <!-- to do: add department management if super -->
         <v-btn flat icon v-if="sup" @click="deptDialog = true">
           <v-icon>fa-archive</v-icon>
         </v-btn>
@@ -105,7 +104,25 @@ export default {
       dialog: false,
       userManageDialog: false,
       deptDialog: false,
-      logoutDialog: false
+      logoutDialog: false,
+      menu: [
+        {
+          label: 'Inventory',
+          icon: 'fa-box'
+        },
+        {
+          label: 'Orders',
+          icon: 'fa-clipboard-list'
+        },
+        {
+          label: 'Catalog',
+          icon: 'fa-archive'
+        },
+        {
+          label: 'Inactive',
+          icon: 'fa-exclamation-triangle'
+        }
+      ]
     }
   },
 
@@ -125,9 +142,9 @@ export default {
 
     routes () {
       if (this.user.isAdmin || this.user.isSubAdmin) {
-        return ['Inventory', 'Orders', 'Catalog', 'Inactive']
+        return this.menu
       } else {
-        return ['Inventory', 'Orders', 'Catalog']
+        return this.menu.slice(0, 3)
       }
     }
   },
