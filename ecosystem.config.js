@@ -14,7 +14,7 @@ module.exports = {
     development : {
       user : 'deployer',
       host : '10.212.17.95',
-      ref  : 'origin',
+      ref  : 'origin/beta',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
       // 'post-deploy': 'git pull && pm2 list && pm2 expose',
