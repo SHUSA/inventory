@@ -27,7 +27,7 @@ module.exports = {
         SRL_INVENTORY_DB_PORT: 5432,
         PORT: 4040,
         SERVER_PORT: 4042,
-        HOST: "10.212.148.42",
+        HOST: "10.212.17.95",
         NEWDB: "'false'"
       },
       "post-setup": "HOST=10.212.148.42 PORT=4040 SRL_INVENTORY_HOST=10.212.148.45 npm install && npm start"
