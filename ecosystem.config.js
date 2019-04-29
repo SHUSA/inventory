@@ -1,3 +1,8 @@
+const host = '10.212.17.95'
+const dbHost = '10.212.17.96'
+const port = 4040
+const serverPort = 4042
+
 module.exports = {
   apps : [{
     name      : 'srl_inventory',
@@ -24,18 +29,18 @@ module.exports = {
       'post-deploy': 'git pull && npm install && node_modules/.bin/sequelize db:migrate && npm run build && pm2 reload ecosystem.config.js --env development --update-env && pm2 list && pm2 logs',
       "env"  : {
         'NODE_ENV': "'development'",
-        SRL_INVENTORY_HOST: '10.212.17.96',
+        SRL_INVENTORY_HOST: dbHost,
         SRL_INVENTORY_DB_PORT: 5432,
-        PORT: 4040,
-        SERVER_PORT: 4042,
-        HOST: "10.212.17.95",
+        PORT: port,
+        SERVER_PORT: serverPort,
+        HOST: host,
         NEWDB: "'false'"
       },
-      "post-setup": "HOST=10.212.148.42 PORT=4040 SRL_INVENTORY_HOST=10.212.148.45 npm install && npm start"
+      "post-setup": `HOST=${host} PORT=${port} SRL_INVENTORY_HOST=${dbHost} npm install && npm start`
     },
     production : {
       user : 'rails',
-      host : '10.212.148.42',
+      host : host,
       ref  : 'origin/master',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
