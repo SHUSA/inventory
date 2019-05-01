@@ -1,5 +1,5 @@
-const host = '10.212.17.95'
-const dbHost = '10.212.17.96'
+const host = '10.212.148.42' // '10.212.17.95'
+const dbHost = '10.212.148.45'//'10.212.17.96'
 const port = 4040
 const serverPort = 4042
 
