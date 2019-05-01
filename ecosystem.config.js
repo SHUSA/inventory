@@ -19,7 +19,7 @@ module.exports = {
     development : {
       user : 'rails', // 'deployer',
       host : host,
-      ref  : 'origin/test',
+      ref  : 'origin/beta',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : '/var/www/srl_inventory',
       // 'post-deploy': 'git pull && pm2 list && pm2 expose',
