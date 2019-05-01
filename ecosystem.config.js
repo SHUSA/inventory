@@ -1,5 +1,7 @@
-const host = '10.212.148.42' // '10.212.17.95'
-const dbHost = '10.212.148.45'//'10.212.17.96'
+const host = '10.212.17.95'
+const dbHost = '10.212.17.96'
+const user = 'deployer'
+const path = '/var/www/srl_inventory'
 const port = 4040
 const serverPort = 4042
 
@@ -17,11 +19,11 @@ module.exports = {
 
   deploy : {
     development : {
-      user : 'rails', // 'deployer',
+      user : user,
       host : host,
       ref  : 'origin/beta',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
-      path : '/var/www/srl_inventory',
+      path : path,
       // 'post-deploy': 'git pull && pm2 list && pm2 expose',
       // 'post-deploy': 'git pull && pm2 delete 0 && pm2 delete 1 && pm2 start',
       // 'post-deploy': 'git pull && node_modules/.bin/sequelize db:migrate:undo',
@@ -39,11 +41,11 @@ module.exports = {
       "post-setup": `HOST=${host} PORT=${port} SRL_INVENTORY_HOST=${dbHost} npm install && npm start`
     },
     production : {
-      user : 'rails',
+      user : user,
       host : host,
       ref  : 'origin/master',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
-      path : '/var/www/srl_inventory',
+      path : path,
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production',
       "env"  : {
         "NODE_ENV": "production"
