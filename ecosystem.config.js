@@ -1,5 +1,5 @@
-const host = '10.212.17.95'
-const dbHost = '10.212.17.96'
+const host = '10.212.148.42' // '10.212.17.95'
+const dbHost = '10.212.148.45'//'10.212.17.96'
 const port = 4040
 const serverPort = 4042
 
@@ -17,11 +17,11 @@ module.exports = {
 
   deploy : {
     development : {
-      user : 'deployer',
-      host : '10.212.17.95',
-      ref  : 'origin/beta',
+      user : 'rails', // 'deployer',
+      host : host,
+      ref  : 'origin/test',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
-      path : '/var/www/srl_inventory',
+      path : '~/var/www/srl_inventory',
       // 'post-deploy': 'git pull && pm2 list && pm2 expose',
       // 'post-deploy': 'git pull && pm2 delete 0 && pm2 delete 1 && pm2 start',
       // 'post-deploy': 'git pull && node_modules/.bin/sequelize db:migrate:undo',
