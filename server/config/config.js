@@ -3,9 +3,9 @@ module.exports = {
   host: process.env.HOST || 'localhost',
 
   db: {
-    database: process.env.SRL_DB_NAME || 'mol_inventory',
-    user: process.env.LABIS_POSTGRES_DATABASE_USERNAME || 'postgres',
-    password: process.env.LABIS_POSTGRES_DATABASE_PASSWORD || 'root',
+    database: process.env.SRL_DB_NAME || 'srl_inventory',
+    user: process.env.POSTGRES_DATABASE_USERNAME || 'postgres',
+    password: process.env.POSTGRES_DATABASE_PASSWORD || 'root',
     options: {
       dialect: process.env.DIALECT || 'postgres',
       host: process.env.SRL_INVENTORY_HOST || 'localhost',
