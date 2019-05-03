@@ -1,3 +1,6 @@
+console.log('check envs')
+console.log(process.env)
+
 module.exports = {
   port: process.env.SERVER_PORT || 8081,
   host: process.env.HOST || 'localhost',
