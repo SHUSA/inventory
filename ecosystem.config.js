@@ -1,6 +1,6 @@
 const host = '10.212.148.42'
 const dbHost = '10.212.148.45'
-const user = 'deployer'
+const user = 'rails'
 const path = '/var/www/srl_inventory'
 const port = 4040
 const serverPort = 4042
