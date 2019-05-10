@@ -20,9 +20,9 @@ require('./server/routes')(app)
 
 // Catch all routes and redirect to the index file
 // for use with heroku
-// app.get('*', function (req, res) {
-//     res.sendFile(__dirname + '/dist/index.html')
-// })
+app.get('*', function (req, res) {
+    res.sendFile(__dirname + '/dist/index.html')
+})
 
 let port = config.port
 let host = config.host
