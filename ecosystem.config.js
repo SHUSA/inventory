@@ -2,8 +2,8 @@ const host = '10.212.17.95'
 const dbHost = '10.212.17.96'
 const user = 'deployer'
 const path = '/var/www/srl_inventory'
-const port = 4040
-const serverPort = 4042
+const port = 80
+const serverPort = 4040
 
 module.exports = {
   apps : [{
