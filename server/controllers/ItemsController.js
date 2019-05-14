@@ -43,9 +43,6 @@ module.exports = {
         include: [Assay, Vendor]
       })
 
-      console.log('item controller')
-      console.log(items)
-
       res.send(items)
     } catch (error) {
       console.log(error)
