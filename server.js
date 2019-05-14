@@ -27,10 +27,6 @@ app.get('*', function (req, res) {
 let port = config.port
 let host = config.host
 
-console.log('express')
-console.log(`port ${port}`)
-console.log(`host ${host}`)
-
 if (process.env.NEWDB === 'true') {
   sequelize.sync({ force: true }).then(() => {
     app.listen(port, host)
