@@ -425,10 +425,12 @@ export default {
   async mounted () {
     // initialize variables
     this.loadComponent = false
+    console.log('load items')
     this.response = (await itemService.show(this.storedFilters))
 
     if (this.response.status === 200) {
       this.supplies = this.response.data
+      console.log('success')
       this.filteredList = this.supplies
       this.paginate()
 
@@ -441,6 +443,7 @@ export default {
       // create copy of supplies to check if values have been changed
       this.createCopy()
     }
+    console.log('items loaded')
     this.loadComponent = true
   },
 
