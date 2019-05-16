@@ -10,7 +10,9 @@ const config = require('./server/config/config')
 const app = express()
 app.use(morgan('combined'))
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cors({
+  exposedHeaders: ['Content-Length']
+}))
 require('./server/passport')
 require('./server/routes')(app)
 
