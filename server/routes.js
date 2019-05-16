@@ -10,9 +10,6 @@ const isAuthenticated = require('./policies/isAuthenticated')
 // define placement of authentication
 
 module.exports = (app) => {
-  console.log('~~~~~~~~~~~~~~`')
-  console.log('routes')
-  console.log('~~~~~~~~~~~~~~`')
   app.post('/auth/register',
     AuthenticationControllerPolicy.register,
     AuthenticationController.register)

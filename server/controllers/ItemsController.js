@@ -51,6 +51,7 @@ module.exports = {
   },
 
   async show (req, res) {
+    console.log('show items')
     try {
       let items = await Item.findAll({
         where: {
@@ -64,6 +65,7 @@ module.exports = {
         ],
         include: [Assay, Vendor]
       })
+      console.log(items)
       res.send(items)
     } catch (error) {
       console.log(error)
