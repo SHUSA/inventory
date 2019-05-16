@@ -30,7 +30,7 @@ module.exports = (app) => {
   app.put('/vendors/:vendorId', isAuthenticated, VendorsController.put)
 
   app.get('/items', isAuthenticated, ItemsController.index)
-  app.get('/items/list', ItemsController.show)
+  app.post('/items/list', ItemsController.show)
   app.post('/items', isAuthenticated, ItemsController.post)
   app.put('/items/:itemId', isAuthenticated, ItemsController.put)
   app.put('/items/deactivate', isAuthenticated, ItemsController.deactivate)
