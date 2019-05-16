@@ -35,7 +35,7 @@ module.exports = {
         HOST: host,
         NEWDB: 'false'
       },
-      "post-setup": `HOST=${host} PORT=${port} SRL_INVENTORY_HOST=${dbHost} npm install && npm start`
+      "post-setup": `HOST=${host} PORT=${port} SRL_INVENTORY_HOST=${dbHost} npm install && sudo npm start`
     },
     production : {
       user : user,
