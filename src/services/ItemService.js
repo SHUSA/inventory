@@ -14,7 +14,7 @@ export default {
   },
 
   show (ids, active = true) {
-    return API().get('items/list', {
+    return API().post('items/list', {
       params: {
         ids: ids,
         active: active

@@ -51,19 +51,22 @@ module.exports = {
   },
 
   async show (req, res) {
+    console.log('show items')
+    console.log(req.body.params)
     try {
       let items = await Item.findAll({
         where: {
           [Op.or]: ['id', 'AssayId', 'VendorId'].map(key => ({
-            [key]: req.query.ids
+            [key]: req.body.params.ids
           })),
-          active: req.query.active
+          active: req.body.params.active
         },
         order: [
           ['name', 'ASC']
         ],
         include: [Assay, Vendor]
       })
+      console.log(items)
       res.send(items)
     } catch (error) {
       console.log(error)
