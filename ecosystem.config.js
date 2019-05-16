@@ -1,6 +1,6 @@
-const host = '10.212.148.42'
-const dbHost = '10.212.148.45'
-const user = 'rails'
+const host = '10.212.17.95'
+const dbHost = '10.212.17.96'
+const user = 'deployer'
 const path = '/var/www/srl_inventory'
 const port = 80
 const serverPort = 4040
@@ -21,7 +21,7 @@ module.exports = {
     development : {
       user : user,
       host : host,
-      ref  : 'origin/test',
+      ref  : 'origin/beta',
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : path,
       // 'post-deploy': 'git pull && node_modules/.bin/sequelize db:migrate:undo',
