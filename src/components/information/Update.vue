@@ -7,7 +7,15 @@
     <v-divider/>
     <v-card-text>
       <ul>
-        <!-- (li>{2019.04.DD - v.1.xx}ul>li{update notes})+br -->
+        <!-- (li>{2019.05.DD - v.1.xx}ul>li{update notes})+br -->
+        <li>
+          2019.05.17 - v.1.2, Site Move
+          <ul>
+            <li>Site moved to a new location!</li>
+            <li>Please keep submitting suggestions for improvement!</li>
+          </ul>
+        </li>
+        <br>
         <li>
           2019.04.17 - v.1.15
           <ul>
