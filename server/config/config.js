@@ -1,4 +1,14 @@
-const db = require('../../../.inventory/db')
+const fs = require('fs')
+const path = '../../../.inventory/db'
+let db = {}
+
+try {
+  if (fs.existsSync(path)) {
+    db = require(path)
+  }
+} catch (error) {
+  console.log('Path does not exist. Using default config.')
+}
 
 module.exports = {
   port: process.env.SERVER_PORT || 8081,
