@@ -10,6 +10,8 @@ try {
   console.log('Path does not exist. Using default config.')
 }
 
+console.log(db)
+
 module.exports = {
   port: process.env.SERVER_PORT || 8081,
   host: process.env.HOST || 'localhost',
