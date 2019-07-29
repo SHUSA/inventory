@@ -1,11 +1,12 @@
-const fs = require('fs')
+// const fs = require('fs')
 const path = '../../../.inventory/db'
 let db = {}
 
-console.log(fs.existsSync(path))
+// path does not detect even if it exists
+// console.log(fs.existsSync(path))
 // try {
 //   if (fs.existsSync(path)) {
-    db = require(path)
+db = require(path)
 //   }
 // } catch (error) {
 //   console.log('Path does not exist. Using default config.')
