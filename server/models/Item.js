@@ -30,7 +30,10 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       required: true
     },
-    itemDescription: DataTypes.TEXT,
+    itemDescription: {
+      type: DataTypes.TEXT,
+      defaultValue: ''
+    },
     reactionsPerItem: {
       type: DataTypes.INTEGER,
       defaultValue: 0
