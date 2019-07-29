@@ -1,4 +1,4 @@
-// const fs = require('fs')
+const fs = require('fs')
 const path = '../../../.inventory/db'
 let db = {}
 
