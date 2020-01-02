@@ -70,6 +70,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue: 0
     },
+    // placeholder
+    expirationDate: {
+      type: DataTypes.DATE
+    },
     comment: DataTypes.STRING,
     active: {
       type: DataTypes.BOOLEAN,
