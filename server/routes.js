@@ -6,6 +6,7 @@ const AssaysController = require('./controllers/AssaysController')
 const OrdersController = require('./controllers/OrdersController')
 const DepartmentController = require('./controllers/DepartmentController')
 const EntryController = require('./controllers/EntryController')
+const HistoryController = require('./controllers/HistoryController')
 const isAuthenticated = require('./policies/isAuthenticated')
 // define placement of authentication
 
@@ -52,4 +53,6 @@ module.exports = (app) => {
   app.post('/entries', EntryController.post)
   app.put('/entries', EntryController.put)
   app.delete('/entries', EntryController.remove)
+
+  app.post('/histories', HistoryController.show)
 }
