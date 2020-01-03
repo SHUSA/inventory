@@ -70,9 +70,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue: 0
     },
-    // placeholder
+    // not needed as as a date object
     expirationDate: {
-      type: DataTypes.DATE
+      type: DataTypes.STRING
     },
     comment: DataTypes.STRING,
     active: {
