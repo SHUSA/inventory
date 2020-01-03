@@ -20,76 +20,212 @@
     <!-- dialog -->
     <v-dialog
       v-model="dialog"
+      persistent
       max-width="500px"
       @keydown.enter="validateData()"
+      @keydown.esc="close()"
     >
       <dialog-base :formTitle="formTitle" :dataInfo.sync="currentItem">
         <v-form slot="input-fields" ref="form" v-model="form" lazy-validation>
           <v-container>
             <v-layout row wrap>
               <v-flex xs6>
-                <v-text-field v-model.trim="editedItem.name" :rules="[rules.name]" label="Item Name" clearable required/>
+                <v-text-field
+                  v-model.trim="editedItem.name"
+                  :rules="[rules.name]"
+                  clearable required
+                >
+                  <template slot="label">
+                    <v-icon small>fa-syringe</v-icon> Item Name
+                  </template>
+                </v-text-field>
               </v-flex>
               <v-flex xs6>
                 <v-autocomplete
                   :items="assayList"
-                  label="Assay"
                   item-text="name"
                   item-value="id"
                   v-model="editedItem.AssayId"
                   append-icon="fa-plus-square"
                   @click:append="assayDialog = true"
                   :rules="[rules.name]"
-                  dense
-                  required
-                />
+                  dense required
+                >
+                  <template slot="label">
+                    <v-icon small>fa-dna</v-icon> Assay
+                  </template>
+                </v-autocomplete>
               </v-flex>
               <v-flex xs6>
                 <v-autocomplete
                   :items="vendorList"
-                  label="Vendor"
                   item-text="name"
                   item-value="id"
                   v-model="editedItem.VendorId"
                   append-icon="fa-plus-square"
                   @click:append="vendorDialog = true"
                   :rules="[rules.name]"
-                  dense
-                  required
-                />
+                  dense required
+                >
+                  <template slot="label">
+                    <v-icon small>fa-store</v-icon> Vendor
+                  </template>
+                </v-autocomplete>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.trim="editedItem.catalogNumber" :rules="[rules.catalog]" label="Catalog Number" clearable required/>
+                <v-text-field
+                  v-model.trim="editedItem.catalogNumber"
+                  :rules="[rules.catalog]"
+                  clearable required
+                >
+                  <template slot="label">
+                    <v-icon small>fa-hashtag</v-icon> Catalog Number
+                  </template>
+                </v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.trim="editedItem.itemDescription" label="Item Description" clearable/>
+                <v-text-field
+                  v-model.trim="editedItem.itemDescription"
+                  clearable
+                >
+                  <template slot="label">
+                    <v-icon small>fa-sticky-note</v-icon> Item Description
+                  </template>
+                </v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.reactionsPerItem" validate-on-blur :rules="[rules.number]" type="number" min=0 hint="Use 0 for general items." persistent-hint label="Reactions per Item" clearable/>
+                <v-menu
+                  :close-on-content-click="false"
+                  ref="dateDialog"
+                  v-model="dateDialog"
+                  :return-value.sync="editedItem.expirationDate"
+                >
+                  <template slot="activator">
+                    <v-text-field
+                      v-model="editedItem.expirationDate"
+                      readonly
+                      clearable
+                    >
+                      <template slot="label">
+                        <v-icon small>fa-calendar-day</v-icon> Latest Expiration Date
+                      </template>
+                    </v-text-field>
+                  </template>
+                  <v-date-picker v-model="editedItem.expirationDate" scrollable>
+                    <v-spacer/>
+                    <v-btn text color="error" @click="dateDialog = false">Cancel</v-btn>
+                    <v-btn text color="primary" @click="$refs.dateDialog.save(editedItem.expirationDate)">OK</v-btn>
+                  </v-date-picker>
+                </v-menu>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.currentStock" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Current Stock" clearable/>
+                <v-text-field
+                  v-model.number="editedItem.reactionsPerItem"
+                  validate-on-blur :rules="[rules.number]"
+                  type="number" min=0 hint="Use 0 for general items."
+                  persistent-hint
+                  clearable
+                >
+                  <template slot="label">
+                    <v-icon small>fa-vial</v-icon> Reactions per Item
+                  </template>
+                </v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field disabled v-model="editedItem.safetyStock" label="Safety Stock"/>
+                <v-text-field
+                  v-model.number="editedItem.currentStock"
+                  validate-on-blur
+                  :rules="[rules.number]"
+                  type="number" min=0
+                  clearable
+                >
+                  <template slot="label">
+                    <v-icon small>{{stockIcon}}</v-icon> Current Stock
+                  </template>
+                </v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.baseWeeks" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Base Stock Weeks" clearable/>
+                <v-text-field
+                  disabled
+                  v-model="editedItem.safetyStock"
+                >
+                  <template slot="label">
+                    <v-icon small>{{stockIcon}}</v-icon> Safety Stock
+                  </template>
+                </v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.weeksOfSafetyStock" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Safety Weeks" clearable/>
+                <v-text-field
+                  v-model.number="editedItem.baseWeeks"
+                  validate-on-blur :rules="[rules.number]"
+                  type="number" min=0 clearable
+                >
+                  <template slot="label">
+                    <v-icon small>{{weekIcon}}</v-icon> Base Stock Weeks
+                  </template>
+                </v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.leadTimeDays" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Lead Time (Days)" clearable/>
+                <v-text-field
+                  v-model.number="editedItem.weeksOfSafetyStock"
+                  validate-on-blur :rules="[rules.number]"
+                  type="number" min=0
+                  clearable
+                >
+                  <template slot="label">
+                    <v-icon small>{{weekIcon}}</v-icon> Safety Weeks
+                  </template>
+                </v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.weeksOfReorder" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Reorder Weeks" clearable/>
+                <v-text-field
+                  v-model.number="editedItem.leadTimeDays"
+                  validate-on-blur
+                  :rules="[rules.number]"
+                  type="number" min=0
+                  clearable
+                >
+                  <template slot="label">
+                    <v-icon small>fa-clock</v-icon> Lead Time (Days)
+                  </template>
+                </v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.reorderPoint" validate-on-blur :rules="[rules.number]" type="number" min=0 label="Reorder Point" clearable/>
+                <v-text-field
+                  v-model.number="editedItem.weeksOfReorder"
+                  validate-on-blur :rules="[rules.number]"
+                  type="number" min=0
+                  clearable
+                >
+                  <template slot="label">
+                    <v-icon small>{{weekIcon}}</v-icon> Reorder Weeks
+                  </template>
+                </v-text-field>
               </v-flex>
               <v-flex xs6>
-                <v-text-field v-model.number="editedItem.reorderQuantity" validate-on-blur :rules="[rules.wholeNumber]" type="number" min=0 label="Reorder Quantity" clearable/>
+                <v-text-field
+                  v-model.number="editedItem.reorderPoint"
+                  validate-on-blur
+                  :rules="[rules.number]"
+                  type="number" min=0
+                  clearable
+                >
+                  <template slot="label">
+                    <v-icon small>fa-less-than-equal</v-icon> Reorder Point
+                  </template>
+                </v-text-field>
+              </v-flex>
+              <v-flex xs6>
+                <v-text-field
+                  v-model.number="editedItem.reorderQuantity"
+                  validate-on-blur :rules="[rules.wholeNumber]"
+                  type="number" min=0
+                  clearable
+                >
+                  <template slot="label">
+                    <v-icon small>fa-shopping-cart</v-icon> Reorder Quantity
+                  </template>
+                </v-text-field>
               </v-flex>
               <!-- alert -->
               <v-flex xs12>
@@ -148,6 +284,7 @@ export default {
       assayDialog: false,
       vendorDialog: false,
       deactivationDialog: false,
+      dateDialog: false,
       response: '',
       alert: false,
       alertMessage: '',
@@ -186,6 +323,7 @@ export default {
         VendorId: '',
         catalogNumber: '',
         itemDescription: '',
+        expirationDate: '',
         reactionsPerItem: 0,
         currentStock: 0,
         baseWeeks: 4,
@@ -201,6 +339,7 @@ export default {
         VendorId: '',
         catalogNumber: '',
         itemDescription: '',
+        expirationDate: '',
         reactionsPerItem: 0,
         currentStock: 0,
         baseWeeks: 4,
@@ -231,6 +370,14 @@ export default {
     ...mapState([
       'user'
     ]),
+
+    stockIcon () {
+      return 'fa-cube'
+    },
+
+    weekIcon () {
+      return 'fa-calendar-week'
+    },
 
     dialog: {
       get () {
