@@ -144,6 +144,18 @@
         <td>{{toOrder(props.item)}}</td>
         <!-- comment -->
         <td class="pointer" @click="editItem(props.item)">{{props.item.comment}}</td>
+        <!-- expiration date -->
+        <td>
+          <template v-if="isExpiring(props.item)">
+            <v-badge color="red">
+              <span slot="badge">!</span>
+              {{props.item.expirationDate}}
+            </v-badge>
+          </template>
+          <template v-else>
+            {{props.item.expirationDate}}
+          </template>
+        </td>
         <!-- last update -->
         <td>{{time(props.item)}}</td>
       </template>
@@ -204,6 +216,7 @@ export default {
         {text: 'Stock', value: 'currentStock'},
         {text: 'To Order', value: 'reorderQuantity'},
         {text: 'Comment', value: 'comment', width: '15%'},
+        {text: 'Expiration Date', value: 'expirationDate'},
         {text: 'Last Update', value: 'updatedAt'}
       ],
       supplies: [],
@@ -486,6 +499,13 @@ export default {
 
     searchTerm (term) {
       this.search = term
+    },
+
+    isExpiring (item) {
+      let date = this.$moment(item.expirationDate)
+      let days = this.$moment(date).diff(this.$moment(), 'days')
+
+      return days < 30
     },
 
     checkQuantity (item) {
