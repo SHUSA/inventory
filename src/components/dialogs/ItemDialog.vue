@@ -107,7 +107,7 @@
                       clearable
                     >
                       <template slot="label">
-                        <v-icon small>fa-calendar-day</v-icon> Latest Expiration Date
+                        <v-icon small>fa-calendar-day</v-icon> Expiration Date
                       </template>
                     </v-text-field>
                   </template>
