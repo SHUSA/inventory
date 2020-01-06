@@ -21,11 +21,11 @@ Vue.use(Veutify, {
   iconfont: 'fa'
 })
 
-Object.defineProperty(Vue.prototype, '$moment', { value: moment })
-Object.defineProperty(Vue.prototype, '$validate', { value: validate })
-Object.defineProperty(Vue.prototype, '$util', { value: utility })
-Object.defineProperty(Vue.prototype, '$clone', { value: clone })
-Object.defineProperty(Vue.prototype, '$clonedeep', { value: cloneDeep })
+Vue.prototype.$moment = moment
+Vue.prototype.$validate = validate
+Vue.prototype.$util = utility
+Vue.prototype.$clone = clone
+Vue.prototype.$clonedeep = cloneDeep
 
 Vue.component('scroll', Scroll)
 Vue.component('error', Error)
