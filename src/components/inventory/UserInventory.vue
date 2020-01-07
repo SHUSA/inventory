@@ -241,11 +241,17 @@
                     <template slot="activator">
                       <v-text-field
                         v-model="item.expirationDate"
-                        readonly
-                        clearable
+                        readonly clearable
+                        persistent-hint
+                        :rules=[rules.expiring]
                       >
                         <template slot="label">
-                          <v-icon small>fa-calendar-day</v-icon> Expiration Date
+                          <v-icon
+                            :color="isExpiring(item) ? 'error' : ''"
+                            small
+                          >
+                            fa-calendar-day
+                          </v-icon> Expiration Date
                         </template>
                       </v-text-field>
                     </template>
@@ -253,14 +259,13 @@
                       <v-spacer/>
                       <v-btn text color="error" @click="item.dateDialog = false">Cancel</v-btn>
                     <v-btn text color="primary" @click="$refs.dateDialog[index].save(item.expirationDate)">OK</v-btn>
-                      <!-- <v-btn text color="primary" @click="saveExpiration(item)">OK</v-btn> -->
                     </v-date-picker>
                   </v-menu>
                   <!-- comment -->
                   <v-textarea
                     @keydown.enter="checkDataEntry(item)"
                     clearable no-resize
-                    rows="3" class="py-0"
+                    rows="3" class="py-4"
                     label="Comment"
                     :value="item.comment"
                     v-model="item.comment"
@@ -337,6 +342,22 @@ export default {
       warningDialog: false,
       resultsList: {ordered: [], updated: [], retracted: []},
       loadComponent: false,
+      rules: {
+        expiring: (item) => {
+          if (item === null) {
+            return true
+          }
+
+          let date = this.$moment(item.expirationDate)
+          let days = this.$moment(date).diff(this.$moment(), 'days')
+
+          if (days < 30) {
+            return 'Item is expiring or expired'
+          } else {
+            return true
+          }
+        }
+      },
       headers: [
         {
           text: 'Name',
@@ -593,6 +614,13 @@ export default {
     time (item) {
       item.lastUpdate = this.$moment(item.updatedAt).format('MMM-DD-YYYY')
       return item.lastUpdate
+    },
+
+    isExpiring (item) {
+      let date = this.$moment(item.expirationDate)
+      let days = this.$moment(date).diff(this.$moment(), 'days')
+
+      return days < 30
     },
 
     recentlyUpdated (item) {
