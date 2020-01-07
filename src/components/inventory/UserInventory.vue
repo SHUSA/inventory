@@ -191,8 +191,8 @@
         class="manual-v-layout"
       >
         <v-flex
-          xs6 sm4 md3 lg2
-          v-for="item in paginatedItems[page - 1]"
+          xs6 sm4 md3 lg3
+          v-for="(item, index) in paginatedItems[page - 1]"
           :key="item.id"
         >
           <!-- big card -->
@@ -231,15 +231,44 @@
                   </v-text-field>
                   <!-- manual order -->
                   <v-checkbox v-model="item.order" class="py-0" label="Manual Order"/>
+                  <!-- optional expiration date -->
+                  <v-menu
+                    :close-on-content-click="false"
+                    ref="dateDialog"
+                    v-model="item.dateDialog"
+                    :return-value.sync="item.expirationDate"
+                  >
+                    <template slot="activator">
+                      <v-text-field
+                        v-model="item.expirationDate"
+                        readonly
+                        clearable
+                      >
+                        <template slot="label">
+                          <v-icon small>fa-calendar-day</v-icon> Expiration Date
+                        </template>
+                      </v-text-field>
+                    </template>
+                    <v-date-picker v-model="item.expirationDate" scrollable>
+                      <v-spacer/>
+                      <v-btn text color="error" @click="item.dateDialog = false">Cancel</v-btn>
+                    <v-btn text color="primary" @click="$refs.dateDialog[index].save(item.expirationDate)">OK</v-btn>
+                      <!-- <v-btn text color="primary" @click="saveExpiration(item)">OK</v-btn> -->
+                    </v-date-picker>
+                  </v-menu>
                   <!-- comment -->
                   <v-textarea
                     @keydown.enter="checkDataEntry(item)"
                     clearable no-resize
-                    rows="4" class="py-0"
+                    rows="3" class="py-0"
                     label="Comment"
                     :value="item.comment"
                     v-model="item.comment"
-                  ></v-textarea>
+                  >
+                    <template slot="label">
+                      <v-icon small>far fa-comment-alt</v-icon> Comment
+                    </template>
+                  </v-textarea>
                   <div class="text-xs-center">
                     <v-btn @click="checkDataEntry(item)" color="primary" small>Save Item</v-btn>
                   </div>
@@ -425,12 +454,10 @@ export default {
   async mounted () {
     // initialize variables
     this.loadComponent = false
-    console.log('load items')
     this.response = (await itemService.show(this.storedFilters))
 
     if (this.response.status === 200) {
       this.supplies = this.response.data
-      console.log('success')
       this.filteredList = this.supplies
       this.paginate()
 
@@ -443,7 +470,6 @@ export default {
       // create copy of supplies to check if values have been changed
       this.createCopy()
     }
-    console.log('items loaded')
     this.loadComponent = true
   },
 
