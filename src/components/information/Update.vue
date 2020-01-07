@@ -9,6 +9,21 @@
       <ul>
         <!-- (li>{2019.05.DD - v.1.xx}ul>li{update notes})+br -->
         <li>
+          2020.MM.DD - v.1.3
+          <ul>
+            <li>Optional field added: Expiration Date</li>
+            <ul>
+              <li>Can be modified by both users and admin</li>
+              <li>If an item is 30 days or less to expiration, a flag will show up next to the expiry date</li>
+            </ul>
+            <li>Others</li>
+            <ul>
+              <li>User inventory cards adjusted</li>
+            </ul>
+          </ul>
+        </li>
+        <br>
+        <li>
           2019.05.17 - v.1.2, Site Move
           <ul>
             <li>Site moved to a new location!</li>
