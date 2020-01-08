@@ -38,6 +38,14 @@
               <span>Vendor</span>
             </v-tooltip>
             {{itemInfo.Vendor ? itemInfo.Vendor.name : ''}}
+            <template v-if="!(itemInfo.expirationDate === '' || itemInfo.expirationDate === null)">
+              <br>
+              <v-tooltip left>
+                <v-icon slot="activator" small class="pr-0">fa-calendar-day</v-icon>
+                <span>Expiration Date</span>
+              </v-tooltip>
+              {{itemInfo.expirationDate}}
+            </template>
           </v-card-text>
           <v-divider/>
           <v-card-text class="py-1">
