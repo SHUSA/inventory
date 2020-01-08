@@ -9,7 +9,7 @@
       <ul>
         <!-- (li>{2019.05.DD - v.1.xx}ul>li{update notes})+br -->
         <li>
-          2020.MM.DD - v.1.3
+          2020.01.09 - v.1.3, Expiration Dates and Duplicate Catalog
           <ul>
             <li>Optional field added: Expiration Date</li>
             <ul>
@@ -18,7 +18,8 @@
             </ul>
             <li>Others</li>
             <ul>
-              <li>User inventory cards adjusted</li>
+              <li>Added expiration date to item info card. Only visible if it exists</li>
+              <li>Fixed: Duplicate catalog numbers across departments are now allowed</li>
             </ul>
           </ul>
         </li>
