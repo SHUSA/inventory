@@ -191,7 +191,7 @@
         class="manual-v-layout"
       >
         <v-flex
-          xs6 sm4 md3 lg3
+          xs6 sm4 md3 lg2
           v-for="(item, index) in paginatedItems[page - 1]"
           :key="item.id"
         >
