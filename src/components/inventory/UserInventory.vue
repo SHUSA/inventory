@@ -343,12 +343,12 @@ export default {
       resultsList: {ordered: [], updated: [], retracted: []},
       loadComponent: false,
       rules: {
-        expiring: (item) => {
-          if (item === null) {
+        expiring: (expDate) => {
+          if (expDate === null) {
             return true
           }
 
-          let date = this.$moment(item.expirationDate)
+          let date = this.$moment(expDate)
           let days = this.$moment(date).diff(this.$moment(), 'days')
 
           if (days < 30) {
