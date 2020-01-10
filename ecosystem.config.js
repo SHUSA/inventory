@@ -25,7 +25,7 @@ module.exports = {
       repo : 'git@github.com:SHUSA/srl_inventory.git',
       path : path,
       // 'post-deploy': 'git pull && node_modules/.bin/sequelize db:migrate:undo',
-      'post-deploy': 'sudo git pull && npm install && node_modules/.bin/sequelize db:migrate && npm run build && pm2 reload ecosystem.config.js --env development --update-env && pm2 list && pm2 logs',
+      'post-deploy': 'git pull && npm install && node_modules/.bin/sequelize db:migrate && npm run build && pm2 reload ecosystem.config.js --env development --update-env && pm2 list && pm2 logs',
       "env"  : {
         'NODE_ENV': 'development',
         SRL_INVENTORY_HOST: dbHost,
