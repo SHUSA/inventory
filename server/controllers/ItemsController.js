@@ -51,8 +51,6 @@ module.exports = {
   },
 
   async show (req, res) {
-    console.log('show items')
-    console.log(req.body.params)
     try {
       let items = await Item.findAll({
         where: {
