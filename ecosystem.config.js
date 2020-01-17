@@ -24,6 +24,8 @@ module.exports = {
     }
   }],
 
+  devSettings: devSettings,
+
   deploy : {
     development : {
       user : user,
