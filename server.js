@@ -27,6 +27,15 @@ app.get('*', function (req, res) {
 let port = config.port
 let host = config.host
 
+console.log('checking envs')
+console.log(process.env.NODE_ENV)
+console.log(process.env.SRL_INVENTORY_HOST)
+console.log(process.env.SRL_INVENTORY_DB_PORT)
+console.log(process.env.PORT)
+console.log(process.env.SERVER_PORT)
+console.log(process.env.HOST)
+console.log(process.env.NEWDB)
+
 if (process.env.NEWDB === 'true') {
   sequelize.sync({ force: true }).then(() => {
     app.listen(port, host)
