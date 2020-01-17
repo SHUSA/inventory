@@ -11,7 +11,7 @@ console.log(fs.existsSync(path))
 //   console.log('Path does not exist. Using default config.')
 // }
 
-module.exports = {
+const settings = {
   port: process.env.SERVER_PORT || 8081,
   host: process.env.HOST || 'localhost',
 
@@ -30,3 +30,6 @@ module.exports = {
     jwtSecret: process.env.JWT_SECRET || 'secret'
   }
 }
+console.log('config')
+console.log(settings)
+module.exports = settings
