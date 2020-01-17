@@ -12,7 +12,7 @@
     "git": "git checkout beta && git pull",
     "pm2": "pm2 reload ecosystem.config.js --env development --update-env && pm2 list && pm2 logs",
     "env": "SRL_INVENTORY_HOST=10.212.17.96",
-    "migrate": "SRL_TERMINAL_HOST=10.212.17.96 node_modules/.bin/sequelize db:migrate",
+    "migrate": "SRL_INVENTORY_HOST=10.212.17.96 node_modules/.bin/sequelize db:migrate",
     "deploy": "npm run git && npm install && npm run migrate && npm run build && npm run pm2",
     "restart": "npm install && npm run build && npm run pm2"
   },
