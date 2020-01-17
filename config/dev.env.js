@@ -1,15 +1,11 @@
 'use strict'
 const merge = require('webpack-merge')
 const prodEnv = require('./prod.env')
-
-console.log('envs')
-console.log(JSON.stringify(process.env.PORT))
-console.log(JSON.stringify(process.env.SERVER_PORT))
-console.log(JSON.stringify(process.env.HOST))
+const env = require('../ecosystem.config').devSettings
 
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
-  PORT: JSON.stringify(process.env.PORT),
-  SERVER_PORT: JSON.stringify(process.env.SERVER_PORT),
-  HOST: JSON.stringify(process.env.HOST),
+  PORT: JSON.stringify(process.env.PORT) || env.PORT,
+  SERVER_PORT: JSON.stringify(process.env.SERVER_PORT) || env.SERVER_PORT,
+  HOST: JSON.stringify(process.env.HOST) || env.HOST,
 })
