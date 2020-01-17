@@ -1,4 +1,5 @@
 'use strict'
+console.log('production started')
 module.exports = {
   NODE_ENV: '"production"',
   PORT: JSON.stringify(process.env.PORT),
