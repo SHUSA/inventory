@@ -2,6 +2,11 @@
 const merge = require('webpack-merge')
 const prodEnv = require('./prod.env')
 
+console.log('envs')
+console.log(JSON.stringify(process.env.PORT))
+console.log(JSON.stringify(process.env.SERVER_PORT))
+console.log(JSON.stringify(process.env.HOST))
+
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
   PORT: JSON.stringify(process.env.PORT),
