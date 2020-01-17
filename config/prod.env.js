@@ -1,7 +1,7 @@
 'use strict'
 const env = require('../ecosystem.config').devSettings
 console.log('production started')
-module.exports = {
+const settings = {
   NODE_ENV: '"production"',
   PORT: JSON.stringify(process.env.PORT) || env.PORT,
   SERVER_PORT: JSON.stringify(process.env.SERVER_PORT) || env.SERVER_PORT,
@@ -10,3 +10,5 @@ module.exports = {
   debug: false,
   silent: true
 }
+console.log(settings)
+module.exports = settings
