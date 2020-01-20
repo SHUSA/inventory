@@ -1,5 +1,6 @@
 'use strict'
 console.log('production started')
+console.log(JSON.stringify(process.env))
 const settings = {
   NODE_ENV: '"production"',
   PORT: JSON.stringify(process.env.PORT),
