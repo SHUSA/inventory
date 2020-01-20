@@ -12,7 +12,7 @@ console.log(fs.existsSync(path))
 // }
 
 const settings = {
-  port: process.env.SERVER_PORT || 8082,
+  port: process.env.SERVER_PORT || 8081,
   host: process.env.HOST || 'localhost',
 
   db: {
