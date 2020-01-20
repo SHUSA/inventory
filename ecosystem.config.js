@@ -18,7 +18,10 @@ module.exports = {
   apps : [{
     name      : 'srl_inventory',
     script    : 'server.js',
-    env: devSettings,
+    env: {
+      NODE_ENV: 'development'
+    },
+    env_development: devSettings,
     env_production : {
       NODE_ENV: 'production'
     }
