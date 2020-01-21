@@ -1,6 +1,6 @@
 const host = '10.212.17.95'
 const dbHost = '10.212.17.96'
-const user = 'deployer'
+const user = os.userInfo().username
 const path = '/var/www/srl_inventory'
 const port = 80
 const serverPort = 3000
