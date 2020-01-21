@@ -1,3 +1,4 @@
+const os = require('os')
 const host = '10.212.17.95'
 const dbHost = '10.212.17.96'
 const user = os.userInfo().username
