@@ -1,18 +1,18 @@
 {
   "name": "inventory",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "A Vue.js project",
   "author": "rukaroa <rukaroa@gmail.com>",
   "private": true,
   "scripts": {
+    "env": "cross-env SRL_INVENTORY_HOST=10.212.17.96 SERVER_PORT=3000 HOST=10.212.17.95 NODE_ENV=development",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "nodemon server.js",
     "lint": "eslint --ext .js,.vue src",
-    "build": "SERVER_PORT=3000 HOST=10.212.17.95 node build/build.js",
     "git": "git checkout beta && git pull",
-    "pm2": "cross-env NODE_ENV=development pm2 reload ecosystem.config.js --env development --update-env && pm2 list && pm2 logs",
-    "env": "SRL_INVENTORY_HOST=10.212.17.96",
-    "migrate": "SRL_INVENTORY_HOST=10.212.17.96 node_modules/.bin/sequelize db:migrate",
+    "build": "npm run env node build/build.js",
+    "migrate": "npm run env node_modules/.bin/sequelize db:migrate",
+    "pm2": "npm run env pm2 reload ecosystem.config.js --env development --update-env && pm2 list && pm2 logs",
     "deploy": "npm run git && npm install && npm run migrate && npm run build && npm run pm2",
     "restart": "npm install && npm run build && npm run pm2"
   },
